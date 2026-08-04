@@ -97,20 +97,23 @@ candidate_pool:
   - candidate_id: "P1"
     verification_status: ""
     recommendation_eligible: false
-    evidence_roles: []
+    evidence_roles: ["direct_problem"]
+    selection_role: "direct_problem"
     basis_level: "metadata_level"
     verified_record: {}
 ```
 
-Assign each candidate one stable `candidate_id` within the calibration cycle. Keep the same ID when the record is retained, downgraded, or reconsidered in round two. Never reuse one ID for a different work.
+Assign each candidate one stable `candidate_id` across both rounds of the calibration cycle. Keep the same ID when the record is retained, downgraded, or reconsidered in round two. Never reuse one ID for a different work or assign a new ID to the same carried work.
 
-Require each pool item to contain exactly one verified paper record and its current verification state. Deduplicate records before selection. Do not place unresolved, conflicted, not-found, or manual-review records in the recommendation pool. Preserve such discovery outcomes separately as limitations or evidence gaps.
+Require each pool item to contain exactly one verified paper record and its current verification state. Require `selection_role` on every item and set it to exactly one of `direct_problem`, `method`, `transfer_bridge`, or `counter_limitation`. Require the selected value to appear in that item's `evidence_roles` list. Treat a missing, out-of-set, or unsupported `selection_role` as invalid.
+
+Deduplicate records before selection. Do not place unresolved, conflicted, not-found, or manual-review records in the recommendation pool. Preserve such discovery outcomes separately as limitations or evidence gaps.
 
 Assemble 15–20 verified, deduplicated candidates for round one when reliable evidence exists. Cover direct-problem, method, transfer or bridge, and counterexample or limitation needs where the evidence permits. Do not create metadata, identifiers, authors, titles, publication states, or evidence roles to reach the target count.
 
 ## Select round one
 
-Select eight recommendation-eligible records only when the pool supports this fixed allocation: three `direct_problem`, two `method`, two `transfer_bridge`, and one `counter_limitation`. Count each selected record against its declared selection role. Require every entry in `selected_ids` to resolve to exactly one candidate-pool item and exactly one verified paper record. Reject missing IDs, duplicate IDs, ambiguous resolutions, and blocked verification states.
+Select eight recommendation-eligible records only when the pool supports this fixed allocation: three `direct_problem`, two `method`, two `transfer_bridge`, and one `counter_limitation`. Count the selected IDs strictly by their resolved candidate-pool item's `selection_role`; do not infer the quota role from the map, free text, or a different evidence role. Require every entry in `selected_ids` to resolve to exactly one candidate-pool item and exactly one verified paper record. Reject missing IDs, duplicate IDs, ambiguous resolutions, and blocked verification states.
 
 Do not substitute a weaker record, a record from another role, or an ineligible discovery hit when any role quota is short. Leave the affected slot unfilled, record the missing role and count in `evidence_gaps`, set the outcome to `evidence_incomplete`, and end the attempt in `WAITING_FOR_EVIDENCE_DECISION`.
 

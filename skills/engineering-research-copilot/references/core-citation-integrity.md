@@ -58,6 +58,7 @@ Perform the authoritative lookup during the current calibration run for every re
 - Never change the DOI body, infer missing characters, or create an identifier from title similarity.
 - Never treat an arXiv ID, PMID, ISBN, report number, or publisher URL as a DOI.
 - Normalize an official alternate identifier only according to its owning authority; preserve its identifier type and version.
+- Set `alternate_id` to `null` when no official alternate identifier is present. Otherwise require an object with exactly two fields: `authority`, containing the nonempty official authority type, and `value`, containing the nonempty authority-normalized identifier value. Reject a bare string, an empty value, a missing field, or any additional field.
 - Preserve online-first and issue publication dates separately when both exist.
 
 ## Compare metadata
@@ -120,7 +121,7 @@ Set `recommendation_eligible: false` for `conflicted`, `not_found`, and `manual_
 Apply these keys in order and do not fall back after a stronger key produces a match or mismatch:
 
 1. When both records contain a DOI, compare their normalized DOI values. Treat equal values as a possible duplicate subject to metadata and version checks. Treat different values as a decisive mismatch: stop, retain separate observations, and do not compare official alternate identifiers or title plus first author to merge them.
-2. Only when at least one record lacks a DOI, compare exact official alternate identifiers as pairs of authority type and normalized authority-owned value. When both records contain an official alternate identifier, treat equal pairs as a possible duplicate subject to metadata and version checks; treat different pairs, including different authority types, as a decisive mismatch and stop without using title plus first author to merge them.
+2. Only when at least one record lacks a DOI, compare exact official alternate identifiers as `(authority, value)` pairs. Validate each non-null `alternate_id` as the closed two-field object before comparison; reject bare strings and incomplete objects instead of coercing them. When both records contain an official alternate identifier, treat equal pairs as a possible duplicate subject to metadata and version checks; treat different pairs, including different `authority` values, as a decisive mismatch and stop without using title plus first author to merge them.
 3. Only when at least one record lacks a DOI and at least one record also lacks an official alternate identifier, compare normalized title plus normalized first author for candidate review.
 
 Treat the third key as a review trigger, not as proof of identity. Do not auto-merge title-and-author matches without current authoritative confirmation of `same_work`. When a stronger identifier is later found, restart comparison at the DOI step.
@@ -181,6 +182,8 @@ verified_paper_record:
   does_not_support: ""
   basis_level: "metadata_level|abstract_level|fulltext_level"
 ```
+
+Keep `alternate_id` exactly `null` when absent. When present, replace `null` with an object containing only the required nonempty `authority` and `value` fields defined above. Do not serialize it as a bare identifier string or accept a partially populated object.
 
 Mirror `verification.status` and `verification.recommendation_eligible` into a calibration candidate's summary fields without changing their values. Reject a candidate when the summary and nested verification object disagree.
 
