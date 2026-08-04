@@ -975,6 +975,37 @@ class ValidateM1BundleTests(unittest.TestCase):
             validate_bundle(unresolved)["errors"],
         )
 
+    def test_stable_doi_rejects_removed_alternate_id(self):
+        bundle = make_structurally_valid_production_bundle()
+        first = bundle["round1"]["candidate_pool"][0]["verified_record"]
+        second = bundle["round2"]["candidate_pool"][0]["verified_record"]
+        first["doi"] = second["doi"] = "stable-contract-doi"
+        second["alternate_id"] = None
+        self.assertIn(
+            "stable_candidate_identity_changed", validate_bundle(bundle)["errors"]
+        )
+
+    def test_stable_doi_rejects_added_alternate_id(self):
+        bundle = make_structurally_valid_production_bundle()
+        first = bundle["round1"]["candidate_pool"][0]["verified_record"]
+        second = bundle["round2"]["candidate_pool"][0]["verified_record"]
+        first["doi"] = second["doi"] = "stable-contract-doi"
+        first["alternate_id"] = None
+        self.assertIn(
+            "stable_candidate_identity_changed", validate_bundle(bundle)["errors"]
+        )
+
+    def test_stable_alternate_id_rejects_removed_doi(self):
+        bundle = make_structurally_valid_production_bundle()
+        first = bundle["round1"]["candidate_pool"][0]["verified_record"]
+        second = bundle["round2"]["candidate_pool"][0]["verified_record"]
+        first["doi"] = "removed-contract-doi"
+        second["doi"] = None
+        self.assertEqual(first["alternate_id"], second["alternate_id"])
+        self.assertIn(
+            "stable_candidate_identity_changed", validate_bundle(bundle)["errors"]
+        )
+
     def test_stable_id_preserves_work_identity_across_rounds(self):
         title = make_complete_fixture_bundle()
         title["round2"]["candidate_pool"][0]["verified_record"]["title"] = (

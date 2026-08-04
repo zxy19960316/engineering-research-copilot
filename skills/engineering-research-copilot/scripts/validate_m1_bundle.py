@@ -949,19 +949,26 @@ def _stable_candidate_identity(
     first_alternate = normalize_alternate_id(first.get("alternate_id"))
     second_alternate = normalize_alternate_id(second.get("alternate_id"))
 
-    if first_doi is not None and second_doi is not None:
-        if first_doi != second_doi:
-            return "changed"
-        if (
-            first_alternate is not None
-            and second_alternate is not None
-            and first_alternate != second_alternate
-        ):
-            return "changed"
-        return "same"
+    if (first_alternate is None) != (second_alternate is None):
+        return "changed"
+    if (
+        first_alternate is not None
+        and second_alternate is not None
+        and first_alternate != second_alternate
+    ):
+        return "changed"
 
-    if first_alternate is not None and second_alternate is not None:
-        return "same" if first_alternate == second_alternate else "changed"
+    if first_doi is not None and second_doi is None:
+        return "changed"
+    if first_doi is None and second_doi is not None:
+        if first_alternate is not None and first_alternate == second_alternate:
+            return "same"
+        return "unresolved"
+    if first_doi is not None and second_doi is not None:
+        return "same" if first_doi == second_doi else "changed"
+
+    if first_alternate is not None:
+        return "same"
 
     if fixture_mode and first_doi is None and second_doi is None:
         return "same"
