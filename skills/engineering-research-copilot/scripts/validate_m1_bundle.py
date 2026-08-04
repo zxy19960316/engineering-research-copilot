@@ -312,13 +312,20 @@ def _verified_provenance_is_closed(verification: dict) -> bool:
     )
 
 
+def _valid_blocking_reasons(value: Any, require_nonempty: bool) -> bool:
+    if not isinstance(value, list) or any(
+        not _nonempty_text(item) for item in value
+    ):
+        return False
+    return bool(value) if require_nonempty else not value
+
+
 def _production_eligibility_is_valid(verification: dict) -> bool:
     blocking = verification.get("blocking_reasons")
     return (
         _verified_provenance_is_closed(verification)
         and verification.get("recommendation_eligible") is True
-        and isinstance(blocking, list)
-        and not blocking
+        and _valid_blocking_reasons(blocking, require_nonempty=False)
     )
 
 
@@ -338,10 +345,9 @@ def _candidate_counts_as_verified(candidate: dict, fixture_mode: bool) -> bool:
         candidate.get("verification_status") == verification.get("status")
         and candidate.get("recommendation_eligible") is eligible
         and _verified_provenance_is_closed(verification)
-        and isinstance(blocking, list)
         and (
-            (eligible is True and not blocking)
-            or (eligible is False and bool(blocking))
+            (eligible is True and _valid_blocking_reasons(blocking, False))
+            or (eligible is False and _valid_blocking_reasons(blocking, True))
         )
     )
 
@@ -462,9 +468,8 @@ def _validate_candidate(
     if (
         status in ELIGIBLE_STATES
         and eligible is False
-        and (
-            not isinstance(verification.get("blocking_reasons"), list)
-            or not verification.get("blocking_reasons")
+        and not _valid_blocking_reasons(
+            verification.get("blocking_reasons"), require_nonempty=True
         )
     ):
         result.error("verified_record_ineligible_without_reason")

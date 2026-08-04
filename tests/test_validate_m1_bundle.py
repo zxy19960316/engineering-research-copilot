@@ -652,6 +652,24 @@ class ValidateM1BundleTests(unittest.TestCase):
         self.assertEqual(result["status"], "invalid")
         self.assertIn("verified_record_ineligible_without_reason", result["errors"])
 
+    def test_malformed_ineligible_blocking_reasons_are_invalid_and_not_counted(self):
+        for blocking_reasons in (["   "], [7], [{}]):
+            with self.subTest(blocking_reasons=blocking_reasons):
+                bundle = make_structurally_valid_production_bundle()
+                candidate = bundle["round1"]["candidate_pool"][14]
+                candidate["recommendation_eligible"] = False
+                verification = candidate["verified_record"]["verification"]
+                verification["recommendation_eligible"] = False
+                verification["blocking_reasons"] = blocking_reasons
+                result = validate_bundle(bundle)
+                self.assertEqual(result["status"], "invalid")
+                self.assertIn(
+                    "verified_record_ineligible_without_reason", result["errors"]
+                )
+                self.assertIn(
+                    "eligible_candidate_count_without_limit", result["errors"]
+                )
+
     def test_selected_verified_ineligible_record_remains_blocked(self):
         bundle = make_structurally_valid_production_bundle()
         for round_name in ("round1", "round2"):
