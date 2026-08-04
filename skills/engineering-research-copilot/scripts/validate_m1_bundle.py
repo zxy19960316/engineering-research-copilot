@@ -111,6 +111,32 @@ def normalize_doi(value: str | None) -> str | None:
     return normalized.lower() or None
 
 
+def normalize_alternate_id(value: Any) -> tuple[str, str] | None:
+    """Return one closed, case-insensitive official alternate-ID key."""
+
+    if not isinstance(value, dict) or set(value) != {"authority", "value"}:
+        return None
+    authority = value.get("authority")
+    identifier = value.get("value")
+    if not _nonempty_text(authority) or not _nonempty_text(identifier):
+        return None
+    return authority.strip().casefold(), identifier.strip().casefold()
+
+
+def normalize_title_first_author(record: dict) -> tuple[str, str] | None:
+    """Return the weak title/first-author review key without inferring identity."""
+
+    title = record.get("title")
+    authors = record.get("authors")
+    if not _nonempty_text(title) or not isinstance(authors, list) or not authors:
+        return None
+    if not _nonempty_text(authors[0]):
+        return None
+    normalized_title = " ".join(title.split()).casefold()
+    normalized_author = " ".join(authors[0].split()).casefold()
+    return normalized_title, normalized_author
+
+
 class _Result:
     def __init__(self) -> None:
         self.errors: list[str] = []
@@ -824,68 +850,41 @@ def _normalize_identity_text(value: str) -> str:
     return " ".join(value.casefold().split())
 
 
-def _alternate_key(value: Any) -> tuple[str, str] | None:
-    if not isinstance(value, dict) or set(value) != {"authority", "value"}:
-        return None
-    authority = value.get("authority")
-    identifier = value.get("value")
-    if not _nonempty_text(authority) or not _nonempty_text(identifier):
-        return None
-    return (_normalize_identity_text(authority), _normalize_identity_text(identifier))
+def _compare_candidate_identity(first: dict, second: dict) -> str:
+    """Compare two verified records using the strongest available identity key."""
+
+    first_doi = normalize_doi(first.get("doi"))
+    second_doi = normalize_doi(second.get("doi"))
+    if first_doi is not None and second_doi is not None:
+        return "duplicate" if first_doi == second_doi else "distinct"
+
+    first_alternate = normalize_alternate_id(first.get("alternate_id"))
+    second_alternate = normalize_alternate_id(second.get("alternate_id"))
+    if first_alternate is not None and second_alternate is not None:
+        return "duplicate" if first_alternate == second_alternate else "distinct"
+
+    first_weak_key = normalize_title_first_author(first)
+    second_weak_key = normalize_title_first_author(second)
+    if first_weak_key is not None and first_weak_key == second_weak_key:
+        return "manual_needed"
+    return "distinct"
 
 
-def _same_work_identity(first: dict, second: dict) -> bool | None:
-    first_record = first.get("verified_record")
-    second_record = second.get("verified_record")
-    if not isinstance(first_record, dict) or not isinstance(second_record, dict):
-        return None
-
-    first_doi = first_record.get("doi")
-    second_doi = second_record.get("doi")
-    first_title = first_record.get("title")
-    second_title = second_record.get("title")
-    first_authors = first_record.get("authors")
-    second_authors = second_record.get("authors")
+def _identity_metadata_compatible(first: dict, second: dict) -> bool:
+    first_title_author = normalize_title_first_author(first)
+    second_title_author = normalize_title_first_author(second)
+    first_authors = first.get("authors")
+    second_authors = second.get("authors")
+    first_type = first.get("publication_type")
+    second_type = second.get("publication_type")
+    first_verification = first.get("verification")
+    second_verification = second.get("verification")
     if (
-        not _nonempty_text(first_title)
-        or not _nonempty_text(second_title)
+        first_title_author is None
+        or second_title_author is None
         or not isinstance(first_authors, list)
         or not isinstance(second_authors, list)
-        or not first_authors
-        or not second_authors
-        or not _nonempty_text(first_authors[0])
-        or not _nonempty_text(second_authors[0])
-    ):
-        return None
-
-    if (
-        isinstance(first_doi, str)
-        and first_doi.strip()
-        and isinstance(second_doi, str)
-        and second_doi.strip()
-    ):
-        identifier_match = normalize_doi(first_doi) == normalize_doi(second_doi)
-    else:
-        first_alternate = _alternate_key(first_record.get("alternate_id"))
-        second_alternate = _alternate_key(second_record.get("alternate_id"))
-        if first_alternate is not None and second_alternate is not None:
-            identifier_match = first_alternate == second_alternate
-        else:
-            identifier_match = (
-                _normalize_identity_text(first_title)
-                == _normalize_identity_text(second_title)
-                and _normalize_identity_text(first_authors[0])
-                == _normalize_identity_text(second_authors[0])
-            )
-    if not identifier_match:
-        return False
-
-    first_type = first_record.get("publication_type")
-    second_type = second_record.get("publication_type")
-    first_verification = first_record.get("verification")
-    second_verification = second_record.get("verification")
-    if (
-        not all(_nonempty_text(author) for author in first_authors)
+        or not all(_nonempty_text(author) for author in first_authors)
         or not all(_nonempty_text(author) for author in second_authors)
         or not _nonempty_text(first_type)
         or not _nonempty_text(second_type)
@@ -894,29 +893,96 @@ def _same_work_identity(first: dict, second: dict) -> bool | None:
         or not _nonempty_text(first_verification.get("version_relation"))
         or not _nonempty_text(second_verification.get("version_relation"))
     ):
-        return None
+        return False
     return (
-        _normalize_identity_text(first_title) == _normalize_identity_text(second_title)
-        and [_normalize_identity_text(author) for author in first_authors]
-        == [_normalize_identity_text(author) for author in second_authors]
+        first_title_author[0] == second_title_author[0]
+        and tuple(_normalize_identity_text(author) for author in first_authors)
+        == tuple(_normalize_identity_text(author) for author in second_authors)
         and _normalize_identity_text(first_type) == _normalize_identity_text(second_type)
         and first_verification.get("version_relation")
         == second_verification.get("version_relation")
     )
 
 
+def _validate_within_round_identities(
+    index: dict[str, dict], selected_ids: list[str], result: _Result
+) -> None:
+    candidate_ids = list(index)
+    selected = set(selected_ids)
+    for position, first_id in enumerate(candidate_ids):
+        first_candidate = index[first_id]
+        first_record = first_candidate.get("verified_record")
+        if not isinstance(first_record, dict):
+            continue
+        for second_id in candidate_ids[position + 1 :]:
+            second_candidate = index[second_id]
+            second_record = second_candidate.get("verified_record")
+            if not isinstance(second_record, dict):
+                continue
+            identity = _compare_candidate_identity(first_record, second_record)
+            related_selected = bool({first_id, second_id} & selected)
+            if identity == "duplicate":
+                if _identity_metadata_compatible(first_record, second_record):
+                    result.error("duplicate_candidate_identity")
+                else:
+                    result.error("candidate_identity_conflict")
+                    if related_selected:
+                        result.error("selected_record_blocked")
+            elif identity == "manual_needed":
+                result.error("candidate_identity_manual_review")
+                if related_selected:
+                    result.error("selected_record_blocked")
+
+
+def _stable_candidate_identity(
+    first_candidate: dict, second_candidate: dict, fixture_mode: bool
+) -> str:
+    first = first_candidate.get("verified_record")
+    second = second_candidate.get("verified_record")
+    if not isinstance(first, dict) or not isinstance(second, dict):
+        return "unresolved"
+    if not _identity_metadata_compatible(first, second):
+        return "changed"
+
+    first_doi = normalize_doi(first.get("doi"))
+    second_doi = normalize_doi(second.get("doi"))
+    first_alternate = normalize_alternate_id(first.get("alternate_id"))
+    second_alternate = normalize_alternate_id(second.get("alternate_id"))
+
+    if first_doi is not None and second_doi is not None:
+        if first_doi != second_doi:
+            return "changed"
+        if (
+            first_alternate is not None
+            and second_alternate is not None
+            and first_alternate != second_alternate
+        ):
+            return "changed"
+        return "same"
+
+    if first_alternate is not None and second_alternate is not None:
+        return "same" if first_alternate == second_alternate else "changed"
+
+    if fixture_mode and first_doi is None and second_doi is None:
+        return "same"
+    return "unresolved"
+
+
 def _validate_stable_identities(
     round_one_index: dict[str, dict],
     round_two_index: dict[str, dict],
+    fixture_mode: bool,
     result: _Result,
 ) -> None:
     for candidate_id in set(round_one_index) & set(round_two_index):
-        same_identity = _same_work_identity(
-            round_one_index[candidate_id], round_two_index[candidate_id]
+        identity = _stable_candidate_identity(
+            round_one_index[candidate_id],
+            round_two_index[candidate_id],
+            fixture_mode,
         )
-        if same_identity is False:
+        if identity == "changed":
             result.error("stable_candidate_identity_changed")
-        elif same_identity is None:
+        elif identity == "unresolved":
             result.error("stable_candidate_identity_unresolved")
 
 
@@ -1149,6 +1215,7 @@ def _validate_round(
         round_bundle, fixture_mode, result
     )
     selected_ids = _validate_selection(round_bundle, index, fixture_mode, result)
+    _validate_within_round_identities(index, selected_ids, result)
     _validate_round_count(name, round_bundle, eligible_count, len(selected_ids), result)
     if name == "round1":
         _validate_round_one_roles(selected_ids, index, round_bundle, result)
@@ -1202,7 +1269,9 @@ def _validate_bundle(bundle: dict) -> dict:
             and not round_two_gaps
         )
         _validate_duplicate_dois(bundle, [round_one[1], round_two[1]], result)
-        _validate_stable_identities(round_one[1], round_two[1], result)
+        _validate_stable_identities(
+            round_one[1], round_two[1], fixture_mode, result
+        )
         _validate_dispositions(
             bundle,
             round_one[2],

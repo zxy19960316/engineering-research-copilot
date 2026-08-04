@@ -130,6 +130,10 @@ When duplicate DOI or official alternate identifiers carry conflicting title, au
 
 Retain the more complete authoritative metadata only after all decisive identity fields agree. Preserve all checked-source provenance and identifier aliases when consolidating true duplicates; never merge conflicting fields silently.
 
+Compare every pair in each candidate pool, including records that are not selected. Reject compatible records with different `candidate_id` values as `duplicate_candidate_identity`. Reject equal DOI or alternate-ID identities with incompatible normalized title, ordered authors, publication type, or version relation as `candidate_identity_conflict`. Treat a title-plus-first-author match without a decisive identifier as `candidate_identity_manual_review`; never auto-merge it, and block selection when either related record is selected.
+
+Across rounds, require one `candidate_id` to continue identifying the same work. Reject a changed DOI, a changed alternate identifier, or incompatible identity metadata as `stable_candidate_identity_changed`. Permit a DOI to be added only when the same normalized alternate identifier is present in both rounds. Without that stable alternate identifier, report `stable_candidate_identity_unresolved` instead of inferring continuity from title and first author.
+
 ## Resolve version relationships
 
 Assign exactly one `version_relation` from `same_work`, `preprint_of`, `distinct`, or `unknown`.

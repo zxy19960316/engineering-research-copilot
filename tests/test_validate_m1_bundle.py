@@ -367,7 +367,12 @@ def make_structurally_valid_production_bundle() -> dict:
     for round_name in ("round1", "round2"):
         for candidate in bundle[round_name]["candidate_pool"]:
             candidate["verification_status"] = "verified_registry"
-            verification = candidate["verified_record"]["verification"]
+            verified_record = candidate["verified_record"]
+            verified_record["alternate_id"] = {
+                "authority": "contract",
+                "value": candidate["candidate_id"],
+            }
+            verification = verified_record["verification"]
             verification["status"] = "verified_registry"
             verification["title_match"] = "exact"
             verification["author_match"] = "exact"
@@ -815,6 +820,160 @@ class ValidateM1BundleTests(unittest.TestCase):
         unknown = make_complete_fixture_bundle()
         unknown["round2"]["selected_ids"][0] = "fixture:P99"
         self.assertIn("unknown_selected_id", validate_bundle(unknown)["errors"])
+
+    def test_duplicate_alternate_id_is_invalid(self):
+        bundle = make_structurally_valid_production_bundle()
+        first, second = bundle["round1"]["candidate_pool"][:2]
+        for candidate in (first, second):
+            candidate["verified_record"]["doi"] = None
+            candidate["verified_record"]["alternate_id"] = {
+                "authority": "arxiv",
+                "value": "2401.01234v2",
+            }
+        second["verified_record"]["title"] = first["verified_record"]["title"]
+        second["verified_record"]["authors"] = first["verified_record"]["authors"]
+        self.assertIn(
+            "duplicate_candidate_identity", validate_bundle(bundle)["errors"]
+        )
+
+    def test_duplicate_arxiv_id_with_different_candidate_ids(self):
+        bundle = make_structurally_valid_production_bundle()
+        first, second = bundle["round1"]["candidate_pool"][:2]
+        first["verified_record"]["doi"] = second["verified_record"]["doi"] = None
+        first["verified_record"]["alternate_id"] = {
+            "authority": "arxiv",
+            "value": "2401.01234V2",
+        }
+        second["verified_record"]["alternate_id"] = {
+            "authority": "ArXiv",
+            "value": "2401.01234v2",
+        }
+        second["verified_record"]["title"] = first["verified_record"]["title"]
+        second["verified_record"]["authors"] = first["verified_record"]["authors"]
+        self.assertIn(
+            "duplicate_candidate_identity", validate_bundle(bundle)["errors"]
+        )
+
+    def test_equal_alternate_id_conflicting_title_is_blocked(self):
+        bundle = make_structurally_valid_production_bundle()
+        first, second = bundle["round1"]["candidate_pool"][:2]
+        first["verified_record"]["doi"] = second["verified_record"]["doi"] = None
+        first["verified_record"]["alternate_id"] = second["verified_record"][
+            "alternate_id"
+        ] = {"authority": "arxiv", "value": "2401.01234v2"}
+        second["verified_record"]["title"] = "A conflicting work identity"
+        errors = validate_bundle(bundle)["errors"]
+        self.assertIn("candidate_identity_conflict", errors)
+        self.assertIn("selected_record_blocked", errors)
+
+    def test_different_alternate_ids_do_not_fallback_to_title_merge(self):
+        bundle = make_structurally_valid_production_bundle()
+        first, second = bundle["round1"]["candidate_pool"][:2]
+        first["verified_record"]["doi"] = second["verified_record"]["doi"] = None
+        second["verified_record"]["title"] = first["verified_record"]["title"]
+        second["verified_record"]["authors"] = first["verified_record"]["authors"]
+        first["verified_record"]["alternate_id"] = {
+            "authority": "arxiv",
+            "value": "2401.00001",
+        }
+        second["verified_record"]["alternate_id"] = {
+            "authority": "arxiv",
+            "value": "2401.00002",
+        }
+        errors = validate_bundle(bundle)["errors"]
+        self.assertNotIn("duplicate_candidate_identity", errors)
+        self.assertNotIn("candidate_identity_manual_review", errors)
+
+    def test_title_first_author_match_requires_manual_review(self):
+        bundle = make_structurally_valid_production_bundle()
+        first, second = bundle["round1"]["candidate_pool"][:2]
+        first["verified_record"]["doi"] = second["verified_record"]["doi"] = None
+        first["verified_record"]["alternate_id"] = second["verified_record"][
+            "alternate_id"
+        ] = None
+        second["verified_record"]["title"] = first["verified_record"]["title"]
+        second["verified_record"]["authors"] = first["verified_record"]["authors"]
+        errors = validate_bundle(bundle)["errors"]
+        self.assertIn("candidate_identity_manual_review", errors)
+        self.assertIn("selected_record_blocked", errors)
+
+    def test_same_doi_with_conflicting_metadata_is_conflicted(self):
+        bundle = make_structurally_valid_production_bundle()
+        first, second = bundle["round1"]["candidate_pool"][:2]
+        first["verified_record"]["doi"] = second["verified_record"][
+            "doi"
+        ] = "same-contract-token"
+        second["verified_record"]["title"] = "A conflicting DOI identity"
+        self.assertIn("candidate_identity_conflict", validate_bundle(bundle)["errors"])
+
+    def test_stable_candidate_alternate_id_cannot_change(self):
+        bundle = make_structurally_valid_production_bundle()
+        for round_name, value in (
+            ("round1", "2401.00001"),
+            ("round2", "2401.00002"),
+        ):
+            record = bundle[round_name]["candidate_pool"][0]["verified_record"]
+            record["doi"] = None
+            record["alternate_id"] = {"authority": "arxiv", "value": value}
+        self.assertIn(
+            "stable_candidate_identity_changed", validate_bundle(bundle)["errors"]
+        )
+
+    def test_unselected_duplicate_identity_is_still_invalid(self):
+        bundle = make_structurally_valid_production_bundle()
+        first, second = bundle["round1"]["candidate_pool"][8:10]
+        for candidate in (first, second):
+            record = candidate["verified_record"]
+            record["doi"] = None
+            record["alternate_id"] = {
+                "authority": "contract",
+                "value": "unselected-duplicate",
+            }
+        second["verified_record"]["title"] = first["verified_record"]["title"]
+        second["verified_record"]["authors"] = first["verified_record"]["authors"]
+        result = validate_bundle(bundle)
+        self.assertEqual(result["status"], "invalid")
+        self.assertIn("duplicate_candidate_identity", result["errors"])
+
+    def test_different_dois_do_not_fallback_to_equal_alternate_id(self):
+        bundle = make_structurally_valid_production_bundle()
+        for round_name in ("round1", "round2"):
+            first, second = bundle[round_name]["candidate_pool"][:2]
+            first_record = first["verified_record"]
+            second_record = second["verified_record"]
+            first_record["doi"] = "contract-doi-one"
+            second_record["doi"] = "contract-doi-two"
+            first_record["alternate_id"] = second_record["alternate_id"] = {
+                "authority": "arxiv",
+                "value": "2401.01234v2",
+            }
+            second_record["title"] = first_record["title"]
+            second_record["authors"] = first_record["authors"]
+        errors = validate_bundle(bundle)["errors"]
+        self.assertNotIn("duplicate_candidate_identity", errors)
+        self.assertNotIn("candidate_identity_conflict", errors)
+        self.assertNotIn("candidate_identity_manual_review", errors)
+
+    def test_new_doi_requires_stable_alternate_identity(self):
+        stable = make_structurally_valid_production_bundle()
+        stable["round1"]["candidate_pool"][0]["verified_record"]["doi"] = None
+        stable["round2"]["candidate_pool"][0]["verified_record"][
+            "doi"
+        ] = "new-contract-doi"
+        self.assertNotIn(
+            "stable_candidate_identity_unresolved", validate_bundle(stable)["errors"]
+        )
+
+        unresolved = make_structurally_valid_production_bundle()
+        first = unresolved["round1"]["candidate_pool"][0]["verified_record"]
+        second = unresolved["round2"]["candidate_pool"][0]["verified_record"]
+        first["doi"] = None
+        second["doi"] = "new-contract-doi"
+        first["alternate_id"] = second["alternate_id"] = None
+        self.assertIn(
+            "stable_candidate_identity_unresolved",
+            validate_bundle(unresolved)["errors"],
+        )
 
     def test_stable_id_preserves_work_identity_across_rounds(self):
         title = make_complete_fixture_bundle()

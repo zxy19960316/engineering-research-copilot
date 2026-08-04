@@ -333,7 +333,7 @@ git commit -m "fix: validate M1 early-stop terminal states"
 - Consumes: closed `verified_record.doi`, `alternate_id`, `title`, and ordered `authors`.
 - Produces: `normalize_alternate_id()`, `normalize_title_first_author()`, `_compare_candidate_identity()`, within-round collision errors, and cross-round stable-ID errors.
 
-- [ ] **Step 1: Write identity precedence tests**
+- [x] **Step 1: Write identity precedence tests**
 
 Add exactly these tests:
 
@@ -401,7 +401,7 @@ def test_stable_candidate_alternate_id_cannot_change(self):
 
 Use `alternate_id = {"authority": "arxiv", "value": "2401.01234v2"}` for equal-ID cases, two different arXiv values for the decisive-distinct case, and DOI `None` for title/first-author manual-review cases.
 
-- [ ] **Step 2: Verify the identity tests fail before implementation**
+- [x] **Step 2: Verify the identity tests fail before implementation**
 
 Run:
 
@@ -411,7 +411,7 @@ python -m unittest tests.test_validate_m1_bundle.ValidateM1BundleTests -k "alter
 
 Expected: new tests fail because within-round identity comparison does not yet implement the full precedence.
 
-- [ ] **Step 3: Implement normalization and comparison**
+- [x] **Step 3: Implement normalization and comparison**
 
 Add:
 
@@ -451,11 +451,11 @@ def _compare_candidate_identity(first: dict, second: dict) -> str:
 
 After a `duplicate` identity result, compare normalized title, ordered author identity, publication type, and version relation; emit `duplicate_candidate_identity` when compatible and `candidate_identity_conflict` when incompatible. Never auto-merge `manual_needed`; emit `candidate_identity_manual_review` and block either record from selection.
 
-- [ ] **Step 4: Apply the same precedence across rounds**
+- [x] **Step 4: Apply the same precedence across rounds**
 
 For identical `candidate_id` values, reject a changed normalized DOI, changed equal-authority alternate ID, or incompatible metadata. Allow a newly added DOI only when a stable equal alternate ID already proves continuity; otherwise emit `stable_candidate_identity_unresolved`.
 
-- [ ] **Step 5: Run identity and full regression gates**
+- [x] **Step 5: Run identity and full regression gates**
 
 ```powershell
 python -m unittest discover -s tests -p "test_validate_m1_bundle.py" -v
@@ -464,7 +464,7 @@ python -m py_compile skills/engineering-research-copilot/scripts/validate_m1_bun
 
 Expected: all identity tests and prior terminal-state tests pass.
 
-- [ ] **Step 6: Commit identity hardening**
+- [x] **Step 6: Commit identity hardening**
 
 ```powershell
 git add -- skills/engineering-research-copilot/references/core-citation-integrity.md skills/engineering-research-copilot/scripts/validate_m1_bundle.py tests/test_validate_m1_bundle.py
