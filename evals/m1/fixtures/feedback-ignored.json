@@ -1,0 +1,1643 @@
+{
+  "schema_version": "m1.1",
+  "fixture_mode": true,
+  "evidence_class": "offline_contract_fixture",
+  "round1": {
+    "schema_version": "m1.1",
+    "round": 1,
+    "research_brief": {
+      "brief_version": 1,
+      "branch_id": "branch-a",
+      "engineering_object": "fixture object",
+      "target_problem": "fixture problem",
+      "target_metric": "fixture metric",
+      "available_data": [
+        "public simulation"
+      ],
+      "resources": [
+        "offline fixtures"
+      ],
+      "time_budget": "fixture only",
+      "preferred_routes": [],
+      "excluded_routes": [],
+      "hard_constraints": [],
+      "soft_preferences": [],
+      "open_questions": [],
+      "evidence_needs": []
+    },
+    "search_plan": {
+      "round": 1,
+      "brief_version": 1,
+      "branch_id": "branch-a",
+      "time_boundary": "fixture only",
+      "language_boundary": [
+        "English"
+      ],
+      "source_boundary": [
+        "offline_contract_fixture"
+      ],
+      "queries": [
+        {
+          "query_id": "Q1-R1",
+          "purpose": "direct_problem",
+          "query_text": "public engineering simulation evidence",
+          "expected_evidence_role": "direct_problem",
+          "inclusion_terms": [
+            "public simulation"
+          ],
+          "exclusion_terms": []
+        }
+      ],
+      "limitations": [
+        "No real scholarly lookup was performed"
+      ]
+    },
+    "candidate_pool": [
+      {
+        "candidate_id": "fixture:P01",
+        "verification_status": "fixture_only",
+        "recommendation_eligible": true,
+        "evidence_roles": [
+          "direct_problem"
+        ],
+        "selection_role": "direct_problem",
+        "basis_level": "abstract_level",
+        "verified_record": {
+          "paper_id": "fixture:P01",
+          "title": "Synthetic contract record 01",
+          "authors": [
+            "Fixture Author"
+          ],
+          "year_online": null,
+          "year_issue": null,
+          "venue": "",
+          "publication_type": "offline_contract_fixture",
+          "doi": null,
+          "canonical_url": "",
+          "alternate_id": null,
+          "verification": {
+            "status": "fixture_only",
+            "checked_sources": [],
+            "title_match": "not_checked",
+            "author_match": "not_checked",
+            "version_relation": "same_work",
+            "recommendation_eligible": true,
+            "blocking_reasons": []
+          },
+          "evidence_role": "direct_problem",
+          "supports": "Offline structural validation only",
+          "does_not_support": "Real citation existence or metadata accuracy",
+          "basis_level": "abstract_level"
+        }
+      },
+      {
+        "candidate_id": "fixture:P02",
+        "verification_status": "fixture_only",
+        "recommendation_eligible": true,
+        "evidence_roles": [
+          "direct_problem"
+        ],
+        "selection_role": "direct_problem",
+        "basis_level": "abstract_level",
+        "verified_record": {
+          "paper_id": "fixture:P02",
+          "title": "Synthetic contract record 02",
+          "authors": [
+            "Fixture Author"
+          ],
+          "year_online": null,
+          "year_issue": null,
+          "venue": "",
+          "publication_type": "offline_contract_fixture",
+          "doi": null,
+          "canonical_url": "",
+          "alternate_id": null,
+          "verification": {
+            "status": "fixture_only",
+            "checked_sources": [],
+            "title_match": "not_checked",
+            "author_match": "not_checked",
+            "version_relation": "same_work",
+            "recommendation_eligible": true,
+            "blocking_reasons": []
+          },
+          "evidence_role": "direct_problem",
+          "supports": "Offline structural validation only",
+          "does_not_support": "Real citation existence or metadata accuracy",
+          "basis_level": "abstract_level"
+        }
+      },
+      {
+        "candidate_id": "fixture:P03",
+        "verification_status": "fixture_only",
+        "recommendation_eligible": true,
+        "evidence_roles": [
+          "direct_problem"
+        ],
+        "selection_role": "direct_problem",
+        "basis_level": "abstract_level",
+        "verified_record": {
+          "paper_id": "fixture:P03",
+          "title": "Synthetic contract record 03",
+          "authors": [
+            "Fixture Author"
+          ],
+          "year_online": null,
+          "year_issue": null,
+          "venue": "",
+          "publication_type": "offline_contract_fixture",
+          "doi": null,
+          "canonical_url": "",
+          "alternate_id": null,
+          "verification": {
+            "status": "fixture_only",
+            "checked_sources": [],
+            "title_match": "not_checked",
+            "author_match": "not_checked",
+            "version_relation": "same_work",
+            "recommendation_eligible": true,
+            "blocking_reasons": []
+          },
+          "evidence_role": "direct_problem",
+          "supports": "Offline structural validation only",
+          "does_not_support": "Real citation existence or metadata accuracy",
+          "basis_level": "abstract_level"
+        }
+      },
+      {
+        "candidate_id": "fixture:P04",
+        "verification_status": "fixture_only",
+        "recommendation_eligible": true,
+        "evidence_roles": [
+          "method"
+        ],
+        "selection_role": "method",
+        "basis_level": "abstract_level",
+        "verified_record": {
+          "paper_id": "fixture:P04",
+          "title": "Synthetic contract record 04",
+          "authors": [
+            "Fixture Author"
+          ],
+          "year_online": null,
+          "year_issue": null,
+          "venue": "",
+          "publication_type": "offline_contract_fixture",
+          "doi": null,
+          "canonical_url": "",
+          "alternate_id": null,
+          "verification": {
+            "status": "fixture_only",
+            "checked_sources": [],
+            "title_match": "not_checked",
+            "author_match": "not_checked",
+            "version_relation": "same_work",
+            "recommendation_eligible": true,
+            "blocking_reasons": []
+          },
+          "evidence_role": "method",
+          "supports": "Offline structural validation only",
+          "does_not_support": "Real citation existence or metadata accuracy",
+          "basis_level": "abstract_level"
+        }
+      },
+      {
+        "candidate_id": "fixture:P05",
+        "verification_status": "fixture_only",
+        "recommendation_eligible": true,
+        "evidence_roles": [
+          "method"
+        ],
+        "selection_role": "method",
+        "basis_level": "abstract_level",
+        "verified_record": {
+          "paper_id": "fixture:P05",
+          "title": "Synthetic contract record 05",
+          "authors": [
+            "Fixture Author"
+          ],
+          "year_online": null,
+          "year_issue": null,
+          "venue": "",
+          "publication_type": "offline_contract_fixture",
+          "doi": null,
+          "canonical_url": "",
+          "alternate_id": null,
+          "verification": {
+            "status": "fixture_only",
+            "checked_sources": [],
+            "title_match": "not_checked",
+            "author_match": "not_checked",
+            "version_relation": "same_work",
+            "recommendation_eligible": true,
+            "blocking_reasons": []
+          },
+          "evidence_role": "method",
+          "supports": "Offline structural validation only",
+          "does_not_support": "Real citation existence or metadata accuracy",
+          "basis_level": "abstract_level"
+        }
+      },
+      {
+        "candidate_id": "fixture:P06",
+        "verification_status": "fixture_only",
+        "recommendation_eligible": true,
+        "evidence_roles": [
+          "transfer_bridge"
+        ],
+        "selection_role": "transfer_bridge",
+        "basis_level": "abstract_level",
+        "verified_record": {
+          "paper_id": "fixture:P06",
+          "title": "Synthetic contract record 06",
+          "authors": [
+            "Fixture Author"
+          ],
+          "year_online": null,
+          "year_issue": null,
+          "venue": "",
+          "publication_type": "offline_contract_fixture",
+          "doi": null,
+          "canonical_url": "",
+          "alternate_id": null,
+          "verification": {
+            "status": "fixture_only",
+            "checked_sources": [],
+            "title_match": "not_checked",
+            "author_match": "not_checked",
+            "version_relation": "same_work",
+            "recommendation_eligible": true,
+            "blocking_reasons": []
+          },
+          "evidence_role": "transfer_bridge",
+          "supports": "Offline structural validation only",
+          "does_not_support": "Real citation existence or metadata accuracy",
+          "basis_level": "abstract_level"
+        }
+      },
+      {
+        "candidate_id": "fixture:P07",
+        "verification_status": "fixture_only",
+        "recommendation_eligible": true,
+        "evidence_roles": [
+          "transfer_bridge"
+        ],
+        "selection_role": "transfer_bridge",
+        "basis_level": "abstract_level",
+        "verified_record": {
+          "paper_id": "fixture:P07",
+          "title": "Synthetic contract record 07",
+          "authors": [
+            "Fixture Author"
+          ],
+          "year_online": null,
+          "year_issue": null,
+          "venue": "",
+          "publication_type": "offline_contract_fixture",
+          "doi": null,
+          "canonical_url": "",
+          "alternate_id": null,
+          "verification": {
+            "status": "fixture_only",
+            "checked_sources": [],
+            "title_match": "not_checked",
+            "author_match": "not_checked",
+            "version_relation": "same_work",
+            "recommendation_eligible": true,
+            "blocking_reasons": []
+          },
+          "evidence_role": "transfer_bridge",
+          "supports": "Offline structural validation only",
+          "does_not_support": "Real citation existence or metadata accuracy",
+          "basis_level": "abstract_level"
+        }
+      },
+      {
+        "candidate_id": "fixture:P08",
+        "verification_status": "fixture_only",
+        "recommendation_eligible": true,
+        "evidence_roles": [
+          "counter_limitation"
+        ],
+        "selection_role": "counter_limitation",
+        "basis_level": "abstract_level",
+        "verified_record": {
+          "paper_id": "fixture:P08",
+          "title": "Synthetic contract record 08",
+          "authors": [
+            "Fixture Author"
+          ],
+          "year_online": null,
+          "year_issue": null,
+          "venue": "",
+          "publication_type": "offline_contract_fixture",
+          "doi": null,
+          "canonical_url": "",
+          "alternate_id": null,
+          "verification": {
+            "status": "fixture_only",
+            "checked_sources": [],
+            "title_match": "not_checked",
+            "author_match": "not_checked",
+            "version_relation": "same_work",
+            "recommendation_eligible": true,
+            "blocking_reasons": []
+          },
+          "evidence_role": "counter_limitation",
+          "supports": "Offline structural validation only",
+          "does_not_support": "Real citation existence or metadata accuracy",
+          "basis_level": "abstract_level"
+        }
+      },
+      {
+        "candidate_id": "fixture:P09",
+        "verification_status": "fixture_only",
+        "recommendation_eligible": true,
+        "evidence_roles": [
+          "counter_limitation"
+        ],
+        "selection_role": "counter_limitation",
+        "basis_level": "abstract_level",
+        "verified_record": {
+          "paper_id": "fixture:P09",
+          "title": "Synthetic contract record 09",
+          "authors": [
+            "Fixture Author"
+          ],
+          "year_online": null,
+          "year_issue": null,
+          "venue": "",
+          "publication_type": "offline_contract_fixture",
+          "doi": null,
+          "canonical_url": "",
+          "alternate_id": null,
+          "verification": {
+            "status": "fixture_only",
+            "checked_sources": [],
+            "title_match": "not_checked",
+            "author_match": "not_checked",
+            "version_relation": "same_work",
+            "recommendation_eligible": true,
+            "blocking_reasons": []
+          },
+          "evidence_role": "counter_limitation",
+          "supports": "Offline structural validation only",
+          "does_not_support": "Real citation existence or metadata accuracy",
+          "basis_level": "abstract_level"
+        }
+      },
+      {
+        "candidate_id": "fixture:P10",
+        "verification_status": "fixture_only",
+        "recommendation_eligible": true,
+        "evidence_roles": [
+          "counter_limitation"
+        ],
+        "selection_role": "counter_limitation",
+        "basis_level": "abstract_level",
+        "verified_record": {
+          "paper_id": "fixture:P10",
+          "title": "Synthetic contract record 10",
+          "authors": [
+            "Fixture Author"
+          ],
+          "year_online": null,
+          "year_issue": null,
+          "venue": "",
+          "publication_type": "offline_contract_fixture",
+          "doi": null,
+          "canonical_url": "",
+          "alternate_id": null,
+          "verification": {
+            "status": "fixture_only",
+            "checked_sources": [],
+            "title_match": "not_checked",
+            "author_match": "not_checked",
+            "version_relation": "same_work",
+            "recommendation_eligible": true,
+            "blocking_reasons": []
+          },
+          "evidence_role": "counter_limitation",
+          "supports": "Offline structural validation only",
+          "does_not_support": "Real citation existence or metadata accuracy",
+          "basis_level": "abstract_level"
+        }
+      },
+      {
+        "candidate_id": "fixture:P11",
+        "verification_status": "fixture_only",
+        "recommendation_eligible": true,
+        "evidence_roles": [
+          "counter_limitation"
+        ],
+        "selection_role": "counter_limitation",
+        "basis_level": "abstract_level",
+        "verified_record": {
+          "paper_id": "fixture:P11",
+          "title": "Synthetic contract record 11",
+          "authors": [
+            "Fixture Author"
+          ],
+          "year_online": null,
+          "year_issue": null,
+          "venue": "",
+          "publication_type": "offline_contract_fixture",
+          "doi": null,
+          "canonical_url": "",
+          "alternate_id": null,
+          "verification": {
+            "status": "fixture_only",
+            "checked_sources": [],
+            "title_match": "not_checked",
+            "author_match": "not_checked",
+            "version_relation": "same_work",
+            "recommendation_eligible": true,
+            "blocking_reasons": []
+          },
+          "evidence_role": "counter_limitation",
+          "supports": "Offline structural validation only",
+          "does_not_support": "Real citation existence or metadata accuracy",
+          "basis_level": "abstract_level"
+        }
+      },
+      {
+        "candidate_id": "fixture:P12",
+        "verification_status": "fixture_only",
+        "recommendation_eligible": true,
+        "evidence_roles": [
+          "counter_limitation"
+        ],
+        "selection_role": "counter_limitation",
+        "basis_level": "abstract_level",
+        "verified_record": {
+          "paper_id": "fixture:P12",
+          "title": "Synthetic contract record 12",
+          "authors": [
+            "Fixture Author"
+          ],
+          "year_online": null,
+          "year_issue": null,
+          "venue": "",
+          "publication_type": "offline_contract_fixture",
+          "doi": null,
+          "canonical_url": "",
+          "alternate_id": null,
+          "verification": {
+            "status": "fixture_only",
+            "checked_sources": [],
+            "title_match": "not_checked",
+            "author_match": "not_checked",
+            "version_relation": "same_work",
+            "recommendation_eligible": true,
+            "blocking_reasons": []
+          },
+          "evidence_role": "counter_limitation",
+          "supports": "Offline structural validation only",
+          "does_not_support": "Real citation existence or metadata accuracy",
+          "basis_level": "abstract_level"
+        }
+      },
+      {
+        "candidate_id": "fixture:P13",
+        "verification_status": "fixture_only",
+        "recommendation_eligible": true,
+        "evidence_roles": [
+          "counter_limitation"
+        ],
+        "selection_role": "counter_limitation",
+        "basis_level": "abstract_level",
+        "verified_record": {
+          "paper_id": "fixture:P13",
+          "title": "Synthetic contract record 13",
+          "authors": [
+            "Fixture Author"
+          ],
+          "year_online": null,
+          "year_issue": null,
+          "venue": "",
+          "publication_type": "offline_contract_fixture",
+          "doi": null,
+          "canonical_url": "",
+          "alternate_id": null,
+          "verification": {
+            "status": "fixture_only",
+            "checked_sources": [],
+            "title_match": "not_checked",
+            "author_match": "not_checked",
+            "version_relation": "same_work",
+            "recommendation_eligible": true,
+            "blocking_reasons": []
+          },
+          "evidence_role": "counter_limitation",
+          "supports": "Offline structural validation only",
+          "does_not_support": "Real citation existence or metadata accuracy",
+          "basis_level": "abstract_level"
+        }
+      },
+      {
+        "candidate_id": "fixture:P14",
+        "verification_status": "fixture_only",
+        "recommendation_eligible": true,
+        "evidence_roles": [
+          "counter_limitation"
+        ],
+        "selection_role": "counter_limitation",
+        "basis_level": "abstract_level",
+        "verified_record": {
+          "paper_id": "fixture:P14",
+          "title": "Synthetic contract record 14",
+          "authors": [
+            "Fixture Author"
+          ],
+          "year_online": null,
+          "year_issue": null,
+          "venue": "",
+          "publication_type": "offline_contract_fixture",
+          "doi": null,
+          "canonical_url": "",
+          "alternate_id": null,
+          "verification": {
+            "status": "fixture_only",
+            "checked_sources": [],
+            "title_match": "not_checked",
+            "author_match": "not_checked",
+            "version_relation": "same_work",
+            "recommendation_eligible": true,
+            "blocking_reasons": []
+          },
+          "evidence_role": "counter_limitation",
+          "supports": "Offline structural validation only",
+          "does_not_support": "Real citation existence or metadata accuracy",
+          "basis_level": "abstract_level"
+        }
+      },
+      {
+        "candidate_id": "fixture:P15",
+        "verification_status": "fixture_only",
+        "recommendation_eligible": true,
+        "evidence_roles": [
+          "counter_limitation"
+        ],
+        "selection_role": "counter_limitation",
+        "basis_level": "abstract_level",
+        "verified_record": {
+          "paper_id": "fixture:P15",
+          "title": "Synthetic contract record 15",
+          "authors": [
+            "Fixture Author"
+          ],
+          "year_online": null,
+          "year_issue": null,
+          "venue": "",
+          "publication_type": "offline_contract_fixture",
+          "doi": null,
+          "canonical_url": "",
+          "alternate_id": null,
+          "verification": {
+            "status": "fixture_only",
+            "checked_sources": [],
+            "title_match": "not_checked",
+            "author_match": "not_checked",
+            "version_relation": "same_work",
+            "recommendation_eligible": true,
+            "blocking_reasons": []
+          },
+          "evidence_role": "counter_limitation",
+          "supports": "Offline structural validation only",
+          "does_not_support": "Real citation existence or metadata accuracy",
+          "basis_level": "abstract_level"
+        }
+      }
+    ],
+    "selected_ids": [
+      "fixture:P01",
+      "fixture:P02",
+      "fixture:P03",
+      "fixture:P04",
+      "fixture:P05",
+      "fixture:P06",
+      "fixture:P07",
+      "fixture:P08"
+    ],
+    "paper_map": {
+      "round": 1,
+      "node_size_basis": "user_fit",
+      "legend": {
+        "evidence_roles": [
+          "direct_problem",
+          "method",
+          "transfer_bridge",
+          "counter_limitation"
+        ],
+        "basis_levels": [
+          "metadata_level",
+          "abstract_level",
+          "fulltext_level"
+        ]
+      },
+      "nodes": [
+        {
+          "id": "fixture:P01",
+          "node_type": "paper",
+          "fit_score": 0.8,
+          "evidence_role": "direct_problem",
+          "verification_status": "fixture_only",
+          "basis_level": "abstract_level",
+          "short_note": "Offline fixture node"
+        },
+        {
+          "id": "fixture:P02",
+          "node_type": "paper",
+          "fit_score": 0.8,
+          "evidence_role": "direct_problem",
+          "verification_status": "fixture_only",
+          "basis_level": "abstract_level",
+          "short_note": "Offline fixture node"
+        },
+        {
+          "id": "fixture:P03",
+          "node_type": "paper",
+          "fit_score": 0.8,
+          "evidence_role": "direct_problem",
+          "verification_status": "fixture_only",
+          "basis_level": "abstract_level",
+          "short_note": "Offline fixture node"
+        },
+        {
+          "id": "fixture:P04",
+          "node_type": "paper",
+          "fit_score": 0.8,
+          "evidence_role": "method",
+          "verification_status": "fixture_only",
+          "basis_level": "abstract_level",
+          "short_note": "Offline fixture node"
+        },
+        {
+          "id": "fixture:P05",
+          "node_type": "paper",
+          "fit_score": 0.8,
+          "evidence_role": "method",
+          "verification_status": "fixture_only",
+          "basis_level": "abstract_level",
+          "short_note": "Offline fixture node"
+        },
+        {
+          "id": "fixture:P06",
+          "node_type": "paper",
+          "fit_score": 0.8,
+          "evidence_role": "transfer_bridge",
+          "verification_status": "fixture_only",
+          "basis_level": "abstract_level",
+          "short_note": "Offline fixture node"
+        },
+        {
+          "id": "fixture:P07",
+          "node_type": "paper",
+          "fit_score": 0.8,
+          "evidence_role": "transfer_bridge",
+          "verification_status": "fixture_only",
+          "basis_level": "abstract_level",
+          "short_note": "Offline fixture node"
+        },
+        {
+          "id": "fixture:P08",
+          "node_type": "paper",
+          "fit_score": 0.8,
+          "evidence_role": "counter_limitation",
+          "verification_status": "fixture_only",
+          "basis_level": "abstract_level",
+          "short_note": "Offline fixture node"
+        }
+      ],
+      "edges": [],
+      "text_fallback": [
+        {
+          "entry_type": "node",
+          "id": "fixture:P01",
+          "node_type": "paper",
+          "evidence_role": "direct_problem",
+          "verification_status": "fixture_only",
+          "basis_level": "abstract_level",
+          "text": "fixture:P01: Offline fixture node"
+        },
+        {
+          "entry_type": "node",
+          "id": "fixture:P02",
+          "node_type": "paper",
+          "evidence_role": "direct_problem",
+          "verification_status": "fixture_only",
+          "basis_level": "abstract_level",
+          "text": "fixture:P02: Offline fixture node"
+        },
+        {
+          "entry_type": "node",
+          "id": "fixture:P03",
+          "node_type": "paper",
+          "evidence_role": "direct_problem",
+          "verification_status": "fixture_only",
+          "basis_level": "abstract_level",
+          "text": "fixture:P03: Offline fixture node"
+        },
+        {
+          "entry_type": "node",
+          "id": "fixture:P04",
+          "node_type": "paper",
+          "evidence_role": "method",
+          "verification_status": "fixture_only",
+          "basis_level": "abstract_level",
+          "text": "fixture:P04: Offline fixture node"
+        },
+        {
+          "entry_type": "node",
+          "id": "fixture:P05",
+          "node_type": "paper",
+          "evidence_role": "method",
+          "verification_status": "fixture_only",
+          "basis_level": "abstract_level",
+          "text": "fixture:P05: Offline fixture node"
+        },
+        {
+          "entry_type": "node",
+          "id": "fixture:P06",
+          "node_type": "paper",
+          "evidence_role": "transfer_bridge",
+          "verification_status": "fixture_only",
+          "basis_level": "abstract_level",
+          "text": "fixture:P06: Offline fixture node"
+        },
+        {
+          "entry_type": "node",
+          "id": "fixture:P07",
+          "node_type": "paper",
+          "evidence_role": "transfer_bridge",
+          "verification_status": "fixture_only",
+          "basis_level": "abstract_level",
+          "text": "fixture:P07: Offline fixture node"
+        },
+        {
+          "entry_type": "node",
+          "id": "fixture:P08",
+          "node_type": "paper",
+          "evidence_role": "counter_limitation",
+          "verification_status": "fixture_only",
+          "basis_level": "abstract_level",
+          "text": "fixture:P08: Offline fixture node"
+        }
+      ]
+    },
+    "evidence_gaps": [],
+    "search_limitations": []
+  },
+  "feedback_delta": {
+    "from_brief_version": 1,
+    "to_brief_version": 2,
+    "inherited": [],
+    "rejected": [
+      {
+        "object_id": "fixture:P07",
+        "reason": "Exclude routes requiring proprietary data"
+      }
+    ],
+    "reset": [],
+    "added": [
+      {
+        "object_id": "public_simulation_preference",
+        "reason": "Prefer public simulation evidence"
+      }
+    ],
+    "allocation": {
+      "exploit": 30,
+      "explore": 70
+    },
+    "query_changes": []
+  },
+  "round2": {
+    "schema_version": "m1.1",
+    "round": 2,
+    "research_brief": {
+      "brief_version": 2,
+      "branch_id": "branch-a",
+      "engineering_object": "fixture object",
+      "target_problem": "fixture problem",
+      "target_metric": "fixture metric",
+      "available_data": [
+        "public simulation"
+      ],
+      "resources": [
+        "offline fixtures"
+      ],
+      "time_budget": "fixture only",
+      "preferred_routes": [],
+      "excluded_routes": [
+        "proprietary data"
+      ],
+      "hard_constraints": [],
+      "soft_preferences": [],
+      "open_questions": [],
+      "evidence_needs": []
+    },
+    "search_plan": {
+      "round": 2,
+      "brief_version": 2,
+      "branch_id": "branch-a",
+      "time_boundary": "fixture only",
+      "language_boundary": [
+        "English"
+      ],
+      "source_boundary": [
+        "offline_contract_fixture"
+      ],
+      "queries": [
+        {
+          "query_id": "Q2-R2",
+          "purpose": "direct_problem",
+          "query_text": "public simulation evidence excluding proprietary data",
+          "expected_evidence_role": "direct_problem",
+          "inclusion_terms": [
+            "public simulation"
+          ],
+          "exclusion_terms": [
+            "proprietary data"
+          ]
+        }
+      ],
+      "limitations": [
+        "No real scholarly lookup was performed"
+      ]
+    },
+    "candidate_pool": [
+      {
+        "candidate_id": "fixture:P01",
+        "verification_status": "fixture_only",
+        "recommendation_eligible": true,
+        "evidence_roles": [
+          "direct_problem"
+        ],
+        "selection_role": "direct_problem",
+        "basis_level": "abstract_level",
+        "verified_record": {
+          "paper_id": "fixture:P01",
+          "title": "Synthetic contract record 01",
+          "authors": [
+            "Fixture Author"
+          ],
+          "year_online": null,
+          "year_issue": null,
+          "venue": "",
+          "publication_type": "offline_contract_fixture",
+          "doi": null,
+          "canonical_url": "",
+          "alternate_id": null,
+          "verification": {
+            "status": "fixture_only",
+            "checked_sources": [],
+            "title_match": "not_checked",
+            "author_match": "not_checked",
+            "version_relation": "same_work",
+            "recommendation_eligible": true,
+            "blocking_reasons": []
+          },
+          "evidence_role": "direct_problem",
+          "supports": "Offline structural validation only",
+          "does_not_support": "Real citation existence or metadata accuracy",
+          "basis_level": "abstract_level"
+        }
+      },
+      {
+        "candidate_id": "fixture:P02",
+        "verification_status": "fixture_only",
+        "recommendation_eligible": true,
+        "evidence_roles": [
+          "direct_problem"
+        ],
+        "selection_role": "direct_problem",
+        "basis_level": "abstract_level",
+        "verified_record": {
+          "paper_id": "fixture:P02",
+          "title": "Synthetic contract record 02",
+          "authors": [
+            "Fixture Author"
+          ],
+          "year_online": null,
+          "year_issue": null,
+          "venue": "",
+          "publication_type": "offline_contract_fixture",
+          "doi": null,
+          "canonical_url": "",
+          "alternate_id": null,
+          "verification": {
+            "status": "fixture_only",
+            "checked_sources": [],
+            "title_match": "not_checked",
+            "author_match": "not_checked",
+            "version_relation": "same_work",
+            "recommendation_eligible": true,
+            "blocking_reasons": []
+          },
+          "evidence_role": "direct_problem",
+          "supports": "Offline structural validation only",
+          "does_not_support": "Real citation existence or metadata accuracy",
+          "basis_level": "abstract_level"
+        }
+      },
+      {
+        "candidate_id": "fixture:P03",
+        "verification_status": "fixture_only",
+        "recommendation_eligible": true,
+        "evidence_roles": [
+          "direct_problem"
+        ],
+        "selection_role": "direct_problem",
+        "basis_level": "abstract_level",
+        "verified_record": {
+          "paper_id": "fixture:P03",
+          "title": "Synthetic contract record 03",
+          "authors": [
+            "Fixture Author"
+          ],
+          "year_online": null,
+          "year_issue": null,
+          "venue": "",
+          "publication_type": "offline_contract_fixture",
+          "doi": null,
+          "canonical_url": "",
+          "alternate_id": null,
+          "verification": {
+            "status": "fixture_only",
+            "checked_sources": [],
+            "title_match": "not_checked",
+            "author_match": "not_checked",
+            "version_relation": "same_work",
+            "recommendation_eligible": true,
+            "blocking_reasons": []
+          },
+          "evidence_role": "direct_problem",
+          "supports": "Offline structural validation only",
+          "does_not_support": "Real citation existence or metadata accuracy",
+          "basis_level": "abstract_level"
+        }
+      },
+      {
+        "candidate_id": "fixture:P04",
+        "verification_status": "fixture_only",
+        "recommendation_eligible": true,
+        "evidence_roles": [
+          "method"
+        ],
+        "selection_role": "method",
+        "basis_level": "abstract_level",
+        "verified_record": {
+          "paper_id": "fixture:P04",
+          "title": "Synthetic contract record 04",
+          "authors": [
+            "Fixture Author"
+          ],
+          "year_online": null,
+          "year_issue": null,
+          "venue": "",
+          "publication_type": "offline_contract_fixture",
+          "doi": null,
+          "canonical_url": "",
+          "alternate_id": null,
+          "verification": {
+            "status": "fixture_only",
+            "checked_sources": [],
+            "title_match": "not_checked",
+            "author_match": "not_checked",
+            "version_relation": "same_work",
+            "recommendation_eligible": true,
+            "blocking_reasons": []
+          },
+          "evidence_role": "method",
+          "supports": "Offline structural validation only",
+          "does_not_support": "Real citation existence or metadata accuracy",
+          "basis_level": "abstract_level"
+        }
+      },
+      {
+        "candidate_id": "fixture:P05",
+        "verification_status": "fixture_only",
+        "recommendation_eligible": true,
+        "evidence_roles": [
+          "method"
+        ],
+        "selection_role": "method",
+        "basis_level": "abstract_level",
+        "verified_record": {
+          "paper_id": "fixture:P05",
+          "title": "Synthetic contract record 05",
+          "authors": [
+            "Fixture Author"
+          ],
+          "year_online": null,
+          "year_issue": null,
+          "venue": "",
+          "publication_type": "offline_contract_fixture",
+          "doi": null,
+          "canonical_url": "",
+          "alternate_id": null,
+          "verification": {
+            "status": "fixture_only",
+            "checked_sources": [],
+            "title_match": "not_checked",
+            "author_match": "not_checked",
+            "version_relation": "same_work",
+            "recommendation_eligible": true,
+            "blocking_reasons": []
+          },
+          "evidence_role": "method",
+          "supports": "Offline structural validation only",
+          "does_not_support": "Real citation existence or metadata accuracy",
+          "basis_level": "abstract_level"
+        }
+      },
+      {
+        "candidate_id": "fixture:P06",
+        "verification_status": "fixture_only",
+        "recommendation_eligible": true,
+        "evidence_roles": [
+          "transfer_bridge"
+        ],
+        "selection_role": "transfer_bridge",
+        "basis_level": "abstract_level",
+        "verified_record": {
+          "paper_id": "fixture:P06",
+          "title": "Synthetic contract record 06",
+          "authors": [
+            "Fixture Author"
+          ],
+          "year_online": null,
+          "year_issue": null,
+          "venue": "",
+          "publication_type": "offline_contract_fixture",
+          "doi": null,
+          "canonical_url": "",
+          "alternate_id": null,
+          "verification": {
+            "status": "fixture_only",
+            "checked_sources": [],
+            "title_match": "not_checked",
+            "author_match": "not_checked",
+            "version_relation": "same_work",
+            "recommendation_eligible": true,
+            "blocking_reasons": []
+          },
+          "evidence_role": "transfer_bridge",
+          "supports": "Offline structural validation only",
+          "does_not_support": "Real citation existence or metadata accuracy",
+          "basis_level": "abstract_level"
+        }
+      },
+      {
+        "candidate_id": "fixture:P07",
+        "verification_status": "fixture_only",
+        "recommendation_eligible": true,
+        "evidence_roles": [
+          "transfer_bridge"
+        ],
+        "selection_role": "transfer_bridge",
+        "basis_level": "abstract_level",
+        "verified_record": {
+          "paper_id": "fixture:P07",
+          "title": "Synthetic contract record 07",
+          "authors": [
+            "Fixture Author"
+          ],
+          "year_online": null,
+          "year_issue": null,
+          "venue": "",
+          "publication_type": "offline_contract_fixture",
+          "doi": null,
+          "canonical_url": "",
+          "alternate_id": null,
+          "verification": {
+            "status": "fixture_only",
+            "checked_sources": [],
+            "title_match": "not_checked",
+            "author_match": "not_checked",
+            "version_relation": "same_work",
+            "recommendation_eligible": true,
+            "blocking_reasons": []
+          },
+          "evidence_role": "transfer_bridge",
+          "supports": "Offline structural validation only",
+          "does_not_support": "Real citation existence or metadata accuracy",
+          "basis_level": "abstract_level"
+        }
+      },
+      {
+        "candidate_id": "fixture:P08",
+        "verification_status": "fixture_only",
+        "recommendation_eligible": true,
+        "evidence_roles": [
+          "counter_limitation"
+        ],
+        "selection_role": "counter_limitation",
+        "basis_level": "abstract_level",
+        "verified_record": {
+          "paper_id": "fixture:P08",
+          "title": "Synthetic contract record 08",
+          "authors": [
+            "Fixture Author"
+          ],
+          "year_online": null,
+          "year_issue": null,
+          "venue": "",
+          "publication_type": "offline_contract_fixture",
+          "doi": null,
+          "canonical_url": "",
+          "alternate_id": null,
+          "verification": {
+            "status": "fixture_only",
+            "checked_sources": [],
+            "title_match": "not_checked",
+            "author_match": "not_checked",
+            "version_relation": "same_work",
+            "recommendation_eligible": true,
+            "blocking_reasons": []
+          },
+          "evidence_role": "counter_limitation",
+          "supports": "Offline structural validation only",
+          "does_not_support": "Real citation existence or metadata accuracy",
+          "basis_level": "abstract_level"
+        }
+      },
+      {
+        "candidate_id": "fixture:P09",
+        "verification_status": "fixture_only",
+        "recommendation_eligible": true,
+        "evidence_roles": [
+          "counter_limitation"
+        ],
+        "selection_role": "counter_limitation",
+        "basis_level": "abstract_level",
+        "verified_record": {
+          "paper_id": "fixture:P09",
+          "title": "Synthetic contract record 09",
+          "authors": [
+            "Fixture Author"
+          ],
+          "year_online": null,
+          "year_issue": null,
+          "venue": "",
+          "publication_type": "offline_contract_fixture",
+          "doi": null,
+          "canonical_url": "",
+          "alternate_id": null,
+          "verification": {
+            "status": "fixture_only",
+            "checked_sources": [],
+            "title_match": "not_checked",
+            "author_match": "not_checked",
+            "version_relation": "same_work",
+            "recommendation_eligible": true,
+            "blocking_reasons": []
+          },
+          "evidence_role": "counter_limitation",
+          "supports": "Offline structural validation only",
+          "does_not_support": "Real citation existence or metadata accuracy",
+          "basis_level": "abstract_level"
+        }
+      },
+      {
+        "candidate_id": "fixture:P10",
+        "verification_status": "fixture_only",
+        "recommendation_eligible": true,
+        "evidence_roles": [
+          "counter_limitation"
+        ],
+        "selection_role": "counter_limitation",
+        "basis_level": "abstract_level",
+        "verified_record": {
+          "paper_id": "fixture:P10",
+          "title": "Synthetic contract record 10",
+          "authors": [
+            "Fixture Author"
+          ],
+          "year_online": null,
+          "year_issue": null,
+          "venue": "",
+          "publication_type": "offline_contract_fixture",
+          "doi": null,
+          "canonical_url": "",
+          "alternate_id": null,
+          "verification": {
+            "status": "fixture_only",
+            "checked_sources": [],
+            "title_match": "not_checked",
+            "author_match": "not_checked",
+            "version_relation": "same_work",
+            "recommendation_eligible": true,
+            "blocking_reasons": []
+          },
+          "evidence_role": "counter_limitation",
+          "supports": "Offline structural validation only",
+          "does_not_support": "Real citation existence or metadata accuracy",
+          "basis_level": "abstract_level"
+        }
+      },
+      {
+        "candidate_id": "fixture:P11",
+        "verification_status": "fixture_only",
+        "recommendation_eligible": true,
+        "evidence_roles": [
+          "counter_limitation"
+        ],
+        "selection_role": "counter_limitation",
+        "basis_level": "abstract_level",
+        "verified_record": {
+          "paper_id": "fixture:P11",
+          "title": "Synthetic contract record 11",
+          "authors": [
+            "Fixture Author"
+          ],
+          "year_online": null,
+          "year_issue": null,
+          "venue": "",
+          "publication_type": "offline_contract_fixture",
+          "doi": null,
+          "canonical_url": "",
+          "alternate_id": null,
+          "verification": {
+            "status": "fixture_only",
+            "checked_sources": [],
+            "title_match": "not_checked",
+            "author_match": "not_checked",
+            "version_relation": "same_work",
+            "recommendation_eligible": true,
+            "blocking_reasons": []
+          },
+          "evidence_role": "counter_limitation",
+          "supports": "Offline structural validation only",
+          "does_not_support": "Real citation existence or metadata accuracy",
+          "basis_level": "abstract_level"
+        }
+      },
+      {
+        "candidate_id": "fixture:P12",
+        "verification_status": "fixture_only",
+        "recommendation_eligible": true,
+        "evidence_roles": [
+          "counter_limitation"
+        ],
+        "selection_role": "counter_limitation",
+        "basis_level": "abstract_level",
+        "verified_record": {
+          "paper_id": "fixture:P12",
+          "title": "Synthetic contract record 12",
+          "authors": [
+            "Fixture Author"
+          ],
+          "year_online": null,
+          "year_issue": null,
+          "venue": "",
+          "publication_type": "offline_contract_fixture",
+          "doi": null,
+          "canonical_url": "",
+          "alternate_id": null,
+          "verification": {
+            "status": "fixture_only",
+            "checked_sources": [],
+            "title_match": "not_checked",
+            "author_match": "not_checked",
+            "version_relation": "same_work",
+            "recommendation_eligible": true,
+            "blocking_reasons": []
+          },
+          "evidence_role": "counter_limitation",
+          "supports": "Offline structural validation only",
+          "does_not_support": "Real citation existence or metadata accuracy",
+          "basis_level": "abstract_level"
+        }
+      },
+      {
+        "candidate_id": "fixture:P13",
+        "verification_status": "fixture_only",
+        "recommendation_eligible": true,
+        "evidence_roles": [
+          "counter_limitation"
+        ],
+        "selection_role": "counter_limitation",
+        "basis_level": "abstract_level",
+        "verified_record": {
+          "paper_id": "fixture:P13",
+          "title": "Synthetic contract record 13",
+          "authors": [
+            "Fixture Author"
+          ],
+          "year_online": null,
+          "year_issue": null,
+          "venue": "",
+          "publication_type": "offline_contract_fixture",
+          "doi": null,
+          "canonical_url": "",
+          "alternate_id": null,
+          "verification": {
+            "status": "fixture_only",
+            "checked_sources": [],
+            "title_match": "not_checked",
+            "author_match": "not_checked",
+            "version_relation": "same_work",
+            "recommendation_eligible": true,
+            "blocking_reasons": []
+          },
+          "evidence_role": "counter_limitation",
+          "supports": "Offline structural validation only",
+          "does_not_support": "Real citation existence or metadata accuracy",
+          "basis_level": "abstract_level"
+        }
+      },
+      {
+        "candidate_id": "fixture:P14",
+        "verification_status": "fixture_only",
+        "recommendation_eligible": true,
+        "evidence_roles": [
+          "counter_limitation"
+        ],
+        "selection_role": "counter_limitation",
+        "basis_level": "abstract_level",
+        "verified_record": {
+          "paper_id": "fixture:P14",
+          "title": "Synthetic contract record 14",
+          "authors": [
+            "Fixture Author"
+          ],
+          "year_online": null,
+          "year_issue": null,
+          "venue": "",
+          "publication_type": "offline_contract_fixture",
+          "doi": null,
+          "canonical_url": "",
+          "alternate_id": null,
+          "verification": {
+            "status": "fixture_only",
+            "checked_sources": [],
+            "title_match": "not_checked",
+            "author_match": "not_checked",
+            "version_relation": "same_work",
+            "recommendation_eligible": true,
+            "blocking_reasons": []
+          },
+          "evidence_role": "counter_limitation",
+          "supports": "Offline structural validation only",
+          "does_not_support": "Real citation existence or metadata accuracy",
+          "basis_level": "abstract_level"
+        }
+      },
+      {
+        "candidate_id": "fixture:P15",
+        "verification_status": "fixture_only",
+        "recommendation_eligible": true,
+        "evidence_roles": [
+          "counter_limitation"
+        ],
+        "selection_role": "counter_limitation",
+        "basis_level": "abstract_level",
+        "verified_record": {
+          "paper_id": "fixture:P15",
+          "title": "Synthetic contract record 15",
+          "authors": [
+            "Fixture Author"
+          ],
+          "year_online": null,
+          "year_issue": null,
+          "venue": "",
+          "publication_type": "offline_contract_fixture",
+          "doi": null,
+          "canonical_url": "",
+          "alternate_id": null,
+          "verification": {
+            "status": "fixture_only",
+            "checked_sources": [],
+            "title_match": "not_checked",
+            "author_match": "not_checked",
+            "version_relation": "same_work",
+            "recommendation_eligible": true,
+            "blocking_reasons": []
+          },
+          "evidence_role": "counter_limitation",
+          "supports": "Offline structural validation only",
+          "does_not_support": "Real citation existence or metadata accuracy",
+          "basis_level": "abstract_level"
+        }
+      }
+    ],
+    "selected_ids": [
+      "fixture:P01",
+      "fixture:P02",
+      "fixture:P03",
+      "fixture:P04",
+      "fixture:P09",
+      "fixture:P10"
+    ],
+    "paper_map": {
+      "round": 2,
+      "node_size_basis": "user_fit",
+      "legend": {
+        "evidence_roles": [
+          "direct_problem",
+          "method",
+          "transfer_bridge",
+          "counter_limitation"
+        ],
+        "basis_levels": [
+          "metadata_level",
+          "abstract_level",
+          "fulltext_level"
+        ]
+      },
+      "nodes": [
+        {
+          "id": "fixture:P01",
+          "node_type": "paper",
+          "fit_score": 0.8,
+          "evidence_role": "direct_problem",
+          "verification_status": "fixture_only",
+          "basis_level": "abstract_level",
+          "short_note": "Offline fixture node"
+        },
+        {
+          "id": "fixture:P02",
+          "node_type": "paper",
+          "fit_score": 0.8,
+          "evidence_role": "direct_problem",
+          "verification_status": "fixture_only",
+          "basis_level": "abstract_level",
+          "short_note": "Offline fixture node"
+        },
+        {
+          "id": "fixture:P03",
+          "node_type": "paper",
+          "fit_score": 0.8,
+          "evidence_role": "direct_problem",
+          "verification_status": "fixture_only",
+          "basis_level": "abstract_level",
+          "short_note": "Offline fixture node"
+        },
+        {
+          "id": "fixture:P04",
+          "node_type": "paper",
+          "fit_score": 0.8,
+          "evidence_role": "method",
+          "verification_status": "fixture_only",
+          "basis_level": "abstract_level",
+          "short_note": "Offline fixture node"
+        },
+        {
+          "id": "fixture:P09",
+          "node_type": "paper",
+          "fit_score": 0.8,
+          "evidence_role": "counter_limitation",
+          "verification_status": "fixture_only",
+          "basis_level": "abstract_level",
+          "short_note": "Offline fixture node"
+        },
+        {
+          "id": "fixture:P10",
+          "node_type": "paper",
+          "fit_score": 0.8,
+          "evidence_role": "counter_limitation",
+          "verification_status": "fixture_only",
+          "basis_level": "abstract_level",
+          "short_note": "Offline fixture node"
+        }
+      ],
+      "edges": [],
+      "text_fallback": [
+        {
+          "entry_type": "node",
+          "id": "fixture:P01",
+          "node_type": "paper",
+          "evidence_role": "direct_problem",
+          "verification_status": "fixture_only",
+          "basis_level": "abstract_level",
+          "text": "fixture:P01: Offline fixture node"
+        },
+        {
+          "entry_type": "node",
+          "id": "fixture:P02",
+          "node_type": "paper",
+          "evidence_role": "direct_problem",
+          "verification_status": "fixture_only",
+          "basis_level": "abstract_level",
+          "text": "fixture:P02: Offline fixture node"
+        },
+        {
+          "entry_type": "node",
+          "id": "fixture:P03",
+          "node_type": "paper",
+          "evidence_role": "direct_problem",
+          "verification_status": "fixture_only",
+          "basis_level": "abstract_level",
+          "text": "fixture:P03: Offline fixture node"
+        },
+        {
+          "entry_type": "node",
+          "id": "fixture:P04",
+          "node_type": "paper",
+          "evidence_role": "method",
+          "verification_status": "fixture_only",
+          "basis_level": "abstract_level",
+          "text": "fixture:P04: Offline fixture node"
+        },
+        {
+          "entry_type": "node",
+          "id": "fixture:P09",
+          "node_type": "paper",
+          "evidence_role": "counter_limitation",
+          "verification_status": "fixture_only",
+          "basis_level": "abstract_level",
+          "text": "fixture:P09: Offline fixture node"
+        },
+        {
+          "entry_type": "node",
+          "id": "fixture:P10",
+          "node_type": "paper",
+          "evidence_role": "counter_limitation",
+          "verification_status": "fixture_only",
+          "basis_level": "abstract_level",
+          "text": "fixture:P10: Offline fixture node"
+        }
+      ]
+    },
+    "evidence_gaps": [],
+    "search_limitations": [],
+    "round_one_dispositions": [
+      {
+        "round_one_id": "fixture:P01",
+        "disposition": "retained",
+        "round_two_id": "fixture:P01",
+        "reason": "Remains relevant after the stated constraint change",
+        "cause_type": "feedback_delta",
+        "cause_ref": "feedback_delta.added[0]"
+      },
+      {
+        "round_one_id": "fixture:P02",
+        "disposition": "retained",
+        "round_two_id": "fixture:P02",
+        "reason": "Remains relevant after the stated constraint change",
+        "cause_type": "feedback_delta",
+        "cause_ref": "feedback_delta.added[0]"
+      },
+      {
+        "round_one_id": "fixture:P03",
+        "disposition": "retained",
+        "round_two_id": "fixture:P03",
+        "reason": "Remains relevant after the stated constraint change",
+        "cause_type": "feedback_delta",
+        "cause_ref": "feedback_delta.added[0]"
+      },
+      {
+        "round_one_id": "fixture:P04",
+        "disposition": "retained",
+        "round_two_id": "fixture:P04",
+        "reason": "Remains relevant after the stated constraint change",
+        "cause_type": "feedback_delta",
+        "cause_ref": "feedback_delta.added[0]"
+      },
+      {
+        "round_one_id": "fixture:P05",
+        "disposition": "replaced",
+        "round_two_id": "fixture:P09",
+        "reason": "A better public-data fixture occupies this slot",
+        "cause_type": "feedback_delta",
+        "cause_ref": "feedback_delta.rejected[0]"
+      },
+      {
+        "round_one_id": "fixture:P06",
+        "disposition": "replaced",
+        "round_two_id": "fixture:P10",
+        "reason": "A better public-data fixture occupies this slot",
+        "cause_type": "feedback_delta",
+        "cause_ref": "feedback_delta.rejected[0]"
+      },
+      {
+        "round_one_id": "fixture:P07",
+        "disposition": "removed",
+        "round_two_id": null,
+        "reason": "The route conflicts with the new data constraint",
+        "cause_type": "feedback_delta",
+        "cause_ref": "feedback_delta.rejected[0]"
+      },
+      {
+        "round_one_id": "fixture:P08",
+        "disposition": "removed",
+        "round_two_id": null,
+        "reason": "The route conflicts with the new data constraint",
+        "cause_type": "feedback_delta",
+        "cause_ref": "feedback_delta.rejected[0]"
+      }
+    ]
+  },
+  "proves": [
+    "state gating",
+    "deduplication behavior",
+    "map semantics",
+    "feedback traceability"
+  ],
+  "does_not_prove": [
+    "real DOI existence",
+    "publisher metadata accuracy",
+    "live search coverage"
+  ]
+}

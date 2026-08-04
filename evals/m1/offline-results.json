@@ -1,0 +1,75 @@
+{
+  "schema_version": "m1.offline-results.1",
+  "fixture_mode": true,
+  "evidence_class": "offline_contract_fixture",
+  "executed_at": "2026-08-04",
+  "validator": "skills/engineering-research-copilot/scripts/validate_m1_bundle.py",
+  "proves": [
+    "state gating",
+    "deduplication behavior",
+    "map semantics",
+    "feedback traceability"
+  ],
+  "does_not_prove": [
+    "real DOI existence",
+    "publisher metadata accuracy",
+    "live search coverage"
+  ],
+  "results": [
+    {
+      "fixture": "evals/m1/fixtures/valid-complete.json",
+      "command": "python skills/engineering-research-copilot/scripts/validate_m1_bundle.py evals/m1/fixtures/valid-complete.json",
+      "exit_code": 0,
+      "status": "valid",
+      "errors": [],
+      "evidence_gaps": []
+    },
+    {
+      "fixture": "evals/m1/fixtures/blocked-conflict.json",
+      "command": "python skills/engineering-research-copilot/scripts/validate_m1_bundle.py evals/m1/fixtures/blocked-conflict.json",
+      "exit_code": 1,
+      "status": "invalid",
+      "errors": [
+        "candidate_verification_status_mismatch",
+        "fixture_claims_real_verification",
+        "blocked_record_marked_eligible",
+        "selected_record_blocked",
+        "eligible_candidate_count_without_limit",
+        "map_verification_status_mismatch"
+      ],
+      "evidence_gaps": []
+    },
+    {
+      "fixture": "evals/m1/fixtures/feedback-ignored.json",
+      "command": "python skills/engineering-research-copilot/scripts/validate_m1_bundle.py evals/m1/fixtures/feedback-ignored.json",
+      "exit_code": 1,
+      "status": "invalid",
+      "errors": [
+        "feedback_not_applied_to_query",
+        "feedback_material_cause_untracked"
+      ],
+      "evidence_gaps": []
+    },
+    {
+      "fixture": "evals/m1/fixtures/map-citation-sized.json",
+      "command": "python skills/engineering-research-copilot/scripts/validate_m1_bundle.py evals/m1/fixtures/map-citation-sized.json",
+      "exit_code": 1,
+      "status": "invalid",
+      "errors": [
+        "invalid_node_size_basis"
+      ],
+      "evidence_gaps": []
+    },
+    {
+      "fixture": "evals/m1/fixtures/evidence-incomplete.json",
+      "command": "python skills/engineering-research-copilot/scripts/validate_m1_bundle.py evals/m1/fixtures/evidence-incomplete.json",
+      "exit_code": 2,
+      "status": "evidence_incomplete",
+      "errors": [],
+      "evidence_gaps": [
+        "round1_candidate_pool_below_target"
+      ],
+      "classification": "incomplete_not_pass"
+    }
+  ]
+}

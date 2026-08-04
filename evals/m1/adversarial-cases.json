@@ -1,0 +1,99 @@
+{
+  "schema_version": "m1.adversarial.1",
+  "fixture_mode": true,
+  "evidence_class": "offline_contract_fixture",
+  "baseline": "fixtures/valid-complete.json",
+  "proves": [
+    "state gating",
+    "deduplication behavior",
+    "map semantics",
+    "feedback traceability"
+  ],
+  "does_not_prove": [
+    "real DOI existence",
+    "publisher metadata accuracy",
+    "live search coverage"
+  ],
+  "cases": [
+    {
+      "case_id": "valid_complete",
+      "fixture": "fixtures/valid-complete.json",
+      "target_corruption": null,
+      "expected_status": "valid",
+      "expected_exit_code": 0,
+      "expected_errors": [],
+      "expected_evidence_gaps": []
+    },
+    {
+      "case_id": "blocked_conflict",
+      "fixture": "fixtures/blocked-conflict.json",
+      "target_corruption": {
+        "path": "round1.candidate_pool[0].verification_status",
+        "baseline_value": "fixture_only",
+        "corrupted_value": "conflicted",
+        "target_error_code": "selected_record_blocked"
+      },
+      "expected_status": "invalid",
+      "expected_exit_code": 1,
+      "expected_errors": [
+        "candidate_verification_status_mismatch",
+        "fixture_claims_real_verification",
+        "blocked_record_marked_eligible",
+        "selected_record_blocked",
+        "eligible_candidate_count_without_limit",
+        "map_verification_status_mismatch"
+      ],
+      "expected_evidence_gaps": [],
+      "note": "One field is corrupted. The exact error cascade is retained because the closed validator also detects the resulting wrapper, fixture-state, eligibility, pool-count, and map inconsistencies."
+    },
+    {
+      "case_id": "feedback_ignored",
+      "fixture": "fixtures/feedback-ignored.json",
+      "target_corruption": {
+        "path": "feedback_delta.query_changes",
+        "baseline_value": "one causally linked query change",
+        "corrupted_value": "empty array",
+        "target_error_code": "feedback_not_applied_to_query"
+      },
+      "expected_status": "invalid",
+      "expected_exit_code": 1,
+      "expected_errors": [
+        "feedback_not_applied_to_query",
+        "feedback_material_cause_untracked"
+      ],
+      "expected_evidence_gaps": [],
+      "note": "One array is corrupted. Both exact errors are retained because the deleted change also leaves material feedback causes untracked."
+    },
+    {
+      "case_id": "map_citation_sized",
+      "fixture": "fixtures/map-citation-sized.json",
+      "target_corruption": {
+        "path": "round1.paper_map.node_size_basis",
+        "baseline_value": "user_fit",
+        "corrupted_value": "citation_count",
+        "target_error_code": "invalid_node_size_basis"
+      },
+      "expected_status": "invalid",
+      "expected_exit_code": 1,
+      "expected_errors": [
+        "invalid_node_size_basis"
+      ],
+      "expected_evidence_gaps": []
+    },
+    {
+      "case_id": "evidence_incomplete",
+      "fixture": "fixtures/evidence-incomplete.json",
+      "target_scenario": {
+        "change": "truncate the round-one candidate pool to ten records and state the corresponding search limitation",
+        "target_evidence_gap": "round1_candidate_pool_below_target"
+      },
+      "expected_status": "evidence_incomplete",
+      "expected_exit_code": 2,
+      "expected_errors": [],
+      "expected_evidence_gaps": [
+        "round1_candidate_pool_below_target"
+      ],
+      "note": "This is an honestly bounded incomplete scenario, not a failing corruption and not a pass."
+    }
+  ]
+}
