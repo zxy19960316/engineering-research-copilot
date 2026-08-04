@@ -108,3 +108,19 @@ Required next execution boundary:
 - Treat search snippets only as discovery. A 403/429 or unparseable publisher response is `unavailable`, never `match`.
 - Require a directly inspected full-text source plus a section/page/table anchor for `fulltext_level`; otherwise keep the actual lower basis or block the claim.
 - If fewer than five recommendation-eligible records remain, return `evidence_incomplete` / `WAITING_FOR_EVIDENCE_DECISION` instead of completing the workflow.
+
+## Case B — second clean second-round rerun
+
+- Rerun file: `2026-08-04-bearing-fault-rerun-2.md`
+- Independent audit classification after one structural record correction: `pass`
+
+The rerun used only the preserved intake/round-one range and the frozen feedback. It recorded 16 current, deduplicated candidates but found only three records with sufficient abstract- or full-text-level support for the revised evaluation-design criteria. It therefore stopped at `evidence_incomplete` / `WAITING_FOR_EVIDENCE_DECISION` instead of padding the default five-paper minimum.
+
+The audit independently confirmed the three evidence anchors, the excluded erroneous DOI lookup, unavailable publisher responses, FeedbackDelta and query traceability, eight dispositions, map/rendering parity, and the honest validator `not_run` state. The initial Markdown object used summary references for ResearchBrief, SearchPlan, and Paper Map; those complete objects were embedded without changing candidates, selections, basis levels, dispositions, or final status. The reviewer rechecked the structural correction and returned `PASS`.
+
+## Forward-test acceptance summary
+
+- Case A: `pass` after a clean six-paper second-round rerun.
+- Case B: `pass` as a behavior test because decisive evidence remained below the five-paper minimum and the workflow stopped with an honest `evidence_incomplete` result.
+- Case C: `pass` as a citation-gate behavior test after the result-record supplement; the supplied citation itself remains `conflicted` and recommendation-ineligible.
+- Initial failed runs and their findings remain committed and are not relabeled as passing evidence.

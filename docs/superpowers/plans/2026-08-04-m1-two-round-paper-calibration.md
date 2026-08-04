@@ -572,7 +572,7 @@ Run:
 
 ```powershell
 python -X utf8 C:\Users\94310\.codex\skills\.system\skill-creator\scripts\quick_validate.py D:\engineering-research-copilot\skills\engineering-research-copilot
-python -m unittest discover -s tests -p "test_m1_*.py" -v
+python -m unittest discover -s tests -p "test_validate_m1_bundle.py" -v
 ```
 
 Expected: `Skill is valid!` and all M1 unit tests pass.

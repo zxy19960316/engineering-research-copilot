@@ -4,21 +4,37 @@
 
 `M1 — Two-round paper calibration and evidence map`
 
-Status: `IN_PROGRESS`
+Status: `COMPLETE`
 
 ## M1 checklist
 
 - [x] M0 baseline confirmed clean at root commit `5a5bcba`.
 - [x] M1 implementation plan created outside the installable Skill.
 - [x] Local work branch created: `codex/m1-paper-calibration`.
-- [ ] Adaptive research brief and query-plan contract implemented.
-- [ ] Verified 15–20-paper candidate-pool workflow implemented.
-- [ ] Eight-paper round-one evidence map and equivalent text fallback implemented.
-- [ ] Visible feedback delta and changed second-round search plan implemented.
-- [ ] Five-to-six-paper round-two output and disposition log implemented.
-- [ ] Offline validator and adversarial fixtures pass.
-- [ ] Fresh-context real-search forward tests pass with current authoritative citation checks.
-- [ ] Standard Skill validation and final M1 scope audit pass.
+- [x] Adaptive research brief and query-plan contract implemented.
+- [x] Verified 15–20-paper candidate-pool workflow implemented.
+- [x] Eight-paper round-one evidence map and equivalent text fallback implemented.
+- [x] Visible feedback delta and changed second-round search plan implemented.
+- [x] Five-to-six-paper round-two output and disposition log implemented, with an honest incomplete stop when fewer than five papers have sufficient evidence.
+- [x] Offline validator and adversarial fixtures pass.
+- [x] Fresh-context real-search forward tests pass with current authoritative citation checks.
+- [x] Standard Skill validation and final M1 scope audit pass.
+
+## M1 result
+
+Status: `COMPLETE`
+
+Validated on `2026-08-04` with:
+
+- standard Skill validator: exit `0`, `Skill is valid!`;
+- M1 validator tests: 38 passed;
+- adversarial fixture replay: all five exit/status pairs matched the frozen record;
+- packaging audit: 106-line root Skill, zero missing or unlinked references, zero unresolved template markers;
+- fresh-context Case A: 18 verified/deduplicated round-two candidates and six default recommendations;
+- fresh-context Case B: 16 verified/deduplicated candidates, only three with sufficient basis, correctly stopped as `evidence_incomplete` / `WAITING_FOR_EVIDENCE_DECISION`;
+- fresh-context Case C: live citation conflict blocked with `recommendation_eligible: false`.
+
+Evidence is recorded under `evals/m1/`, including preserved failed runs and independent audits. M1 completion means the paper-calibration workflow and its stop behavior passed; it does not claim that incomplete Case B evidence became complete, that any experiment or simulation was run, or that M2 began.
 
 ## M0 checklist
 
