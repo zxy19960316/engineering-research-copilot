@@ -67,7 +67,7 @@ Evidence is recorded under `evals/m1/`, including preserved failed runs and inde
 ## External state
 
 - Git remote: `https://github.com/zxy19960316/engineering-research-copilot.git`
-- Active local branch: `codex/m1-paper-calibration`
+- Active local branch: `codex/m1-acceptance-hardening`
 - External APIs/services configured: none
 - RRC integration: not started
 - Platform integration: not required for the local Skill competition track
