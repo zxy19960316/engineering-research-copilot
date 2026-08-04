@@ -6,15 +6,25 @@
 
 Status: `IN_PROGRESS`
 
-M1 feature implementation is complete, but final acceptance remains open while validator-contract gaps are being corrected.
+M1 feature implementation and the M1.1 local acceptance-hardening gates are complete, but final M1.2 acceptance remains open pending authorized publication and exact-HEAD remote CI.
 
 Blocking items:
 
-- round-one evidence-incomplete early-stop validation;
-- alternate identifier and manual-review identity handling;
-- one closed FeedbackDelta, ResearchBrief, SearchPlan, and PaperMap schema;
-- machine-valid forward-test artifacts;
-- clean CI on the final hardening HEAD.
+- user authorization to push `codex/m1-acceptance-hardening`;
+- a successful GitHub Actions `M1 Validation` run on the final exact hardening HEAD.
+
+Local acceptance checkpoint:
+
+- validated executable-input HEAD: `e234e90364ace4aa203716575ab37a0130b4d322`;
+- Python compilation: exit `0`;
+- unit tests: 108 passed;
+- frozen fixture replay: `valid`, zero mismatches;
+- machine artifacts: Case A `valid`, Case B `evidence_incomplete`, Case C blocking gate `valid`, zero mismatches;
+- standard Skill validator: exit `0`, `Skill is valid!`;
+- root Skill: 106 lines;
+- local checkpoint record: `evals/m1/results/2026-08-04-m1.2-final-validation.md`.
+
+This local checkpoint does not claim a push, a remote CI result, or M1.1/M1.2 completion.
 
 ## M1 checklist
 

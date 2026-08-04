@@ -1130,7 +1130,7 @@ The implementation commit `034f2727c6aeff2e3097765620024eb04947b478` already inc
 - Consumes: all local gates, machine artifacts, independent reviews, final branch HEAD, and a clean GitHub Actions run on that exact HEAD.
 - Produces: honest M1 `COMPLETE`, acceptance revision `m1.2`, or retained `IN_PROGRESS` with the exact unpassed gate.
 
-- [ ] **Step 1: Run the final local gate matrix**
+- [x] **Step 1: Run the final local gate matrix**
 
 Run all Task 8 commands, plus:
 
@@ -1144,9 +1144,11 @@ git log --oneline codex/m1-paper-calibration..HEAD
 
 Expected: root Skill below 500 lines; all validation commands exit `0`; only planned M1.1 files and independent commits exist.
 
-- [ ] **Step 2: Write the exact final validation record**
+- [x] **Step 2: Write the exact final validation record**
 
 Record command, exit, test count, fixture summary, A/B/C artifact hashes and statuses, standard Skill validator output, branch, HEAD, clean-tree result, and independent review decisions. Preserve failed test attempts separately and never replace them with a later pass.
+
+Steps 1–2 produce a pre-push local acceptance checkpoint, not the final closure claim. Bind the record to the clean executable-input HEAD rather than inventing a self-referential checkpoint commit hash. Stage only `evals/m1/results/2026-08-04-m1.2-final-validation.md`, `STATUS.md`, and this plan, then commit them as `docs: record M1.2 local acceptance`. Step 3 and every later remote/closure step remain open.
 
 - [ ] **Step 3: Obtain authorization before remote mutation**
 
