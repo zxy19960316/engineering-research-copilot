@@ -2,9 +2,23 @@
 
 ## Active milestone
 
-`M0 — Bootstrap and frozen core contracts`
+`M1 — Two-round paper calibration and evidence map`
 
-Status: `COMPLETE`
+Status: `IN_PROGRESS`
+
+## M1 checklist
+
+- [x] M0 baseline confirmed clean at root commit `5a5bcba`.
+- [x] M1 implementation plan created outside the installable Skill.
+- [x] Local work branch created: `codex/m1-paper-calibration`.
+- [ ] Adaptive research brief and query-plan contract implemented.
+- [ ] Verified 15–20-paper candidate-pool workflow implemented.
+- [ ] Eight-paper round-one evidence map and equivalent text fallback implemented.
+- [ ] Visible feedback delta and changed second-round search plan implemented.
+- [ ] Five-to-six-paper round-two output and disposition log implemented.
+- [ ] Offline validator and adversarial fixtures pass.
+- [ ] Fresh-context real-search forward tests pass with current authoritative citation checks.
+- [ ] Standard Skill validation and final M1 scope audit pass.
 
 ## M0 checklist
 
@@ -19,7 +33,6 @@ Status: `COMPLETE`
 
 ## Later milestones
 
-- M1: `NOT_STARTED`
 - M2: `NOT_STARTED`
 - M3: `NOT_STARTED`
 - M4: `NOT_STARTED`
@@ -27,7 +40,8 @@ Status: `COMPLETE`
 
 ## External state
 
-- Git remote: none
+- Git remote: `https://github.com/zxy19960316/engineering-research-copilot.git`
+- Active local branch: `codex/m1-paper-calibration`
 - External APIs/services configured: none
 - RRC integration: not started
 - Platform integration: not required for the local Skill competition track
