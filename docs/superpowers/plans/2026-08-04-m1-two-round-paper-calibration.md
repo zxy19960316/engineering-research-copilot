@@ -1,5 +1,13 @@
 # M1 Two-Round Paper Calibration Implementation Plan
 
+## Implementation record
+
+- Original implementation closed at: `556a408`
+- Acceptance hardening branch: `codex/m1-acceptance-hardening`
+- Canonical schema under hardening: `m1.2`
+- Historical failed forward runs remain preserved under `evals/m1/results/`.
+- Final M1.2 validation record will be `evals/m1/results/2026-08-04-m1.2-final-validation.md`.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Implement and verify the Skill's adaptive research brief, two-round paper calibration, citation eligibility gates, static evidence map, and feedback-driven second search without adding a bundled retrieval service.

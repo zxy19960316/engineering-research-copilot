@@ -2,9 +2,19 @@
 
 ## Active milestone
 
-`M1 — Two-round paper calibration and evidence map`
+`M1.1 — M1 acceptance hardening`
 
-Status: `COMPLETE`
+Status: `IN_PROGRESS`
+
+M1 feature implementation is complete, but final acceptance remains open while validator-contract gaps are being corrected.
+
+Blocking items:
+
+- round-one evidence-incomplete early-stop validation;
+- alternate identifier and manual-review identity handling;
+- one closed FeedbackDelta, ResearchBrief, SearchPlan, and PaperMap schema;
+- machine-valid forward-test artifacts;
+- clean CI on the final hardening HEAD.
 
 ## M1 checklist
 
