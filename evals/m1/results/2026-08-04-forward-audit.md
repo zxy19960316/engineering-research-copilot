@@ -75,3 +75,36 @@ Required correction:
 
 - Append `validator_result: not_run` with the reason that no compatible RoundBundle was formed before the citation-gate stop.
 - Append `deviations: none` if no other execution deviation is found.
+
+## Case A — clean second-round rerun
+
+- Rerun file: `2026-08-04-pwr-sb-loca-rerun.md`
+- Independent audit classification after one provenance correction: `pass`
+
+The rerun used only the preserved round-one capture and the frozen feedback. It produced 18 current, deduplicated DOI records, six default recommendations, complete round-one dispositions, a structured `user_fit` map with aligned Mermaid/text renderings, basis labels, limitations, deviations, and an explicit `validator_result: not_run`. The audit found that two transient Crossref failures appeared in the tool log but not the affected candidate `checked_sources`; both unavailable attempts were added before their later successful matches without changing final status or eligibility. The reviewer rechecked the correction and returned `PASS`.
+
+## Case B — first clean second-round rerun
+
+- Rerun file: `2026-08-04-bearing-fault-rerun.md`
+- Independent audit classification: `fail`
+- The rerun is not eligible to close M1.
+
+Blocking findings:
+
+1. Three selected records were labeled `fulltext_level` even though their publisher lookups were unavailable and the cited material came from search-index snippets. One repeated non-overlapping-window claim had no inspected full-text anchor.
+2. Another selected record logged a ScienceDirect publisher match despite a direct 403 response; search-index abstract/highlight text cannot be recorded as a successful publisher-landing check.
+3. The described RoundBundle closed before the required `paper_map` object and was not a runnable JSON bundle. Its `validator_result: not_run` was truthful, but the incomplete bundle could not support `ROUND_TWO_READY`.
+
+Preserved passing observations:
+
+- The rerun used only the frozen first-round range and feedback, selected the default five papers, and created no expanded-count request.
+- The 18 candidate DOI identities were unique and current Crossref spot checks matched.
+- FeedbackDelta, query cause references, eight dispositions, SearchPlan limitations, deviations, map rendering parity, and node sizing were otherwise present.
+
+Required next execution boundary:
+
+- Preserve this failed rerun unchanged.
+- Run a new fresh-context second-round evaluation from the same first-round capture and frozen feedback.
+- Treat search snippets only as discovery. A 403/429 or unparseable publisher response is `unavailable`, never `match`.
+- Require a directly inspected full-text source plus a section/page/table anchor for `fulltext_level`; otherwise keep the actual lower basis or block the claim.
+- If fewer than five recommendation-eligible records remain, return `evidence_incomplete` / `WAITING_FOR_EVIDENCE_DECISION` instead of completing the workflow.
