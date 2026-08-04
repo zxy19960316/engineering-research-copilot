@@ -1,0 +1,8 @@
+{
+  "status": "evidence_incomplete",
+  "errors": [],
+  "evidence_gaps": [
+    "round2_selection_below_target",
+    "round2_reported_evidence_gap"
+  ]
+}

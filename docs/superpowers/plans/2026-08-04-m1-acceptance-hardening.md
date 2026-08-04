@@ -878,7 +878,7 @@ git commit -m "fix: enforce paper map and fallback equivalence"
 - Consumes: accepted Markdown evidence A `2026-08-04-pwr-sb-loca-rerun.md`, B `2026-08-04-bearing-fault-rerun-2.md`, C `2026-08-04-citation-audit.md` plus supplement, and the final `m1.2` validators.
 - Produces: one complete A Bundle, one second-round-incomplete B Bundle, one citation-gate C object, exact validator outputs, provenance hashes, and an offline replay gate.
 
-- [ ] **Step 1: Define and test the citation-gate schema**
+- [x] **Step 1: Define and test the citation-gate schema**
 
 Require exactly:
 
@@ -897,7 +897,7 @@ Require exactly:
 
 Add tests that reject `recommendation_eligible: true`, a non-conflicted status, a missing source, unknown fields, invalid timestamps, and any `round1`/`round2` field.
 
-- [ ] **Step 2: Transcribe Case A into a complete canonical Bundle**
+- [x] **Step 2: Transcribe Case A into a complete canonical Bundle**
 
 Copy every accepted round-one and clean-rerun round-two object, including all candidates and checked sources, into `2026-08-04-pwr-sb-loca-rerun.bundle.json`. Set only:
 
@@ -912,7 +912,7 @@ Copy every accepted round-one and clean-rerun round-two object, including all ca
 
 Migrate the accepted semantics into the closed `m1.2` FeedbackDelta, Brief, Plan, and map shapes from Tasks 4–6; do not copy obsolete `m1.1` field shapes. Do not add fixture mode. Generate both maps through `render_m1_map.py`. Run the Bundle validator, require exit `0`, and save its exact stdout object as `.validation.json`.
 
-- [ ] **Step 3: Transcribe Case B into a second-round incomplete Bundle**
+- [x] **Step 3: Transcribe Case B into a second-round incomplete Bundle**
 
 Copy the accepted second clean rerun exactly. Keep 16 verified/deduplicated candidates and only P17, P18, and P25 selected. Set:
 
@@ -929,11 +929,11 @@ Keep the exact missing-two-paper evidence gap. Run the Bundle validator, require
 
 Migrate only schema representation: preserve every accepted candidate identity, checked source, basis, disposition, limitation, and evidence gap from the Markdown.
 
-- [ ] **Step 4: Transcribe Case C without inventing rounds**
+- [x] **Step 4: Transcribe Case C without inventing rounds**
 
 Create the citation-gate object from the live Crossref and official NeurIPS checked sources already recorded. Preserve the supplied title/DOI conflict, `recommendation_eligible: false`, and both blocking reasons. Run `validate_citation_gate.py`, require exit `0`, and save exact stdout.
 
-- [ ] **Step 5: Bind each artifact to provenance hashes**
+- [x] **Step 5: Bind each artifact to provenance hashes**
 
 Each provenance object must use this closed shape:
 
@@ -956,7 +956,7 @@ Each provenance object must use this closed shape:
 
 Use the actual times/tools/sources from each case, not the example values from another case. Compute SHA-256 over exact saved bytes after newline normalization is finalized.
 
-- [ ] **Step 6: Implement offline artifact replay**
+- [x] **Step 6: Implement offline artifact replay**
 
 `replay_machine_artifacts.py` must:
 
@@ -967,7 +967,7 @@ Use the actual times/tools/sources from each case, not the example values from a
 5. assert A `valid`, B `evidence_incomplete`, C `valid`;
 6. exit `1` with closed JSON on any mismatch and `0` with a per-case summary on success.
 
-- [ ] **Step 7: Run and independently audit machine artifacts**
+- [x] **Step 7: Run and independently audit machine artifacts**
 
 ```powershell
 python evals/m1/replay_machine_artifacts.py
@@ -978,7 +978,7 @@ python skills/engineering-research-copilot/scripts/validate_citation_gate.py eva
 
 Expected exits/statuses: A `0/valid`; B `2/evidence_incomplete`; C `0/valid`. A fresh reviewer must compare every selected ID, status, basis, source, disposition, and gap against the preserved Markdown before approval.
 
-- [ ] **Step 8: Commit machine-valid forward evidence**
+- [x] **Step 8: Commit machine-valid forward evidence**
 
 ```powershell
 git add -- skills/engineering-research-copilot/scripts/validate_citation_gate.py tests/test_validate_citation_gate.py evals/m1/results/*.bundle.json evals/m1/results/*.gate.json evals/m1/results/*.validation.json evals/m1/results/*.provenance.json evals/m1/replay_machine_artifacts.py

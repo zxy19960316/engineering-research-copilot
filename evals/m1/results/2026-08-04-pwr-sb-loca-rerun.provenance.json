@@ -1,0 +1,33 @@
+{
+  "schema_version": "m1-provenance.1",
+  "case_id": "case-a-pwr-sb-loca",
+  "run_commit": "123a03779d001198c895e60949fa7b9c53e2f56d",
+  "input_markdown": "evals/m1/results/2026-08-04-pwr-sb-loca.md + evals/m1/results/2026-08-04-pwr-sb-loca-rerun.md",
+  "input_frozen_range": "round one from the initial accepted record; round two from the accepted clean rerun; only recorded fields migrated",
+  "read_other_cases": false,
+  "verification_window": {
+    "timezone": "Asia/Shanghai",
+    "started_at": "2026-08-04T19:01:35+08:00",
+    "ended_at": "2026-08-04T19:03:26.8369897+08:00"
+  },
+  "tools": [
+    "academic_search.py with OpenAlex discovery fallback",
+    "Crossref REST API",
+    "official-domain web search and page opening"
+  ],
+  "authoritative_sources": [
+    "Crossref DOI registry",
+    "Springer Nature publisher records",
+    "Elsevier ScienceDirect publisher records"
+  ],
+  "execution_deviations": [
+    "Converted accepted m1.1 Brief, SearchPlan, FeedbackDelta, and PaperMap representation to closed m1.2 fields without changing candidate DOI, title, authors, basis, status, or eligibility.",
+    "Represented the unspecified target metric as 'not specified' and wrapped each scalar time boundary as a one-item list; no metric was inferred.",
+    "Preserved all historical non-terminal evidence-gap prose verbatim under search_limitations because m1.2 evidence_gaps are terminal blockers; canonical A evidence_gaps remain empty.",
+    "Normalized round-one P17 publication_type from review-article to the accepted rerun's current authoritative journal-article value for the same DOI, title, and authors; no identity field was repaired or substituted.",
+    "Omitted layout-only cluster edges D1--B0, D2--B0, D3--B0, and D4--B0 in each round because m1.2 permits only paper-supported evidence edges; no edge was converted into a paper claim.",
+    "Regenerated text_fallback and mermaid from the preserved ordered structured nodes and remaining paper-supported edges."
+  ],
+  "bundle_sha256": "d40815de63d0215af128b2d7fb349547df60a56b08e30a35ead178a521e74168",
+  "validation_sha256": "fc787fce404e4afad97ee7506fd29160b502c7fa79a253eca308da4d47703396"
+}

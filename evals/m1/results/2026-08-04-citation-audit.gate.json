@@ -1,0 +1,30 @@
+{
+  "schema_version": "citation-gate.1",
+  "terminal_state": "CITATION_BLOCKED",
+  "verification_status": "conflicted",
+  "recommendation_eligible": false,
+  "checked_sources": [
+    {
+      "source_type": "doi_registry",
+      "canonical_record": "https://api.crossref.org/works/10.1038/nature14539",
+      "checked_at": "2026-08-04T18:17:16+08:00",
+      "result": "conflict"
+    },
+    {
+      "source_type": "publisher_landing",
+      "canonical_record": "https://www.nature.com/articles/nature14539",
+      "checked_at": "2026-08-04T18:18:06+08:00",
+      "result": "unavailable"
+    },
+    {
+      "source_type": "official_repository",
+      "canonical_record": "https://proceedings.neurips.cc/paper_files/paper/2017/hash/3f5ee243547dee91fbd053c1c4a845aa-Abstract.html",
+      "checked_at": "2026-08-04T18:18:39+08:00",
+      "result": "conflict"
+    }
+  ],
+  "blocking_reasons": [
+    "The supplied DOI resolves to Deep learning, not Attention Is All You Need.",
+    "The DOI-linked and title-linked authoritative records have different author lists, venues, work types, publication years, and pagination."
+  ]
+}

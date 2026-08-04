@@ -1,0 +1,2984 @@
+{
+  "schema_version": "m1.2",
+  "terminal_state": "WAITING_FOR_EVIDENCE_DECISION",
+  "stopped_after_round": 2,
+  "outcome": "evidence_incomplete",
+  "round1": {
+    "schema_version": "m1.2",
+    "round": 1,
+    "research_brief": {
+      "brief_version": 1,
+      "branch_id": "branch-a",
+      "engineering_object": "滚动轴承",
+      "target_problem": "基于公开振动数据的滚动轴承故障诊断，重点关注跨负载泛化",
+      "target_metric": "未指定",
+      "available_data": [
+        "CWRU 公开振动数据",
+        "Paderborn University (PU) 公开振动数据"
+      ],
+      "resources": [
+        "单张 GPU",
+        "无试验台"
+      ],
+      "time_budget": "10 周",
+      "preferred_routes": [
+        "跨负载泛化"
+      ],
+      "excluded_routes": [
+        "私有数据",
+        "复杂硬件依赖"
+      ],
+      "hard_constraints": [
+        "仅使用公开数据",
+        "无试验台，不依赖新增实验采集",
+        "计算资源限于单张 GPU",
+        "研究周期为 10 周",
+        "排除复杂硬件依赖"
+      ],
+      "soft_preferences": [
+        "重点关注跨负载泛化"
+      ],
+      "open_questions": [
+        "未指定故障类别体系、诊断输出形式及目标指标或最低改进幅度",
+        "未说明目标负载是否允许少量有标签样本",
+        "未指定论文发表时间、语言或文献类型边界"
+      ],
+      "evidence_needs": [
+        "直接针对滚动轴承跨工况或跨负载诊断的证据",
+        "单 GPU、10 周内可评估的迁移、域适应或元学习方法证据",
+        "CWRU 与 PU 跨数据集迁移的桥接证据",
+        "随机切片或数据泄漏导致泛化高估的反例或限制证据"
+      ]
+    },
+    "search_plan": {
+      "round": 1,
+      "brief_version": 1,
+      "branch_id": "branch-a",
+      "time_boundary": [
+        "用户未指定发表年份；本轮未设置年份过滤"
+      ],
+      "language_boundary": [
+        "使用英文检索式",
+        "仅纳入当前权威注册记录可返回的英文元数据；未检索中文数据库"
+      ],
+      "source_boundary": [
+        "发现：OpenAlex 公共 API（academic_search.py 无 MCP 降级路径）",
+        "权威元数据核验：Crossref REST API DOI 注册记录",
+        "交叉核验：DOI 解析后的出版社落地页，自动提取 citation_title；不可提取时记 unavailable"
+      ],
+      "queries": [
+        {
+          "query_id": "Q1",
+          "purpose": "direct_problem",
+          "query_text": "rolling bearing fault diagnosis cross-load domain generalization CWRU Paderborn vibration",
+          "expected_evidence_role": "direct_problem",
+          "inclusion_terms": [
+            "rolling bearing",
+            "fault diagnosis",
+            "cross-load",
+            "CWRU",
+            "Paderborn",
+            "vibration"
+          ],
+          "exclusion_terms": [
+            "private data",
+            "complex hardware dependency"
+          ]
+        },
+        {
+          "query_id": "Q2",
+          "purpose": "method",
+          "query_text": "bearing fault diagnosis domain adaptation varying working conditions CWRU",
+          "expected_evidence_role": "method",
+          "inclusion_terms": [
+            "bearing fault diagnosis",
+            "domain adaptation",
+            "varying working conditions"
+          ],
+          "exclusion_terms": [
+            "private data",
+            "complex hardware dependency"
+          ]
+        },
+        {
+          "query_id": "Q3",
+          "purpose": "transfer_bridge",
+          "query_text": "bearing fault diagnosis cross-domain transfer learning Paderborn CWRU",
+          "expected_evidence_role": "transfer_bridge",
+          "inclusion_terms": [
+            "bearing fault diagnosis",
+            "cross-domain",
+            "transfer learning",
+            "Paderborn",
+            "CWRU"
+          ],
+          "exclusion_terms": [
+            "private data",
+            "complex hardware dependency"
+          ]
+        },
+        {
+          "query_id": "Q4",
+          "purpose": "counter_limitation",
+          "query_text": "rolling bearing fault diagnosis benchmark data leakage random split generalization",
+          "expected_evidence_role": "counter_limitation",
+          "inclusion_terms": [
+            "bearing fault diagnosis",
+            "data leakage",
+            "random split",
+            "generalization"
+          ],
+          "exclusion_terms": [
+            "private data",
+            "complex hardware dependency"
+          ]
+        }
+      ],
+      "limitations": [
+        "学术检索 MCP 未挂载，依 Skill 使用 OpenAlex 无 MCP 发现路径",
+        "首次 OpenAlex 紧凑输出因本地 GBK 无法编码一位作者姓名而中断；设置 PYTHONUTF8 后一次重跑成功，未改变查询",
+        "OpenAlex 仅用于发现，未作为权威元数据来源",
+        "未检索 CNKI、万方、Web of Science 或 Scopus",
+        "本轮未做全文检索；所有相关性判断均限于 metadata_level"
+      ]
+    },
+    "candidate_pool": [
+      {
+        "candidate_id": "P1",
+        "verification_status": "verified_registry",
+        "recommendation_eligible": true,
+        "evidence_roles": [
+          "direct_problem",
+          "method"
+        ],
+        "selection_role": "direct_problem",
+        "basis_level": "metadata_level",
+        "verified_record": {
+          "paper_id": "P1",
+          "title": "A Meta-Learning Method for Electric Machine Bearing Fault Diagnosis Under Varying Working Conditions With Limited Data",
+          "authors": [
+            "Jianjun Chen",
+            "Weihao Hu",
+            "Di Cao",
+            "Zhenyuan Zhang",
+            "Zhe Chen",
+            "Frede Blaabjerg"
+          ],
+          "year_online": null,
+          "year_issue": 2023,
+          "venue": "IEEE Transactions on Industrial Informatics",
+          "publication_type": "journal-article",
+          "doi": "10.1109/tii.2022.3165027",
+          "canonical_url": "https://doi.org/10.1109/tii.2022.3165027",
+          "alternate_id": null,
+          "verification": {
+            "status": "verified_registry",
+            "checked_sources": [
+              {
+                "source_type": "doi_registry",
+                "canonical_record": "https://api.crossref.org/works/10.1109%2FTII.2022.3165027",
+                "checked_at": "2026-08-04T18:21:39.6345997+08:00",
+                "result": "match"
+              },
+              {
+                "source_type": "publisher_landing",
+                "canonical_record": "https://doi.org/10.1109/tii.2022.3165027",
+                "checked_at": "2026-08-04T18:22:18.8703254+08:00",
+                "result": "unavailable"
+              }
+            ],
+            "title_match": "exact",
+            "author_match": "compatible",
+            "version_relation": "same_work",
+            "recommendation_eligible": true,
+            "blocking_reasons": []
+          },
+          "evidence_role": "direct_problem",
+          "supports": "题名直接指向有限数据、变工况下的轴承故障诊断。",
+          "does_not_support": "metadata_level 不能证明使用 CWRU/PU、具体跨负载协议或性能。",
+          "basis_level": "metadata_level"
+        }
+      },
+      {
+        "candidate_id": "P2",
+        "verification_status": "verified_registry",
+        "recommendation_eligible": true,
+        "evidence_roles": [
+          "direct_problem",
+          "method"
+        ],
+        "selection_role": "direct_problem",
+        "basis_level": "metadata_level",
+        "verified_record": {
+          "paper_id": "P2",
+          "title": "A Deep Transfer Model With Wasserstein Distance Guided Multi-Adversarial Networks for Bearing Fault Diagnosis Under Different Working Conditions",
+          "authors": [
+            "Ming Zhang",
+            "Duo Wang",
+            "Weining Lu",
+            "Jun Yang",
+            "Zhiheng Li",
+            "Bin Liang"
+          ],
+          "year_online": null,
+          "year_issue": 2019,
+          "venue": "IEEE Access",
+          "publication_type": "journal-article",
+          "doi": "10.1109/access.2019.2916935",
+          "canonical_url": "https://doi.org/10.1109/access.2019.2916935",
+          "alternate_id": null,
+          "verification": {
+            "status": "verified_registry",
+            "checked_sources": [
+              {
+                "source_type": "doi_registry",
+                "canonical_record": "https://api.crossref.org/works/10.1109%2FACCESS.2019.2916935",
+                "checked_at": "2026-08-04T18:21:41.8680421+08:00",
+                "result": "match"
+              },
+              {
+                "source_type": "publisher_landing",
+                "canonical_record": "https://doi.org/10.1109/access.2019.2916935",
+                "checked_at": "2026-08-04T18:22:20.3908079+08:00",
+                "result": "unavailable"
+              }
+            ],
+            "title_match": "exact",
+            "author_match": "compatible",
+            "version_relation": "same_work",
+            "recommendation_eligible": true,
+            "blocking_reasons": []
+          },
+          "evidence_role": "direct_problem",
+          "supports": "题名直接覆盖不同工况下的轴承迁移诊断。",
+          "does_not_support": "metadata_level 不能证明跨负载拆分、公平比较或资源开销。",
+          "basis_level": "metadata_level"
+        }
+      },
+      {
+        "candidate_id": "P3",
+        "verification_status": "verified_registry",
+        "recommendation_eligible": true,
+        "evidence_roles": [
+          "direct_problem",
+          "method"
+        ],
+        "selection_role": "direct_problem",
+        "basis_level": "metadata_level",
+        "verified_record": {
+          "paper_id": "P3",
+          "title": "One-Dimensional Multi-Scale Domain Adaptive Network for Bearing-Fault Diagnosis under Varying Working Conditions",
+          "authors": [
+            "Kai Wang",
+            "Wei Zhao",
+            "Aidong Xu",
+            "Peng Zeng",
+            "Shunkun Yang"
+          ],
+          "year_online": 2020,
+          "year_issue": null,
+          "venue": "Sensors",
+          "publication_type": "journal-article",
+          "doi": "10.3390/s20216039",
+          "canonical_url": "https://doi.org/10.3390/s20216039",
+          "alternate_id": null,
+          "verification": {
+            "status": "verified_registry",
+            "checked_sources": [
+              {
+                "source_type": "doi_registry",
+                "canonical_record": "https://api.crossref.org/works/10.3390%2FS20216039",
+                "checked_at": "2026-08-04T18:21:42.1836265+08:00",
+                "result": "match"
+              },
+              {
+                "source_type": "publisher_landing",
+                "canonical_record": "https://doi.org/10.3390/s20216039",
+                "checked_at": "2026-08-04T18:22:20.7681482+08:00",
+                "result": "unavailable"
+              }
+            ],
+            "title_match": "exact",
+            "author_match": "exact",
+            "version_relation": "same_work",
+            "recommendation_eligible": true,
+            "blocking_reasons": []
+          },
+          "evidence_role": "direct_problem",
+          "supports": "题名直接覆盖变工况轴承故障诊断与域适应。",
+          "does_not_support": "metadata_level 不能确认数据集、域定义或实验结论。",
+          "basis_level": "metadata_level"
+        }
+      },
+      {
+        "candidate_id": "P4",
+        "verification_status": "verified_registry",
+        "recommendation_eligible": true,
+        "evidence_roles": [
+          "direct_problem"
+        ],
+        "selection_role": "direct_problem",
+        "basis_level": "metadata_level",
+        "verified_record": {
+          "paper_id": "P4",
+          "title": "Input Feature Mappings-Based Deep Residual Networks for Fault Diagnosis of Rolling Element Bearing With Complicated Dataset",
+          "authors": [
+            "Liangsheng Hou",
+            "Ruizheng Jiang",
+            "Yanghui Tan",
+            "Jundong Zhang"
+          ],
+          "year_online": null,
+          "year_issue": 2020,
+          "venue": "IEEE Access",
+          "publication_type": "journal-article",
+          "doi": "10.1109/access.2020.3028465",
+          "canonical_url": "https://doi.org/10.1109/access.2020.3028465",
+          "alternate_id": null,
+          "verification": {
+            "status": "verified_registry",
+            "checked_sources": [
+              {
+                "source_type": "doi_registry",
+                "canonical_record": "https://api.crossref.org/works/10.1109%2FACCESS.2020.3028465",
+                "checked_at": "2026-08-04T18:21:42.5112145+08:00",
+                "result": "match"
+              },
+              {
+                "source_type": "publisher_landing",
+                "canonical_record": "https://doi.org/10.1109/access.2020.3028465",
+                "checked_at": "2026-08-04T18:22:22.0888872+08:00",
+                "result": "unavailable"
+              }
+            ],
+            "title_match": "exact",
+            "author_match": "exact",
+            "version_relation": "same_work",
+            "recommendation_eligible": true,
+            "blocking_reasons": []
+          },
+          "evidence_role": "direct_problem",
+          "supports": "题名表明面向复杂数据集的滚动轴承诊断。",
+          "does_not_support": "metadata_level 不证明复杂数据集包含跨负载域。",
+          "basis_level": "metadata_level"
+        }
+      },
+      {
+        "candidate_id": "P5",
+        "verification_status": "verified_registry",
+        "recommendation_eligible": true,
+        "evidence_roles": [
+          "method",
+          "transfer_bridge"
+        ],
+        "selection_role": "method",
+        "basis_level": "metadata_level",
+        "verified_record": {
+          "paper_id": "P5",
+          "title": "Pre-Processing Method to Improve Cross-Domain Fault Diagnosis for Bearing",
+          "authors": [
+            "Taeyun Kim",
+            "Jangbom Chai"
+          ],
+          "year_online": 2021,
+          "year_issue": null,
+          "venue": "Sensors",
+          "publication_type": "journal-article",
+          "doi": "10.3390/s21154970",
+          "canonical_url": "https://doi.org/10.3390/s21154970",
+          "alternate_id": null,
+          "verification": {
+            "status": "verified_registry",
+            "checked_sources": [
+              {
+                "source_type": "doi_registry",
+                "canonical_record": "https://api.crossref.org/works/10.3390%2FS21154970",
+                "checked_at": "2026-08-04T18:21:42.7898600+08:00",
+                "result": "match"
+              },
+              {
+                "source_type": "publisher_landing",
+                "canonical_record": "https://doi.org/10.3390/s21154970",
+                "checked_at": "2026-08-04T18:22:22.4675029+08:00",
+                "result": "unavailable"
+              }
+            ],
+            "title_match": "exact",
+            "author_match": "exact",
+            "version_relation": "same_work",
+            "recommendation_eligible": true,
+            "blocking_reasons": []
+          },
+          "evidence_role": "method",
+          "supports": "题名提供跨域诊断的预处理方法候选。",
+          "does_not_support": "metadata_level 不证明适配 CWRU/PU 或单 GPU 成本。",
+          "basis_level": "metadata_level"
+        }
+      },
+      {
+        "candidate_id": "P6",
+        "verification_status": "verified_registry",
+        "recommendation_eligible": true,
+        "evidence_roles": [
+          "transfer_bridge",
+          "method"
+        ],
+        "selection_role": "transfer_bridge",
+        "basis_level": "metadata_level",
+        "verified_record": {
+          "paper_id": "P6",
+          "title": "A Novel Bearing Fault Diagnosis Method Based on Few-Shot Transfer Learning across Different Datasets",
+          "authors": [
+            "Yizong Zhang",
+            "Shaobo Li",
+            "Ansi Zhang",
+            "Chuanjiang Li",
+            "Ling Qiu"
+          ],
+          "year_online": 2022,
+          "year_issue": null,
+          "venue": "Entropy",
+          "publication_type": "journal-article",
+          "doi": "10.3390/e24091295",
+          "canonical_url": "https://doi.org/10.3390/e24091295",
+          "alternate_id": null,
+          "verification": {
+            "status": "verified_registry",
+            "checked_sources": [
+              {
+                "source_type": "doi_registry",
+                "canonical_record": "https://api.crossref.org/works/10.3390%2FE24091295",
+                "checked_at": "2026-08-04T18:21:43.1330217+08:00",
+                "result": "match"
+              },
+              {
+                "source_type": "publisher_landing",
+                "canonical_record": "https://doi.org/10.3390/e24091295",
+                "checked_at": "2026-08-04T18:22:23.8296214+08:00",
+                "result": "unavailable"
+              }
+            ],
+            "title_match": "exact",
+            "author_match": "exact",
+            "version_relation": "same_work",
+            "recommendation_eligible": true,
+            "blocking_reasons": []
+          },
+          "evidence_role": "transfer_bridge",
+          "supports": "题名直接提供跨不同数据集的少样本迁移桥接。",
+          "does_not_support": "metadata_level 不确认数据集是否为 CWRU 与 PU。",
+          "basis_level": "metadata_level"
+        }
+      },
+      {
+        "candidate_id": "P7",
+        "verification_status": "verified_registry",
+        "recommendation_eligible": true,
+        "evidence_roles": [
+          "transfer_bridge",
+          "method"
+        ],
+        "selection_role": "transfer_bridge",
+        "basis_level": "metadata_level",
+        "verified_record": {
+          "paper_id": "P7",
+          "title": "Transfer multiscale adaptive convolutional neural network for few-shot and cross-domain bearing fault diagnosis",
+          "authors": [
+            "Fan Li",
+            "Liping Wang",
+            "Decheng Wang",
+            "Jun Wu",
+            "Hongjun Zhao"
+          ],
+          "year_online": 2023,
+          "year_issue": 2023,
+          "venue": "Measurement Science and Technology",
+          "publication_type": "journal-article",
+          "doi": "10.1088/1361-6501/aced5b",
+          "canonical_url": "https://doi.org/10.1088/1361-6501/aced5b",
+          "alternate_id": null,
+          "verification": {
+            "status": "verified_registry",
+            "checked_sources": [
+              {
+                "source_type": "doi_registry",
+                "canonical_record": "https://api.crossref.org/works/10.1088%2F1361-6501%2Faced5b",
+                "checked_at": "2026-08-04T18:21:43.4647685+08:00",
+                "result": "match"
+              },
+              {
+                "source_type": "publisher_landing",
+                "canonical_record": "https://doi.org/10.1088/1361-6501/aced5b",
+                "checked_at": "2026-08-04T18:22:25.1416348+08:00",
+                "result": "unavailable"
+              }
+            ],
+            "title_match": "exact",
+            "author_match": "exact",
+            "version_relation": "same_work",
+            "recommendation_eligible": true,
+            "blocking_reasons": []
+          },
+          "evidence_role": "transfer_bridge",
+          "supports": "题名直接提供少样本、跨域轴承诊断桥接。",
+          "does_not_support": "metadata_level 不证明跨域等同于跨负载或跨 CWRU/PU。",
+          "basis_level": "metadata_level"
+        }
+      },
+      {
+        "candidate_id": "P8",
+        "verification_status": "verified_registry",
+        "recommendation_eligible": true,
+        "evidence_roles": [
+          "method"
+        ],
+        "selection_role": "method",
+        "basis_level": "metadata_level",
+        "verified_record": {
+          "paper_id": "P8",
+          "title": "Metric-based meta-learning model for few-shot fault diagnosis under multiple limited data conditions",
+          "authors": [
+            "Duo Wang",
+            "Ming Zhang",
+            "Yuchun Xu",
+            "Weining Lu",
+            "Jun Yang",
+            "Tao Zhang"
+          ],
+          "year_online": null,
+          "year_issue": 2021,
+          "venue": "Mechanical Systems and Signal Processing",
+          "publication_type": "journal-article",
+          "doi": "10.1016/j.ymssp.2020.107510",
+          "canonical_url": "https://doi.org/10.1016/j.ymssp.2020.107510",
+          "alternate_id": null,
+          "verification": {
+            "status": "verified_registry",
+            "checked_sources": [
+              {
+                "source_type": "doi_registry",
+                "canonical_record": "https://api.crossref.org/works/10.1016%2Fj.ymssp.2020.107510",
+                "checked_at": "2026-08-04T18:21:43.7848491+08:00",
+                "result": "match"
+              },
+              {
+                "source_type": "publisher_landing",
+                "canonical_record": "https://doi.org/10.1016/j.ymssp.2020.107510",
+                "checked_at": "2026-08-04T18:22:27.1499530+08:00",
+                "result": "unavailable"
+              }
+            ],
+            "title_match": "exact",
+            "author_match": "compatible",
+            "version_relation": "same_work",
+            "recommendation_eligible": true,
+            "blocking_reasons": []
+          },
+          "evidence_role": "method",
+          "supports": "题名提供面向有限数据条件的度量元学习方法。",
+          "does_not_support": "metadata_level 不确认轴承数据、跨负载设定或计算预算。",
+          "basis_level": "metadata_level"
+        }
+      },
+      {
+        "candidate_id": "P9",
+        "verification_status": "verified_registry",
+        "recommendation_eligible": true,
+        "evidence_roles": [
+          "method",
+          "transfer_bridge"
+        ],
+        "selection_role": "method",
+        "basis_level": "metadata_level",
+        "verified_record": {
+          "paper_id": "P9",
+          "title": "Integrating Expert Knowledge With Domain Adaptation for Unsupervised Fault Diagnosis",
+          "authors": [
+            "Qin Wang",
+            "Cees Taal",
+            "Olga Fink"
+          ],
+          "year_online": null,
+          "year_issue": 2022,
+          "venue": "IEEE Transactions on Instrumentation and Measurement",
+          "publication_type": "journal-article",
+          "doi": "10.1109/tim.2021.3127654",
+          "canonical_url": "https://doi.org/10.1109/tim.2021.3127654",
+          "alternate_id": null,
+          "verification": {
+            "status": "verified_registry",
+            "checked_sources": [
+              {
+                "source_type": "doi_registry",
+                "canonical_record": "https://api.crossref.org/works/10.1109%2FTIM.2021.3127654",
+                "checked_at": "2026-08-04T18:21:44.1083723+08:00",
+                "result": "match"
+              },
+              {
+                "source_type": "publisher_landing",
+                "canonical_record": "https://doi.org/10.1109/tim.2021.3127654",
+                "checked_at": "2026-08-04T18:22:28.4864716+08:00",
+                "result": "unavailable"
+              }
+            ],
+            "title_match": "exact",
+            "author_match": "exact",
+            "version_relation": "same_work",
+            "recommendation_eligible": true,
+            "blocking_reasons": []
+          },
+          "evidence_role": "method",
+          "supports": "题名提供专家知识与无监督域适应结合的方法候选。",
+          "does_not_support": "metadata_level 不确认目标域无标签协议与轴承适用性。",
+          "basis_level": "metadata_level"
+        }
+      },
+      {
+        "candidate_id": "P10",
+        "verification_status": "verified_registry",
+        "recommendation_eligible": true,
+        "evidence_roles": [
+          "direct_problem",
+          "method"
+        ],
+        "selection_role": "direct_problem",
+        "basis_level": "metadata_level",
+        "verified_record": {
+          "paper_id": "P10",
+          "title": "Multi-scale deep intra-class transfer learning for bearing fault diagnosis",
+          "authors": [
+            "Xu Wang",
+            "Changqing Shen",
+            "Min Xia",
+            "Dong Wang",
+            "Jun Zhu",
+            "Zhongkui Zhu"
+          ],
+          "year_online": null,
+          "year_issue": 2020,
+          "venue": "Reliability Engineering & System Safety",
+          "publication_type": "journal-article",
+          "doi": "10.1016/j.ress.2020.107050",
+          "canonical_url": "https://doi.org/10.1016/j.ress.2020.107050",
+          "alternate_id": null,
+          "verification": {
+            "status": "verified_registry",
+            "checked_sources": [
+              {
+                "source_type": "doi_registry",
+                "canonical_record": "https://api.crossref.org/works/10.1016%2Fj.ress.2020.107050",
+                "checked_at": "2026-08-04T18:21:44.3947559+08:00",
+                "result": "match"
+              },
+              {
+                "source_type": "publisher_landing",
+                "canonical_record": "https://doi.org/10.1016/j.ress.2020.107050",
+                "checked_at": "2026-08-04T18:22:28.8612824+08:00",
+                "result": "unavailable"
+              }
+            ],
+            "title_match": "exact",
+            "author_match": "compatible",
+            "version_relation": "same_work",
+            "recommendation_eligible": true,
+            "blocking_reasons": []
+          },
+          "evidence_role": "direct_problem",
+          "supports": "题名提供轴承故障诊断中的深度类内迁移候选。",
+          "does_not_support": "metadata_level 不说明跨负载协议或公开数据依赖。",
+          "basis_level": "metadata_level"
+        }
+      },
+      {
+        "candidate_id": "P11",
+        "verification_status": "verified_registry",
+        "recommendation_eligible": true,
+        "evidence_roles": [
+          "direct_problem",
+          "method"
+        ],
+        "selection_role": "direct_problem",
+        "basis_level": "metadata_level",
+        "verified_record": {
+          "paper_id": "P11",
+          "title": "A wavelet packet transform-based deep feature transfer learning method for bearing fault diagnosis under different working conditions",
+          "authors": [
+            "Xiao Yu",
+            "Zhongting Liang",
+            "Youjie Wang",
+            "Hongshen Yin",
+            "Xiaowen Liu",
+            "Wanli Yu",
+            "Yanqiu Huang"
+          ],
+          "year_online": null,
+          "year_issue": 2022,
+          "venue": "Measurement",
+          "publication_type": "journal-article",
+          "doi": "10.1016/j.measurement.2022.111597",
+          "canonical_url": "https://doi.org/10.1016/j.measurement.2022.111597",
+          "alternate_id": null,
+          "verification": {
+            "status": "verified_registry",
+            "checked_sources": [
+              {
+                "source_type": "doi_registry",
+                "canonical_record": "https://api.crossref.org/works/10.1016%2Fj.measurement.2022.111597",
+                "checked_at": "2026-08-04T18:21:44.7172788+08:00",
+                "result": "match"
+              },
+              {
+                "source_type": "publisher_landing",
+                "canonical_record": "https://doi.org/10.1016/j.measurement.2022.111597",
+                "checked_at": "2026-08-04T18:22:29.4391579+08:00",
+                "result": "unavailable"
+              }
+            ],
+            "title_match": "exact",
+            "author_match": "compatible",
+            "version_relation": "same_work",
+            "recommendation_eligible": true,
+            "blocking_reasons": []
+          },
+          "evidence_role": "direct_problem",
+          "supports": "题名直接覆盖不同工况下的轴承深度特征迁移。",
+          "does_not_support": "metadata_level 不确认跨负载拆分、CWRU/PU 或性能。",
+          "basis_level": "metadata_level"
+        }
+      },
+      {
+        "candidate_id": "P12",
+        "verification_status": "verified_registry",
+        "recommendation_eligible": true,
+        "evidence_roles": [
+          "method"
+        ],
+        "selection_role": "method",
+        "basis_level": "metadata_level",
+        "verified_record": {
+          "paper_id": "P12",
+          "title": "A Generic Intelligent Bearing Fault Diagnosis System Using Convolutional Neural Networks With Transfer Learning",
+          "authors": [
+            "Tao Lu",
+            "Fanqianhui Yu",
+            "Baokun Han",
+            "Jinrui Wang"
+          ],
+          "year_online": null,
+          "year_issue": 2020,
+          "venue": "IEEE Access",
+          "publication_type": "journal-article",
+          "doi": "10.1109/access.2020.3022840",
+          "canonical_url": "https://doi.org/10.1109/access.2020.3022840",
+          "alternate_id": null,
+          "verification": {
+            "status": "verified_registry",
+            "checked_sources": [
+              {
+                "source_type": "doi_registry",
+                "canonical_record": "https://api.crossref.org/works/10.1109%2FACCESS.2020.3022840",
+                "checked_at": "2026-08-04T18:21:45.0644779+08:00",
+                "result": "match"
+              },
+              {
+                "source_type": "publisher_landing",
+                "canonical_record": "https://doi.org/10.1109/access.2020.3022840",
+                "checked_at": "2026-08-04T18:22:30.0756836+08:00",
+                "result": "unavailable"
+              }
+            ],
+            "title_match": "exact",
+            "author_match": "exact",
+            "version_relation": "same_work",
+            "recommendation_eligible": true,
+            "blocking_reasons": []
+          },
+          "evidence_role": "method",
+          "supports": "题名提供 CNN 与迁移学习结合的通用轴承诊断候选。",
+          "does_not_support": "metadata_level 不证明通用性、数据边界或计算成本。",
+          "basis_level": "metadata_level"
+        }
+      },
+      {
+        "candidate_id": "P13",
+        "verification_status": "verified_primary",
+        "recommendation_eligible": true,
+        "evidence_roles": [
+          "transfer_bridge"
+        ],
+        "selection_role": "transfer_bridge",
+        "basis_level": "metadata_level",
+        "verified_record": {
+          "paper_id": "P13",
+          "title": "Condition Monitoring of Bearing Damage in Electromechanical Drive Systems by Using Motor Current Signals of Electric Motors: A Benchmark Data Set for Data-Driven Classification",
+          "authors": [
+            "Christian Lessmeier",
+            "James Kuria Kimotho",
+            "Detmar Zimmer",
+            "Walter Sextro"
+          ],
+          "year_online": 2016,
+          "year_issue": null,
+          "venue": "PHM Society European Conference",
+          "publication_type": "journal-article",
+          "doi": "10.36001/phme.2016.v3i1.1577",
+          "canonical_url": "https://doi.org/10.36001/phme.2016.v3i1.1577",
+          "alternate_id": null,
+          "verification": {
+            "status": "verified_primary",
+            "checked_sources": [
+              {
+                "source_type": "doi_registry",
+                "canonical_record": "https://api.crossref.org/works/10.36001%2Fphme.2016.v3i1.1577",
+                "checked_at": "2026-08-04T18:21:45.3471806+08:00",
+                "result": "match"
+              },
+              {
+                "source_type": "publisher_landing",
+                "canonical_record": "https://doi.org/10.36001/phme.2016.v3i1.1577",
+                "checked_at": "2026-08-04T18:22:30.4521014+08:00",
+                "result": "match"
+              }
+            ],
+            "title_match": "exact",
+            "author_match": "exact",
+            "version_relation": "same_work",
+            "recommendation_eligible": true,
+            "blocking_reasons": []
+          },
+          "evidence_role": "transfer_bridge",
+          "supports": "题名核验了电机驱动系统轴承损伤的公开基准数据论文入口。",
+          "does_not_support": "题名强调电机电流；metadata_level 不能证明其振动通道与当前跨负载任务的具体适配性。",
+          "basis_level": "metadata_level"
+        }
+      },
+      {
+        "candidate_id": "P14",
+        "verification_status": "verified_registry",
+        "recommendation_eligible": true,
+        "evidence_roles": [
+          "direct_problem",
+          "counter_limitation"
+        ],
+        "selection_role": "direct_problem",
+        "basis_level": "metadata_level",
+        "verified_record": {
+          "paper_id": "P14",
+          "title": "Bearing Fault Detection and Diagnosis Using Case Western Reserve University Dataset With Deep Learning Approaches: A Review",
+          "authors": [
+            "Dhiraj Neupane",
+            "Jongwon Seok"
+          ],
+          "year_online": null,
+          "year_issue": 2020,
+          "venue": "IEEE Access",
+          "publication_type": "journal-article",
+          "doi": "10.1109/access.2020.2990528",
+          "canonical_url": "https://doi.org/10.1109/access.2020.2990528",
+          "alternate_id": null,
+          "verification": {
+            "status": "verified_registry",
+            "checked_sources": [
+              {
+                "source_type": "doi_registry",
+                "canonical_record": "https://api.crossref.org/works/10.1109%2FACCESS.2020.2990528",
+                "checked_at": "2026-08-04T18:21:45.6164284+08:00",
+                "result": "match"
+              },
+              {
+                "source_type": "publisher_landing",
+                "canonical_record": "https://doi.org/10.1109/access.2020.2990528",
+                "checked_at": "2026-08-04T18:22:32.5612113+08:00",
+                "result": "unavailable"
+              }
+            ],
+            "title_match": "exact",
+            "author_match": "exact",
+            "version_relation": "same_work",
+            "recommendation_eligible": true,
+            "blocking_reasons": []
+          },
+          "evidence_role": "direct_problem",
+          "supports": "题名明确覆盖 CWRU 轴承故障诊断与深度学习综述。",
+          "does_not_support": "metadata_level 不证明综述如何评价跨负载泛化。",
+          "basis_level": "metadata_level"
+        }
+      },
+      {
+        "candidate_id": "P15",
+        "verification_status": "verified_registry",
+        "recommendation_eligible": true,
+        "evidence_roles": [
+          "method",
+          "counter_limitation"
+        ],
+        "selection_role": "method",
+        "basis_level": "metadata_level",
+        "verified_record": {
+          "paper_id": "P15",
+          "title": "Deep Transfer Learning for Bearing Fault Diagnosis: A Systematic Review Since 2016",
+          "authors": [
+            "Xiaohan Chen",
+            "Rui Yang",
+            "Yihao Xue",
+            "Mengjie Huang",
+            "Roberto Ferrero",
+            "Zidong Wang"
+          ],
+          "year_online": null,
+          "year_issue": 2023,
+          "venue": "IEEE Transactions on Instrumentation and Measurement",
+          "publication_type": "journal-article",
+          "doi": "10.1109/tim.2023.3244237",
+          "canonical_url": "https://doi.org/10.1109/tim.2023.3244237",
+          "alternate_id": null,
+          "verification": {
+            "status": "verified_registry",
+            "checked_sources": [
+              {
+                "source_type": "doi_registry",
+                "canonical_record": "https://api.crossref.org/works/10.1109%2FTIM.2023.3244237",
+                "checked_at": "2026-08-04T18:21:45.9611181+08:00",
+                "result": "match"
+              },
+              {
+                "source_type": "publisher_landing",
+                "canonical_record": "https://doi.org/10.1109/tim.2023.3244237",
+                "checked_at": "2026-08-04T18:22:32.9918232+08:00",
+                "result": "unavailable"
+              }
+            ],
+            "title_match": "exact",
+            "author_match": "compatible",
+            "version_relation": "same_work",
+            "recommendation_eligible": true,
+            "blocking_reasons": []
+          },
+          "evidence_role": "method",
+          "supports": "题名提供轴承深度迁移学习方法谱系的系统综述入口。",
+          "does_not_support": "metadata_level 不提供具体方法优劣或跨负载证据。",
+          "basis_level": "metadata_level"
+        }
+      },
+      {
+        "candidate_id": "P16",
+        "verification_status": "verified_registry",
+        "recommendation_eligible": true,
+        "evidence_roles": [
+          "method",
+          "transfer_bridge"
+        ],
+        "selection_role": "method",
+        "basis_level": "metadata_level",
+        "verified_record": {
+          "paper_id": "P16",
+          "title": "Rotating machinery fault detection and diagnosis based on deep domain adaptation: A survey",
+          "authors": [
+            "Siyu ZHANG",
+            "Lei SU",
+            "Jiefei GU",
+            "Ke LI",
+            "Lang ZHOU",
+            "Michael PECHT"
+          ],
+          "year_online": null,
+          "year_issue": 2023,
+          "venue": "Chinese Journal of Aeronautics",
+          "publication_type": "journal-article",
+          "doi": "10.1016/j.cja.2021.10.006",
+          "canonical_url": "https://doi.org/10.1016/j.cja.2021.10.006",
+          "alternate_id": null,
+          "verification": {
+            "status": "verified_registry",
+            "checked_sources": [
+              {
+                "source_type": "doi_registry",
+                "canonical_record": "https://api.crossref.org/works/10.1016%2Fj.cja.2021.10.006",
+                "checked_at": "2026-08-04T18:21:46.3000251+08:00",
+                "result": "match"
+              },
+              {
+                "source_type": "publisher_landing",
+                "canonical_record": "https://doi.org/10.1016/j.cja.2021.10.006",
+                "checked_at": "2026-08-04T18:22:33.3649518+08:00",
+                "result": "unavailable"
+              }
+            ],
+            "title_match": "exact",
+            "author_match": "compatible",
+            "version_relation": "same_work",
+            "recommendation_eligible": true,
+            "blocking_reasons": []
+          },
+          "evidence_role": "method",
+          "supports": "题名提供旋转机械深度域适应方法综述入口。",
+          "does_not_support": "metadata_level 不证明其中结论对滚动轴承跨负载任务成立。",
+          "basis_level": "metadata_level"
+        }
+      },
+      {
+        "candidate_id": "P17",
+        "verification_status": "verified_registry",
+        "recommendation_eligible": true,
+        "evidence_roles": [
+          "counter_limitation"
+        ],
+        "selection_role": "counter_limitation",
+        "basis_level": "metadata_level",
+        "verified_record": {
+          "paper_id": "P17",
+          "title": "Impact of Data Leakage in Vibration Signals Used for Bearing Fault Diagnosis",
+          "authors": [
+            "Lesley Wheat",
+            "Martin V. Mohrenschildt",
+            "Saeid Habibi",
+            "Dhafar Al-Ani"
+          ],
+          "year_online": null,
+          "year_issue": 2024,
+          "venue": "IEEE Access",
+          "publication_type": "journal-article",
+          "doi": "10.1109/access.2024.3497716",
+          "canonical_url": "https://doi.org/10.1109/access.2024.3497716",
+          "alternate_id": null,
+          "verification": {
+            "status": "verified_registry",
+            "checked_sources": [
+              {
+                "source_type": "doi_registry",
+                "canonical_record": "https://api.crossref.org/works/10.1109%2FACCESS.2024.3497716",
+                "checked_at": "2026-08-04T18:21:46.7473823+08:00",
+                "result": "match"
+              },
+              {
+                "source_type": "publisher_landing",
+                "canonical_record": "https://doi.org/10.1109/access.2024.3497716",
+                "checked_at": "2026-08-04T18:22:33.9342846+08:00",
+                "result": "unavailable"
+              }
+            ],
+            "title_match": "exact",
+            "author_match": "exact",
+            "version_relation": "same_work",
+            "recommendation_eligible": true,
+            "blocking_reasons": []
+          },
+          "evidence_role": "counter_limitation",
+          "supports": "题名直接指出轴承故障诊断振动信号中的数据泄漏风险。",
+          "does_not_support": "metadata_level 不提供泄漏机制、影响量级或推荐拆分方案。",
+          "basis_level": "metadata_level"
+        }
+      },
+      {
+        "candidate_id": "P26",
+        "verification_status": "verified_registry",
+        "recommendation_eligible": true,
+        "evidence_roles": [
+          "counter_limitation",
+          "method"
+        ],
+        "selection_role": "counter_limitation",
+        "basis_level": "metadata_level",
+        "verified_record": {
+          "paper_id": "P26",
+          "title": "Applications of machine learning to machine fault diagnosis: A review and roadmap",
+          "authors": [
+            "Yaguo Lei",
+            "Bin Yang",
+            "Xinwei Jiang",
+            "Feng Jia",
+            "Naipeng Li",
+            "Asoke K. Nandi"
+          ],
+          "year_online": null,
+          "year_issue": 2020,
+          "venue": "Mechanical Systems and Signal Processing",
+          "publication_type": "journal-article",
+          "doi": "10.1016/j.ymssp.2019.106587",
+          "canonical_url": "https://doi.org/10.1016/j.ymssp.2019.106587",
+          "alternate_id": null,
+          "verification": {
+            "status": "verified_registry",
+            "checked_sources": [
+              {
+                "source_type": "doi_registry",
+                "canonical_record": "https://api.crossref.org/works/10.1016%2Fj.ymssp.2019.106587",
+                "checked_at": "2026-08-04T18:21:47.0554479+08:00",
+                "result": "match"
+              },
+              {
+                "source_type": "publisher_landing",
+                "canonical_record": "https://doi.org/10.1016/j.ymssp.2019.106587",
+                "checked_at": "2026-08-04T18:22:34.3081381+08:00",
+                "result": "unavailable"
+              }
+            ],
+            "title_match": "exact",
+            "author_match": "compatible",
+            "version_relation": "same_work",
+            "recommendation_eligible": true,
+            "blocking_reasons": []
+          },
+          "evidence_role": "counter_limitation",
+          "supports": "题名提供机器故障诊断的综述与路线图入口，可用于识别方法边界。",
+          "does_not_support": "metadata_level 不提供针对 CWRU/PU 跨负载的具体限制结论。",
+          "basis_level": "metadata_level"
+        }
+      }
+    ],
+    "selected_ids": [
+      "P1",
+      "P2",
+      "P3",
+      "P8",
+      "P9",
+      "P6",
+      "P7",
+      "P17"
+    ],
+    "paper_map": {
+      "round": 1,
+      "node_size_basis": "user_fit",
+      "legend": {
+        "evidence_roles": [
+          "direct_problem",
+          "method",
+          "transfer_bridge",
+          "counter_limitation"
+        ],
+        "basis_levels": [
+          "metadata_level",
+          "abstract_level",
+          "fulltext_level"
+        ]
+      },
+      "nodes": [
+        {
+          "id": "B1",
+          "node_type": "cluster",
+          "basis_level": "metadata_level",
+          "short_note": "滚动轴承跨负载故障诊断；CWRU/PU；公开数据；单 GPU；10 周"
+        },
+        {
+          "id": "C1",
+          "node_type": "cluster",
+          "basis_level": "metadata_level",
+          "short_note": "跨工况直接问题"
+        },
+        {
+          "id": "C2",
+          "node_type": "cluster",
+          "basis_level": "metadata_level",
+          "short_note": "可迁移的方法"
+        },
+        {
+          "id": "C3",
+          "node_type": "cluster",
+          "basis_level": "metadata_level",
+          "short_note": "跨数据集桥接"
+        },
+        {
+          "id": "C4",
+          "node_type": "cluster",
+          "basis_level": "metadata_level",
+          "short_note": "验证风险与反例"
+        },
+        {
+          "id": "P1",
+          "node_type": "paper",
+          "fit_score": 0.95,
+          "evidence_role": "direct_problem",
+          "verification_status": "verified_registry",
+          "basis_level": "metadata_level",
+          "short_note": "变工况、有限数据的轴承元学习"
+        },
+        {
+          "id": "P2",
+          "node_type": "paper",
+          "fit_score": 0.94,
+          "evidence_role": "direct_problem",
+          "verification_status": "verified_registry",
+          "basis_level": "metadata_level",
+          "short_note": "不同工况下的对抗迁移轴承诊断"
+        },
+        {
+          "id": "P3",
+          "node_type": "paper",
+          "fit_score": 0.93,
+          "evidence_role": "direct_problem",
+          "verification_status": "verified_registry",
+          "basis_level": "metadata_level",
+          "short_note": "变工况一维多尺度域适应"
+        },
+        {
+          "id": "P8",
+          "node_type": "paper",
+          "fit_score": 0.84,
+          "evidence_role": "method",
+          "verification_status": "verified_registry",
+          "basis_level": "metadata_level",
+          "short_note": "有限数据条件的度量元学习"
+        },
+        {
+          "id": "P9",
+          "node_type": "paper",
+          "fit_score": 0.82,
+          "evidence_role": "method",
+          "verification_status": "verified_registry",
+          "basis_level": "metadata_level",
+          "short_note": "专家知识结合无监督域适应"
+        },
+        {
+          "id": "P6",
+          "node_type": "paper",
+          "fit_score": 0.9,
+          "evidence_role": "transfer_bridge",
+          "verification_status": "verified_registry",
+          "basis_level": "metadata_level",
+          "short_note": "跨数据集少样本迁移"
+        },
+        {
+          "id": "P7",
+          "node_type": "paper",
+          "fit_score": 0.88,
+          "evidence_role": "transfer_bridge",
+          "verification_status": "verified_registry",
+          "basis_level": "metadata_level",
+          "short_note": "少样本跨域多尺度迁移"
+        },
+        {
+          "id": "P17",
+          "node_type": "paper",
+          "fit_score": 0.91,
+          "evidence_role": "counter_limitation",
+          "verification_status": "verified_registry",
+          "basis_level": "metadata_level",
+          "short_note": "轴承振动信号数据泄漏风险"
+        }
+      ],
+      "edges": [
+        {
+          "source": "P1",
+          "target": "C1",
+          "relation": "same_problem",
+          "strength": "strong",
+          "confidence": "medium",
+          "basis_level": "metadata_level",
+          "note": "题名明确为变工况轴承诊断"
+        },
+        {
+          "source": "P2",
+          "target": "C1",
+          "relation": "same_problem",
+          "strength": "strong",
+          "confidence": "medium",
+          "basis_level": "metadata_level",
+          "note": "题名明确为不同工况轴承诊断"
+        },
+        {
+          "source": "P3",
+          "target": "C1",
+          "relation": "same_problem",
+          "strength": "strong",
+          "confidence": "medium",
+          "basis_level": "metadata_level",
+          "note": "题名明确为变工况轴承诊断"
+        },
+        {
+          "source": "P8",
+          "target": "C2",
+          "relation": "shared_method",
+          "strength": "medium",
+          "confidence": "low",
+          "basis_level": "metadata_level",
+          "note": "有限数据元学习可作为方法候选，适配性待核"
+        },
+        {
+          "source": "P9",
+          "target": "C2",
+          "relation": "shared_method",
+          "strength": "medium",
+          "confidence": "low",
+          "basis_level": "metadata_level",
+          "note": "无监督域适应可作为方法候选，轴承适配性待核"
+        },
+        {
+          "source": "P6",
+          "target": "C3",
+          "relation": "transfer_bridge",
+          "strength": "strong",
+          "confidence": "medium",
+          "basis_level": "metadata_level",
+          "note": "题名明确跨不同数据集"
+        },
+        {
+          "source": "P7",
+          "target": "C3",
+          "relation": "transfer_bridge",
+          "strength": "strong",
+          "confidence": "medium",
+          "basis_level": "metadata_level",
+          "note": "题名明确少样本跨域轴承诊断"
+        },
+        {
+          "source": "P17",
+          "target": "C4",
+          "relation": "claim_tension",
+          "strength": "strong",
+          "confidence": "medium",
+          "basis_level": "metadata_level",
+          "note": "题名明确提示振动信号数据泄漏会威胁诊断评估"
+        }
+      ],
+      "text_fallback": [
+        {
+          "id": "B1",
+          "node_type": "cluster",
+          "basis_level": "metadata_level",
+          "entry_type": "node",
+          "text": "B1: 滚动轴承跨负载故障诊断；CWRU/PU；公开数据；单 GPU；10 周"
+        },
+        {
+          "id": "C1",
+          "node_type": "cluster",
+          "basis_level": "metadata_level",
+          "entry_type": "node",
+          "text": "C1: 跨工况直接问题"
+        },
+        {
+          "id": "C2",
+          "node_type": "cluster",
+          "basis_level": "metadata_level",
+          "entry_type": "node",
+          "text": "C2: 可迁移的方法"
+        },
+        {
+          "id": "C3",
+          "node_type": "cluster",
+          "basis_level": "metadata_level",
+          "entry_type": "node",
+          "text": "C3: 跨数据集桥接"
+        },
+        {
+          "id": "C4",
+          "node_type": "cluster",
+          "basis_level": "metadata_level",
+          "entry_type": "node",
+          "text": "C4: 验证风险与反例"
+        },
+        {
+          "id": "P1",
+          "node_type": "paper",
+          "basis_level": "metadata_level",
+          "entry_type": "node",
+          "evidence_role": "direct_problem",
+          "verification_status": "verified_registry",
+          "text": "P1: 变工况、有限数据的轴承元学习"
+        },
+        {
+          "id": "P2",
+          "node_type": "paper",
+          "basis_level": "metadata_level",
+          "entry_type": "node",
+          "evidence_role": "direct_problem",
+          "verification_status": "verified_registry",
+          "text": "P2: 不同工况下的对抗迁移轴承诊断"
+        },
+        {
+          "id": "P3",
+          "node_type": "paper",
+          "basis_level": "metadata_level",
+          "entry_type": "node",
+          "evidence_role": "direct_problem",
+          "verification_status": "verified_registry",
+          "text": "P3: 变工况一维多尺度域适应"
+        },
+        {
+          "id": "P8",
+          "node_type": "paper",
+          "basis_level": "metadata_level",
+          "entry_type": "node",
+          "evidence_role": "method",
+          "verification_status": "verified_registry",
+          "text": "P8: 有限数据条件的度量元学习"
+        },
+        {
+          "id": "P9",
+          "node_type": "paper",
+          "basis_level": "metadata_level",
+          "entry_type": "node",
+          "evidence_role": "method",
+          "verification_status": "verified_registry",
+          "text": "P9: 专家知识结合无监督域适应"
+        },
+        {
+          "id": "P6",
+          "node_type": "paper",
+          "basis_level": "metadata_level",
+          "entry_type": "node",
+          "evidence_role": "transfer_bridge",
+          "verification_status": "verified_registry",
+          "text": "P6: 跨数据集少样本迁移"
+        },
+        {
+          "id": "P7",
+          "node_type": "paper",
+          "basis_level": "metadata_level",
+          "entry_type": "node",
+          "evidence_role": "transfer_bridge",
+          "verification_status": "verified_registry",
+          "text": "P7: 少样本跨域多尺度迁移"
+        },
+        {
+          "id": "P17",
+          "node_type": "paper",
+          "basis_level": "metadata_level",
+          "entry_type": "node",
+          "evidence_role": "counter_limitation",
+          "verification_status": "verified_registry",
+          "text": "P17: 轴承振动信号数据泄漏风险"
+        },
+        {
+          "entry_type": "edge",
+          "source": "P1",
+          "target": "C1",
+          "relation": "same_problem",
+          "basis_level": "metadata_level",
+          "text": "P1 --same_problem--> C1: 题名明确为变工况轴承诊断"
+        },
+        {
+          "entry_type": "edge",
+          "source": "P2",
+          "target": "C1",
+          "relation": "same_problem",
+          "basis_level": "metadata_level",
+          "text": "P2 --same_problem--> C1: 题名明确为不同工况轴承诊断"
+        },
+        {
+          "entry_type": "edge",
+          "source": "P3",
+          "target": "C1",
+          "relation": "same_problem",
+          "basis_level": "metadata_level",
+          "text": "P3 --same_problem--> C1: 题名明确为变工况轴承诊断"
+        },
+        {
+          "entry_type": "edge",
+          "source": "P8",
+          "target": "C2",
+          "relation": "shared_method",
+          "basis_level": "metadata_level",
+          "text": "P8 --shared_method--> C2: 有限数据元学习可作为方法候选，适配性待核"
+        },
+        {
+          "entry_type": "edge",
+          "source": "P9",
+          "target": "C2",
+          "relation": "shared_method",
+          "basis_level": "metadata_level",
+          "text": "P9 --shared_method--> C2: 无监督域适应可作为方法候选，轴承适配性待核"
+        },
+        {
+          "entry_type": "edge",
+          "source": "P6",
+          "target": "C3",
+          "relation": "transfer_bridge",
+          "basis_level": "metadata_level",
+          "text": "P6 --transfer_bridge--> C3: 题名明确跨不同数据集"
+        },
+        {
+          "entry_type": "edge",
+          "source": "P7",
+          "target": "C3",
+          "relation": "transfer_bridge",
+          "basis_level": "metadata_level",
+          "text": "P7 --transfer_bridge--> C3: 题名明确少样本跨域轴承诊断"
+        },
+        {
+          "entry_type": "edge",
+          "source": "P17",
+          "target": "C4",
+          "relation": "claim_tension",
+          "basis_level": "metadata_level",
+          "text": "P17 --claim_tension--> C4: 题名明确提示振动信号数据泄漏会威胁诊断评估"
+        }
+      ],
+      "mermaid": "flowchart TD\n  n0[\"id=B1; type=cluster; basis=metadata_level; note=滚动轴承跨负载故障诊断；CWRU/PU；公开数据；单 GPU；10 周\"]\n  n1[\"id=C1; type=cluster; basis=metadata_level; note=跨工况直接问题\"]\n  n2[\"id=C2; type=cluster; basis=metadata_level; note=可迁移的方法\"]\n  n3[\"id=C3; type=cluster; basis=metadata_level; note=跨数据集桥接\"]\n  n4[\"id=C4; type=cluster; basis=metadata_level; note=验证风险与反例\"]\n  n5[\"id=P1; type=paper; basis=metadata_level; role=direct_problem; status=verified_registry; fit=0.95; note=变工况、有限数据的轴承元学习\"]\n  n6[\"id=P2; type=paper; basis=metadata_level; role=direct_problem; status=verified_registry; fit=0.94; note=不同工况下的对抗迁移轴承诊断\"]\n  n7[\"id=P3; type=paper; basis=metadata_level; role=direct_problem; status=verified_registry; fit=0.93; note=变工况一维多尺度域适应\"]\n  n8[\"id=P8; type=paper; basis=metadata_level; role=method; status=verified_registry; fit=0.84; note=有限数据条件的度量元学习\"]\n  n9[\"id=P9; type=paper; basis=metadata_level; role=method; status=verified_registry; fit=0.82; note=专家知识结合无监督域适应\"]\n  n10[\"id=P6; type=paper; basis=metadata_level; role=transfer_bridge; status=verified_registry; fit=0.9; note=跨数据集少样本迁移\"]\n  n11[\"id=P7; type=paper; basis=metadata_level; role=transfer_bridge; status=verified_registry; fit=0.88; note=少样本跨域多尺度迁移\"]\n  n12[\"id=P17; type=paper; basis=metadata_level; role=counter_limitation; status=verified_registry; fit=0.91; note=轴承振动信号数据泄漏风险\"]\n  n5 -- \"relation=same_problem; basis=metadata_level; strength=strong; confidence=medium; note=题名明确为变工况轴承诊断\" --> n1\n  n6 -- \"relation=same_problem; basis=metadata_level; strength=strong; confidence=medium; note=题名明确为不同工况轴承诊断\" --> n1\n  n7 -- \"relation=same_problem; basis=metadata_level; strength=strong; confidence=medium; note=题名明确为变工况轴承诊断\" --> n1\n  n8 -- \"relation=shared_method; basis=metadata_level; strength=medium; confidence=low; note=有限数据元学习可作为方法候选，适配性待核\" --> n2\n  n9 -- \"relation=shared_method; basis=metadata_level; strength=medium; confidence=low; note=无监督域适应可作为方法候选，轴承适配性待核\" --> n2\n  n10 -- \"relation=transfer_bridge; basis=metadata_level; strength=strong; confidence=medium; note=题名明确跨不同数据集\" --> n3\n  n11 -- \"relation=transfer_bridge; basis=metadata_level; strength=strong; confidence=medium; note=题名明确少样本跨域轴承诊断\" --> n3\n  n12 -- \"relation=claim_tension; basis=metadata_level; strength=strong; confidence=medium; note=题名明确提示振动信号数据泄漏会威胁诊断评估\" --> n4"
+    },
+    "evidence_gaps": [],
+    "search_limitations": [
+      "学术检索 MCP 不可用；发现阶段使用 OpenAlex 降级路径。",
+      "17/18 出版社落地页无法自动提取 citation metadata，因此这些记录为 verified_registry，不是 verified_primary。",
+      "未设置年份过滤；未覆盖中文数据库、Scopus、Web of Science 或未注册 DOI 的论文。",
+      "本轮只完成第一轮，不推测或执行第二轮反馈。",
+      "用户尚未给出目标指标、最低改进幅度和目标域标签可用性；这些不阻塞本轮 metadata_level 论文校准，但会影响后续方法比较。",
+      "未完成摘要或全文级核验；本轮不声称任何实验结果、数据集组合、泛化幅度或计算开销。",
+      "除题名明确写出 CWRU 的 P14 外，未在 metadata_level 确认候选实际使用 CWRU 或 PU；跨数据集适配仍待摘要/全文核验。"
+    ]
+  },
+  "feedback_delta": {
+    "from_brief_version": 1,
+    "to_brief_version": 2,
+    "inherited": [
+      {
+        "object_id": "inherited-01",
+        "value": "滚动轴承故障诊断"
+      },
+      {
+        "object_id": "inherited-02",
+        "value": "仅使用 CWRU 与 PU 等公开振动数据"
+      },
+      {
+        "object_id": "inherited-03",
+        "value": "无试验台，不依赖新增实验采集"
+      },
+      {
+        "object_id": "inherited-04",
+        "value": "单张 GPU，10 周"
+      },
+      {
+        "object_id": "inherited-05",
+        "value": "排除私有数据和复杂硬件依赖"
+      },
+      {
+        "object_id": "inherited-06",
+        "value": "重点关注跨负载泛化"
+      }
+    ],
+    "rejected": [
+      {
+        "object_id": "random-split-dependent-designs",
+        "reason": "明确排除依赖随机切分、随机窗口或同一物理轴承/采集运行跨训练与测试而造成数据泄漏的研究设计",
+        "value": "依赖随机切分或混合同一物理来源造成数据泄漏的设计"
+      },
+      {
+        "object_id": "single-condition-high-accuracy-as-primary-fit",
+        "reason": "不把单一工况内的高准确率当作主要适配证据",
+        "value": "仅以单一工况高准确率作为主要适配证据"
+      }
+    ],
+    "reset": [
+      {
+        "object_id": "round-one-query-expressions",
+        "reason": "冻结可读范围未包含第一轮 SearchPlan；不推测旧查询原文，第二轮以新增、可追溯查询取代",
+        "previous_value": "rolling bearing fault diagnosis cross-load domain generalization CWRU Paderborn vibration; bearing fault diagnosis domain adaptation varying working conditions CWRU; bearing fault diagnosis cross-domain transfer learning Paderborn CWRU; rolling bearing fault diagnosis benchmark data leakage random split generalization"
+      },
+      {
+        "object_id": "round-one-title-level-fit",
+        "reason": "第一轮 metadata_level 的题名相关性不足以判定隔离划分、泄漏控制或泛化边界",
+        "previous_value": "第一轮 metadata_level 的题名相关性"
+      }
+    ],
+    "added": [
+      {
+        "object_id": "leakage-free-split-gate",
+        "value": "推荐资格要求不得依赖随机切分造成的数据泄漏",
+        "reason": "加入按轴承、设备、工况或采集运行隔离的无泄漏划分"
+      },
+      {
+        "object_id": "cross-load-evaluation-priority",
+        "value": "优先跨负载或未见工况评估",
+        "reason": "把跨负载/未见工况从题名相关性提升为实验评估证据"
+      },
+      {
+        "object_id": "condition-or-device-isolation-priority",
+        "value": "优先按工况、轴承、设备或采集运行隔离划分",
+        "reason": "加入按轴承、设备、工况或采集运行隔离的无泄漏划分"
+      },
+      {
+        "object_id": "generalization-boundary-analysis-priority",
+        "value": "优先报告或分析泛化边界、性能下降或失效条件",
+        "reason": "单独查找泛化下降、边界和失败条件，而非只查最高准确率"
+      }
+    ],
+    "allocation": {
+      "exploit": 40,
+      "explore": 60
+    },
+    "query_changes": [
+      {
+        "query_id": "Q1-R2",
+        "reason": "把跨负载/未见工况从题名相关性提升为实验评估证据",
+        "cause_refs": [
+          "feedback_delta.rejected[1]",
+          "feedback_delta.reset[0]",
+          "feedback_delta.reset[1]",
+          "feedback_delta.added[1]"
+        ],
+        "before": "",
+        "after": "rolling bearing fault diagnosis held-out load unseen operating condition domain generalization"
+      },
+      {
+        "query_id": "Q2-R2",
+        "reason": "加入按轴承、设备、工况或采集运行隔离的无泄漏划分",
+        "cause_refs": [
+          "feedback_delta.rejected[0]",
+          "feedback_delta.added[0]",
+          "feedback_delta.added[2]"
+        ],
+        "before": "",
+        "after": "bearing fault diagnosis data leakage bearing-wise device-wise condition-wise split random segmentation"
+      },
+      {
+        "query_id": "Q3-R2",
+        "reason": "把 CWRU/PU 跨数据集或跨个体证据作为优先桥接来源",
+        "cause_refs": [
+          "feedback_delta.added[1]",
+          "feedback_delta.added[2]"
+        ],
+        "before": "",
+        "after": "CWRU Paderborn cross-dataset cross-individual bearing fault diagnosis generalization"
+      },
+      {
+        "query_id": "Q4-R2",
+        "reason": "单独查找泛化下降、边界和失败条件，而非只查最高准确率",
+        "cause_refs": [
+          "feedback_delta.rejected[1]",
+          "feedback_delta.added[3]"
+        ],
+        "before": "",
+        "after": "bearing fault diagnosis generalization boundary performance drop leakage unseen bearing load limitation"
+      }
+    ]
+  },
+  "round2": {
+    "schema_version": "m1.2",
+    "round": 2,
+    "research_brief": {
+      "brief_version": 2,
+      "branch_id": "branch-a",
+      "engineering_object": "滚动轴承",
+      "target_problem": "基于公开振动数据的滚动轴承故障诊断，重点判断跨负载、未见工况与跨设备/轴承泛化",
+      "target_metric": "未指定；不得以单一工况准确率替代泛化指标",
+      "available_data": [
+        "CWRU 公开振动数据",
+        "Paderborn University (PU) 公开振动数据"
+      ],
+      "resources": [
+        "单张 GPU",
+        "无试验台"
+      ],
+      "time_budget": "10 周",
+      "preferred_routes": [
+        "跨负载或未见工况评估",
+        "按工况、轴承、设备或采集运行隔离划分",
+        "CWRU/PU 跨数据集证据",
+        "泛化边界、性能下降与失效条件分析"
+      ],
+      "excluded_routes": [
+        "私有数据",
+        "复杂硬件依赖",
+        "依赖随机切分或混合同一物理来源造成数据泄漏的设计",
+        "仅以单一工况高准确率作为主要适配证据"
+      ],
+      "hard_constraints": [
+        "仅使用公开数据",
+        "无试验台，不依赖新增实验采集",
+        "计算资源限于单张 GPU",
+        "研究周期为 10 周",
+        "排除复杂硬件依赖",
+        "推荐证据不得依赖随机切分造成的数据泄漏"
+      ],
+      "soft_preferences": [
+        "优先跨负载、未见工况、按工况/设备/轴承隔离和泛化边界证据"
+      ],
+      "open_questions": [
+        "未指定故障类别体系、诊断输出形式、目标指标或最低改进幅度",
+        "未说明目标负载是否允许少量有标签样本",
+        "未指定论文发表时间、语言或文献类型边界"
+      ],
+      "evidence_needs": [
+        "实际实验划分是否隔离负载、工况、轴承、设备或采集运行",
+        "随机切片/随机窗口是否把同一物理来源混入训练与测试",
+        "跨负载、未见工况或跨数据集结果",
+        "泛化下降、失败条件或边界分析",
+        "单 GPU、10 周内的资源可行性（本轮没有获得可核验运行成本）"
+      ]
+    },
+    "search_plan": {
+      "round": 2,
+      "brief_version": 2,
+      "branch_id": "branch-a",
+      "time_boundary": [
+        "未设年份下限或上限；检索截至 2026-08-04"
+      ],
+      "language_boundary": [
+        "English"
+      ],
+      "source_boundary": [
+        "T1 discovery: Crossref-indexed literature and arXiv",
+        "supplemental discovery only: ordinary web search and SciSpace",
+        "authoritative metadata: Crossref REST and arXiv official API/record",
+        "reasoning basis: actually inspected publisher, official repository, or institutional repository abstract/full text"
+      ],
+      "queries": [
+        {
+          "query_id": "Q1-R2",
+          "purpose": "direct_problem",
+          "query_text": "rolling bearing fault diagnosis held-out load unseen operating condition domain generalization",
+          "expected_evidence_role": "direct_problem",
+          "inclusion_terms": [
+            "held-out load",
+            "unseen operating condition",
+            "domain generalization"
+          ],
+          "exclusion_terms": [
+            "single-condition-only accuracy"
+          ]
+        },
+        {
+          "query_id": "Q2-R2",
+          "purpose": "counter_limitation",
+          "query_text": "bearing fault diagnosis data leakage bearing-wise device-wise condition-wise split random segmentation",
+          "expected_evidence_role": "counter_limitation",
+          "inclusion_terms": [
+            "bearing-wise",
+            "part-to-part",
+            "device-wise",
+            "data leakage"
+          ],
+          "exclusion_terms": [
+            "random-window-only validation"
+          ]
+        },
+        {
+          "query_id": "Q3-R2",
+          "purpose": "transfer_bridge",
+          "query_text": "CWRU Paderborn cross-dataset cross-individual bearing fault diagnosis generalization",
+          "expected_evidence_role": "transfer_bridge",
+          "inclusion_terms": [
+            "CWRU",
+            "Paderborn",
+            "cross-dataset",
+            "cross-individual"
+          ],
+          "exclusion_terms": [
+            "private-data-only"
+          ]
+        },
+        {
+          "query_id": "Q4-R2",
+          "purpose": "counter_limitation",
+          "query_text": "bearing fault diagnosis generalization boundary performance drop leakage unseen bearing load limitation",
+          "expected_evidence_role": "counter_limitation",
+          "inclusion_terms": [
+            "performance drop",
+            "boundary",
+            "unseen",
+            "limitation"
+          ],
+          "exclusion_terms": [
+            "accuracy-only claim"
+          ]
+        }
+      ],
+      "limitations": [
+        "第一轮 SearchPlan 不在获准冻结读取范围内，因此第二轮查询按新增查询记录，未声称知道旧查询原文。",
+        "搜索结果和 SciSpace 摘要只用于发现，未作为 metadata/abstract/fulltext 权威核验。",
+        "部分出版商页面返回 403、429 或需要 JavaScript；这些检查记为 unavailable。",
+        "Crossref 可核验书目信息，但不能证明实验划分、数据集、结果、算力或可复现性。",
+        "未做中文数据库检索；时间与文献类型没有用户硬边界。",
+        "达到 16 条候选池门槛后停止扩展；没有为达到 5 篇默认推荐数而补弱证据。"
+      ]
+    },
+    "candidate_pool": [
+      {
+        "candidate_id": "P1",
+        "verification_status": "verified_registry",
+        "recommendation_eligible": false,
+        "evidence_roles": [
+          "direct_problem"
+        ],
+        "selection_role": "direct_problem",
+        "basis_level": "metadata_level",
+        "blocking_reasons": [
+          "未核验按负载/工况隔离的实验划分与泛化边界"
+        ],
+        "verified_record": {
+          "paper_id": "P1",
+          "title": "A Meta-Learning Method for Electric Machine Bearing Fault Diagnosis Under Varying Working Conditions With Limited Data",
+          "authors": [
+            "Jianjun Chen",
+            "Weihao Hu",
+            "Di Cao",
+            "Zhenyuan Zhang",
+            "Zhe Chen",
+            "Frede Blaabjerg"
+          ],
+          "year_online": null,
+          "year_issue": 2023,
+          "venue": "IEEE Transactions on Industrial Informatics",
+          "publication_type": "journal-article",
+          "doi": "10.1109/tii.2022.3165027",
+          "canonical_url": "https://doi.org/10.1109/tii.2022.3165027",
+          "alternate_id": null,
+          "verification": {
+            "status": "verified_registry",
+            "checked_sources": [
+              {
+                "source_type": "doi_registry",
+                "canonical_record": "https://api.crossref.org/works/10.1109%2FTII.2022.3165027",
+                "checked_at": "2026-08-04T19:29:10.968943+08:00",
+                "result": "match"
+              }
+            ],
+            "title_match": "exact",
+            "author_match": "exact",
+            "version_relation": "same_work",
+            "recommendation_eligible": false,
+            "blocking_reasons": [
+              "实验划分与跨负载结果未取得摘要/全文核验"
+            ]
+          },
+          "evidence_role": "direct_problem",
+          "supports": "题名和书目元数据支持变工况、有限数据主题",
+          "does_not_support": "不支持无泄漏划分、跨负载增益或泛化边界结论",
+          "basis_level": "metadata_level"
+        }
+      },
+      {
+        "candidate_id": "P2",
+        "verification_status": "verified_registry",
+        "recommendation_eligible": false,
+        "evidence_roles": [
+          "direct_problem"
+        ],
+        "selection_role": "direct_problem",
+        "basis_level": "metadata_level",
+        "blocking_reasons": [
+          "不同工况题名不足以证明工况隔离或无泄漏"
+        ],
+        "verified_record": {
+          "paper_id": "P2",
+          "title": "A Deep Transfer Model With Wasserstein Distance Guided Multi-Adversarial Networks for Bearing Fault Diagnosis Under Different Working Conditions",
+          "authors": [
+            "Ming Zhang",
+            "Duo Wang",
+            "Weining Lu",
+            "Jun Yang",
+            "Zhiheng Li",
+            "Bin Liang"
+          ],
+          "year_online": null,
+          "year_issue": 2019,
+          "venue": "IEEE Access",
+          "publication_type": "journal-article",
+          "doi": "10.1109/access.2019.2916935",
+          "canonical_url": "https://doi.org/10.1109/access.2019.2916935",
+          "alternate_id": null,
+          "verification": {
+            "status": "verified_registry",
+            "checked_sources": [
+              {
+                "source_type": "doi_registry",
+                "canonical_record": "https://api.crossref.org/works/10.1109%2FACCESS.2019.2916935",
+                "checked_at": "2026-08-04T19:29:12.512871+08:00",
+                "result": "match"
+              }
+            ],
+            "title_match": "exact",
+            "author_match": "exact",
+            "version_relation": "same_work",
+            "recommendation_eligible": false,
+            "blocking_reasons": [
+              "实验划分、目标域使用和泛化边界未核验"
+            ]
+          },
+          "evidence_role": "direct_problem",
+          "supports": "题名支持不同工况下的轴承迁移诊断",
+          "does_not_support": "不证明目标工况隔离或避免随机切片泄漏",
+          "basis_level": "metadata_level"
+        }
+      },
+      {
+        "candidate_id": "P3",
+        "verification_status": "verified_registry",
+        "recommendation_eligible": false,
+        "evidence_roles": [
+          "direct_problem"
+        ],
+        "selection_role": "direct_problem",
+        "basis_level": "metadata_level",
+        "blocking_reasons": [
+          "仅题名级变工况证据"
+        ],
+        "verified_record": {
+          "paper_id": "P3",
+          "title": "One-Dimensional Multi-Scale Domain Adaptive Network for Bearing-Fault Diagnosis under Varying Working Conditions",
+          "authors": [
+            "Kai Wang",
+            "Wei Zhao",
+            "Aidong Xu",
+            "Peng Zeng",
+            "Shunkun Yang"
+          ],
+          "year_online": 2020,
+          "year_issue": null,
+          "venue": "Sensors",
+          "publication_type": "journal-article",
+          "doi": "10.3390/s20216039",
+          "canonical_url": "https://doi.org/10.3390/s20216039",
+          "alternate_id": null,
+          "verification": {
+            "status": "verified_registry",
+            "checked_sources": [
+              {
+                "source_type": "doi_registry",
+                "canonical_record": "https://api.crossref.org/works/10.3390%2Fs20216039",
+                "checked_at": "2026-08-04T19:29:14.507767+08:00",
+                "result": "match"
+              }
+            ],
+            "title_match": "exact",
+            "author_match": "exact",
+            "version_relation": "same_work",
+            "recommendation_eligible": false,
+            "blocking_reasons": [
+              "隔离划分与泛化边界未取得摘要/全文核验"
+            ]
+          },
+          "evidence_role": "direct_problem",
+          "supports": "题名支持变工况轴承域适应",
+          "does_not_support": "不证明跨负载无泄漏评估",
+          "basis_level": "metadata_level"
+        }
+      },
+      {
+        "candidate_id": "P8",
+        "verification_status": "verified_registry",
+        "recommendation_eligible": false,
+        "evidence_roles": [
+          "method"
+        ],
+        "selection_role": "method",
+        "basis_level": "metadata_level",
+        "blocking_reasons": [
+          "有限数据并不等于跨负载或设备隔离"
+        ],
+        "verified_record": {
+          "paper_id": "P8",
+          "title": "Metric-based meta-learning model for few-shot fault diagnosis under multiple limited data conditions",
+          "authors": [
+            "Duo Wang",
+            "Ming Zhang",
+            "Yuchun Xu",
+            "Weining Lu",
+            "Jun Yang",
+            "Tao Zhang"
+          ],
+          "year_online": null,
+          "year_issue": 2021,
+          "venue": "Mechanical Systems and Signal Processing",
+          "publication_type": "journal-article",
+          "doi": "10.1016/j.ymssp.2020.107510",
+          "canonical_url": "https://doi.org/10.1016/j.ymssp.2020.107510",
+          "alternate_id": null,
+          "verification": {
+            "status": "verified_registry",
+            "checked_sources": [
+              {
+                "source_type": "doi_registry",
+                "canonical_record": "https://api.crossref.org/works/10.1016%2Fj.ymssp.2020.107510",
+                "checked_at": "2026-08-04T19:29:15.791356+08:00",
+                "result": "match"
+              }
+            ],
+            "title_match": "exact",
+            "author_match": "exact",
+            "version_relation": "same_work",
+            "recommendation_eligible": false,
+            "blocking_reasons": [
+              "没有已核验的跨负载/设备隔离设计"
+            ]
+          },
+          "evidence_role": "method",
+          "supports": "题名支持少样本方法候选",
+          "does_not_support": "不支持新增的泛化验证门槛",
+          "basis_level": "metadata_level"
+        }
+      },
+      {
+        "candidate_id": "P9",
+        "verification_status": "verified_registry",
+        "recommendation_eligible": false,
+        "evidence_roles": [
+          "method"
+        ],
+        "selection_role": "method",
+        "basis_level": "metadata_level",
+        "blocking_reasons": [
+          "未确认轴承数据、隔离划分和跨负载边界"
+        ],
+        "verified_record": {
+          "paper_id": "P9",
+          "title": "Integrating Expert Knowledge With Domain Adaptation for Unsupervised Fault Diagnosis",
+          "authors": [
+            "Qin Wang",
+            "Cees Taal",
+            "Olga Fink"
+          ],
+          "year_online": null,
+          "year_issue": 2022,
+          "venue": "IEEE Transactions on Instrumentation and Measurement",
+          "publication_type": "journal-article",
+          "doi": "10.1109/tim.2021.3127654",
+          "canonical_url": "https://doi.org/10.1109/tim.2021.3127654",
+          "alternate_id": null,
+          "verification": {
+            "status": "verified_registry",
+            "checked_sources": [
+              {
+                "source_type": "doi_registry",
+                "canonical_record": "https://api.crossref.org/works/10.1109%2FTIM.2021.3127654",
+                "checked_at": "2026-08-04T19:29:18.105028+08:00",
+                "result": "match"
+              }
+            ],
+            "title_match": "exact",
+            "author_match": "exact",
+            "version_relation": "same_work",
+            "recommendation_eligible": false,
+            "blocking_reasons": [
+              "目标问题与划分依据不足"
+            ]
+          },
+          "evidence_role": "method",
+          "supports": "题名支持专家知识与无监督域适应方法",
+          "does_not_support": "不支持滚动轴承跨负载适配结论",
+          "basis_level": "metadata_level"
+        }
+      },
+      {
+        "candidate_id": "P6",
+        "verification_status": "verified_registry",
+        "recommendation_eligible": false,
+        "evidence_roles": [
+          "transfer_bridge"
+        ],
+        "selection_role": "transfer_bridge",
+        "basis_level": "metadata_level",
+        "blocking_reasons": [
+          "跨数据集题名未说明物理来源隔离与泄漏控制"
+        ],
+        "verified_record": {
+          "paper_id": "P6",
+          "title": "A Novel Bearing Fault Diagnosis Method Based on Few-Shot Transfer Learning across Different Datasets",
+          "authors": [
+            "Yizong Zhang",
+            "Shaobo Li",
+            "Ansi Zhang",
+            "Chuanjiang Li",
+            "Ling Qiu"
+          ],
+          "year_online": 2022,
+          "year_issue": null,
+          "venue": "Entropy",
+          "publication_type": "journal-article",
+          "doi": "10.3390/e24091295",
+          "canonical_url": "https://doi.org/10.3390/e24091295",
+          "alternate_id": null,
+          "verification": {
+            "status": "verified_registry",
+            "checked_sources": [
+              {
+                "source_type": "doi_registry",
+                "canonical_record": "https://api.crossref.org/works/10.3390%2Fe24091295",
+                "checked_at": "2026-08-04T19:29:19.374711+08:00",
+                "result": "match"
+              }
+            ],
+            "title_match": "exact",
+            "author_match": "exact",
+            "version_relation": "same_work",
+            "recommendation_eligible": false,
+            "blocking_reasons": [
+              "数据集、划分与结果未取得摘要/全文核验"
+            ]
+          },
+          "evidence_role": "transfer_bridge",
+          "supports": "题名支持跨数据集少样本迁移",
+          "does_not_support": "不证明 CWRU/PU、轴承隔离或泛化边界",
+          "basis_level": "metadata_level"
+        }
+      },
+      {
+        "candidate_id": "P7",
+        "verification_status": "verified_registry",
+        "recommendation_eligible": false,
+        "evidence_roles": [
+          "transfer_bridge"
+        ],
+        "selection_role": "transfer_bridge",
+        "basis_level": "metadata_level",
+        "blocking_reasons": [
+          "跨域题名不足以通过无泄漏划分门槛"
+        ],
+        "verified_record": {
+          "paper_id": "P7",
+          "title": "Transfer multiscale adaptive convolutional neural network for few-shot and cross-domain bearing fault diagnosis",
+          "authors": [
+            "Fan Li",
+            "Liping Wang",
+            "Decheng Wang",
+            "Jun Wu",
+            "Hongjun Zhao"
+          ],
+          "year_online": 2023,
+          "year_issue": 2023,
+          "venue": "Measurement Science and Technology",
+          "publication_type": "journal-article",
+          "doi": "10.1088/1361-6501/aced5b",
+          "canonical_url": "https://doi.org/10.1088/1361-6501/aced5b",
+          "alternate_id": null,
+          "verification": {
+            "status": "verified_registry",
+            "checked_sources": [
+              {
+                "source_type": "doi_registry",
+                "canonical_record": "https://api.crossref.org/works/10.1088%2F1361-6501%2Faced5b",
+                "checked_at": "2026-08-04T19:29:21.678264+08:00",
+                "result": "match"
+              }
+            ],
+            "title_match": "exact",
+            "author_match": "exact",
+            "version_relation": "same_work",
+            "recommendation_eligible": false,
+            "blocking_reasons": [
+              "隔离单位、数据集和泛化边界未核验"
+            ]
+          },
+          "evidence_role": "transfer_bridge",
+          "supports": "题名支持少样本跨域轴承诊断",
+          "does_not_support": "不证明跨负载或跨设备无泄漏评估",
+          "basis_level": "metadata_level"
+        }
+      },
+      {
+        "candidate_id": "P17",
+        "verification_status": "verified_registry",
+        "recommendation_eligible": true,
+        "evidence_roles": [
+          "counter_limitation"
+        ],
+        "selection_role": "counter_limitation",
+        "basis_level": "fulltext_level",
+        "blocking_reasons": [],
+        "verified_record": {
+          "paper_id": "P17",
+          "title": "Impact of Data Leakage in Vibration Signals Used for Bearing Fault Diagnosis",
+          "authors": [
+            "Lesley Wheat",
+            "Martin V. Mohrenschildt",
+            "Saeid Habibi",
+            "Dhafar Al-Ani"
+          ],
+          "year_online": null,
+          "year_issue": 2024,
+          "venue": "IEEE Access",
+          "publication_type": "journal-article",
+          "doi": "10.1109/access.2024.3497716",
+          "canonical_url": "https://doi.org/10.1109/access.2024.3497716",
+          "alternate_id": null,
+          "verification": {
+            "status": "verified_registry",
+            "checked_sources": [
+              {
+                "source_type": "doi_registry",
+                "canonical_record": "https://api.crossref.org/works/10.1109%2FACCESS.2024.3497716",
+                "checked_at": "2026-08-04T19:29:23.955374+08:00",
+                "result": "match"
+              },
+              {
+                "source_type": "official_repository",
+                "canonical_record": "https://prod-ms-be.lib.mcmaster.ca/server/api/core/bitstreams/464bbf81-0c76-4adc-9942-f07cc5a05954/content",
+                "checked_at": "2026-08-04T19:32:45.3964721+08:00",
+                "result": "match"
+              }
+            ],
+            "title_match": "exact",
+            "author_match": "exact",
+            "version_relation": "same_work",
+            "recommendation_eligible": true,
+            "blocking_reasons": []
+          },
+          "evidence_role": "counter_limitation",
+          "supports": "PU/KAt 上按 run-to-run 与 part-to-part 划分的性能差异，直接支持轴承隔离与泄漏风险门槛",
+          "does_not_support": "不证明某个深度模型在 CWRU/PU 跨负载任务上的优越性",
+          "basis_level": "fulltext_level"
+        },
+        "reasoning_evidence": {
+          "source_url": "https://prod-ms-be.lib.mcmaster.ca/server/api/core/bitstreams/464bbf81-0c76-4adc-9942-f07cc5a05954/content",
+          "anchors": [
+            "p.3 Table 1",
+            "p.9 Section IV split definitions and Tables 5–6",
+            "pp.9–11 Figures 9–10 and Tables 7–8",
+            "p.13 Section VI Conclusion"
+          ],
+          "observed": "part-to-part 以 Bearing Code 隔离；相较 run-to-run，误差最高增加 0.47；作者明确警告 mixed/run-to-run 结果不应假定可泛化。"
+        }
+      },
+      {
+        "candidate_id": "P18",
+        "verification_status": "verified_registry",
+        "recommendation_eligible": true,
+        "evidence_roles": [
+          "direct_problem"
+        ],
+        "selection_role": "direct_problem",
+        "basis_level": "abstract_level",
+        "blocking_reasons": [],
+        "verified_record": {
+          "paper_id": "P18",
+          "title": "Single domain generalizable and physically interpretable bearing fault diagnosis for unseen working conditions",
+          "authors": [
+            "Iljeok Kim",
+            "Sung Wook Kim",
+            "Jeongsan Kim",
+            "Hyunsuk Huh",
+            "Iljoo Jeong",
+            "Taegyu Choi",
+            "Jeongchan Kim",
+            "Seungchul Lee"
+          ],
+          "year_online": null,
+          "year_issue": 2024,
+          "venue": "Expert Systems with Applications",
+          "publication_type": "journal-article",
+          "doi": "10.1016/j.eswa.2023.122455",
+          "canonical_url": "https://doi.org/10.1016/j.eswa.2023.122455",
+          "alternate_id": null,
+          "verification": {
+            "status": "verified_registry",
+            "checked_sources": [
+              {
+                "source_type": "doi_registry",
+                "canonical_record": "https://api.crossref.org/works/10.1016%2Fj.eswa.2023.122455",
+                "checked_at": "2026-08-04T19:29:25.269556+08:00",
+                "result": "match"
+              },
+              {
+                "source_type": "publisher_landing",
+                "canonical_record": "https://www.sciencedirect.com/science/article/pii/S0957417423019570",
+                "checked_at": "2026-08-04T19:31:00+08:00",
+                "result": "unavailable"
+              }
+            ],
+            "title_match": "exact",
+            "author_match": "exact",
+            "version_relation": "same_work",
+            "recommendation_eligible": true,
+            "blocking_reasons": []
+          },
+          "evidence_role": "direct_problem",
+          "supports": "已核验摘要明确把训练中未见工况作为测试对象，并报告多个未训练工况的性能与稳健性",
+          "does_not_support": "未核验具体负载表、随机窗口处理或 CWRU/PU 适用性；不能给出数值增益结论",
+          "basis_level": "abstract_level"
+        },
+        "reasoning_evidence": {
+          "source_url": "https://pure.kaist.ac.kr/en/publications/single-domain-generalizable-and-physically-interpretable-bearing-/",
+          "anchor": "Abstract",
+          "observed": "摘要明确区分训练域与 unseen working conditions，并将 single-source domain generalization 作为问题设定。"
+        }
+      },
+      {
+        "candidate_id": "P19",
+        "verification_status": "verified_registry",
+        "recommendation_eligible": false,
+        "evidence_roles": [
+          "method"
+        ],
+        "selection_role": "method",
+        "basis_level": "abstract_level",
+        "blocking_reasons": [
+          "摘要未给出可核验的负载/设备隔离单位；全文抓取失败"
+        ],
+        "verified_record": {
+          "paper_id": "P19",
+          "title": "Adversarial Domain-Invariant Generalization: A Generic Domain-Regressive Framework for Bearing Fault Diagnosis Under Unseen Conditions",
+          "authors": [
+            "Liang Chen",
+            "Qi Li",
+            "Changqing Shen",
+            "Jun Zhu",
+            "Dong Wang",
+            "Min Xia"
+          ],
+          "year_online": null,
+          "year_issue": 2022,
+          "venue": "IEEE Transactions on Industrial Informatics",
+          "publication_type": "journal-article",
+          "doi": "10.1109/tii.2021.3078712",
+          "canonical_url": "https://doi.org/10.1109/tii.2021.3078712",
+          "alternate_id": null,
+          "verification": {
+            "status": "verified_registry",
+            "checked_sources": [
+              {
+                "source_type": "doi_registry",
+                "canonical_record": "https://api.crossref.org/works/10.1109%2FTII.2021.3078712",
+                "checked_at": "2026-08-04T19:30:02.573653+08:00",
+                "result": "match"
+              }
+            ],
+            "title_match": "exact",
+            "author_match": "exact",
+            "version_relation": "same_work",
+            "recommendation_eligible": false,
+            "blocking_reasons": [
+              "具体隔离划分与泛化边界未核验"
+            ]
+          },
+          "evidence_role": "method",
+          "supports": "摘要支持多源域训练后诊断未见目标工况的域泛化设定",
+          "does_not_support": "不支持具体负载隔离、设备隔离或泄漏控制判断",
+          "basis_level": "abstract_level"
+        }
+      },
+      {
+        "candidate_id": "P20",
+        "verification_status": "verified_registry",
+        "recommendation_eligible": false,
+        "evidence_roles": [
+          "method"
+        ],
+        "selection_role": "method",
+        "basis_level": "metadata_level",
+        "blocking_reasons": [
+          "发现摘要不能作为权威 abstract basis；全文未核验"
+        ],
+        "verified_record": {
+          "paper_id": "P20",
+          "title": "Domain augmentation generalization network for real-time fault diagnosis under unseen working conditions",
+          "authors": [
+            "Yaowei Shi",
+            "Aidong Deng",
+            "Minqiang Deng",
+            "Meng Xu",
+            "Yang Liu",
+            "Xue Ding",
+            "Wenbin Bian"
+          ],
+          "year_online": null,
+          "year_issue": 2023,
+          "venue": "Reliability Engineering & System Safety",
+          "publication_type": "journal-article",
+          "doi": "10.1016/j.ress.2023.109188",
+          "canonical_url": "https://doi.org/10.1016/j.ress.2023.109188",
+          "alternate_id": null,
+          "verification": {
+            "status": "verified_registry",
+            "checked_sources": [
+              {
+                "source_type": "doi_registry",
+                "canonical_record": "https://api.crossref.org/works/10.1016%2Fj.ress.2023.109188",
+                "checked_at": "2026-08-04T19:29:29.022875+08:00",
+                "result": "match"
+              }
+            ],
+            "title_match": "exact",
+            "author_match": "exact",
+            "version_relation": "same_work",
+            "recommendation_eligible": false,
+            "blocking_reasons": [
+              "只有元数据级权威核验"
+            ]
+          },
+          "evidence_role": "method",
+          "supports": "题名支持未见工况域泛化方法",
+          "does_not_support": "不支持具体轴承、负载、划分或边界结论",
+          "basis_level": "metadata_level"
+        }
+      },
+      {
+        "candidate_id": "P21",
+        "verification_status": "verified_registry",
+        "recommendation_eligible": false,
+        "evidence_roles": [
+          "direct_problem"
+        ],
+        "selection_role": "direct_problem",
+        "basis_level": "metadata_level",
+        "blocking_reasons": [
+          "MDPI 页面 429；搜索摘要不能升级 basis"
+        ],
+        "verified_record": {
+          "paper_id": "P21",
+          "title": "Domain Generalization for Bearing Fault Diagnosis via Meta-Learning with Gradient Alignment and Data Augmentation",
+          "authors": [
+            "Gang Chen",
+            "Jun Ye",
+            "Dengke Li",
+            "Lai Hu",
+            "Zixi Wang",
+            "Mengchen Zi",
+            "Chao Liang",
+            "Jiahao Zhang"
+          ],
+          "year_online": 2025,
+          "year_issue": null,
+          "venue": "Machines",
+          "publication_type": "journal-article",
+          "doi": "10.3390/machines13100960",
+          "canonical_url": "https://doi.org/10.3390/machines13100960",
+          "alternate_id": null,
+          "verification": {
+            "status": "verified_registry",
+            "checked_sources": [
+              {
+                "source_type": "doi_registry",
+                "canonical_record": "https://api.crossref.org/works/10.3390%2Fmachines13100960",
+                "checked_at": "2026-08-04T19:29:31.268897+08:00",
+                "result": "match"
+              },
+              {
+                "source_type": "publisher_landing",
+                "canonical_record": "https://doi.org/10.3390/machines13100960",
+                "checked_at": "2026-08-04T19:31:00+08:00",
+                "result": "unavailable"
+              }
+            ],
+            "title_match": "exact",
+            "author_match": "exact",
+            "version_relation": "same_work",
+            "recommendation_eligible": false,
+            "blocking_reasons": [
+              "无法核验全文中的留一负载设计"
+            ]
+          },
+          "evidence_role": "direct_problem",
+          "supports": "题名支持轴承域泛化",
+          "does_not_support": "搜索 snippet 所述留一负载与 98.89% 不作为权威证据",
+          "basis_level": "metadata_level"
+        }
+      },
+      {
+        "candidate_id": "P22",
+        "verification_status": "verified_registry",
+        "recommendation_eligible": false,
+        "evidence_roles": [
+          "method"
+        ],
+        "selection_role": "method",
+        "basis_level": "metadata_level",
+        "blocking_reasons": [
+          "目标域正常样本使用、公开/私有数据和隔离划分未核验"
+        ],
+        "verified_record": {
+          "paper_id": "P22",
+          "title": "Learn Then Adapt: A Novel Test-Time Adaptation Method for Cross-Domain Fault Diagnosis of Rolling Bearings",
+          "authors": [
+            "Wei Li",
+            "Yan Chen",
+            "Jiazhu Li",
+            "Jiajin Wen",
+            "Jian Chen"
+          ],
+          "year_online": 2024,
+          "year_issue": null,
+          "venue": "Electronics",
+          "publication_type": "journal-article",
+          "doi": "10.3390/electronics13193898",
+          "canonical_url": "https://doi.org/10.3390/electronics13193898",
+          "alternate_id": null,
+          "verification": {
+            "status": "verified_registry",
+            "checked_sources": [
+              {
+                "source_type": "doi_registry",
+                "canonical_record": "https://api.crossref.org/works/10.3390%2Felectronics13193898",
+                "checked_at": "2026-08-04T19:29:32.538233+08:00",
+                "result": "match"
+              }
+            ],
+            "title_match": "exact",
+            "author_match": "exact",
+            "version_relation": "same_work",
+            "recommendation_eligible": false,
+            "blocking_reasons": [
+              "关键适配前提未取得权威摘要/全文核验"
+            ]
+          },
+          "evidence_role": "method",
+          "supports": "题名支持跨域轴承测试时适配",
+          "does_not_support": "不证明符合无目标域标签或公开数据约束",
+          "basis_level": "metadata_level"
+        }
+      },
+      {
+        "candidate_id": "P23",
+        "verification_status": "verified_registry",
+        "recommendation_eligible": false,
+        "evidence_roles": [
+          "direct_problem"
+        ],
+        "selection_role": "direct_problem",
+        "basis_level": "metadata_level",
+        "blocking_reasons": [
+          "跨工况题名不足以判断划分和泄漏"
+        ],
+        "verified_record": {
+          "paper_id": "P23",
+          "title": "Bearing fault diagnosis method based on multi-scale domain adaptative network across operating conditions",
+          "authors": [
+            "Gongxian Wang",
+            "Ze Fu",
+            "Zhihui Hu",
+            "Miao Zhang",
+            "Guanghao Lu"
+          ],
+          "year_online": 2022,
+          "year_issue": 2023,
+          "venue": "Measurement Science and Technology",
+          "publication_type": "journal-article",
+          "doi": "10.1088/1361-6501/aca422",
+          "canonical_url": "https://doi.org/10.1088/1361-6501/aca422",
+          "alternate_id": null,
+          "verification": {
+            "status": "verified_registry",
+            "checked_sources": [
+              {
+                "source_type": "doi_registry",
+                "canonical_record": "https://api.crossref.org/works/10.1088%2F1361-6501%2Faca422",
+                "checked_at": "2026-08-04T19:29:33.817874+08:00",
+                "result": "match"
+              }
+            ],
+            "title_match": "exact",
+            "author_match": "exact",
+            "version_relation": "same_work",
+            "recommendation_eligible": false,
+            "blocking_reasons": [
+              "具体实验隔离和数据来源未核验"
+            ]
+          },
+          "evidence_role": "direct_problem",
+          "supports": "题名支持跨工况轴承诊断",
+          "does_not_support": "不支持无泄漏跨负载结果",
+          "basis_level": "metadata_level"
+        }
+      },
+      {
+        "candidate_id": "P24",
+        "verification_status": "verified_registry",
+        "recommendation_eligible": false,
+        "evidence_roles": [
+          "transfer_bridge"
+        ],
+        "selection_role": "transfer_bridge",
+        "basis_level": "metadata_level",
+        "blocking_reasons": [
+          "MDPI 页面 429；跨个体划分细节未核验"
+        ],
+        "verified_record": {
+          "paper_id": "P24",
+          "title": "KACFormer: A Novel Domain Generalization Model for Cross-Individual Bearing Fault Diagnosis",
+          "authors": [
+            "Shimin Shu",
+            "Muchen Xu",
+            "Peifeng Liu",
+            "Peize Yang",
+            "Tianyi Wu",
+            "Jie Yang"
+          ],
+          "year_online": 2025,
+          "year_issue": null,
+          "venue": "Applied Sciences",
+          "publication_type": "journal-article",
+          "doi": "10.3390/app15147932",
+          "canonical_url": "https://doi.org/10.3390/app15147932",
+          "alternate_id": null,
+          "verification": {
+            "status": "verified_registry",
+            "checked_sources": [
+              {
+                "source_type": "doi_registry",
+                "canonical_record": "https://api.crossref.org/works/10.3390%2Fapp15147932",
+                "checked_at": "2026-08-04T19:29:37.285993+08:00",
+                "result": "match"
+              },
+              {
+                "source_type": "publisher_landing",
+                "canonical_record": "https://www.mdpi.com/2076-3417/15/14/7932",
+                "checked_at": "2026-08-04T19:31:00+08:00",
+                "result": "unavailable"
+              }
+            ],
+            "title_match": "exact",
+            "author_match": "exact",
+            "version_relation": "same_work",
+            "recommendation_eligible": false,
+            "blocking_reasons": [
+              "cross-individual 的物理隔离单位未取得正文核验"
+            ]
+          },
+          "evidence_role": "transfer_bridge",
+          "supports": "题名支持跨个体轴承域泛化",
+          "does_not_support": "搜索 snippet 中的 PU/CWRU 数据说明不作为权威 basis",
+          "basis_level": "metadata_level"
+        }
+      },
+      {
+        "candidate_id": "P25",
+        "verification_status": "verified_preprint",
+        "recommendation_eligible": true,
+        "evidence_roles": [
+          "counter_limitation",
+          "transfer_bridge"
+        ],
+        "selection_role": "counter_limitation",
+        "basis_level": "fulltext_level",
+        "blocking_reasons": [],
+        "verified_record": {
+          "paper_id": "P25",
+          "title": "Towards a more realistic evaluation of machine learning models for bearing fault diagnosis",
+          "authors": [
+            "João Paulo Vieira",
+            "Victor Afonso Bauler",
+            "Rodrigo Kobashikawa Rosa",
+            "Danilo Silva"
+          ],
+          "year_online": 2025,
+          "year_issue": null,
+          "venue": "arXiv",
+          "publication_type": "preprint",
+          "doi": null,
+          "canonical_url": "https://arxiv.org/abs/2509.22267v5",
+          "alternate_id": {
+            "authority": "arXiv",
+            "value": "2509.22267v5"
+          },
+          "verification": {
+            "status": "verified_preprint",
+            "checked_sources": [
+              {
+                "source_type": "official_repository",
+                "canonical_record": "https://export.arxiv.org/api/query?id_list=2509.22267",
+                "checked_at": "2026-08-04T19:32:45.3964721+08:00",
+                "result": "match"
+              }
+            ],
+            "title_match": "exact",
+            "author_match": "exact",
+            "version_relation": "same_work",
+            "recommendation_eligible": true,
+            "blocking_reasons": []
+          },
+          "evidence_role": "counter_limitation",
+          "supports": "全文直接比较 segment-wise、condition-wise 与 bearing-wise 泄漏风险，并在 CWRU、PU 等数据上分析训练轴承多样性与泛化边界",
+          "does_not_support": "v5 是预印本；不单独支撑主方向或安全结论，也不证明任一复杂模型适合单 GPU/10 周",
+          "basis_level": "fulltext_level"
+        },
+        "reasoning_evidence": {
+          "source_url": "https://arxiv.org/html/2509.22267v5",
+          "anchors": [
+            "Section 3.1–3.3",
+            "Section 3.3 Table 1",
+            "Section 3.4",
+            "Section 6.2 PU dataset"
+          ],
+          "observed": "正文把 segment-wise、condition-wise 与 repetition-wise 视为可能保留轴承身份信息的划分，并以 bearing-wise 为无物理部件重叠的评估核心；还分析独立训练轴承数量对泛化的影响。",
+          "preprint_notice": "官方记录为 arXiv v5（updated 2026-07-06）；虽显示期刊关联信息，本轮不把期刊版本与预印本合并。"
+        }
+      }
+    ],
+    "selected_ids": [
+      "P17",
+      "P18",
+      "P25"
+    ],
+    "paper_map": {
+      "round": 2,
+      "node_size_basis": "user_fit",
+      "legend": {
+        "evidence_roles": [
+          "direct_problem",
+          "method",
+          "transfer_bridge",
+          "counter_limitation"
+        ],
+        "basis_levels": [
+          "metadata_level",
+          "abstract_level",
+          "fulltext_level"
+        ]
+      },
+      "nodes": [
+        {
+          "id": "B2",
+          "node_type": "cluster",
+          "basis_level": "metadata_level",
+          "short_note": "滚动轴承跨负载；无随机切分泄漏；工况/轴承/设备隔离；泛化边界"
+        },
+        {
+          "id": "C1",
+          "node_type": "cluster",
+          "basis_level": "abstract_level",
+          "short_note": "未见工况直接证据"
+        },
+        {
+          "id": "C2",
+          "node_type": "cluster",
+          "basis_level": "fulltext_level",
+          "short_note": "物理来源隔离与泄漏审计"
+        },
+        {
+          "id": "C3",
+          "node_type": "cluster",
+          "basis_level": "fulltext_level",
+          "short_note": "泛化边界与性能下降"
+        },
+        {
+          "id": "P18",
+          "node_type": "paper",
+          "fit_score": 0.82,
+          "evidence_role": "direct_problem",
+          "verification_status": "verified_registry",
+          "basis_level": "abstract_level",
+          "short_note": "单源域到未见工况；具体划分仍未核"
+        },
+        {
+          "id": "P17",
+          "node_type": "paper",
+          "fit_score": 0.96,
+          "evidence_role": "counter_limitation",
+          "verification_status": "verified_registry",
+          "basis_level": "fulltext_level",
+          "short_note": "PU part-to-part 揭示随机/运行级混合的高估"
+        },
+        {
+          "id": "P25",
+          "node_type": "paper",
+          "fit_score": 0.94,
+          "evidence_role": "counter_limitation",
+          "verification_status": "verified_preprint",
+          "basis_level": "fulltext_level",
+          "short_note": "bearing-wise 划分与 CWRU/PU 泛化边界；预印本"
+        }
+      ],
+      "edges": [
+        {
+          "source": "P18",
+          "target": "C1",
+          "relation": "same_problem",
+          "strength": "medium",
+          "confidence": "medium",
+          "basis_level": "abstract_level",
+          "note": "摘要明确测试未训练工况，但未核具体负载表"
+        },
+        {
+          "source": "P17",
+          "target": "C2",
+          "relation": "claim_support",
+          "strength": "strong",
+          "confidence": "high",
+          "basis_level": "fulltext_level",
+          "note": "part-to-part 与 run-to-run 对照直接约束泄漏判断"
+        },
+        {
+          "source": "P17",
+          "target": "C3",
+          "relation": "claim_tension",
+          "strength": "strong",
+          "confidence": "high",
+          "basis_level": "fulltext_level",
+          "note": "混合物理来源会产生最高 0.47 的误差差异"
+        },
+        {
+          "source": "P25",
+          "target": "C2",
+          "relation": "claim_support",
+          "strength": "strong",
+          "confidence": "medium",
+          "basis_level": "fulltext_level",
+          "note": "bearing-wise 划分避免同一物理轴承跨集合"
+        },
+        {
+          "source": "P25",
+          "target": "C3",
+          "relation": "claim_support",
+          "strength": "strong",
+          "confidence": "medium",
+          "basis_level": "fulltext_level",
+          "note": "分析数据多样性和独立轴承数对泛化的限制"
+        }
+      ],
+      "text_fallback": [
+        {
+          "id": "B2",
+          "node_type": "cluster",
+          "basis_level": "metadata_level",
+          "entry_type": "node",
+          "text": "B2: 滚动轴承跨负载；无随机切分泄漏；工况/轴承/设备隔离；泛化边界"
+        },
+        {
+          "id": "C1",
+          "node_type": "cluster",
+          "basis_level": "abstract_level",
+          "entry_type": "node",
+          "text": "C1: 未见工况直接证据"
+        },
+        {
+          "id": "C2",
+          "node_type": "cluster",
+          "basis_level": "fulltext_level",
+          "entry_type": "node",
+          "text": "C2: 物理来源隔离与泄漏审计"
+        },
+        {
+          "id": "C3",
+          "node_type": "cluster",
+          "basis_level": "fulltext_level",
+          "entry_type": "node",
+          "text": "C3: 泛化边界与性能下降"
+        },
+        {
+          "id": "P18",
+          "node_type": "paper",
+          "basis_level": "abstract_level",
+          "entry_type": "node",
+          "evidence_role": "direct_problem",
+          "verification_status": "verified_registry",
+          "text": "P18: 单源域到未见工况；具体划分仍未核"
+        },
+        {
+          "id": "P17",
+          "node_type": "paper",
+          "basis_level": "fulltext_level",
+          "entry_type": "node",
+          "evidence_role": "counter_limitation",
+          "verification_status": "verified_registry",
+          "text": "P17: PU part-to-part 揭示随机/运行级混合的高估"
+        },
+        {
+          "id": "P25",
+          "node_type": "paper",
+          "basis_level": "fulltext_level",
+          "entry_type": "node",
+          "evidence_role": "counter_limitation",
+          "verification_status": "verified_preprint",
+          "text": "P25: bearing-wise 划分与 CWRU/PU 泛化边界；预印本"
+        },
+        {
+          "entry_type": "edge",
+          "source": "P18",
+          "target": "C1",
+          "relation": "same_problem",
+          "basis_level": "abstract_level",
+          "text": "P18 --same_problem--> C1: 摘要明确测试未训练工况，但未核具体负载表"
+        },
+        {
+          "entry_type": "edge",
+          "source": "P17",
+          "target": "C2",
+          "relation": "claim_support",
+          "basis_level": "fulltext_level",
+          "text": "P17 --claim_support--> C2: part-to-part 与 run-to-run 对照直接约束泄漏判断"
+        },
+        {
+          "entry_type": "edge",
+          "source": "P17",
+          "target": "C3",
+          "relation": "claim_tension",
+          "basis_level": "fulltext_level",
+          "text": "P17 --claim_tension--> C3: 混合物理来源会产生最高 0.47 的误差差异"
+        },
+        {
+          "entry_type": "edge",
+          "source": "P25",
+          "target": "C2",
+          "relation": "claim_support",
+          "basis_level": "fulltext_level",
+          "text": "P25 --claim_support--> C2: bearing-wise 划分避免同一物理轴承跨集合"
+        },
+        {
+          "entry_type": "edge",
+          "source": "P25",
+          "target": "C3",
+          "relation": "claim_support",
+          "basis_level": "fulltext_level",
+          "text": "P25 --claim_support--> C3: 分析数据多样性和独立轴承数对泛化的限制"
+        }
+      ],
+      "mermaid": "flowchart TD\n  n0[\"id=B2; type=cluster; basis=metadata_level; note=滚动轴承跨负载；无随机切分泄漏；工况/轴承/设备隔离；泛化边界\"]\n  n1[\"id=C1; type=cluster; basis=abstract_level; note=未见工况直接证据\"]\n  n2[\"id=C2; type=cluster; basis=fulltext_level; note=物理来源隔离与泄漏审计\"]\n  n3[\"id=C3; type=cluster; basis=fulltext_level; note=泛化边界与性能下降\"]\n  n4[\"id=P18; type=paper; basis=abstract_level; role=direct_problem; status=verified_registry; fit=0.82; note=单源域到未见工况；具体划分仍未核\"]\n  n5[\"id=P17; type=paper; basis=fulltext_level; role=counter_limitation; status=verified_registry; fit=0.96; note=PU part-to-part 揭示随机/运行级混合的高估\"]\n  n6[\"id=P25; type=paper; basis=fulltext_level; role=counter_limitation; status=verified_preprint; fit=0.94; note=bearing-wise 划分与 CWRU/PU 泛化边界；预印本\"]\n  n4 -- \"relation=same_problem; basis=abstract_level; strength=medium; confidence=medium; note=摘要明确测试未训练工况，但未核具体负载表\" --> n1\n  n5 -- \"relation=claim_support; basis=fulltext_level; strength=strong; confidence=high; note=part-to-part 与 run-to-run 对照直接约束泄漏判断\" --> n2\n  n5 -- \"relation=claim_tension; basis=fulltext_level; strength=strong; confidence=high; note=混合物理来源会产生最高 0.47 的误差差异\" --> n3\n  n6 -- \"relation=claim_support; basis=fulltext_level; strength=strong; confidence=medium; note=bearing-wise 划分避免同一物理轴承跨集合\" --> n2\n  n6 -- \"relation=claim_support; basis=fulltext_level; strength=strong; confidence=medium; note=分析数据多样性和独立轴承数对泛化的限制\" --> n3"
+    },
+    "evidence_gaps": [
+      "默认第二轮至少需要 5 篇；当前只有 3 篇具实际推荐资格，缺 2 篇。"
+    ],
+    "search_limitations": [
+      "16 条已入池、去重且有本轮权威记录；另 1 条正确元数据记录在停止点前未取得 reasoning basis，未入池。",
+      "搜索 snippet 和 SciSpace 结果仅发现；没有据此升级 basis。",
+      "错误 DOI 的 404 被保留为 unavailable discovery，不计候选。",
+      "无用户授权的 round_two_request；未扩展到 7–10 篇。",
+      "P17 与 P25 支持泄漏/隔离/泛化边界，P18 仅到摘要层；尚无 5 篇共同覆盖跨负载、设备隔离和边界分析。",
+      "未获得任何候选的可核验单 GPU 运行成本或 10 周复现成本。",
+      "多篇强相关候选只有 Crossref 元数据；403、429 或全文抓取失败阻止划分细节核验。"
+    ],
+    "round_one_dispositions": [
+      {
+        "round_one_id": "P1",
+        "disposition": "replaced",
+        "round_two_id": "P18",
+        "reason": "P18 的已核验摘要直接讨论未训练工况；P1 仍只有题名级变工况相关性",
+        "cause_type": "feedback_delta",
+        "cause_ref": "feedback_delta.added[1]"
+      },
+      {
+        "round_one_id": "P2",
+        "disposition": "downgraded",
+        "round_two_id": null,
+        "reason": "不同工况题名不能证明工况隔离、无泄漏或泛化边界",
+        "cause_type": "feedback_delta",
+        "cause_ref": "feedback_delta.added[2]"
+      },
+      {
+        "round_one_id": "P3",
+        "disposition": "downgraded",
+        "round_two_id": null,
+        "reason": "变工况题名级依据不足以通过新增隔离划分门槛",
+        "cause_type": "feedback_delta",
+        "cause_ref": "feedback_delta.reset[1]"
+      },
+      {
+        "round_one_id": "P8",
+        "disposition": "removed",
+        "round_two_id": null,
+        "reason": "有限数据方法并非跨负载/设备隔离证据，且无新增摘要或全文核验",
+        "cause_type": "feedback_delta",
+        "cause_ref": "feedback_delta.rejected[1]"
+      },
+      {
+        "round_one_id": "P9",
+        "disposition": "removed",
+        "round_two_id": null,
+        "reason": "未核验为滚动轴承跨负载任务，也未核验隔离划分",
+        "cause_type": "feedback_delta",
+        "cause_ref": "feedback_delta.added[1]"
+      },
+      {
+        "round_one_id": "P6",
+        "disposition": "downgraded",
+        "round_two_id": null,
+        "reason": "跨数据集题名相关，但物理轴承/设备隔离和泄漏控制未取得正文核验",
+        "cause_type": "feedback_delta",
+        "cause_ref": "feedback_delta.added[2]"
+      },
+      {
+        "round_one_id": "P7",
+        "disposition": "downgraded",
+        "round_two_id": null,
+        "reason": "跨域题名不足以证明按工况或设备隔离及泛化边界",
+        "cause_type": "feedback_delta",
+        "cause_ref": "feedback_delta.added[3]"
+      },
+      {
+        "round_one_id": "P17",
+        "disposition": "retained",
+        "round_two_id": "P17",
+        "reason": "新检查的全文直接比较 run-to-run 与 part-to-part，并量化泄漏导致的性能高估",
+        "cause_type": "new_evidence",
+        "cause_ref": "round2.candidate_pool[7].verified_record.verification.checked_sources[1]"
+      }
+    ]
+  }
+}

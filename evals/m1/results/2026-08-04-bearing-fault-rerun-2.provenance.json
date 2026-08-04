@@ -1,0 +1,36 @@
+{
+  "schema_version": "m1-provenance.1",
+  "case_id": "case-b-bearing-fault",
+  "run_commit": "556a408284efd9b40e1584b8bb8216e96e569f6c",
+  "input_markdown": "evals/m1/results/2026-08-04-bearing-fault.md + evals/m1/results/2026-08-04-bearing-fault-rerun-2.md",
+  "input_frozen_range": "round one from the initial accepted record; round two from accepted rerun-2 lines and fields; no other case used",
+  "read_other_cases": false,
+  "verification_window": {
+    "timezone": "Asia/Shanghai",
+    "started_at": "2026-08-04T19:28:20.6672107+08:00",
+    "ended_at": "2026-08-04T19:32:45.3964721+08:00"
+  },
+  "tools": [
+    "nature-academic-search no-MCP workflow",
+    "Crossref REST API",
+    "arXiv official API and record",
+    "ordinary web search and SciSpace for discovery only",
+    "publisher, official repository, and institutional repository inspection"
+  ],
+  "authoritative_sources": [
+    "Crossref DOI registry",
+    "arXiv official repository",
+    "publisher and institutional repository records actually inspected"
+  ],
+  "execution_deviations": [
+    "Converted accepted m1.1 Brief, SearchPlan, FeedbackDelta, and PaperMap representation to closed m1.2 fields without promoting any candidate basis or eligibility.",
+    "Represented the round-one unspecified target metric as '未指定' and wrapped the scalar time boundary as a one-item list; no metric was inferred.",
+    "Preserved all round-one and non-count round-two evidence-gap prose verbatim under search_limitations; retained the exact accepted hard gap that only 3 eligible papers exist and 2 are missing.",
+    "Resolved the historical candidate-ID collision deterministically: the unselected round-one P18 record was renamed P26, including its internal paper_id, because accepted round-two P18 identifies a different DOI; neither work's DOI, title, authors, status, basis, or eligibility changed.",
+    "Converted historical brief nodes B1 and B2 to m1.2 cluster nodes and omitted layout-only cluster edges C1--B1, C2--B1, C3--B1, C4--B1, C1--B2, C2--B2, and C3--B2; no edge was converted into a paper claim.",
+    "Added the already recorded McMaster institutional full-text URL as P17 checked source; derived_timestamp=true uses the accepted run ended_at only as a conservative no-later-than record time because the Markdown recorded no source-specific request time; the historical page anchors remain in reasoning_evidence.",
+    "Regenerated text_fallback and mermaid from the preserved ordered structured nodes and remaining paper-supported edges."
+  ],
+  "bundle_sha256": "08ca330a35080e4f4426cf2fbfa2a5d219a0e8e73e2e50c1f5362f4fb9fe06ad",
+  "validation_sha256": "caa6924e24a30868be681db80ea9073f300c154f60ccc2ce9fadd4b9fbb864e4"
+}
