@@ -1212,6 +1212,8 @@ def _validate_bundle(bundle: dict) -> dict:
             result,
         )
 
+    if outcome == "evidence_incomplete" and not result.evidence_gaps:
+        result.error("evidence_incomplete_without_gap")
     _validate_terminal_state_consistency(
         stopped, terminal, outcome, round_two_ready, result
     )

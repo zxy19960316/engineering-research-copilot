@@ -317,6 +317,20 @@ def make_round_two_incomplete_bundle() -> dict:
     return bundle
 
 
+def run_cli_bundle(bundle: dict) -> subprocess.CompletedProcess[str]:
+    script = SCRIPTS_DIR / "validate_m1_bundle.py"
+    with tempfile.TemporaryDirectory() as directory:
+        fixture_path = Path(directory) / "bundle.json"
+        fixture_path.write_text(json.dumps(bundle), encoding="utf-8")
+        return subprocess.run(
+            [sys.executable, str(script), str(fixture_path)],
+            check=False,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+        )
+
+
 def set_expanded_round_two_selection(bundle: dict, count: int) -> None:
     if count <= 10:
         selected_ids = [
@@ -459,6 +473,39 @@ class ValidateM1BundleTests(unittest.TestCase):
             "complete_terminal_state_without_ready_round_two",
             validate_bundle(bundle)["errors"],
         )
+
+    def test_complete_round_one_cannot_claim_incomplete_without_gap(self):
+        bundle = make_complete_fixture_bundle()
+        bundle.update(
+            {
+                "terminal_state": "WAITING_FOR_EVIDENCE_DECISION",
+                "stopped_after_round": 1,
+                "outcome": "evidence_incomplete",
+            }
+        )
+        del bundle["feedback_delta"]
+        del bundle["round2"]
+        result = validate_bundle(bundle)
+        self.assertEqual(result["status"], "invalid")
+        self.assertIn("evidence_incomplete_without_gap", result["errors"])
+        completed = run_cli_bundle(bundle)
+        self.assertEqual(completed.returncode, 1)
+        self.assertEqual(json.loads(completed.stdout), result)
+
+    def test_complete_round_two_cannot_claim_incomplete_without_gap(self):
+        bundle = make_complete_fixture_bundle()
+        bundle.update(
+            {
+                "terminal_state": "WAITING_FOR_EVIDENCE_DECISION",
+                "outcome": "evidence_incomplete",
+            }
+        )
+        result = validate_bundle(bundle)
+        self.assertEqual(result["status"], "invalid")
+        self.assertIn("evidence_incomplete_without_gap", result["errors"])
+        completed = run_cli_bundle(bundle)
+        self.assertEqual(completed.returncode, 1)
+        self.assertEqual(json.loads(completed.stdout), result)
 
     def test_authorized_eight_paper_round_two_returns_valid(self):
         bundle = make_complete_fixture_bundle()
