@@ -28,7 +28,7 @@ Treat the two searches as one calibration cycle, not a permanent limit. If the u
 
 | User need | Load and apply |
 |---|---|
-| Find, verify, compare, or re-search papers | [Citation integrity](references/core-citation-integrity.md), [Paper evidence map](references/core-paper-map.md), and [Feedback rollback](references/core-feedback-rollback.md) |
+| Find, verify, compare, or re-search papers | [Paper calibration](references/core-paper-calibration.md), [Citation integrity](references/core-citation-integrity.md), [Paper evidence map](references/core-paper-map.md), and [Feedback rollback](references/core-feedback-rollback.md) |
 | Confirm or compare research directions | [Direction decision](references/core-direction-decision.md) and, when papers are used, [Citation integrity](references/core-citation-integrity.md) |
 | React to dissatisfaction or changed constraints | [Feedback rollback](references/core-feedback-rollback.md) |
 | Plan an experiment, simulation, or minimum decisive test | [Direction decision](references/core-direction-decision.md); require `user_confirmed` direction status first |
@@ -38,30 +38,9 @@ Treat the two searches as one calibration cycle, not a permanent limit. If the u
 
 Load only the references required for the current route. Do not load every reference by default.
 
-## Build the adaptive research brief
-
-Extract information already present in the user's request. Ask no more than three short questions, and only when missing answers would materially change the search or direction decision:
-
-1. Identify the engineering object, phenomenon, problem, or target metric.
-2. Identify available data, equipment, software, compute, people, and time.
-3. Identify preferred or excluded experimental, simulation, control, optimization, machine-learning, or theoretical routes.
-
-Summarize the resulting brief in a few lines. Continue without a confirmation turn when the search space is clear. Pause only for material ambiguity, an irreversible choice, or a safety/compliance issue.
-
 ## Calibrate papers in two rounds
 
-1. Search broadly enough to assemble 15–20 candidates from appropriate scholarly sources.
-2. Verify identifiers and metadata before recommendation; deduplicate DOI first, then title plus first author.
-3. Build a first-round user view of eight papers when reliable evidence exists:
-   - three direct-problem sources;
-   - two method sources;
-   - two transfer or bridge sources;
-   - one counterexample or limitation source.
-4. Do not fill a missing evidence role with a weak paper. Report the evidence gap and search boundary.
-5. Render the static evidence map and exact citation index using [Paper evidence map](references/core-paper-map.md).
-6. Accept ordinary chat feedback; do not require the user to read or score every paper.
-7. Show inherited constraints, exclusions and reasons, resets, new conditions, and exploration budget before the next search.
-8. Return five to six second-round papers by default and explain every retained, added, replaced, or downgraded item. Expand to at most ten only on request.
+Load and apply [Paper calibration](references/core-paper-calibration.md) as the state contract. Apply [Citation integrity](references/core-citation-integrity.md) to candidate admission and recommendation eligibility, [Paper evidence map](references/core-paper-map.md) to each round view, and [Feedback rollback](references/core-feedback-rollback.md) to the round transition. Keep incomplete evidence visible and stop at the M1 boundary defined in the calibration reference.
 
 ## Decide a direction without suppressing innovation
 
