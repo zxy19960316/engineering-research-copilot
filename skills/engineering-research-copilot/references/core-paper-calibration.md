@@ -167,7 +167,28 @@ Create a new brief version before round two. Match the second-round plan to the 
 
 Build a second `RoundBundle` with `round: 2`, the revised brief, the revised search plan, and the verified candidate state used for selection. Keep candidate IDs stable for carried records and assign new IDs only to newly admitted works.
 
-Return five to six recommendation-eligible papers by default when reliable evidence exists. Return seven to ten only after an explicit user request to expand round two, record that request in the round limitations or transition evidence, and never exceed ten. Preserve missing role coverage and search limits instead of filling slots with weak records.
+Return five to six recommendation-eligible papers by default when reliable evidence exists. Preserve missing role coverage and search limits instead of filling slots with weak records.
+
+Add `round_two_request` only to a round-two bundle. Use this exact object when the user explicitly requests eight papers:
+
+```yaml
+round_bundle:
+  schema_version: "m1.1"
+  round: 2
+  research_brief: {}
+  search_plan: {}
+  candidate_pool: []
+  selected_ids: ["P1", "P2", "P4", "P5", "P9", "P16", "P17", "P18"]
+  round_two_request:
+    explicit_user_request: true
+    requested_count: 8
+  paper_map: {}
+  round_one_dispositions: []
+  evidence_gaps: []
+  search_limitations: []
+```
+
+For the default five-to-six-paper result, omit `round_two_request` or set `explicit_user_request: false`; when the object is present, set integer `requested_count` to the exact number of round-two `selected_ids`. Allow seven to ten selected IDs only when `round_two_request.explicit_user_request` is exactly `true` and `round_two_request.requested_count` equals the selected-ID count. Treat seven to ten without that authorization, any requested-count mismatch, any count above ten, or any `round_two_request` field in a round-one bundle as invalid. Never infer expansion authorization from an old brief, allocation, or assistant suggestion.
 
 Attach `round_one_dispositions` to the round-two bundle with this shape:
 

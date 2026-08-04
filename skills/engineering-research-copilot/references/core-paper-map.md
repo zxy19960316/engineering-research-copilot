@@ -25,7 +25,9 @@ For round one, select up to eight recommendation-eligible papers with this fixed
 
 Fill a role slot only with a verified record that is recommendation-eligible and supported at the declared basis level. Do not reassign a weaker, blocked, partial, or merely discovered paper to fill a missing role. Do not borrow an eligible paper from another role to make the total look complete. Record every unfilled role and count in `evidence_gaps`, set the round outcome to `evidence_incomplete`, leave the slot empty, and stop on the non-success path defined by the calibration contract.
 
-For round two, show five to six recommendation-eligible papers by default when reliable evidence supports that count. Show seven to ten only after the user explicitly requests an expanded second round. Never show more than ten, and never pad a short second round with weak or ineligible evidence.
+For round two, show five to six recommendation-eligible papers by default when reliable evidence supports that count. For this default, let the containing round-two bundle omit `round_two_request` or set `round_two_request.explicit_user_request: false` with `requested_count` equal to the selected-ID count.
+
+Show seven to ten only when the containing round-two bundle records both `round_two_request.explicit_user_request: true` and a `round_two_request.requested_count` equal to the selected-ID count. Treat a missing or false authorization, a requested-count mismatch, or more than ten selected IDs as invalid. Do not put `round_two_request` in a round-one bundle, infer authorization, or pad a short second round with weak or ineligible evidence.
 
 ## Build the map
 
