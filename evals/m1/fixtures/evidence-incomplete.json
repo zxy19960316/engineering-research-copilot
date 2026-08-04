@@ -32,7 +32,7 @@
       "round": 1,
       "brief_version": 1,
       "branch_id": "branch-a",
-      "time_boundary": "fixture only",
+      "time_boundary": ["fixture only"],
       "language_boundary": [
         "English"
       ],
@@ -41,7 +41,7 @@
       ],
       "queries": [
         {
-          "query_id": "Q1-R1",
+          "query_id": "Q-STABLE",
           "purpose": "direct_problem",
           "query_text": "public engineering simulation evidence",
           "expected_evidence_role": "direct_problem",

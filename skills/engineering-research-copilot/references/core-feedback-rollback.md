@@ -88,7 +88,7 @@ feedback_delta:
     exploit: 30
     explore: 70
   query_changes:
-    - query_id: "Q2-R2"
+    - query_id: "Q-STABLE"
       reason: "Exclude proprietary-data routes and expand public simulation evidence"
       cause_refs:
         - "feedback_delta.rejected[0]"
@@ -110,7 +110,7 @@ Add at least one `query_changes` entry whenever any rejection reason, new constr
 
 Require every `cause_refs` path to resolve to an existing entry. Require every material item in `rejected`, `reset`, and `added` to appear in at least one query change's `cause_refs`; allow one material item to affect multiple query changes and one query change to cite multiple material items. Treat an unresolved path, a forbidden inherited path, or an uncovered material item as invalid.
 
-State the causal reason. For an added or modified query, set `query_changes.query_id` to the ID of exactly one query in the revised round-two `SearchPlan`. For a removed query, set `query_changes.query_id` to the deleted round-one `SearchPlan` query ID; require that ID to exist in round one and be absent from round two. Do not require a removed query ID to resolve in the round-two plan.
+State the causal reason. For a modified query, preserve one stable `query_id`, require that ID exactly once in each round, and match `before` and `after` only within the corresponding round's query object. For an added query, require its ID to be absent from round one and present exactly once in round two. For a removed query, require its ID exactly once in round one and absent from round two. Never use a matching string under a different query ID as evidence that the change was applied.
 
 Set `before` to the exact round-one query expression or boundary and `after` to the exact round-two query expression or boundary. For an added query, allow only `before` to be empty. For a removed query, allow only `after` to be empty. For a modified query or boundary, require both values to be non-empty and different. Never leave both values empty for an applied material change. Require every non-empty `after` value to match the revised round-two plan. If feedback does not change a query because an existing query already enforces it, classify that feedback effect as non-material with a visible reason; do not create a false query change.
 

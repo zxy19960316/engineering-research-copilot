@@ -112,7 +112,7 @@ def _paper_map(round_number: int, selected_ids: list[str]) -> dict:
 
 def _round_bundle(round_number: int, selected_ids: list[str]) -> dict:
     brief_version = round_number
-    query_id = "Q1-R1" if round_number == 1 else "Q2-R2"
+    query_id = "Q-STABLE"
     query_text = (
         "public engineering simulation evidence"
         if round_number == 1
@@ -141,7 +141,7 @@ def _round_bundle(round_number: int, selected_ids: list[str]) -> dict:
             "round": round_number,
             "brief_version": brief_version,
             "branch_id": "branch-a",
-            "time_boundary": "fixture only",
+            "time_boundary": ["fixture only"],
             "language_boundary": ["English"],
             "source_boundary": ["offline_contract_fixture"],
             "queries": [
@@ -261,7 +261,7 @@ def make_complete_fixture_bundle() -> dict:
             "allocation": {"exploit": 30, "explore": 70},
             "query_changes": [
                 {
-                    "query_id": "Q2-R2",
+                    "query_id": "Q-STABLE",
                     "reason": "Exclude proprietary-data routes",
                     "cause_refs": [
                         "feedback_delta.rejected[0]",
@@ -819,6 +819,103 @@ class ValidateM1BundleTests(unittest.TestCase):
         bundle["feedback_delta"]["query_changes"][0]["after"] = unchanged
         result = validate_bundle(bundle)
         self.assertIn("feedback_query_change_noop", result["errors"])
+
+    def test_feedback_before_must_match_same_query_id(self):
+        bundle = make_complete_fixture_bundle()
+        bundle["feedback_delta"]["query_changes"][0]["query_id"] = "Q1-R1"
+        self.assertIn(
+            "feedback_after_query_id_mismatch", validate_bundle(bundle)["errors"]
+        )
+
+    def test_duplicate_query_id_is_invalid(self):
+        bundle = make_complete_fixture_bundle()
+        query = json.loads(
+            json.dumps(bundle["round2"]["search_plan"]["queries"][0])
+        )
+        bundle["round2"]["search_plan"]["queries"].append(query)
+        self.assertIn("duplicate_query_id", validate_bundle(bundle)["errors"])
+
+    def test_missing_query_text_is_invalid(self):
+        bundle = make_complete_fixture_bundle()
+        del bundle["round1"]["search_plan"]["queries"][0]["query_text"]
+        self.assertIn("query_fields_invalid", validate_bundle(bundle)["errors"])
+
+    def test_query_branch_id_mismatch_is_invalid(self):
+        bundle = make_complete_fixture_bundle()
+        bundle["round2"]["search_plan"]["branch_id"] = "branch-b"
+        self.assertIn("search_plan_branch_mismatch", validate_bundle(bundle)["errors"])
+
+    def test_brief_unknown_field_is_invalid(self):
+        bundle = make_complete_fixture_bundle()
+        bundle["round1"]["research_brief"]["extra"] = "closed schema"
+        self.assertIn("research_brief_fields_invalid", validate_bundle(bundle)["errors"])
+
+    def test_plan_missing_boundary_is_invalid(self):
+        bundle = make_complete_fixture_bundle()
+        del bundle["round1"]["search_plan"]["source_boundary"]
+        self.assertIn("search_plan_fields_invalid", validate_bundle(bundle)["errors"])
+
+    def test_boolean_brief_version_is_invalid(self):
+        bundle = make_complete_fixture_bundle()
+        bundle["round1"]["research_brief"]["brief_version"] = True
+        self.assertIn("invalid_brief_version", validate_bundle(bundle)["errors"])
+
+    def test_round_two_branch_id_mismatch_is_invalid(self):
+        bundle = make_complete_fixture_bundle()
+        bundle["round2"]["research_brief"]["branch_id"] = "branch-b"
+        bundle["round2"]["search_plan"]["branch_id"] = "branch-b"
+        self.assertIn("cross_round_branch_mismatch", validate_bundle(bundle)["errors"])
+
+    def test_modified_query_uses_one_stable_id_in_both_rounds(self):
+        bundle = make_complete_fixture_bundle()
+        self.assertNotIn(
+            "feedback_before_query_id_mismatch", validate_bundle(bundle)["errors"]
+        )
+        bundle["round2"]["search_plan"]["queries"][0]["query_id"] = "Q-NEW"
+        self.assertIn(
+            "feedback_after_query_id_mismatch", validate_bundle(bundle)["errors"]
+        )
+
+    def test_added_query_id_exists_only_in_round_two(self):
+        bundle = make_complete_fixture_bundle()
+        added_query = json.loads(
+            json.dumps(bundle["round2"]["search_plan"]["queries"][0])
+        )
+        added_query["query_id"] = "Q-ADDED"
+        added_query["query_text"] = "new public simulation branch"
+        bundle["round2"]["search_plan"]["queries"].append(added_query)
+        change = bundle["feedback_delta"]["query_changes"][0]
+        change.update(
+            {"query_id": "Q-ADDED", "before": "", "after": added_query["query_text"]}
+        )
+        added_errors = validate_bundle(bundle)["errors"]
+        self.assertNotIn("feedback_query_addition_not_explicit", added_errors)
+        self.assertNotIn("feedback_after_query_id_mismatch", added_errors)
+        bundle["round1"]["search_plan"]["queries"].append(
+            json.loads(json.dumps(added_query))
+        )
+        self.assertIn(
+            "feedback_query_addition_not_explicit", validate_bundle(bundle)["errors"]
+        )
+
+    def test_removed_query_id_exists_only_in_round_one(self):
+        bundle = make_complete_fixture_bundle()
+        change = bundle["feedback_delta"]["query_changes"][0]
+        change.update(
+            {
+                "query_id": "Q-STABLE",
+                "before": "public engineering simulation evidence",
+                "after": "",
+            }
+        )
+        removed_query = bundle["round2"]["search_plan"]["queries"].pop()
+        removed_errors = validate_bundle(bundle)["errors"]
+        self.assertNotIn("feedback_query_removal_not_explicit", removed_errors)
+        self.assertNotIn("feedback_before_query_id_mismatch", removed_errors)
+        bundle["round2"]["search_plan"]["queries"].append(removed_query)
+        self.assertIn(
+            "feedback_query_removal_not_explicit", validate_bundle(bundle)["errors"]
+        )
 
     def test_short_pool_with_visible_search_limit_returns_incomplete(self):
         bundle = make_complete_fixture_bundle()

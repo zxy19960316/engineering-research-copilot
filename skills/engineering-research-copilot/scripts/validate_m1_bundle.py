@@ -89,6 +89,68 @@ FEEDBACK_ITEM_FIELDS = {
     "reset": {"object_id", "previous_value", "reason"},
     "added": {"object_id", "value", "reason"},
 }
+RESEARCH_BRIEF_FIELDS = {
+    "brief_version",
+    "branch_id",
+    "engineering_object",
+    "target_problem",
+    "target_metric",
+    "available_data",
+    "resources",
+    "time_budget",
+    "preferred_routes",
+    "excluded_routes",
+    "hard_constraints",
+    "soft_preferences",
+    "open_questions",
+    "evidence_needs",
+}
+RESEARCH_BRIEF_TEXT_FIELDS = {
+    "engineering_object",
+    "target_problem",
+    "target_metric",
+    "time_budget",
+}
+RESEARCH_BRIEF_LIST_FIELDS = {
+    "available_data",
+    "resources",
+    "preferred_routes",
+    "excluded_routes",
+    "hard_constraints",
+    "soft_preferences",
+    "open_questions",
+    "evidence_needs",
+}
+SEARCH_PLAN_FIELDS = {
+    "round",
+    "brief_version",
+    "branch_id",
+    "time_boundary",
+    "language_boundary",
+    "source_boundary",
+    "queries",
+    "limitations",
+}
+SEARCH_PLAN_LIST_FIELDS = {
+    "time_boundary",
+    "language_boundary",
+    "source_boundary",
+    "limitations",
+}
+QUERY_FIELDS = {
+    "query_id",
+    "purpose",
+    "query_text",
+    "expected_evidence_role",
+    "inclusion_terms",
+    "exclusion_terms",
+}
+QUERY_PURPOSES = {
+    "direct_problem",
+    "method",
+    "transfer_bridge",
+    "counter_limitation",
+}
 _DOI_PREFIX = re.compile(
     r"^(?:https?://(?:dx\.)?doi\.org/|doi:\s*)", re.IGNORECASE
 )
@@ -700,6 +762,86 @@ def _contains_exact_text(value: Any, target: str) -> bool:
     return False
 
 
+def _validate_research_brief(value: Any, result: _Result) -> dict:
+    if not isinstance(value, dict):
+        result.error("invalid_research_brief")
+        return {}
+    if set(value) != RESEARCH_BRIEF_FIELDS:
+        result.error("research_brief_fields_invalid")
+
+    brief_version = value.get("brief_version")
+    if type(brief_version) is not int or brief_version <= 0:
+        result.error("invalid_brief_version")
+    if not _nonempty_text(value.get("branch_id")):
+        result.error("invalid_brief_branch_id")
+    for field in RESEARCH_BRIEF_TEXT_FIELDS:
+        if not _nonempty_text(value.get(field)):
+            result.error("research_brief_text_invalid")
+    for field in RESEARCH_BRIEF_LIST_FIELDS:
+        if not isinstance(value.get(field), list):
+            result.error("research_brief_list_invalid")
+    return value
+
+
+def _validate_search_plan(
+    value: Any,
+    expected_round: int,
+    brief: dict,
+    result: _Result,
+) -> dict:
+    if not isinstance(value, dict):
+        result.error("invalid_search_plan")
+        return {}
+    if set(value) != SEARCH_PLAN_FIELDS:
+        result.error("search_plan_fields_invalid")
+
+    plan_round = value.get("round")
+    if type(plan_round) is not int or plan_round != expected_round:
+        result.error("search_plan_round_mismatch")
+    plan_version = value.get("brief_version")
+    if type(plan_version) is not int or plan_version <= 0:
+        result.error("invalid_search_plan_brief_version")
+    if plan_version != brief.get("brief_version"):
+        result.error("search_plan_brief_version_mismatch")
+    branch_id = value.get("branch_id")
+    if not _nonempty_text(branch_id):
+        result.error("invalid_search_plan_branch_id")
+    if branch_id != brief.get("branch_id"):
+        result.error("search_plan_branch_mismatch")
+    for field in SEARCH_PLAN_LIST_FIELDS:
+        if not isinstance(value.get(field), list):
+            result.error("search_plan_boundary_invalid")
+
+    queries = value.get("queries")
+    if not isinstance(queries, list):
+        result.error("invalid_search_plan_queries")
+        return value
+    query_ids: list[str] = []
+    for query in queries:
+        if not isinstance(query, dict) or set(query) != QUERY_FIELDS:
+            result.error("query_fields_invalid")
+            continue
+        query_id = query.get("query_id")
+        if not _nonempty_text(query_id):
+            result.error("invalid_query_id")
+        else:
+            query_ids.append(query_id)
+        if not _nonempty_text(query.get("query_text")):
+            result.error("invalid_query_text")
+        purpose = query.get("purpose")
+        if not isinstance(purpose, str) or purpose not in QUERY_PURPOSES:
+            result.error("invalid_query_purpose")
+        if query.get("expected_evidence_role") not in EVIDENCE_ROLES:
+            result.error("invalid_query_evidence_role")
+        if not isinstance(query.get("inclusion_terms"), list) or not isinstance(
+            query.get("exclusion_terms"), list
+        ):
+            result.error("invalid_query_terms")
+    if len(query_ids) != len(set(query_ids)):
+        result.error("duplicate_query_id")
+    return value
+
+
 def _validate_feedback_items(feedback: dict, result: _Result) -> None:
     for kind, expected in FEEDBACK_ITEM_FIELDS.items():
         items = _as_list(feedback.get(kind), result, f"invalid_feedback_{kind}")
@@ -815,18 +957,17 @@ def _validate_feedback(bundle: dict, result: _Result) -> None:
             for query in queries_two
             if isinstance(query, dict) and query.get("query_id") == query_id
         ]
-        before_any = [
-            query
-            for query in queries_one
-            if isinstance(query, dict) and _contains_exact_text(query, before)
-        ] if before else []
-
-        if before and not before_any:
+        if before and (
+            len(matching_one) != 1
+            or not _contains_exact_text(matching_one[0], before)
+        ):
+            result.error("feedback_before_query_id_mismatch")
             result.error("feedback_before_not_in_round1")
         if before and after and before == after:
             result.error("feedback_query_change_noop")
         if after:
             if len(matching_two) != 1 or not _contains_exact_text(matching_two[0], after):
+                result.error("feedback_after_query_id_mismatch")
                 result.error("feedback_after_not_in_round2")
                 result.error("feedback_query_change_not_implemented")
         if not before:
@@ -862,6 +1003,16 @@ def _validate_feedback(bundle: dict, result: _Result) -> None:
                 result.error("feedback_brief_version_mismatch")
             if plan_one.get("round") != 1 or plan_two.get("round") != 2:
                 result.error("search_plan_round_mismatch")
+            branches = [
+                brief_one.get("branch_id"),
+                brief_two.get("branch_id"),
+                plan_one.get("branch_id"),
+                plan_two.get("branch_id"),
+            ]
+            if not all(_nonempty_text(branch) for branch in branches) or len(
+                set(branches)
+            ) != 1:
+                result.error("cross_round_branch_mismatch")
 
 
 def _normalize_identity_text(value: str) -> str:
@@ -1236,6 +1387,8 @@ def _validate_round(
         result.error("round_number_mismatch")
     if name == "round1" and "round_two_request" in round_bundle:
         result.error("round_two_request_in_round_one")
+    brief = _validate_research_brief(round_bundle.get("research_brief"), result)
+    _validate_search_plan(round_bundle.get("search_plan"), number, brief, result)
     index, _ordered_ids, eligible_count = _candidate_index(
         round_bundle, fixture_mode, result
     )

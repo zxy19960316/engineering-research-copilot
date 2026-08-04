@@ -624,7 +624,7 @@ git commit -m "fix: align FeedbackDelta schema across contracts and validator"
 - Consumes: complete per-round `research_brief`, `search_plan`, and FeedbackDelta `query_changes`.
 - Produces: `_validate_research_brief()`, `_validate_search_plan()`, and same-query-ID before/after binding.
 
-- [ ] **Step 1: Add closed-shape tests**
+- [x] **Step 1: Add closed-shape tests**
 
 Add:
 
@@ -672,7 +672,7 @@ def test_round_two_branch_id_mismatch_is_invalid(self):
     self.assertIn("cross_round_branch_mismatch", validate_bundle(bundle)["errors"])
 ```
 
-- [ ] **Step 2: Add exact field constants and validators**
+- [x] **Step 2: Add exact field constants and validators**
 
 Use:
 
@@ -696,7 +696,7 @@ QUERY_PURPOSES = {"direct_problem", "method", "transfer_bridge", "counter_limita
 
 Reject missing and unknown fields. Require positive non-boolean integer `brief_version`; nonempty `branch_id`; string fields for object/problem/metric/time budget; list values for every plural Brief field and all Plan boundaries/limitations; unique nonempty query IDs and query text; closed purposes and evidence roles.
 
-- [ ] **Step 3: Bind every query change to its own ID**
+- [x] **Step 3: Bind every query change to its own ID**
 
 Replace global text search with indexed lookup:
 
@@ -714,7 +714,7 @@ for change in feedback["query_changes"]:
 
 For a newly added query, require ID absent from round one and present in round two. For a removed query, require ID present in round one and absent from round two. M1.2 does not introduce a branch-change object, so require the same nonempty `branch_id` in both Briefs and both Plans.
 
-- [ ] **Step 4: Run all validator tests and fixture replay**
+- [x] **Step 4: Run all validator tests and fixture replay**
 
 ```powershell
 python -m unittest discover -s tests -p "test_validate_m1_bundle.py" -v
@@ -722,7 +722,7 @@ python -m unittest discover -s tests -p "test_validate_m1_bundle.py" -v
 
 Expected: all tests pass. Re-run the six Task 2 fixture commands and require their exit/status/error/gap arrays to match the frozen results.
 
-- [ ] **Step 5: Commit Brief/Plan closure**
+- [x] **Step 5: Commit Brief/Plan closure**
 
 ```powershell
 git add -- skills/engineering-research-copilot/references/core-paper-calibration.md skills/engineering-research-copilot/references/core-feedback-rollback.md skills/engineering-research-copilot/scripts/validate_m1_bundle.py tests/test_validate_m1_bundle.py evals/m1/fixtures

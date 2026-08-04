@@ -44,7 +44,7 @@
                                        "round":  1,
                                        "brief_version":  1,
                                        "branch_id":  "branch-a",
-                                       "time_boundary":  "fixture only",
+                                       "time_boundary":  ["fixture only"],
                                        "language_boundary":  [
                                                                  "English"
                                                              ],
@@ -53,7 +53,7 @@
                                                            ],
                                        "queries":  [
                                                        {
-                                                           "query_id":  "Q1-R1",
+                                                           "query_id":  "Q-STABLE",
                                                            "purpose":  "direct_problem",
                                                            "query_text":  "public engineering simulation evidence",
                                                            "expected_evidence_role":  "direct_problem",
@@ -900,7 +900,7 @@
                                           },
                            "query_changes":  [
                                                  {
-                                                     "query_id":  "Q2-R2",
+                                                     "query_id":  "Q-STABLE",
                                                      "reason":  "Exclude proprietary-data routes",
                                                      "cause_refs":  [
                                                                         "feedback_delta.rejected[0]",
@@ -950,7 +950,7 @@
                                        "round":  2,
                                        "brief_version":  2,
                                        "branch_id":  "branch-a",
-                                       "time_boundary":  "fixture only",
+                                       "time_boundary":  ["fixture only"],
                                        "language_boundary":  [
                                                                  "English"
                                                              ],
@@ -959,7 +959,7 @@
                                                            ],
                                        "queries":  [
                                                        {
-                                                           "query_id":  "Q2-R2",
+                                                           "query_id":  "Q-STABLE",
                                                            "purpose":  "direct_problem",
                                                            "query_text":  "public simulation evidence excluding proprietary data",
                                                            "expected_evidence_role":  "direct_problem",

@@ -74,7 +74,7 @@ research_brief:
   evidence_needs: []
 ```
 
-Keep hard constraints separate from soft preferences. Record missing information in `open_questions` when it does not block a bounded search. Stop and ask before searching only when a missing answer would materially alter the query or make recommendation eligibility impossible to judge.
+Use exactly these 14 fields. Set `brief_version` to a positive integer, never a boolean. Keep `branch_id`, `engineering_object`, `target_problem`, `target_metric`, and `time_budget` as non-empty text. Keep `available_data`, `resources`, `preferred_routes`, `excluded_routes`, `hard_constraints`, `soft_preferences`, `open_questions`, and `evidence_needs` as lists even when empty. Keep hard constraints separate from soft preferences. Record missing information in `open_questions` when it does not block a bounded search. Stop and ask before searching only when a missing answer would materially alter the query or make recommendation eligibility impossible to judge.
 
 ## Plan the search
 
@@ -85,7 +85,7 @@ search_plan:
   round: 1
   brief_version: 1
   branch_id: "branch-a"
-  time_boundary: ""
+  time_boundary: []
   language_boundary: []
   source_boundary: []
   queries:
@@ -98,7 +98,9 @@ search_plan:
   limitations: []
 ```
 
-Match `brief_version` and `branch_id` to the current brief. State the time, language, and source boundaries actually used. Assign a unique `query_id` within the cycle. Keep query text traceable to the brief and expose exclusions instead of silently filtering results.
+Use exactly these eight plan fields, including every boundary and `limitations` even when its list is empty. Keep `time_boundary`, `language_boundary`, `source_boundary`, and `limitations` as lists. Match `round` to the enclosing round, and match `brief_version` and the non-empty `branch_id` to the current brief.
+
+Use exactly these six fields for every query. Assign a non-empty `query_id` that is unique within the round, keep `query_text` non-empty, and use only `direct_problem`, `method`, `transfer_bridge`, or `counter_limitation` for `purpose` and `expected_evidence_role`. Keep `inclusion_terms` and `exclusion_terms` as lists. Keep query text traceable to the brief and expose exclusions instead of silently filtering results.
 
 Report the searched boundary and its limitations. Never describe bounded results as exhaustive, novelty-complete, or proof that no prior work exists.
 
@@ -179,7 +181,7 @@ feedback_delta:
     exploit: 30
     explore: 70
   query_changes:
-    - query_id: "Q2-R2"
+    - query_id: "Q-STABLE"
       reason: "Exclude proprietary-data routes and expand public simulation evidence"
       cause_refs:
         - "feedback_delta.rejected[0]"
@@ -191,11 +193,11 @@ feedback_delta:
 
 Use exactly the top-level fields shown in `feedback_delta`. Treat every item schema as closed: require inherited items to contain exactly `{object_id,value}`; rejected items exactly `{object_id,value,reason}`; reset items exactly `{object_id,previous_value,reason}`; and added items exactly `{object_id,value,reason}`. Reject unknown fields and require every field value to be non-empty text. Show inherited, rejected, reset, and newly added constraints before planning the next search branch. Make integer `allocation` values total 100 and treat them as a query-and-candidate budget, not a probability.
 
-Create a new brief version before round two. Match the second-round plan to the new version and retain the same branch only when the rollback rules permit it. Add at least one `query_changes` entry whenever a rejection reason, new constraint, or reset materially affects the search.
+Create a new brief version before round two. Match the second-round plan to the new version. M1.2 has no branch-change object, so require one identical, non-empty `branch_id` across both ResearchBriefs and both SearchPlans. Add at least one `query_changes` entry whenever a rejection reason, new constraint, or reset materially affects the search.
 
 Require each query change to contain a non-empty `cause_refs` list of exact paths to existing `feedback_delta.rejected`, `feedback_delta.reset`, or `feedback_delta.added` entries. Never cite `feedback_delta.inherited`. Cover every material rejected, reset, or added entry with at least one `cause_refs` path, and reject unresolved paths or uncovered material entries.
 
-For an added or modified query, set `query_changes.query_id` to the ID of exactly one query in the revised round-two `SearchPlan`. For a removed query, use the deleted round-one `SearchPlan` query ID, require it to exist in round one and be absent from round two, and do not require it to resolve in the revised plan.
+For a modified query, preserve one stable `query_id`: require it exactly once in each round, and match `before` only inside that round-one query object and `after` only inside that round-two query object. For an added query, require its ID to be absent from round one and present exactly once in round two. For a removed query, require its ID exactly once in round one and absent from round two. Never satisfy a query change by finding the same text under a different query ID.
 
 Set `before` to the corresponding round-one query expression or boundary and `after` to the corresponding round-two value. Allow an added query to leave only `before` empty, allow a removed query to leave only `after` empty, and require a modified query to provide two non-empty, different values. Require the revised plan to implement every non-empty recorded `after` value. Do not claim feedback was applied when the new plan is unchanged for no stated reason.
 
