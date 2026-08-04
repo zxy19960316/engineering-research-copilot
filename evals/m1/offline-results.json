@@ -4,6 +4,7 @@
   "evidence_class": "offline_contract_fixture",
   "executed_at": "2026-08-04",
   "validator": "skills/engineering-research-copilot/scripts/validate_m1_bundle.py",
+  "replay": "python evals/m1/replay_offline_results.py",
   "proves": [
     "state gating",
     "deduplication behavior",

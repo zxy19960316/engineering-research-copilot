@@ -1,0 +1,31 @@
+name: M1 Validation
+
+on:
+  push:
+    branches:
+      - main
+      - "codex/**"
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Compile
+        run: |
+          python -m py_compile \
+            skills/engineering-research-copilot/scripts/validate_m1_bundle.py \
+            skills/engineering-research-copilot/scripts/render_m1_map.py \
+            skills/engineering-research-copilot/scripts/validate_citation_gate.py \
+            evals/m1/replay_offline_results.py \
+            evals/m1/replay_machine_artifacts.py
+      - name: Unit tests
+        run: python -m unittest discover -s tests -p "test_*.py" -v
+      - name: Replay fixtures
+        run: python evals/m1/replay_offline_results.py
+      - name: Replay machine artifacts
+        run: python evals/m1/replay_machine_artifacts.py

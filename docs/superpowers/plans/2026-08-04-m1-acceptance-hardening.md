@@ -1010,7 +1010,7 @@ git commit -m "fix: close M1 artifact provenance"
 - Consumes: unit tests, six frozen fixtures, A/B/C machine artifacts, validators, and the standard Skill validator.
 - Produces: one Linux CI job requiring no networked scholarly source.
 
-- [ ] **Step 1: Implement fixture replay before the workflow**
+- [x] **Step 1: Implement fixture replay before the workflow**
 
 The script loads `offline-results.json`, runs each stored fixture through `validate_bundle()` in process, derives exit `{valid:0, invalid:1, evidence_incomplete:2}`, and compares status, errors, and evidence gaps exactly. It prints one closed JSON object and exits `0` only when every record matches.
 
@@ -1037,7 +1037,7 @@ def replay_records(records: list[dict], root: Path) -> dict:
     return {"status": "valid" if not mismatches else "invalid", "mismatches": mismatches}
 ```
 
-- [ ] **Step 2: Test replay against one intentional mismatch**
+- [x] **Step 2: Test replay against one intentional mismatch**
 
 Add a unit test that supplies an expected `valid` status for the blocked-conflict fixture and asserts replay returns a mismatch without changing the fixture or validator.
 
@@ -1052,7 +1052,7 @@ def test_replay_reports_expected_status_mismatch(tmp_path: Path) -> None:
     assert result["mismatches"][0]["fixture"].endswith("blocked-conflict.json")
 ```
 
-- [ ] **Step 3: Create the GitHub Actions workflow**
+- [x] **Step 3: Create the GitHub Actions workflow**
 
 Use:
 
@@ -1092,7 +1092,7 @@ jobs:
 
 The official Skill validator is environment-owned and remains a required local gate; the GitHub workflow must not reference a nonexistent runner `$HOME/.codex` path.
 
-- [ ] **Step 4: Run the exact Linux-equivalent commands locally**
+- [x] **Step 4: Run the exact Linux-equivalent commands locally**
 
 ```powershell
 python -m py_compile skills/engineering-research-copilot/scripts/validate_m1_bundle.py skills/engineering-research-copilot/scripts/render_m1_map.py skills/engineering-research-copilot/scripts/validate_citation_gate.py evals/m1/replay_offline_results.py evals/m1/replay_machine_artifacts.py
@@ -1104,7 +1104,7 @@ python -X utf8 C:\Users\94310\.codex\skills\.system\skill-creator\scripts\quick_
 
 Expected: every command exits `0`; fixture replay internally accepts expected exit `1` and `2` cases without failing the job.
 
-- [ ] **Step 5: Commit CI**
+- [x] **Step 5: Commit CI**
 
 ```powershell
 git add -- evals/m1/replay_offline_results.py evals/m1/offline-results.json .github/workflows/m1-validation.yml tests/test_replay_offline_results.py
