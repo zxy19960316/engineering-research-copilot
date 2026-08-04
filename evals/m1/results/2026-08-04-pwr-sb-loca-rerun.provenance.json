@@ -4,23 +4,38 @@
   "run_commit": "123a03779d001198c895e60949fa7b9c53e2f56d",
   "input_markdown": "evals/m1/results/2026-08-04-pwr-sb-loca.md + evals/m1/results/2026-08-04-pwr-sb-loca-rerun.md",
   "input_frozen_range": "round one from the initial accepted record; round two from the accepted clean rerun; only recorded fields migrated",
-  "read_other_cases": false,
-  "verification_window": {
-    "timezone": "Asia/Shanghai",
-    "started_at": "2026-08-04T19:01:35+08:00",
-    "ended_at": "2026-08-04T19:03:26.8369897+08:00"
-  },
+  "source_run_read_other_cases": false,
+  "artifact_migration_read_other_cases": true,
+  "verification_windows": [
+    {
+      "phase": "round1_authoritative_checks",
+      "timezone": "Asia/Shanghai",
+      "started_at": "2026-08-04T18:21:52.0458264+08:00",
+      "ended_at": "2026-08-04T18:23:47.1616565+08:00"
+    },
+    {
+      "phase": "round2_authoritative_checks",
+      "timezone": "Asia/Shanghai",
+      "started_at": "2026-08-04T19:01:35.9220294+08:00",
+      "ended_at": "2026-08-04T19:03:26.8369897+08:00"
+    }
+  ],
   "tools": [
     "academic_search.py with OpenAlex discovery fallback",
     "Crossref REST API",
-    "official-domain web search and page opening"
+    "official-domain web search and page opening",
+    "offline local JSON/YAML migration, map renderer, and m1.2 validators"
   ],
   "authoritative_sources": [
-    "Crossref DOI registry",
-    "Springer Nature publisher records",
-    "Elsevier ScienceDirect publisher records"
+    "doi_registry:api.crossref.org",
+    "publisher_landing:www.frontiersin.org",
+    "publisher_landing:www.mdpi.com",
+    "publisher_landing:www.nature.com",
+    "publisher_landing:www.sciencedirect.com"
   ],
   "execution_deviations": [
+    "The original source runs read no other cases, but the Task 7 artifact migration read the accepted A, B, and C records in one shared migration pass; source-run isolation is recorded separately from migration-time reads.",
+    "Each phase window uses the earliest and latest checked_at timestamps already recorded by that round's checked_sources; no source time was inferred.",
     "Converted accepted m1.1 Brief, SearchPlan, FeedbackDelta, and PaperMap representation to closed m1.2 fields without changing candidate DOI, title, authors, basis, status, or eligibility.",
     "Represented the unspecified target metric as 'not specified' and wrapped each scalar time boundary as a one-item list; no metric was inferred.",
     "Preserved all historical non-terminal evidence-gap prose verbatim under search_limitations because m1.2 evidence_gaps are terminal blockers; canonical A evidence_gaps remain empty.",

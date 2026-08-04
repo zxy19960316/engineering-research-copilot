@@ -861,18 +861,19 @@ git commit -m "fix: enforce paper map and fallback equivalence"
 ### Task 7: Convert accepted real cases into machine-verifiable artifacts
 
 **Files:**
+- Modify: `docs/superpowers/plans/2026-08-04-m1-acceptance-hardening.md`
 - Create: `skills/engineering-research-copilot/scripts/validate_citation_gate.py`
 - Create: `tests/test_validate_citation_gate.py`
 - Create: `evals/m1/results/2026-08-04-pwr-sb-loca-rerun.bundle.json`
 - Create: `evals/m1/results/2026-08-04-pwr-sb-loca-rerun.validation.json`
-- Create: `evals/m1/results/2026-08-04-pwr-sb-loca-rerun.provenance.json`
+- Create; modify in provenance follow-up: `evals/m1/results/2026-08-04-pwr-sb-loca-rerun.provenance.json`
 - Create: `evals/m1/results/2026-08-04-bearing-fault-rerun-2.bundle.json`
 - Create: `evals/m1/results/2026-08-04-bearing-fault-rerun-2.validation.json`
-- Create: `evals/m1/results/2026-08-04-bearing-fault-rerun-2.provenance.json`
+- Create; modify in provenance follow-up: `evals/m1/results/2026-08-04-bearing-fault-rerun-2.provenance.json`
 - Create: `evals/m1/results/2026-08-04-citation-audit.gate.json`
 - Create: `evals/m1/results/2026-08-04-citation-audit.validation.json`
-- Create: `evals/m1/results/2026-08-04-citation-audit.provenance.json`
-- Create: `evals/m1/replay_machine_artifacts.py`
+- Create; modify in provenance follow-up: `evals/m1/results/2026-08-04-citation-audit.provenance.json`
+- Create; modify in provenance follow-up: `evals/m1/replay_machine_artifacts.py`
 
 **Interfaces:**
 - Consumes: accepted Markdown evidence A `2026-08-04-pwr-sb-loca-rerun.md`, B `2026-08-04-bearing-fault-rerun-2.md`, C `2026-08-04-citation-audit.md` plus supplement, and the final `m1.2` validators.
@@ -944,8 +945,9 @@ Each provenance object must use this closed shape:
   "run_commit": "123a03779d001198c895e60949fa7b9c53e2f56d",
   "input_markdown": "evals/m1/results/2026-08-04-pwr-sb-loca-rerun.md",
   "input_frozen_range": "round-one capture plus frozen feedback recorded in the result",
-  "read_other_cases": false,
-  "verification_window": {"timezone": "Asia/Shanghai", "started_at": "2026-08-04T19:01:35+08:00", "ended_at": "2026-08-04T19:03:27+08:00"},
+  "source_run_read_other_cases": false,
+  "artifact_migration_read_other_cases": true,
+  "verification_windows": [{"phase": "round2_authoritative_checks", "timezone": "Asia/Shanghai", "started_at": "2026-08-04T19:01:35.9220294+08:00", "ended_at": "2026-08-04T19:03:26.8369897+08:00"}],
   "tools": [],
   "authoritative_sources": [],
   "execution_deviations": [],
@@ -954,7 +956,7 @@ Each provenance object must use this closed shape:
 }
 ```
 
-Use the actual times/tools/sources from each case, not the example values from another case. Compute SHA-256 over exact saved bytes after newline normalization is finalized.
+Use the actual times/tools/sources from each case, not the example values from another case. Keep source-run isolation separate from the cross-case artifact-migration reads. Cover every source round with a named closed window, derive the complete authoritative-source identity set from artifact checked sources, and require the sidecar to match it exactly. Compute SHA-256 over exact saved bytes after newline normalization is finalized.
 
 - [x] **Step 6: Implement offline artifact replay**
 
@@ -967,7 +969,7 @@ Use the actual times/tools/sources from each case, not the example values from a
 5. assert A `valid`, B `evidence_incomplete`, C `valid`;
 6. exit `1` with closed JSON on any mismatch and `0` with a per-case summary on success.
 
-- [x] **Step 7: Run and independently audit machine artifacts**
+- [ ] **Step 7: Run and independently audit machine artifacts**
 
 ```powershell
 python evals/m1/replay_machine_artifacts.py
@@ -981,8 +983,17 @@ Expected exits/statuses: A `0/valid`; B `2/evidence_incomplete`; C `0/valid`. A 
 - [x] **Step 8: Commit machine-valid forward evidence**
 
 ```powershell
-git add -- skills/engineering-research-copilot/scripts/validate_citation_gate.py tests/test_validate_citation_gate.py evals/m1/results/*.bundle.json evals/m1/results/*.gate.json evals/m1/results/*.validation.json evals/m1/results/*.provenance.json evals/m1/replay_machine_artifacts.py
+git add -- docs/superpowers/plans/2026-08-04-m1-acceptance-hardening.md skills/engineering-research-copilot/scripts/validate_citation_gate.py tests/test_validate_citation_gate.py evals/m1/results/*.bundle.json evals/m1/results/*.gate.json evals/m1/results/*.validation.json evals/m1/results/*.provenance.json evals/m1/replay_machine_artifacts.py
 git commit -m "test: add machine-valid M1 forward evaluation bundles"
+```
+
+- [x] **Step 9: Close the provenance follow-up without rewriting Task 7 history**
+
+Keep Step 7 open pending a new independent audit. Stage only the provenance closure, replay enforcement, and this plan record:
+
+```powershell
+git add -- docs/superpowers/plans/2026-08-04-m1-acceptance-hardening.md evals/m1/replay_machine_artifacts.py evals/m1/results/2026-08-04-pwr-sb-loca-rerun.provenance.json evals/m1/results/2026-08-04-bearing-fault-rerun-2.provenance.json evals/m1/results/2026-08-04-citation-audit.provenance.json
+git commit -m "fix: close M1 artifact provenance"
 ```
 
 ---
