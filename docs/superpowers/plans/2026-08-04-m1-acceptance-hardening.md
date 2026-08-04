@@ -1005,6 +1005,7 @@ git commit -m "fix: close M1 artifact provenance"
 - Create: `tests/test_replay_offline_results.py`
 - Create: `.github/workflows/m1-validation.yml`
 - Modify: `evals/m1/offline-results.json`
+- Modify: `docs/superpowers/plans/2026-08-04-m1-acceptance-hardening.md`
 
 **Interfaces:**
 - Consumes: unit tests, six frozen fixtures, A/B/C machine artifacts, validators, and the standard Skill validator.
@@ -1107,9 +1108,13 @@ Expected: every command exits `0`; fixture replay internally accepts expected ex
 - [x] **Step 5: Commit CI**
 
 ```powershell
-git add -- evals/m1/replay_offline_results.py evals/m1/offline-results.json .github/workflows/m1-validation.yml tests/test_replay_offline_results.py
+git add -- evals/m1/replay_offline_results.py evals/m1/offline-results.json .github/workflows/m1-validation.yml tests/test_replay_offline_results.py docs/superpowers/plans/2026-08-04-m1-acceptance-hardening.md
 git commit -m "ci: validate M1 contracts and fixtures"
 ```
+
+- [x] **Step 6: Close the documented Task 8 file scope**
+
+The implementation commit `034f2727c6aeff2e3097765620024eb04947b478` already included the completed Task 8 checkboxes in this plan. This follow-up changes only this plan to declare that scope in the Task 8 file list and Step 5 staging command. This Step 6 checkbox records the doc-only correction itself; it does not require another checkbox or recursive follow-up commit.
 
 ---
 
