@@ -296,16 +296,14 @@ def _checked_source_is_valid(source: Any) -> bool:
     )
 
 
-def _production_eligibility_is_valid(verification: dict) -> bool:
+def _verified_provenance_is_closed(verification: dict) -> bool:
     sources = verification.get("checked_sources")
-    blocking = verification.get("blocking_reasons")
     return (
         verification.get("status") in ELIGIBLE_STATES
-        and verification.get("recommendation_eligible") is True
         and verification.get("title_match") in ELIGIBLE_TITLE_MATCHES
         and verification.get("author_match") in ELIGIBLE_AUTHOR_MATCHES
-        and isinstance(blocking, list)
-        and not blocking
+        and verification.get("version_relation")
+        in {"same_work", "preprint_of", "distinct"}
         and isinstance(sources, list)
         and bool(sources)
         and all(_checked_source_is_valid(source) for source in sources)
@@ -314,7 +312,17 @@ def _production_eligibility_is_valid(verification: dict) -> bool:
     )
 
 
-def _candidate_counts_as_eligible(candidate: dict, fixture_mode: bool) -> bool:
+def _production_eligibility_is_valid(verification: dict) -> bool:
+    blocking = verification.get("blocking_reasons")
+    return (
+        _verified_provenance_is_closed(verification)
+        and verification.get("recommendation_eligible") is True
+        and isinstance(blocking, list)
+        and not blocking
+    )
+
+
+def _candidate_counts_as_verified(candidate: dict, fixture_mode: bool) -> bool:
     verified = candidate.get("verified_record")
     verification = verified.get("verification") if isinstance(verified, dict) else None
     if not isinstance(verification, dict):
@@ -322,15 +330,19 @@ def _candidate_counts_as_eligible(candidate: dict, fixture_mode: bool) -> bool:
     if fixture_mode:
         return (
             candidate.get("verification_status") == "fixture_only"
-            and candidate.get("recommendation_eligible") is True
             and verification.get("status") == "fixture_only"
-            and verification.get("recommendation_eligible") is True
         )
+    blocking = verification.get("blocking_reasons")
+    eligible = verification.get("recommendation_eligible")
     return (
         candidate.get("verification_status") == verification.get("status")
-        and candidate.get("recommendation_eligible")
-        is verification.get("recommendation_eligible")
-        and _production_eligibility_is_valid(verification)
+        and candidate.get("recommendation_eligible") is eligible
+        and _verified_provenance_is_closed(verification)
+        and isinstance(blocking, list)
+        and (
+            (eligible is True and not blocking)
+            or (eligible is False and bool(blocking))
+        )
     )
 
 
@@ -440,11 +452,22 @@ def _validate_candidate(
             result.error("invalid_checked_source")
         if eligible is True and not _production_eligibility_is_valid(verification):
             result.error("production_record_not_eligible")
+        if status in ELIGIBLE_STATES and not _verified_provenance_is_closed(
+            verification
+        ):
+            result.error("verified_record_identity_not_closed")
 
     if status in BLOCKED_STATES and eligible is True:
         result.error("blocked_record_marked_eligible")
-    if status in ELIGIBLE_STATES and eligible is not True:
-        result.error("verified_record_marked_ineligible")
+    if (
+        status in ELIGIBLE_STATES
+        and eligible is False
+        and (
+            not isinstance(verification.get("blocking_reasons"), list)
+            or not verification.get("blocking_reasons")
+        )
+    ):
+        result.error("verified_record_ineligible_without_reason")
     return candidate_id, candidate
 
 
@@ -458,7 +481,7 @@ def _candidate_index(
     )
     index: dict[str, dict] = {}
     ordered_ids: list[str] = []
-    eligible_count = 0
+    verified_count = 0
     for candidate in candidates:
         candidate_id, record = _validate_candidate(candidate, fixture_mode, result)
         if candidate_id is None or record is None:
@@ -468,9 +491,9 @@ def _candidate_index(
             result.error("duplicate_candidate_id")
         else:
             index[candidate_id] = record
-        if _candidate_counts_as_eligible(record, fixture_mode):
-            eligible_count += 1
-    return index, ordered_ids, eligible_count
+            if _candidate_counts_as_verified(record, fixture_mode):
+                verified_count += 1
+    return index, ordered_ids, verified_count
 
 
 def _validate_selection(
@@ -507,7 +530,7 @@ def _validate_selection(
 def _validate_round_count(
     name: str,
     round_bundle: dict,
-    candidate_count: int,
+    verified_candidate_count: int,
     selected_count: int,
     result: _Result,
 ) -> None:
@@ -522,12 +545,12 @@ def _validate_round_count(
     has_gap = bool(reported_gaps)
 
     if name == "round1":
-        if candidate_count < 15:
+        if verified_candidate_count < 15:
             if limitations:
                 result.gap("round1_candidate_pool_below_target")
             else:
                 result.error("eligible_candidate_count_without_limit")
-        elif candidate_count > 20:
+        elif verified_candidate_count > 20:
             result.error("candidate_count_out_of_range")
         lower = upper = 8
     else:
@@ -1442,16 +1465,16 @@ def _validate_round(
         result.error("round_two_request_in_round_one")
     brief = _validate_research_brief(round_bundle.get("research_brief"), result)
     _validate_search_plan(round_bundle.get("search_plan"), number, brief, result)
-    index, _ordered_ids, eligible_count = _candidate_index(
+    index, _ordered_ids, verified_count = _candidate_index(
         round_bundle, fixture_mode, result
     )
     selected_ids = _validate_selection(round_bundle, index, fixture_mode, result)
     _validate_within_round_identities(index, selected_ids, result)
-    _validate_round_count(name, round_bundle, eligible_count, len(selected_ids), result)
+    _validate_round_count(name, round_bundle, verified_count, len(selected_ids), result)
     if name == "round1":
         _validate_round_one_roles(selected_ids, index, round_bundle, result)
     _validate_map(name, number, round_bundle, index, selected_ids, result)
-    return round_bundle, index, selected_ids, eligible_count
+    return round_bundle, index, selected_ids, verified_count
 
 
 def _validate_bundle(bundle: dict) -> dict:

@@ -620,6 +620,97 @@ class ValidateM1BundleTests(unittest.TestCase):
                 source[field] = value
                 self.assertIn("invalid_checked_source", validate_bundle(bundle)["errors"])
 
+    def test_unselected_verified_record_may_be_ineligible_and_still_count(self):
+        for status in (
+            "verified_registry",
+            "verified_primary",
+            "verified_preprint",
+        ):
+            with self.subTest(status=status):
+                bundle = make_structurally_valid_production_bundle()
+                for round_name in ("round1", "round2"):
+                    candidate = bundle[round_name]["candidate_pool"][14]
+                    candidate["verification_status"] = status
+                    candidate["recommendation_eligible"] = False
+                    verification = candidate["verified_record"]["verification"]
+                    verification["status"] = status
+                    verification["recommendation_eligible"] = False
+                    verification["blocking_reasons"] = [
+                        "Verified evidence is outside the current recommendation scope"
+                    ]
+                self.assertEqual(validate_bundle(bundle)["status"], "valid")
+
+    def test_verified_ineligible_record_requires_a_blocking_reason(self):
+        bundle = make_structurally_valid_production_bundle()
+        for round_name in ("round1", "round2"):
+            candidate = bundle[round_name]["candidate_pool"][14]
+            candidate["recommendation_eligible"] = False
+            verification = candidate["verified_record"]["verification"]
+            verification["recommendation_eligible"] = False
+            self.assertEqual(verification["blocking_reasons"], [])
+        result = validate_bundle(bundle)
+        self.assertEqual(result["status"], "invalid")
+        self.assertIn("verified_record_ineligible_without_reason", result["errors"])
+
+    def test_selected_verified_ineligible_record_remains_blocked(self):
+        bundle = make_structurally_valid_production_bundle()
+        for round_name in ("round1", "round2"):
+            candidate = bundle[round_name]["candidate_pool"][0]
+            candidate["recommendation_eligible"] = False
+            verification = candidate["verified_record"]["verification"]
+            verification["recommendation_eligible"] = False
+            verification["blocking_reasons"] = ["Outside the recommendation scope"]
+        result = validate_bundle(bundle)
+        self.assertEqual(result["status"], "invalid")
+        self.assertIn("selected_record_blocked", result["errors"])
+
+    def test_verified_ineligible_record_still_requires_current_source(self):
+        bundle = make_structurally_valid_production_bundle()
+        for round_name in ("round1", "round2"):
+            candidate = bundle[round_name]["candidate_pool"][14]
+            candidate["recommendation_eligible"] = False
+            verification = candidate["verified_record"]["verification"]
+            verification["recommendation_eligible"] = False
+            verification["blocking_reasons"] = ["Outside the recommendation scope"]
+            verification["checked_sources"] = []
+        result = validate_bundle(bundle)
+        self.assertEqual(result["status"], "invalid")
+        self.assertIn("missing_current_checked_sources", result["errors"])
+
+    def test_verified_ineligible_record_requires_closed_identity(self):
+        cases = (
+            ("title_match", "conflict"),
+            ("author_match", "not_checked"),
+            ("version_relation", "unknown"),
+        )
+        for field, value in cases:
+            with self.subTest(field=field):
+                bundle = make_structurally_valid_production_bundle()
+                for round_name in ("round1", "round2"):
+                    candidate = bundle[round_name]["candidate_pool"][14]
+                    candidate["recommendation_eligible"] = False
+                    verification = candidate["verified_record"]["verification"]
+                    verification["recommendation_eligible"] = False
+                    verification["blocking_reasons"] = [
+                        "Outside the recommendation scope"
+                    ]
+                    verification[field] = value
+                result = validate_bundle(bundle)
+                self.assertEqual(result["status"], "invalid")
+                self.assertIn("verified_record_identity_not_closed", result["errors"])
+
+    def test_partial_marked_eligible_remains_blocked(self):
+        bundle = make_structurally_valid_production_bundle()
+        for round_name in ("round1", "round2"):
+            candidate = bundle[round_name]["candidate_pool"][0]
+            candidate["verification_status"] = "partial"
+            verification = candidate["verified_record"]["verification"]
+            verification["status"] = "partial"
+        result = validate_bundle(bundle)
+        self.assertEqual(result["status"], "invalid")
+        self.assertIn("blocked_record_marked_eligible", result["errors"])
+        self.assertIn("selected_record_blocked", result["errors"])
+
     def test_partial_does_not_count_or_enter_selection(self):
         pool = make_structurally_valid_production_bundle()
         candidate = pool["round1"]["candidate_pool"][14]
@@ -640,6 +731,21 @@ class ValidateM1BundleTests(unittest.TestCase):
         verification["recommendation_eligible"] = False
         result = validate_bundle(selected)
         self.assertIn("selected_record_blocked", result["errors"])
+
+    def test_every_blocked_state_is_excluded_from_verified_pool_count(self):
+        for status in ("partial", "conflicted", "not_found", "manual_needed"):
+            with self.subTest(status=status):
+                bundle = make_structurally_valid_production_bundle()
+                candidate = bundle["round1"]["candidate_pool"][14]
+                candidate["verification_status"] = status
+                candidate["recommendation_eligible"] = False
+                verification = candidate["verified_record"]["verification"]
+                verification["status"] = status
+                verification["recommendation_eligible"] = False
+                result = validate_bundle(bundle)
+                self.assertIn(
+                    "eligible_candidate_count_without_limit", result["errors"]
+                )
 
     def test_blocked_status_in_selection_returns_invalid(self):
         bundle = make_complete_fixture_bundle()

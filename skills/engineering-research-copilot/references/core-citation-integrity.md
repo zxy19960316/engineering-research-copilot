@@ -93,6 +93,10 @@ Assign exactly one state from this closed set:
 
 Do not introduce another verification-state label in a real record. Preserve unavailable checks inside `checked_sources` and limitations; do not relabel incomplete verification as success.
 
+Keep verification status separate from recommendation eligibility. A record in `verified_primary`, `verified_registry`, or `verified_preprint` has closed current provenance and identity; it may still be `recommendation_eligible: false` because an explicit scope, role, transfer, safety, or preprint-use restriction blocks this recommendation. Preserve that verified status, record at least one specific `blocking_reasons` entry, and keep the record outside `selected_ids` and paper-map paper nodes. Count such an unselected record toward the deduplicated 15--20 verified-candidate target.
+
+Do not change a verified record to `partial` merely to express recommendation ineligibility. Use `partial` only when current verification or identity is incomplete. Never count `partial`, `conflicted`, `not_found`, or `manual_needed` toward the verified-candidate target, even when their checked-source structure is populated.
+
 ## Determine recommendation eligibility
 
 Set `recommendation_eligible: true` only when all of these conditions hold:
@@ -106,6 +110,8 @@ Set `recommendation_eligible: true` only when all of these conditions hold:
 Set `recommendation_eligible: false` for `partial`. Use a partial record only as clearly labeled supplemental context outside the selected recommendation set, and state the missing verification.
 
 Set `recommendation_eligible: false` for `conflicted`, `not_found`, and `manual_needed`. Exclude all three states from recommendation lists, selected IDs, paper-map nodes, direction support, and safety conclusions.
+
+For a verified status with `recommendation_eligible: false`, require nonempty `blocking_reasons`, at least one valid current checked source with a match and no conflict or not-found result, resolved title and author identity, and a closed `version_relation` other than `unknown`. Treat an empty reason, missing current source, or open identity as invalid. Never select an ineligible record regardless of its verification status.
 
 ## Apply the preprint contract
 
