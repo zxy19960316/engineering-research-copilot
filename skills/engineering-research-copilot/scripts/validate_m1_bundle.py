@@ -11,6 +11,8 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
+from render_m1_map import render_mermaid, render_text_fallback
+
 
 SCHEMA_VERSION = "m1.2"
 TERMINAL_STATES = {"WAITING_FOR_EVIDENCE_DECISION", "M1_COMPLETE"}
@@ -62,6 +64,34 @@ EDGE_RELATIONS = {
     "claim_support",
     "claim_tension",
     "same_data_or_benchmark",
+}
+PAPER_MAP_FIELDS = {
+    "round",
+    "node_size_basis",
+    "legend",
+    "nodes",
+    "edges",
+    "text_fallback",
+    "mermaid",
+}
+PAPER_NODE_FIELDS = {
+    "id",
+    "node_type",
+    "fit_score",
+    "evidence_role",
+    "verification_status",
+    "basis_level",
+    "short_note",
+}
+CLUSTER_NODE_FIELDS = {"id", "node_type", "basis_level", "short_note"}
+EDGE_FIELDS = {
+    "source",
+    "target",
+    "relation",
+    "strength",
+    "confidence",
+    "basis_level",
+    "note",
 }
 SOURCE_TYPES = {"doi_registry", "official_repository", "pubmed", "publisher_landing"}
 SOURCE_RESULTS = {"match", "conflict", "not_found", "unavailable"}
@@ -585,6 +615,8 @@ def _validate_map(
     if not isinstance(paper_map, dict):
         result.error("invalid_paper_map")
         return
+    if set(paper_map) != PAPER_MAP_FIELDS:
+        result.error("paper_map_fields_invalid")
     if paper_map.get("round") != round_number:
         result.error("paper_map_round_mismatch")
     if paper_map.get("node_size_basis") != "user_fit":
@@ -608,9 +640,24 @@ def _validate_map(
             result.error("duplicate_map_node_id")
         else:
             node_index[node_id] = node
+        node_type = node.get("node_type")
+        expected_node_fields = (
+            PAPER_NODE_FIELDS
+            if node_type == "paper"
+            else CLUSTER_NODE_FIELDS
+            if node_type == "cluster"
+            else None
+        )
+        if expected_node_fields is None or set(node) != expected_node_fields:
+            result.error("invalid_map_node")
+        if not _nonempty_text(node.get("short_note")):
+            result.error("invalid_map_node")
         if node.get("basis_level") not in BASIS_RANK:
             result.error("invalid_basis_level")
-        if node.get("node_type") == "paper":
+        if node_type == "paper":
+            fit_score = node.get("fit_score")
+            if type(fit_score) not in {int, float} or not 0 <= fit_score <= 1:
+                result.error("invalid_fit_score")
             paper_node_ids.append(node_id)
             candidate = index.get(node_id)
             if candidate is None:
@@ -639,6 +686,8 @@ def _validate_map(
         if not isinstance(edge, dict):
             result.error("invalid_map_edge")
             continue
+        if set(edge) != EDGE_FIELDS:
+            result.error("invalid_map_edge")
         source = edge.get("source")
         target = edge.get("target")
         relation = edge.get("relation")
@@ -650,6 +699,11 @@ def _validate_map(
             result.error("edge_endpoint_missing")
         if relation not in EDGE_RELATIONS:
             result.error("invalid_edge_relation")
+        if not all(
+            _nonempty_text(edge.get(field))
+            for field in ("strength", "confidence", "note")
+        ):
+            result.error("invalid_map_edge")
         edge_basis = edge.get("basis_level")
         if edge_basis not in BASIS_RANK:
             result.error("invalid_basis_level")
@@ -671,9 +725,7 @@ def _validate_map(
     if len(set(edge_keys)) != len(edge_keys):
         result.error("duplicate_map_edge")
 
-    fallback = _as_list(
-        paper_map.get("text_fallback"), result, "missing_text_fallback"
-    )
+    fallback = _as_list(paper_map.get("text_fallback"), result, "missing_text_fallback")
     fallback_nodes: dict[str, list[dict]] = {}
     fallback_edges: dict[tuple[Any, Any, Any], list[dict]] = {}
     for entry in fallback:
@@ -722,6 +774,17 @@ def _validate_map(
         entries = fallback_edges.get(key, [])
         if len(entries) == 1 and entries[0].get("basis_level") != edge.get("basis_level"):
             result.error("map_fallback_edge_mismatch")
+
+    try:
+        expected_fallback = render_text_fallback(paper_map)
+        expected_mermaid = render_mermaid(paper_map)
+    except (KeyError, TypeError):
+        expected_fallback = _MISSING
+        expected_mermaid = _MISSING
+    if paper_map.get("text_fallback") != expected_fallback:
+        result.error("map_fallback_not_deterministic")
+    if paper_map.get("mermaid") != expected_mermaid:
+        result.error("map_mermaid_not_deterministic")
 
 
 def _value_at_ref(bundle: dict, reference: str) -> Any:

@@ -745,7 +745,7 @@ git commit -m "fix: close research brief and search plan validation"
 - Consumes: structured `paper_map.nodes` and `paper_map.edges`.
 - Produces: `render_mermaid(paper_map) -> str`, `render_text_fallback(paper_map) -> list[dict]`, and exact rendering validation.
 
-- [ ] **Step 1: Write deterministic renderer tests**
+- [x] **Step 1: Write deterministic renderer tests**
 
 Create tests for:
 
@@ -791,7 +791,7 @@ def test_render_mermaid_is_deterministic_and_escaped(self):
 
 Expected fallback text is exactly `"{id}: {short_note}"` for nodes and `"{source} --{relation}--> {target}: {note}"` for edges.
 
-- [ ] **Step 2: Implement the pure renderers**
+- [x] **Step 2: Implement the pure renderers**
 
 Create `render_m1_map.py` with no file or network I/O:
 
@@ -823,7 +823,7 @@ def render_text_fallback(paper_map: dict[str, Any]) -> list[dict[str, Any]]:
 
 `render_mermaid()` must sort neither nodes nor edges; preserve structured order, escape backslash, quote, newline, bracket, and pipe characters, and include ID, node type, paper role/status, basis, fit score, relation, and edge basis in visible labels.
 
-- [ ] **Step 3: Require exact generated outputs**
+- [x] **Step 3: Require exact generated outputs**
 
 Add `mermaid` to the closed PaperMap fields. For each paper node require `type(fit_score) in {int, float}` while rejecting booleans, and enforce `0 <= fit_score <= 1`. Cluster nodes must not contain `fit_score`, `evidence_role`, or `verification_status`.
 
@@ -836,11 +836,11 @@ if paper_map.get("mermaid") != render_mermaid(paper_map):
     result.error("map_mermaid_not_deterministic")
 ```
 
-- [ ] **Step 4: Regenerate fixture maps from the structured source**
+- [x] **Step 4: Regenerate fixture maps from the structured source**
 
 Update `_paper_map()` to call both renderers after nodes and edges exist. Regenerate each fixture map through the same helper; do not hand-edit fallback or Mermaid separately.
 
-- [ ] **Step 5: Run renderer, validator, and Skill gates**
+- [x] **Step 5: Run renderer, validator, and Skill gates**
 
 ```powershell
 python -m unittest discover -s tests -p "test_render_m1_map.py" -v
@@ -849,7 +849,7 @@ python -m py_compile skills/engineering-research-copilot/scripts/render_m1_map.p
 python -X utf8 C:\Users\94310\.codex\skills\.system\skill-creator\scripts\quick_validate.py D:\engineering-research-copilot\skills\engineering-research-copilot
 ```
 
-- [ ] **Step 6: Commit deterministic map equivalence**
+- [x] **Step 6: Commit deterministic map equivalence**
 
 ```powershell
 git add -- skills/engineering-research-copilot/scripts/render_m1_map.py skills/engineering-research-copilot/scripts/validate_m1_bundle.py skills/engineering-research-copilot/references/core-paper-map.md tests/test_render_m1_map.py tests/test_validate_m1_bundle.py evals/m1/fixtures

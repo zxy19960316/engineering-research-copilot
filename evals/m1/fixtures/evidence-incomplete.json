@@ -32,7 +32,9 @@
       "round": 1,
       "brief_version": 1,
       "branch_id": "branch-a",
-      "time_boundary": ["fixture only"],
+      "time_boundary": [
+        "fixture only"
+      ],
       "language_boundary": [
         "English"
       ],
@@ -530,78 +532,79 @@
       "edges": [],
       "text_fallback": [
         {
-          "entry_type": "node",
           "id": "fixture:P01",
           "node_type": "paper",
+          "basis_level": "abstract_level",
+          "entry_type": "node",
           "evidence_role": "direct_problem",
           "verification_status": "fixture_only",
-          "basis_level": "abstract_level",
           "text": "fixture:P01: Offline fixture node"
         },
         {
-          "entry_type": "node",
           "id": "fixture:P02",
           "node_type": "paper",
+          "basis_level": "abstract_level",
+          "entry_type": "node",
           "evidence_role": "direct_problem",
           "verification_status": "fixture_only",
-          "basis_level": "abstract_level",
           "text": "fixture:P02: Offline fixture node"
         },
         {
-          "entry_type": "node",
           "id": "fixture:P03",
           "node_type": "paper",
+          "basis_level": "abstract_level",
+          "entry_type": "node",
           "evidence_role": "direct_problem",
           "verification_status": "fixture_only",
-          "basis_level": "abstract_level",
           "text": "fixture:P03: Offline fixture node"
         },
         {
-          "entry_type": "node",
           "id": "fixture:P04",
           "node_type": "paper",
+          "basis_level": "abstract_level",
+          "entry_type": "node",
           "evidence_role": "method",
           "verification_status": "fixture_only",
-          "basis_level": "abstract_level",
           "text": "fixture:P04: Offline fixture node"
         },
         {
-          "entry_type": "node",
           "id": "fixture:P05",
           "node_type": "paper",
+          "basis_level": "abstract_level",
+          "entry_type": "node",
           "evidence_role": "method",
           "verification_status": "fixture_only",
-          "basis_level": "abstract_level",
           "text": "fixture:P05: Offline fixture node"
         },
         {
-          "entry_type": "node",
           "id": "fixture:P06",
           "node_type": "paper",
+          "basis_level": "abstract_level",
+          "entry_type": "node",
           "evidence_role": "transfer_bridge",
           "verification_status": "fixture_only",
-          "basis_level": "abstract_level",
           "text": "fixture:P06: Offline fixture node"
         },
         {
-          "entry_type": "node",
           "id": "fixture:P07",
           "node_type": "paper",
+          "basis_level": "abstract_level",
+          "entry_type": "node",
           "evidence_role": "transfer_bridge",
           "verification_status": "fixture_only",
-          "basis_level": "abstract_level",
           "text": "fixture:P07: Offline fixture node"
         },
         {
-          "entry_type": "node",
           "id": "fixture:P08",
           "node_type": "paper",
+          "basis_level": "abstract_level",
+          "entry_type": "node",
           "evidence_role": "counter_limitation",
           "verification_status": "fixture_only",
-          "basis_level": "abstract_level",
           "text": "fixture:P08: Offline fixture node"
         }
-      ]
+      ],
+      "mermaid": "flowchart TD\n  n0[\"id=fixture:P01; type=paper; basis=abstract_level; role=direct_problem; status=fixture_only; fit=0.8; note=Offline fixture node\"]\n  n1[\"id=fixture:P02; type=paper; basis=abstract_level; role=direct_problem; status=fixture_only; fit=0.8; note=Offline fixture node\"]\n  n2[\"id=fixture:P03; type=paper; basis=abstract_level; role=direct_problem; status=fixture_only; fit=0.8; note=Offline fixture node\"]\n  n3[\"id=fixture:P04; type=paper; basis=abstract_level; role=method; status=fixture_only; fit=0.8; note=Offline fixture node\"]\n  n4[\"id=fixture:P05; type=paper; basis=abstract_level; role=method; status=fixture_only; fit=0.8; note=Offline fixture node\"]\n  n5[\"id=fixture:P06; type=paper; basis=abstract_level; role=transfer_bridge; status=fixture_only; fit=0.8; note=Offline fixture node\"]\n  n6[\"id=fixture:P07; type=paper; basis=abstract_level; role=transfer_bridge; status=fixture_only; fit=0.8; note=Offline fixture node\"]\n  n7[\"id=fixture:P08; type=paper; basis=abstract_level; role=counter_limitation; status=fixture_only; fit=0.8; note=Offline fixture node\"]"
     },
     "evidence_gaps": [],
     "search_limitations": [

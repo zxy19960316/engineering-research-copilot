@@ -131,13 +131,22 @@ paper_map:
       relation: "transfer_bridge"
       basis_level: "abstract_level"
       text: "P1 --transfer_bridge--> D2: Mechanism is similar; boundary conditions still require testing"
+  mermaid: |-
+    flowchart TD
+      n0["id=P1; type=paper; basis=abstract_level; role=transfer_bridge; status=verified_primary; fit=0.86; note=Method transfer evidence from a similar data regime"]
+      n1["id=D2; type=cluster; basis=abstract_level; note=Public simulation evidence cluster"]
+      n0 -- "relation=transfer_bridge; basis=abstract_level; strength=medium; confidence=medium; note=Mechanism is similar; boundary conditions still require testing" --> n1
 ```
 
-Treat `legend.evidence_roles` and `legend.basis_levels` as closed lists for M1. Use the exact role and basis tokens shown above. Require every selected paper ID to appear exactly once as a paper node. Do not place an unselected, blocked, partial, or unresolved citation in a paper node.
+Treat the seven `paper_map` fields as closed: `round`, `node_size_basis`, `legend`, `nodes`, `edges`, `text_fallback`, and `mermaid`. Treat `legend.evidence_roles` and `legend.basis_levels` as closed lists for M1. Use the exact role and basis tokens shown above. Require every selected paper ID to appear exactly once as a paper node. Do not place an unselected, blocked, partial, or unresolved citation in a paper node.
+
+Require every paper node to contain exactly `id`, `node_type`, `fit_score`, `evidence_role`, `verification_status`, `basis_level`, and `short_note`. Set `fit_score` to a non-Boolean number from zero through one. Require every cluster node to contain exactly `id`, `node_type`, `basis_level`, and `short_note`; never put `fit_score`, `evidence_role`, or `verification_status` on a cluster. Require every edge to contain exactly `source`, `target`, `relation`, `strength`, `confidence`, `basis_level`, and `note`.
 
 ## Enforce Mermaid and fallback equivalence
 
 Generate Mermaid and `text_fallback` from the same structured `nodes` and `edges`; do not maintain separate semantic versions by hand.
+
+Call the deterministic renderers in `scripts/render_m1_map.py` after the structured nodes and edges are complete. Preserve their order; do not sort either collection. Treat `nodes` and `edges` as the only map facts and reject either rendered output unless it exactly equals the renderer result. Render node fallback text exactly as `{id}: {short_note}` and edge fallback text exactly as `{source} --{relation}--> {target}: {note}`. Escape backslash, quote, newline, bracket, and pipe characters in Mermaid labels so user text cannot alter the graph syntax.
 
 Require the Mermaid rendering and text fallback to preserve all of the following without renaming:
 

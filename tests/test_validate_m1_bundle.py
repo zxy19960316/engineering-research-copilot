@@ -12,7 +12,11 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 SCRIPTS_DIR = REPO_ROOT / "skills" / "engineering-research-copilot" / "scripts"
 sys.path.insert(0, str(SCRIPTS_DIR))
 
+from render_m1_map import render_mermaid, render_text_fallback  # noqa: E402
 from validate_m1_bundle import normalize_doi, validate_bundle  # noqa: E402
+
+
+_MISSING_TEST_VALUE = object()
 
 
 def _candidate(number: int) -> dict:
@@ -63,7 +67,6 @@ def _candidate(number: int) -> dict:
 
 def _paper_map(round_number: int, selected_ids: list[str]) -> dict:
     nodes = []
-    fallback = []
     for candidate_id in selected_ids:
         number = int(candidate_id.rsplit("P", 1)[1])
         candidate = _candidate(number)
@@ -77,18 +80,7 @@ def _paper_map(round_number: int, selected_ids: list[str]) -> dict:
             "short_note": "Offline fixture node",
         }
         nodes.append(node)
-        fallback.append(
-            {
-                "entry_type": "node",
-                "id": candidate_id,
-                "node_type": "paper",
-                "evidence_role": node["evidence_role"],
-                "verification_status": "fixture_only",
-                "basis_level": "abstract_level",
-                "text": f"{candidate_id}: Offline fixture node",
-            }
-        )
-    return {
+    paper_map = {
         "round": round_number,
         "node_size_basis": "user_fit",
         "legend": {
@@ -106,8 +98,10 @@ def _paper_map(round_number: int, selected_ids: list[str]) -> dict:
         },
         "nodes": nodes,
         "edges": [],
-        "text_fallback": fallback,
     }
+    paper_map["text_fallback"] = render_text_fallback(paper_map)
+    paper_map["mermaid"] = render_mermaid(paper_map)
+    return paper_map
 
 
 def _round_bundle(round_number: int, selected_ids: list[str]) -> dict:
@@ -391,9 +385,9 @@ def make_structurally_valid_production_bundle() -> dict:
         for node in bundle[round_name]["paper_map"]["nodes"]:
             if node["node_type"] == "paper":
                 node["verification_status"] = "verified_registry"
-        for entry in bundle[round_name]["paper_map"]["text_fallback"]:
-            if entry["entry_type"] == "node" and entry["node_type"] == "paper":
-                entry["verification_status"] = "verified_registry"
+        paper_map = bundle[round_name]["paper_map"]
+        paper_map["text_fallback"] = render_text_fallback(paper_map)
+        paper_map["mermaid"] = render_mermaid(paper_map)
     return bundle
 
 
@@ -1297,6 +1291,81 @@ class ValidateM1BundleTests(unittest.TestCase):
         result = validate_bundle(bundle)
         self.assertIn("map_nodes_do_not_match_selection", result["errors"])
 
+        duplicate = make_complete_fixture_bundle()
+        paper_map = duplicate["round2"]["paper_map"]
+        paper_map["nodes"].append(json.loads(json.dumps(paper_map["nodes"][0])))
+        paper_map["text_fallback"] = render_text_fallback(paper_map)
+        paper_map["mermaid"] = render_mermaid(paper_map)
+        self.assertIn(
+            "map_nodes_do_not_match_selection", validate_bundle(duplicate)["errors"]
+        )
+
+    def test_map_paper_fit_score_is_required_numeric_and_in_range(self):
+        cases = (_MISSING_TEST_VALUE, True, -0.01, 1.01, "0.8")
+        for value in cases:
+            with self.subTest(value=value):
+                bundle = make_complete_fixture_bundle()
+                node = bundle["round1"]["paper_map"]["nodes"][0]
+                if value is _MISSING_TEST_VALUE:
+                    del node["fit_score"]
+                else:
+                    node["fit_score"] = value
+                self.assertIn("invalid_fit_score", validate_bundle(bundle)["errors"])
+
+    def test_map_cluster_rejects_paper_only_fields(self):
+        for field, value in (
+            ("fit_score", 0.5),
+            ("evidence_role", "method"),
+            ("verification_status", "fixture_only"),
+        ):
+            with self.subTest(field=field):
+                bundle = make_complete_fixture_bundle()
+                paper_map = bundle["round1"]["paper_map"]
+                paper_map["nodes"].append(
+                    {
+                        "id": "fixture:D01",
+                        "node_type": "cluster",
+                        "basis_level": "metadata_level",
+                        "short_note": "Cluster",
+                        field: value,
+                    }
+                )
+                self.assertIn("invalid_map_node", validate_bundle(bundle)["errors"])
+
+    def test_map_fallback_and_mermaid_must_be_exact_generated_outputs(self):
+        bundle = make_complete_fixture_bundle()
+        bundle["round1"]["paper_map"]["text_fallback"][0]["text"] = "changed"
+        self.assertIn(
+            "map_fallback_not_deterministic", validate_bundle(bundle)["errors"]
+        )
+
+        bundle = make_complete_fixture_bundle()
+        bundle["round1"]["paper_map"]["mermaid"] = "changed"
+        self.assertIn(
+            "map_mermaid_not_deterministic", validate_bundle(bundle)["errors"]
+        )
+
+    def test_map_fallback_edge_text_must_preserve_structured_note(self):
+        bundle = make_complete_fixture_bundle()
+        paper_map = bundle["round1"]["paper_map"]
+        paper_map["edges"] = [
+            {
+                "source": "fixture:P01",
+                "target": "fixture:P02",
+                "relation": "shared_method",
+                "strength": "medium",
+                "confidence": "medium",
+                "basis_level": "metadata_level",
+                "note": "same deterministic method",
+            }
+        ]
+        paper_map["text_fallback"] = render_text_fallback(paper_map)
+        paper_map["mermaid"] = render_mermaid(paper_map)
+        paper_map["text_fallback"][-1]["text"] = "changed"
+        self.assertIn(
+            "map_fallback_not_deterministic", validate_bundle(bundle)["errors"]
+        )
+
     def test_fixture_records_are_rejected_outside_fixture_mode(self):
         bundle = make_complete_fixture_bundle()
         bundle["fixture_mode"] = False
@@ -1378,9 +1447,10 @@ class ValidateM1BundleTests(unittest.TestCase):
         candidate["basis_level"] = "metadata_level"
         candidate["verified_record"]["basis_level"] = "metadata_level"
         node = reduced["round2"]["paper_map"]["nodes"][0]
-        fallback = reduced["round2"]["paper_map"]["text_fallback"][0]
         node["basis_level"] = "metadata_level"
-        fallback["basis_level"] = "metadata_level"
+        paper_map = reduced["round2"]["paper_map"]
+        paper_map["text_fallback"] = render_text_fallback(paper_map)
+        paper_map["mermaid"] = render_mermaid(paper_map)
         self.assertEqual(validate_bundle(reduced)["status"], "valid")
 
     def test_new_evidence_cause_ref_must_target_checked_source(self):
