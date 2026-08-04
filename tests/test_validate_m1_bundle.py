@@ -827,6 +827,30 @@ class ValidateM1BundleTests(unittest.TestCase):
             "feedback_after_query_id_mismatch", validate_bundle(bundle)["errors"]
         )
 
+    def test_feedback_before_cannot_match_non_text_query_fields(self):
+        for field in ("purpose", "query_id", "expected_evidence_role"):
+            with self.subTest(field=field):
+                bundle = make_complete_fixture_bundle()
+                query = bundle["round1"]["search_plan"]["queries"][0]
+                bundle["feedback_delta"]["query_changes"][0]["before"] = query[field]
+                self.assertNotEqual(query["query_text"], query[field])
+                self.assertIn(
+                    "feedback_before_query_id_mismatch",
+                    validate_bundle(bundle)["errors"],
+                )
+
+    def test_feedback_after_cannot_match_non_text_query_fields(self):
+        for field in ("purpose", "query_id", "expected_evidence_role"):
+            with self.subTest(field=field):
+                bundle = make_complete_fixture_bundle()
+                query = bundle["round2"]["search_plan"]["queries"][0]
+                bundle["feedback_delta"]["query_changes"][0]["after"] = query[field]
+                self.assertNotEqual(query["query_text"], query[field])
+                self.assertIn(
+                    "feedback_after_query_id_mismatch",
+                    validate_bundle(bundle)["errors"],
+                )
+
     def test_duplicate_query_id_is_invalid(self):
         bundle = make_complete_fixture_bundle()
         query = json.loads(

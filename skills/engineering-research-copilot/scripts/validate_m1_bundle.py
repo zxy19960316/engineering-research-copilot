@@ -752,16 +752,6 @@ def _resolve_ref(bundle: dict, reference: str) -> bool:
     return _value_at_ref(bundle, reference) is not _MISSING
 
 
-def _contains_exact_text(value: Any, target: str) -> bool:
-    if isinstance(value, str):
-        return value == target
-    if isinstance(value, list):
-        return any(_contains_exact_text(item, target) for item in value)
-    if isinstance(value, dict):
-        return any(_contains_exact_text(item, target) for item in value.values())
-    return False
-
-
 def _validate_research_brief(value: Any, result: _Result) -> dict:
     if not isinstance(value, dict):
         result.error("invalid_research_brief")
@@ -959,14 +949,14 @@ def _validate_feedback(bundle: dict, result: _Result) -> None:
         ]
         if before and (
             len(matching_one) != 1
-            or not _contains_exact_text(matching_one[0], before)
+            or matching_one[0].get("query_text") != before
         ):
             result.error("feedback_before_query_id_mismatch")
             result.error("feedback_before_not_in_round1")
         if before and after and before == after:
             result.error("feedback_query_change_noop")
         if after:
-            if len(matching_two) != 1 or not _contains_exact_text(matching_two[0], after):
+            if len(matching_two) != 1 or matching_two[0].get("query_text") != after:
                 result.error("feedback_after_query_id_mismatch")
                 result.error("feedback_after_not_in_round2")
                 result.error("feedback_query_change_not_implemented")
