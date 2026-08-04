@@ -798,6 +798,7 @@
     "rejected": [
       {
         "object_id": "fixture:P07",
+        "value": "Route requiring proprietary data",
         "reason": "Exclude routes requiring proprietary data"
       }
     ],
@@ -805,6 +806,7 @@
     "added": [
       {
         "object_id": "public_simulation_preference",
+        "value": "Prefer public simulation evidence",
         "reason": "Prefer public simulation evidence"
       }
     ],

@@ -83,6 +83,12 @@ FEEDBACK_FIELDS = {
     "allocation",
     "query_changes",
 }
+FEEDBACK_ITEM_FIELDS = {
+    "inherited": {"object_id", "value"},
+    "rejected": {"object_id", "value", "reason"},
+    "reset": {"object_id", "previous_value", "reason"},
+    "added": {"object_id", "value", "reason"},
+}
 _DOI_PREFIX = re.compile(
     r"^(?:https?://(?:dx\.)?doi\.org/|doi:\s*)", re.IGNORECASE
 )
@@ -92,7 +98,7 @@ _NEW_EVIDENCE_REF = re.compile(
     r"\.verification\.checked_sources\[\d+\]$"
 )
 _FEEDBACK_CAUSE_REF = re.compile(
-    r"^feedback_delta\.(?:inherited|rejected|reset|added)\[\d+\]$"
+    r"^feedback_delta\.(?:rejected|reset|added)\[\d+\]$"
 )
 _QUERY_MATERIAL_REF = re.compile(
     r"^feedback_delta\.(?:rejected|reset|added)\[\d+\]$"
@@ -694,6 +700,17 @@ def _contains_exact_text(value: Any, target: str) -> bool:
     return False
 
 
+def _validate_feedback_items(feedback: dict, result: _Result) -> None:
+    for kind, expected in FEEDBACK_ITEM_FIELDS.items():
+        items = _as_list(feedback.get(kind), result, f"invalid_feedback_{kind}")
+        for item in items:
+            if not isinstance(item, dict) or set(item) != expected:
+                result.error(f"feedback_{kind}_fields_invalid")
+                continue
+            if any(not _nonempty_text(item[field]) for field in expected):
+                result.error(f"feedback_{kind}_value_invalid")
+
+
 def _validate_feedback(bundle: dict, result: _Result) -> None:
     feedback = bundle.get("feedback_delta")
     if not isinstance(feedback, dict):
@@ -701,6 +718,7 @@ def _validate_feedback(bundle: dict, result: _Result) -> None:
         return
     if set(feedback) != FEEDBACK_FIELDS:
         result.error("feedback_delta_fields_invalid")
+    _validate_feedback_items(feedback, result)
 
     from_version = feedback.get("from_brief_version")
     to_version = feedback.get("to_brief_version")

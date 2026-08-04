@@ -160,12 +160,21 @@ Expose the transition in this contract:
 feedback_delta:
   from_brief_version: 1
   to_brief_version: 2
-  inherited: []
+  inherited:
+    - object_id: "public-data-only"
+      value: "Use public data only"
   rejected:
-    - object_id: "P3"
-      reason: "Requires inaccessible proprietary data"
-  reset: []
-  added: []
+    - object_id: "random-split-dependent-designs"
+      value: "Designs that mix one physical source across train and test"
+      reason: "They can inflate evaluation through leakage"
+  reset:
+    - object_id: "round-one-title-level-fit"
+      previous_value: "Title relevance counted as preliminary fit"
+      reason: "Title evidence cannot establish isolation or leakage resistance"
+  added:
+    - object_id: "cross-load-evaluation-priority"
+      value: "Prioritize cross-load or unseen-condition evaluation"
+      reason: "The user promoted this evidence to a primary filter"
   allocation:
     exploit: 30
     explore: 70
@@ -174,11 +183,13 @@ feedback_delta:
       reason: "Exclude proprietary-data routes and expand public simulation evidence"
       cause_refs:
         - "feedback_delta.rejected[0]"
+        - "feedback_delta.reset[0]"
+        - "feedback_delta.added[0]"
       before: "data-driven control using proprietary industrial datasets"
       after: "data-driven control using public simulation datasets excluding proprietary data"
 ```
 
-Use exactly the top-level fields shown in `feedback_delta`. Record a non-empty reason with every rejected item. Show inherited, rejected, reset, and newly added constraints before planning the next search branch. Make integer `allocation` values total 100 and treat them as a query-and-candidate budget, not a probability.
+Use exactly the top-level fields shown in `feedback_delta`. Treat every item schema as closed: require inherited items to contain exactly `{object_id,value}`; rejected items exactly `{object_id,value,reason}`; reset items exactly `{object_id,previous_value,reason}`; and added items exactly `{object_id,value,reason}`. Reject unknown fields and require every field value to be non-empty text. Show inherited, rejected, reset, and newly added constraints before planning the next search branch. Make integer `allocation` values total 100 and treat them as a query-and-candidate budget, not a probability.
 
 Create a new brief version before round two. Match the second-round plan to the new version and retain the same branch only when the rollback rules permit it. Add at least one `query_changes` entry whenever a rejection reason, new constraint, or reset materially affects the search.
 
@@ -234,7 +245,7 @@ Include exactly one disposition entry for every round-one `selected_id` and no e
 - Set `downgraded` when new verification or reasoning evidence reduces the candidate's eligibility, role, or basis. Set `round_two_id` to the same ID only if it remains recommendation-eligible and selected; otherwise set it to null and keep the record as labeled supplemental or blocked evidence outside `selected_ids`.
 - Set `removed` when the round-one candidate leaves without a one-for-one replacement; set `round_two_id` to null.
 
-Give every disposition a non-empty `reason`. Set `cause_type` to `feedback_delta` or `new_evidence`. Point `cause_ref` to the exact feedback-delta entry or to the exact newly checked verification source or evidence record that caused the disposition. Do not cite a vague narrative, model memory, or an unverified discovery hit as a cause.
+Give every disposition a non-empty `reason`. Set `cause_type` to `feedback_delta` or `new_evidence`. For a feedback cause, point `cause_ref` only to an exact existing `feedback_delta.rejected`, `feedback_delta.reset`, or `feedback_delta.added` item; never use `feedback_delta.inherited` as a material cause. For a new-evidence cause, point it to the exact newly checked verification source or evidence record that caused the disposition. Do not cite a vague narrative, model memory, or an unverified discovery hit as a cause.
 
 Require the disposition entries to cover the round-one selection exactly once before calling round two ready. Keep a replaced candidate out of round-two `selected_ids`, require its non-null `round_two_id` to resolve to one eligible selected record, and keep retained IDs in round-two `selected_ids`.
 

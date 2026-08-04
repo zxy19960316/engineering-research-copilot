@@ -69,12 +69,21 @@ Expose every round-one-to-round-two transition with exactly these top-level fiel
 feedback_delta:
   from_brief_version: 1
   to_brief_version: 2
-  inherited: []
+  inherited:
+    - object_id: "public-data-only"
+      value: "Use public data only"
   rejected:
-    - object_id: "P3"
-      reason: "Requires inaccessible proprietary data"
-  reset: []
-  added: []
+    - object_id: "random-split-dependent-designs"
+      value: "Designs that mix one physical source across train and test"
+      reason: "They can inflate evaluation through leakage"
+  reset:
+    - object_id: "round-one-title-level-fit"
+      previous_value: "Title relevance counted as preliminary fit"
+      reason: "Title evidence cannot establish isolation or leakage resistance"
+  added:
+    - object_id: "cross-load-evaluation-priority"
+      value: "Prioritize cross-load or unseen-condition evaluation"
+      reason: "The user promoted this evidence to a primary filter"
   allocation:
     exploit: 30
     explore: 70
@@ -83,11 +92,13 @@ feedback_delta:
       reason: "Exclude proprietary-data routes and expand public simulation evidence"
       cause_refs:
         - "feedback_delta.rejected[0]"
+        - "feedback_delta.reset[0]"
+        - "feedback_delta.added[0]"
       before: "data-driven control using proprietary industrial datasets"
       after: "data-driven control using public simulation datasets excluding proprietary data"
 ```
 
-Increment `to_brief_version` beyond `from_brief_version`. Put inherited constraints and preferences in `inherited`, rejected objects with non-empty reasons in `rejected`, explicitly discarded assumptions or state in `reset`, and new constraints or evidence needs in `added`. Preserve the user's wording when it determines a hard exclusion; do not strengthen ambiguous dissatisfaction into a hard constraint.
+Increment `to_brief_version` beyond `from_brief_version`. Use one closed schema for each list: inherited items contain exactly `{object_id,value}`; rejected items exactly `{object_id,value,reason}`; reset items exactly `{object_id,previous_value,reason}`; and added items exactly `{object_id,value,reason}`. Reject unknown fields and require every field value to be non-empty text. Put inherited constraints and preferences in `inherited`, rejected objects in `rejected`, explicitly discarded assumptions or state in `reset`, and new constraints or evidence needs in `added`. Preserve the user's wording when it determines a hard exclusion; do not strengthen ambiguous dissatisfaction into a hard constraint.
 
 Set integer `allocation.exploit` and `allocation.explore` values whose sum is exactly 100. Treat the values as percentages of the round-two query-and-candidate budget, not as probabilities, confidence, or evidence weights.
 

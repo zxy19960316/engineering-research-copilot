@@ -246,6 +246,7 @@ def make_complete_fixture_bundle() -> dict:
             "rejected": [
                 {
                     "object_id": "fixture:P07",
+                    "value": "Route requiring proprietary data",
                     "reason": "Exclude routes requiring proprietary data",
                 }
             ],
@@ -253,6 +254,7 @@ def make_complete_fixture_bundle() -> dict:
             "added": [
                 {
                     "object_id": "public_simulation_preference",
+                    "value": "Prefer public simulation evidence",
                     "reason": "Prefer public simulation evidence",
                 }
             ],
@@ -676,6 +678,95 @@ class ValidateM1BundleTests(unittest.TestCase):
         result = validate_bundle(bundle)
         self.assertEqual(result["status"], "invalid")
         self.assertIn("feedback_not_applied_to_query", result["errors"])
+
+    def test_added_requires_value_and_reason(self):
+        for missing in ("value", "reason"):
+            with self.subTest(missing=missing):
+                bundle = make_complete_fixture_bundle()
+                del bundle["feedback_delta"]["added"][0][missing]
+                self.assertIn(
+                    "feedback_added_fields_invalid", validate_bundle(bundle)["errors"]
+                )
+
+    def test_reset_requires_previous_value_and_reason(self):
+        for missing in ("previous_value", "reason"):
+            with self.subTest(missing=missing):
+                bundle = make_complete_fixture_bundle()
+                bundle["feedback_delta"]["reset"] = [
+                    {
+                        "object_id": "old-fit",
+                        "previous_value": "title fit",
+                        "reason": "insufficient",
+                    }
+                ]
+                bundle["feedback_delta"]["query_changes"][0]["cause_refs"].append(
+                    "feedback_delta.reset[0]"
+                )
+                del bundle["feedback_delta"]["reset"][0][missing]
+                self.assertIn(
+                    "feedback_reset_fields_invalid", validate_bundle(bundle)["errors"]
+                )
+
+    def test_rejected_requires_value_and_reason(self):
+        for missing in ("value", "reason"):
+            with self.subTest(missing=missing):
+                bundle = make_complete_fixture_bundle()
+                del bundle["feedback_delta"]["rejected"][0][missing]
+                self.assertIn(
+                    "feedback_rejected_fields_invalid", validate_bundle(bundle)["errors"]
+                )
+
+    def test_inherited_requires_object_id_and_value(self):
+        bundle = make_complete_fixture_bundle()
+        bundle["feedback_delta"]["inherited"] = [
+            {"object_id": "public-data-only"}
+        ]
+        self.assertIn(
+            "feedback_inherited_fields_invalid", validate_bundle(bundle)["errors"]
+        )
+
+    def test_feedback_item_unknown_fields_are_invalid(self):
+        bundle = make_complete_fixture_bundle()
+        bundle["feedback_delta"]["added"][0]["extra"] = "closed schema"
+        self.assertIn(
+            "feedback_added_fields_invalid", validate_bundle(bundle)["errors"]
+        )
+
+        examples = {
+            "inherited": {"object_id": "stable", "value": "still applies"},
+            "rejected": {
+                "object_id": "rejected",
+                "value": "old route",
+                "reason": "not suitable",
+            },
+            "reset": {
+                "object_id": "reset",
+                "previous_value": "old assumption",
+                "reason": "not supported",
+            },
+            "added": {
+                "object_id": "added",
+                "value": "new constraint",
+                "reason": "user requested",
+            },
+        }
+        for kind, item in examples.items():
+            for field in item:
+                with self.subTest(kind=kind, empty_field=field):
+                    empty = make_complete_fixture_bundle()
+                    empty_item = dict(item)
+                    empty_item[field] = "  "
+                    empty["feedback_delta"][kind] = [empty_item]
+                    self.assertIn(
+                        f"feedback_{kind}_value_invalid",
+                        validate_bundle(empty)["errors"],
+                    )
+
+    def test_feedback_material_refs_resolve_after_schema_change(self):
+        bundle = make_complete_fixture_bundle()
+        result = validate_bundle(bundle)
+        self.assertNotIn("feedback_material_cause_untracked", result["errors"])
+        self.assertNotIn("feedback_query_cause_unresolved", result["errors"])
 
     def test_feedback_query_before_and_after_must_resolve_to_rounds(self):
         before = make_complete_fixture_bundle()
@@ -1123,6 +1214,18 @@ class ValidateM1BundleTests(unittest.TestCase):
                 bundle = make_complete_fixture_bundle()
                 bundle["round2"]["round_one_dispositions"][0][field] = value
                 self.assertIn(expected_error, validate_bundle(bundle)["errors"])
+
+        inherited = make_complete_fixture_bundle()
+        inherited["feedback_delta"]["inherited"] = [
+            {"object_id": "stable_constraint", "value": "Still applies"}
+        ]
+        inherited["round2"]["round_one_dispositions"][0]["cause_ref"] = (
+            "feedback_delta.inherited[0]"
+        )
+        self.assertIn(
+            "unresolved_disposition_cause_ref",
+            validate_bundle(inherited)["errors"],
+        )
 
     def test_retained_removed_and_downgraded_consistency(self):
         retained = make_complete_fixture_bundle()

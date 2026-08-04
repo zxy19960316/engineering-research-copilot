@@ -487,7 +487,7 @@ git commit -m "fix: enforce deterministic candidate identity deduplication"
 - Consumes: material cause paths `feedback_delta.rejected|reset|added[index]`.
 - Produces: exact object shapes for all four feedback lists while preserving the existing path grammar.
 
-- [ ] **Step 1: Freeze the canonical item shapes in both references**
+- [x] **Step 1: Freeze the canonical item shapes in both references**
 
 Use these exact closed objects:
 
@@ -511,7 +511,7 @@ added:
 
 The allowed/required fields are identical: inherited `{object_id,value}`; rejected `{object_id,value,reason}`; reset `{object_id,previous_value,reason}`; added `{object_id,value,reason}`. Unknown fields are invalid.
 
-- [ ] **Step 2: Add FeedbackDelta schema tests**
+- [x] **Step 2: Add FeedbackDelta schema tests**
 
 Add:
 
@@ -555,7 +555,7 @@ def test_feedback_material_refs_resolve_after_schema_change(self):
 
 Each test mutates one otherwise-valid `m1.2` bundle and asserts a stable closed error code.
 
-- [ ] **Step 3: Implement the item validator**
+- [x] **Step 3: Implement the item validator**
 
 Add:
 
@@ -580,7 +580,7 @@ def _validate_feedback_items(feedback: dict, result: _Result) -> None:
 
 Retain material cause refs only for rejected/reset/added. Inherited remains visible but cannot be used as a material query-change cause.
 
-- [ ] **Step 4: Migrate generators and all fixtures atomically**
+- [x] **Step 4: Migrate generators and all fixtures atomically**
 
 Update the test factory and all six fixture files to emit the exact item shapes. Do not edit historical result Markdown. Add the migration sidecar with:
 
@@ -593,7 +593,7 @@ Update the test factory and all six fixture files to emit the exact item shapes.
 - Accepted machine artifacts are separate `.bundle.json`, `.validation.json`, and `.provenance.json` files.
 ```
 
-- [ ] **Step 5: Run the full test, fixture, and Skill gates**
+- [x] **Step 5: Run the full test, fixture, and Skill gates**
 
 ```powershell
 python -m unittest discover -s tests -p "test_validate_m1_bundle.py" -v
@@ -602,7 +602,7 @@ python -X utf8 C:\Users\94310\.codex\skills\.system\skill-creator\scripts\quick_
 
 Run all six fixture CLIs and compare their closed outputs with `offline-results.json` using the existing Task 2 read-only fixture check; expected exit/status pairs are `0/valid`, three `1/invalid`, and two `2/evidence_incomplete`.
 
-- [ ] **Step 6: Commit FeedbackDelta alignment**
+- [x] **Step 6: Commit FeedbackDelta alignment**
 
 ```powershell
 git add -- skills/engineering-research-copilot/references/core-paper-calibration.md skills/engineering-research-copilot/references/core-feedback-rollback.md skills/engineering-research-copilot/scripts/validate_m1_bundle.py tests/test_validate_m1_bundle.py evals/m1/fixtures evals/m1/results/2026-08-04-m1.1-to-m1.2-migration.md
