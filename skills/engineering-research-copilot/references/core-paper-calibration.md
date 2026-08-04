@@ -155,13 +155,21 @@ feedback_delta:
   query_changes:
     - query_id: "Q2-R2"
       reason: "Exclude proprietary-data routes and expand public simulation evidence"
+      cause_refs:
+        - "feedback_delta.rejected[0]"
       before: "data-driven control using proprietary industrial datasets"
       after: "data-driven control using public simulation datasets excluding proprietary data"
 ```
 
 Use exactly the top-level fields shown in `feedback_delta`. Record a non-empty reason with every rejected item. Show inherited, rejected, reset, and newly added constraints before planning the next search branch. Make integer `allocation` values total 100 and treat them as a query-and-candidate budget, not a probability.
 
-Create a new brief version before round two. Match the second-round plan to the new version and retain the same branch only when the rollback rules permit it. Add at least one `query_changes` entry whenever a rejection reason, new constraint, or reset materially affects the search. Make every material feedback cause traceable to a changed, added, or removed query and require the revised plan to implement the recorded change. Do not claim feedback was applied when the new plan is unchanged for no stated reason.
+Create a new brief version before round two. Match the second-round plan to the new version and retain the same branch only when the rollback rules permit it. Add at least one `query_changes` entry whenever a rejection reason, new constraint, or reset materially affects the search.
+
+Require each query change to contain a non-empty `cause_refs` list of exact paths to existing `feedback_delta.rejected`, `feedback_delta.reset`, or `feedback_delta.added` entries. Never cite `feedback_delta.inherited`. Cover every material rejected, reset, or added entry with at least one `cause_refs` path, and reject unresolved paths or uncovered material entries.
+
+For an added or modified query, set `query_changes.query_id` to the ID of exactly one query in the revised round-two `SearchPlan`. For a removed query, use the deleted round-one `SearchPlan` query ID, require it to exist in round one and be absent from round two, and do not require it to resolve in the revised plan.
+
+Set `before` to the corresponding round-one query expression or boundary and `after` to the corresponding round-two value. Allow an added query to leave only `before` empty, allow a removed query to leave only `after` empty, and require a modified query to provide two non-empty, different values. Require the revised plan to implement every non-empty recorded `after` value. Do not claim feedback was applied when the new plan is unchanged for no stated reason.
 
 ## Select round two
 

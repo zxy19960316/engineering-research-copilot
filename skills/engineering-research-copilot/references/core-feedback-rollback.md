@@ -81,6 +81,8 @@ feedback_delta:
   query_changes:
     - query_id: "Q2-R2"
       reason: "Exclude proprietary-data routes and expand public simulation evidence"
+      cause_refs:
+        - "feedback_delta.rejected[0]"
       before: "data-driven control using proprietary industrial datasets"
       after: "data-driven control using public simulation datasets excluding proprietary data"
 ```
@@ -93,9 +95,13 @@ Set integer `allocation.exploit` and `allocation.explore` values whose sum is ex
 
 Treat a rejection reason, a new constraint, or a reset as material when it changes an inclusion term, exclusion term, source boundary, time boundary, language boundary, expected evidence role, query purpose, query text, or whether a query is added or removed.
 
-Add at least one `query_changes` entry whenever any rejection reason, new constraint, or reset materially affects the next search. Make every material cause traceable to at least one entry. Use the round-two query ID, state the causal reason, and record the prior and revised query expression or boundary in `before` and `after`. Allow one side to be empty only when adding or removing a query; never leave both sides empty for an applied material change.
+Add at least one `query_changes` entry whenever any rejection reason, new constraint, or reset materially affects the next search. Require every query-change entry to contain a non-empty `cause_refs` list. Use only exact, zero-based object paths into `feedback_delta.rejected`, `feedback_delta.reset`, or `feedback_delta.added`, such as `feedback_delta.rejected[0]`, `feedback_delta.reset[0]`, or `feedback_delta.added[0]`. Never point `cause_refs` to `feedback_delta.inherited`.
 
-Match each `query_changes.query_id` to exactly one query in the revised round-two `SearchPlan`, except when the entry explicitly documents a removed round-one query. Require the revised plan to implement the stated `after` value. If the material feedback does not change a query because an existing query already enforces it, say so in `reason` and point to that exact existing query; do not falsely claim a change.
+Require every `cause_refs` path to resolve to an existing entry. Require every material item in `rejected`, `reset`, and `added` to appear in at least one query change's `cause_refs`; allow one material item to affect multiple query changes and one query change to cite multiple material items. Treat an unresolved path, a forbidden inherited path, or an uncovered material item as invalid.
+
+State the causal reason. For an added or modified query, set `query_changes.query_id` to the ID of exactly one query in the revised round-two `SearchPlan`. For a removed query, set `query_changes.query_id` to the deleted round-one `SearchPlan` query ID; require that ID to exist in round one and be absent from round two. Do not require a removed query ID to resolve in the round-two plan.
+
+Set `before` to the exact round-one query expression or boundary and `after` to the exact round-two query expression or boundary. For an added query, allow only `before` to be empty. For a removed query, allow only `after` to be empty. For a modified query or boundary, require both values to be non-empty and different. Never leave both values empty for an applied material change. Require every non-empty `after` value to match the revised round-two plan. If feedback does not change a query because an existing query already enforces it, classify that feedback effect as non-material with a visible reason; do not create a false query change.
 
 Treat material feedback with no traceable query change as invalid. Do not proceed to round-two selection until the discrepancy is fixed or the feedback is explicitly classified as non-material with a visible reason.
 
