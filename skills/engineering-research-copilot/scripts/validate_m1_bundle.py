@@ -12,7 +12,22 @@ from pathlib import Path
 from typing import Any
 
 
-SCHEMA_VERSION = "m1.1"
+SCHEMA_VERSION = "m1.2"
+TERMINAL_STATES = {"WAITING_FOR_EVIDENCE_DECISION", "M1_COMPLETE"}
+OUTCOMES = {"evidence_incomplete", "complete"}
+ROOT_REQUIRED_FIELDS = {
+    "schema_version",
+    "terminal_state",
+    "stopped_after_round",
+    "outcome",
+    "round1",
+}
+ROOT_OPTIONAL_FIELDS = {"fixture_mode", "evidence_class", "feedback_delta", "round2"}
+ROOT_EVIDENCE_FIELDS = {
+    "proves",
+    "does_not_prove",
+    "fixture_duplicate_doi_tokens",
+}
 BASIS_RANK = {"metadata_level": 0, "abstract_level": 1, "fulltext_level": 2}
 BLOCKED_STATES = {"partial", "conflicted", "not_found", "manual_needed"}
 ELIGIBLE_STATES = {
@@ -1072,13 +1087,81 @@ def _validate_duplicate_dois(
         result.error("duplicate_normalized_doi")
 
 
+def _validate_root_contract(
+    bundle: dict, result: _Result
+) -> tuple[int | None, str | None, str | None]:
+    unknown = (
+        set(bundle) - ROOT_REQUIRED_FIELDS - ROOT_OPTIONAL_FIELDS - ROOT_EVIDENCE_FIELDS
+    )
+    if unknown or not ROOT_REQUIRED_FIELDS.issubset(bundle):
+        result.error("root_fields_invalid")
+    if bundle.get("schema_version") != SCHEMA_VERSION:
+        result.error("invalid_schema_version")
+
+    stopped = bundle.get("stopped_after_round")
+    terminal = bundle.get("terminal_state")
+    outcome = bundle.get("outcome")
+    if type(stopped) is not int or stopped not in {1, 2}:
+        result.error("invalid_stopped_after_round")
+    if terminal not in TERMINAL_STATES:
+        result.error("invalid_terminal_state")
+    if outcome not in OUTCOMES:
+        result.error("invalid_outcome")
+    return stopped if type(stopped) is int else None, terminal, outcome
+
+
+def _validate_terminal_state_consistency(
+    stopped: int | None,
+    terminal: str | None,
+    outcome: str | None,
+    round_two_ready: bool,
+    result: _Result,
+) -> None:
+    expected = {
+        (1, "evidence_incomplete"): "WAITING_FOR_EVIDENCE_DECISION",
+        (2, "evidence_incomplete"): "WAITING_FOR_EVIDENCE_DECISION",
+        (2, "complete"): "M1_COMPLETE",
+    }
+    if expected.get((stopped, outcome)) != terminal:
+        result.error("terminal_state_inconsistent")
+    if terminal == "M1_COMPLETE" and not round_two_ready:
+        result.error("complete_terminal_state_without_ready_round_two")
+
+
+def _validate_round(
+    name: str,
+    number: int,
+    bundle: dict,
+    fixture_mode: bool,
+    result: _Result,
+) -> tuple[dict, dict[str, dict], list[str], int]:
+    round_bundle = bundle.get(name)
+    if not isinstance(round_bundle, dict):
+        result.error(f"missing_{name}")
+        round_bundle = {}
+    if round_bundle.get("schema_version") != SCHEMA_VERSION:
+        result.error("invalid_schema_version")
+    if round_bundle.get("round") != number:
+        result.error("round_number_mismatch")
+    if name == "round1" and "round_two_request" in round_bundle:
+        result.error("round_two_request_in_round_one")
+    index, _ordered_ids, eligible_count = _candidate_index(
+        round_bundle, fixture_mode, result
+    )
+    selected_ids = _validate_selection(round_bundle, index, fixture_mode, result)
+    _validate_round_count(name, round_bundle, eligible_count, len(selected_ids), result)
+    if name == "round1":
+        _validate_round_one_roles(selected_ids, index, round_bundle, result)
+    _validate_map(name, number, round_bundle, index, selected_ids, result)
+    return round_bundle, index, selected_ids, eligible_count
+
+
 def _validate_bundle(bundle: dict) -> dict:
     result = _Result()
     if not isinstance(bundle, dict):
         result.error("invalid_bundle")
         return result.closed()
-    if bundle.get("schema_version") != SCHEMA_VERSION:
-        result.error("invalid_schema_version")
+    stopped, terminal, outcome = _validate_root_contract(bundle, result)
 
     raw_fixture_mode = bundle.get("fixture_mode", False)
     if not isinstance(raw_fixture_mode, bool):
@@ -1089,44 +1172,48 @@ def _validate_bundle(bundle: dict) -> dict:
     if fixture_mode and bundle.get("evidence_class") != "offline_contract_fixture":
         result.error("invalid_fixture_evidence_class")
 
-    round_data: dict[str, tuple[dict, dict[str, dict], list[str], int]] = {}
-    for name, number in (("round1", 1), ("round2", 2)):
-        round_bundle = bundle.get(name)
-        if not isinstance(round_bundle, dict):
-            result.error(f"missing_{name}")
-            round_bundle = {}
-        if round_bundle.get("schema_version") != SCHEMA_VERSION:
-            result.error("invalid_schema_version")
-        if round_bundle.get("round") != number:
-            result.error("round_number_mismatch")
-        if name == "round1" and "round_two_request" in round_bundle:
-            result.error("round_two_request_in_round_one")
-        index, ordered_ids, eligible_count = _candidate_index(
-            round_bundle, fixture_mode, result
-        )
-        selected_ids = _validate_selection(round_bundle, index, fixture_mode, result)
-        _validate_round_count(
-            name, round_bundle, eligible_count, len(selected_ids), result
-        )
-        if name == "round1":
-            _validate_round_one_roles(selected_ids, index, round_bundle, result)
-        _validate_map(name, number, round_bundle, index, selected_ids, result)
-        round_data[name] = (round_bundle, index, selected_ids, eligible_count)
-
-    _validate_duplicate_dois(
-        bundle,
-        [round_data["round1"][1], round_data["round2"][1]],
-        result,
+    round_one = _validate_round("round1", 1, bundle, fixture_mode, result)
+    round_one_gaps = round_one[0].get("evidence_gaps")
+    round_one_ready = (
+        round_one[3] >= 15
+        and len(round_one[2]) == 8
+        and isinstance(round_one_gaps, list)
+        and not round_one_gaps
     )
-    _validate_stable_identities(round_data["round1"][1], round_data["round2"][1], result)
-    _validate_feedback(bundle, result)
-    _validate_dispositions(
-        bundle,
-        round_data["round1"][2],
-        round_data["round2"][2],
-        round_data["round1"][1],
-        round_data["round2"][1],
-        result,
+    round_two_ready = False
+
+    if stopped == 1:
+        if "feedback_delta" in bundle or "round2" in bundle:
+            result.error("round_two_fields_after_round_one_stop")
+        _validate_duplicate_dois(bundle, [round_one[1]], result)
+    elif stopped == 2:
+        if "feedback_delta" not in bundle:
+            result.error("missing_feedback_delta")
+        else:
+            _validate_feedback(bundle, result)
+        if "round2" not in bundle:
+            result.error("missing_round2")
+        round_two = _validate_round("round2", 2, bundle, fixture_mode, result)
+        round_two_gaps = round_two[0].get("evidence_gaps")
+        round_two_ready = (
+            round_one_ready
+            and 5 <= len(round_two[2]) <= 10
+            and isinstance(round_two_gaps, list)
+            and not round_two_gaps
+        )
+        _validate_duplicate_dois(bundle, [round_one[1], round_two[1]], result)
+        _validate_stable_identities(round_one[1], round_two[1], result)
+        _validate_dispositions(
+            bundle,
+            round_one[2],
+            round_two[2],
+            round_one[1],
+            round_two[1],
+            result,
+        )
+
+    _validate_terminal_state_consistency(
+        stopped, terminal, outcome, round_two_ready, result
     )
     return result.closed()
 

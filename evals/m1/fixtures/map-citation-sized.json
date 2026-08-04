@@ -1,9 +1,12 @@
 {
-  "schema_version": "m1.1",
+  "schema_version": "m1.2",
+  "terminal_state": "M1_COMPLETE",
+  "stopped_after_round": 2,
+  "outcome": "complete",
   "fixture_mode": true,
   "evidence_class": "offline_contract_fixture",
   "round1": {
-    "schema_version": "m1.1",
+    "schema_version": "m1.2",
     "round": 1,
     "research_brief": {
       "brief_version": 1,
@@ -823,7 +826,7 @@
     ]
   },
   "round2": {
-    "schema_version": "m1.1",
+    "schema_version": "m1.2",
     "round": 2,
     "research_brief": {
       "brief_version": 2,

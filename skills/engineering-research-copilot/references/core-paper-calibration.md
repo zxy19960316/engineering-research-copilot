@@ -36,6 +36,20 @@ Treat `EVIDENCE_INCOMPLETE` and `WAITING_FOR_EVIDENCE_DECISION` as non-success s
 
 Do not skip verification when moving between states. Preserve the brief, search plan, candidate pool, selections, limitations, gaps, and feedback delta needed to explain every transition. Enter `M1_COMPLETE` only through `ROUND_TWO_READY` after both rounds satisfy their required evidence gates.
 
+Record every saved calibration bundle with this exact terminal-state envelope:
+
+```yaml
+schema_version: "m1.2"
+terminal_state: "WAITING_FOR_EVIDENCE_DECISION" # or "M1_COMPLETE"
+stopped_after_round: 1 # or 2
+outcome: "evidence_incomplete" # or "complete"
+round1: {}
+feedback_delta: {} # required only when stopped_after_round is 2
+round2: {} # required only when stopped_after_round is 2
+```
+
+Use only these consistent terminal combinations: round one plus `evidence_incomplete` ends in `WAITING_FOR_EVIDENCE_DECISION`; round two plus `evidence_incomplete` also ends there; round two plus `complete` ends in `M1_COMPLETE`. When `stopped_after_round` is `1`, omit both `feedback_delta` and `round2`; reject either field if present. When it is `2`, require and preserve both fields even if round-two evidence is incomplete. Never claim `M1_COMPLETE` unless round one is ready and round two has a complete, gap-free eligible selection.
+
 ## Build the brief
 
 Extract supplied facts before asking questions. Ask at most three short questions, and ask only for missing fields that materially change query construction or recommendation eligibility. Preserve unknowns as empty values or `open_questions`; do not infer them.
@@ -123,7 +137,7 @@ Use this exact round bundle shape:
 
 ```yaml
 round_bundle:
-  schema_version: "m1.1"
+  schema_version: "m1.2"
   round: 1
   research_brief: {}
   search_plan: {}
@@ -184,7 +198,7 @@ Add `round_two_request` only to a round-two bundle. Use this exact object when t
 
 ```yaml
 round_bundle:
-  schema_version: "m1.1"
+  schema_version: "m1.2"
   round: 2
   research_brief: {}
   search_plan: {}
@@ -231,6 +245,8 @@ Map replacement targets one-to-one. Require every `replaced.round_two_id` to be 
 Set the outcome to `evidence_incomplete` whenever the verified pool, selection count, role coverage, source access, or reasoning basis cannot support the requested complete round. Keep `selected_ids` limited to eligible records and leave missing slots unfilled.
 
 End the current attempt in `WAITING_FOR_EVIDENCE_DECISION`. Keep the M1 workflow incomplete, and do not reinterpret the visible gap as successful completion.
+
+If the gap occurs in round one, save only the root terminal fields and `round1`; do not fabricate feedback or an empty second round. If the gap occurs in round two, preserve the applied `feedback_delta`, the attempted `round2`, its dispositions, limitations, and exact gaps so the attempt remains auditable.
 
 Report:
 

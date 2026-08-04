@@ -35,7 +35,8 @@
         "blocked_record_marked_eligible",
         "selected_record_blocked",
         "eligible_candidate_count_without_limit",
-        "map_verification_status_mismatch"
+        "map_verification_status_mismatch",
+        "complete_terminal_state_without_ready_round_two"
       ],
       "evidence_gaps": []
     },
@@ -69,7 +70,21 @@
       "evidence_gaps": [
         "round1_candidate_pool_below_target"
       ],
-      "classification": "incomplete_not_pass"
+      "classification": "incomplete_not_pass",
+      "stopped_after_round": 1
+    },
+    {
+      "fixture": "evals/m1/fixtures/round2-evidence-incomplete.json",
+      "command": "python skills/engineering-research-copilot/scripts/validate_m1_bundle.py evals/m1/fixtures/round2-evidence-incomplete.json",
+      "exit_code": 2,
+      "status": "evidence_incomplete",
+      "errors": [],
+      "evidence_gaps": [
+        "round2_selection_below_target",
+        "round2_reported_evidence_gap"
+      ],
+      "classification": "incomplete_not_pass",
+      "stopped_after_round": 2
     }
   ]
 }

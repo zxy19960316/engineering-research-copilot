@@ -41,7 +41,8 @@
         "blocked_record_marked_eligible",
         "selected_record_blocked",
         "eligible_candidate_count_without_limit",
-        "map_verification_status_mismatch"
+        "map_verification_status_mismatch",
+        "complete_terminal_state_without_ready_round_two"
       ],
       "expected_evidence_gaps": [],
       "note": "One field is corrupted. The exact error cascade is retained because the closed validator also detects the resulting wrapper, fixture-state, eligibility, pool-count, and map inconsistencies."
@@ -84,7 +85,7 @@
       "case_id": "evidence_incomplete",
       "fixture": "fixtures/evidence-incomplete.json",
       "target_scenario": {
-        "change": "truncate the round-one candidate pool to ten records and state the corresponding search limitation",
+        "change": "truncate the round-one candidate pool to ten records, state the corresponding search limitation, and stop after round one without feedback or round two",
         "target_evidence_gap": "round1_candidate_pool_below_target"
       },
       "expected_status": "evidence_incomplete",
@@ -93,7 +94,23 @@
       "expected_evidence_gaps": [
         "round1_candidate_pool_below_target"
       ],
-      "note": "This is an honestly bounded incomplete scenario, not a failing corruption and not a pass."
+      "note": "This is an honestly bounded round-one early stop, not a failing corruption and not a pass."
+    },
+    {
+      "case_id": "round2_evidence_incomplete",
+      "fixture": "fixtures/round2-evidence-incomplete.json",
+      "target_scenario": {
+        "change": "preserve feedback and the attempted second round while leaving only three eligible round-two selections",
+        "target_evidence_gap": "round2_selection_below_target"
+      },
+      "expected_status": "evidence_incomplete",
+      "expected_exit_code": 2,
+      "expected_errors": [],
+      "expected_evidence_gaps": [
+        "round2_selection_below_target",
+        "round2_reported_evidence_gap"
+      ],
+      "note": "This is an honestly bounded round-two incomplete scenario that retains the feedback delta, dispositions, and attempted round-two evidence."
     }
   ]
 }

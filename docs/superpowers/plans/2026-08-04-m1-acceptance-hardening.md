@@ -137,7 +137,7 @@ Expected: one documentation commit; no Skill, validator, fixture, or evaluation 
 - Consumes: existing round validators and `_Result.closed()` exit mapping.
 - Produces: `SCHEMA_VERSION = "m1.2"`, `_validate_root_contract(bundle, result)`, `_validate_terminal_state_consistency(bundle, result)`, and state-directed optional round fields.
 
-- [ ] **Step 1: Write the terminal-state tests first**
+- [x] **Step 1: Write the terminal-state tests first**
 
 Add these methods to `ValidateM1BundleTests`:
 
@@ -217,7 +217,7 @@ def make_round_two_incomplete_bundle() -> dict:
     return bundle
 ```
 
-- [ ] **Step 2: Run only the five new tests and preserve the red result**
+- [x] **Step 2: Run only the five new tests and preserve the red result**
 
 Run:
 
@@ -232,7 +232,7 @@ python -m unittest `
 
 Expected: FAIL because `m1.1` requires round two unconditionally and has no root terminal-state contract.
 
-- [ ] **Step 3: Implement state-directed validation**
+- [x] **Step 3: Implement state-directed validation**
 
 Set these constants:
 
@@ -281,7 +281,7 @@ def _validate_terminal_state_consistency(
         result.error("complete_terminal_state_without_ready_round_two")
 ```
 
-- [ ] **Step 4: Replace the false early-stop fixture and add a round-two incomplete fixture**
+- [x] **Step 4: Replace the false early-stop fixture and add a round-two incomplete fixture**
 
 Make `evidence-incomplete.json` contain only root state plus `round1`; it must not contain `feedback_delta` or `round2`. Create `round2-evidence-incomplete.json` with both rounds, feedback, three eligible round-two selections, complete dispositions, and an evidence gap `round2_selection_below_target`.
 
@@ -300,7 +300,7 @@ Update `offline-results.json` expected results to:
 
 Keep the existing `proves` and `does_not_prove` provenance fields around the full records.
 
-- [ ] **Step 5: Run the Task 2 gates**
+- [x] **Step 5: Run the Task 2 gates**
 
 Run:
 
@@ -313,7 +313,7 @@ python -X utf8 C:\Users\94310\.codex\skills\.system\skill-creator\scripts\quick_
 
 Expected: all unit tests pass; each incomplete fixture prints closed `evidence_incomplete` JSON and exits `2`; Skill validator prints `Skill is valid!`.
 
-- [ ] **Step 6: Commit terminal-state support**
+- [x] **Step 6: Commit terminal-state support**
 
 ```powershell
 git add -- skills/engineering-research-copilot/references/core-paper-calibration.md skills/engineering-research-copilot/scripts/validate_m1_bundle.py tests/test_validate_m1_bundle.py evals/m1/fixtures evals/m1/adversarial-cases.json evals/m1/offline-results.json

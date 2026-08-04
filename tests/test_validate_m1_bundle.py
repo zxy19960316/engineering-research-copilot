@@ -119,7 +119,7 @@ def _round_bundle(round_number: int, selected_ids: list[str]) -> dict:
         else "public simulation evidence excluding proprietary data"
     )
     return {
-        "schema_version": "m1.1",
+        "schema_version": "m1.2",
         "round": round_number,
         "research_brief": {
             "brief_version": brief_version,
@@ -161,6 +161,17 @@ def _round_bundle(round_number: int, selected_ids: list[str]) -> dict:
         "paper_map": _paper_map(round_number, selected_ids),
         "evidence_gaps": [],
         "search_limitations": [],
+    }
+
+
+def _root_state(terminal_state: str, stopped_after_round: int, outcome: str) -> dict:
+    return {
+        "schema_version": "m1.2",
+        "terminal_state": terminal_state,
+        "stopped_after_round": stopped_after_round,
+        "outcome": outcome,
+        "fixture_mode": True,
+        "evidence_class": "offline_contract_fixture",
     }
 
 
@@ -226,9 +237,7 @@ def make_complete_fixture_bundle() -> dict:
     )
     round_two["round_one_dispositions"] = dispositions
     return {
-        "schema_version": "m1.1",
-        "fixture_mode": True,
-        "evidence_class": "offline_contract_fixture",
+        **_root_state("M1_COMPLETE", 2, "complete"),
         "round1": _round_bundle(1, round_one_ids),
         "feedback_delta": {
             "from_brief_version": 1,
@@ -263,6 +272,49 @@ def make_complete_fixture_bundle() -> dict:
         },
         "round2": round_two,
     }
+
+
+def make_round_one_incomplete_bundle() -> dict:
+    bundle = _root_state("WAITING_FOR_EVIDENCE_DECISION", 1, "evidence_incomplete")
+    round_one = _round_bundle(1, ["fixture:P01", "fixture:P02", "fixture:P03"])
+    round_one["candidate_pool"] = round_one["candidate_pool"][:10]
+    round_one["paper_map"] = _paper_map(1, round_one["selected_ids"])
+    round_one["evidence_gaps"] = [
+        {"role": "direct_problem", "missing_count": 2},
+        {"role": "method", "missing_count": 2},
+        {"role": "transfer_bridge", "missing_count": 2},
+        {"role": "counter_limitation", "missing_count": 1},
+    ]
+    round_one["search_limitations"] = [
+        "Only ten eligible fixture records were available"
+    ]
+    bundle["round1"] = round_one
+    return bundle
+
+
+def make_round_two_incomplete_bundle() -> dict:
+    bundle = make_complete_fixture_bundle()
+    bundle.update(
+        {
+            "terminal_state": "WAITING_FOR_EVIDENCE_DECISION",
+            "stopped_after_round": 2,
+            "outcome": "evidence_incomplete",
+        }
+    )
+    selected = ["fixture:P01", "fixture:P02", "fixture:P03"]
+    bundle["round2"]["selected_ids"] = selected
+    bundle["round2"]["paper_map"] = _paper_map(2, selected)
+    bundle["round2"]["evidence_gaps"] = [
+        "Two additional eligible papers are missing"
+    ]
+    for entry in bundle["round2"]["round_one_dispositions"]:
+        if entry["round_one_id"] in selected:
+            entry.update(
+                {"disposition": "retained", "round_two_id": entry["round_one_id"]}
+            )
+        else:
+            entry.update({"disposition": "removed", "round_two_id": None})
+    return bundle
 
 
 def set_expanded_round_two_selection(bundle: dict, count: int) -> None:
@@ -375,6 +427,38 @@ class ValidateM1BundleTests(unittest.TestCase):
     def test_valid_complete_bundle_returns_valid(self):
         result = validate_bundle(make_complete_fixture_bundle())
         self.assertEqual(result, {"status": "valid", "errors": [], "evidence_gaps": []})
+
+    def test_round_one_incomplete_bundle_is_valid_incomplete(self):
+        bundle = make_round_one_incomplete_bundle()
+        result = validate_bundle(bundle)
+        self.assertEqual(result["status"], "evidence_incomplete")
+        self.assertEqual(result["errors"], [])
+        self.assertIn("round1_candidate_pool_below_target", result["evidence_gaps"])
+
+    def test_round_one_incomplete_rejects_round_two(self):
+        bundle = make_round_one_incomplete_bundle()
+        bundle["round2"] = _round_bundle(2, [])
+        self.assertIn(
+            "round_two_fields_after_round_one_stop", validate_bundle(bundle)["errors"]
+        )
+
+    def test_round_one_incomplete_cannot_claim_m1_complete(self):
+        bundle = make_round_one_incomplete_bundle()
+        bundle["terminal_state"] = "M1_COMPLETE"
+        self.assertIn("terminal_state_inconsistent", validate_bundle(bundle)["errors"])
+
+    def test_round_two_incomplete_requires_feedback_delta(self):
+        bundle = make_round_two_incomplete_bundle()
+        del bundle["feedback_delta"]
+        self.assertIn("missing_feedback_delta", validate_bundle(bundle)["errors"])
+
+    def test_complete_bundle_requires_round_two_ready(self):
+        bundle = make_complete_fixture_bundle()
+        bundle["round2"]["selected_ids"] = bundle["round2"]["selected_ids"][:3]
+        self.assertIn(
+            "complete_terminal_state_without_ready_round_two",
+            validate_bundle(bundle)["errors"],
+        )
 
     def test_authorized_eight_paper_round_two_returns_valid(self):
         bundle = make_complete_fixture_bundle()
@@ -595,6 +679,15 @@ class ValidateM1BundleTests(unittest.TestCase):
 
     def test_short_pool_with_visible_search_limit_returns_incomplete(self):
         bundle = make_complete_fixture_bundle()
+        bundle.update(
+            {
+                "terminal_state": "WAITING_FOR_EVIDENCE_DECISION",
+                "stopped_after_round": 1,
+                "outcome": "evidence_incomplete",
+            }
+        )
+        del bundle["feedback_delta"]
+        del bundle["round2"]
         bundle["round1"]["candidate_pool"] = bundle["round1"]["candidate_pool"][:10]
         bundle["round1"]["search_limitations"] = [
             "Only ten eligible fixture records remained"
@@ -612,6 +705,15 @@ class ValidateM1BundleTests(unittest.TestCase):
 
     def test_short_round_one_allows_only_documented_role_subsets(self):
         bundle = make_complete_fixture_bundle()
+        bundle.update(
+            {
+                "terminal_state": "WAITING_FOR_EVIDENCE_DECISION",
+                "stopped_after_round": 1,
+                "outcome": "evidence_incomplete",
+            }
+        )
+        del bundle["feedback_delta"]
+        del bundle["round2"]
         bundle["round1"]["selected_ids"] = bundle["round1"]["selected_ids"][:7]
         bundle["round1"]["paper_map"] = _paper_map(
             1, bundle["round1"]["selected_ids"]
@@ -619,9 +721,6 @@ class ValidateM1BundleTests(unittest.TestCase):
         bundle["round1"]["evidence_gaps"] = [
             {"role": "counter_limitation", "missing_count": 1}
         ]
-        bundle["round2"]["round_one_dispositions"] = bundle["round2"][
-            "round_one_dispositions"
-        ][:7]
         result = validate_bundle(bundle)
         self.assertEqual(result["status"], "evidence_incomplete")
         self.assertNotIn("round1_role_allocation_invalid", result["errors"])
@@ -888,6 +987,15 @@ class ValidateM1BundleCliTests(unittest.TestCase):
         invalid = make_complete_fixture_bundle()
         invalid["schema_version"] = "m1.0"
         incomplete = make_complete_fixture_bundle()
+        incomplete.update(
+            {
+                "terminal_state": "WAITING_FOR_EVIDENCE_DECISION",
+                "stopped_after_round": 1,
+                "outcome": "evidence_incomplete",
+            }
+        )
+        del incomplete["feedback_delta"]
+        del incomplete["round2"]
         incomplete["round1"]["candidate_pool"] = incomplete["round1"][
             "candidate_pool"
         ][:10]
