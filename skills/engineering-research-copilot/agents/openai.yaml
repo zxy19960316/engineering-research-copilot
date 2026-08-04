@@ -1,0 +1,4 @@
+interface:
+  display_name: "Engineering Research Copilot"
+  short_description: "Evidence-grounded engineering research workflows"
+  default_prompt: "Use $engineering-research-copilot to find and verify papers, compare research directions, and plan an executable engineering study."
