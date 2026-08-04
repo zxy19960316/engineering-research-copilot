@@ -1,0 +1,1165 @@
+#!/usr/bin/env python3
+"""Validate one saved M1 calibration bundle without network access."""
+
+from __future__ import annotations
+
+import json
+import re
+import sys
+from collections import Counter
+from datetime import datetime
+from pathlib import Path
+from typing import Any
+
+
+SCHEMA_VERSION = "m1.1"
+BASIS_RANK = {"metadata_level": 0, "abstract_level": 1, "fulltext_level": 2}
+BLOCKED_STATES = {"partial", "conflicted", "not_found", "manual_needed"}
+ELIGIBLE_STATES = {
+    "verified_primary",
+    "verified_registry",
+    "verified_preprint",
+}
+REAL_STATES = ELIGIBLE_STATES | BLOCKED_STATES
+STATUS_RANK = {
+    "verified_primary": 4,
+    "verified_registry": 3,
+    "verified_preprint": 2,
+    "fixture_only": 2,
+    "partial": 1,
+    "conflicted": 0,
+    "not_found": 0,
+    "manual_needed": 0,
+}
+DISPOSITIONS = {"retained", "replaced", "downgraded", "removed"}
+CAUSE_TYPES = {"feedback_delta", "new_evidence"}
+EVIDENCE_ROLES = [
+    "direct_problem",
+    "method",
+    "transfer_bridge",
+    "counter_limitation",
+]
+BASIS_LEVELS = ["metadata_level", "abstract_level", "fulltext_level"]
+EDGE_RELATIONS = {
+    "same_problem",
+    "shared_method",
+    "transfer_bridge",
+    "claim_support",
+    "claim_tension",
+    "same_data_or_benchmark",
+}
+SOURCE_TYPES = {"doi_registry", "official_repository", "pubmed", "publisher_landing"}
+SOURCE_RESULTS = {"match", "conflict", "not_found", "unavailable"}
+ELIGIBLE_TITLE_MATCHES = {"exact", "normalized"}
+ELIGIBLE_AUTHOR_MATCHES = {"exact", "compatible"}
+ROUND_ONE_ROLE_COUNTS = {
+    "direct_problem": 3,
+    "method": 2,
+    "transfer_bridge": 2,
+    "counter_limitation": 1,
+}
+FEEDBACK_FIELDS = {
+    "from_brief_version",
+    "to_brief_version",
+    "inherited",
+    "rejected",
+    "reset",
+    "added",
+    "allocation",
+    "query_changes",
+}
+_DOI_PREFIX = re.compile(
+    r"^(?:https?://(?:dx\.)?doi\.org/|doi:\s*)", re.IGNORECASE
+)
+_PATH_TOKEN = re.compile(r"([A-Za-z_][A-Za-z0-9_]*)|\[(\d+)\]")
+_NEW_EVIDENCE_REF = re.compile(
+    r"^round2\.candidate_pool\[\d+\]\.verified_record"
+    r"\.verification\.checked_sources\[\d+\]$"
+)
+_FEEDBACK_CAUSE_REF = re.compile(
+    r"^feedback_delta\.(?:inherited|rejected|reset|added)\[\d+\]$"
+)
+_QUERY_MATERIAL_REF = re.compile(
+    r"^feedback_delta\.(?:rejected|reset|added)\[\d+\]$"
+)
+_MISSING = object()
+
+
+def normalize_doi(value: str | None) -> str | None:
+    """Normalize a supplied DOI without repairing or inferring it."""
+
+    if value is None or not isinstance(value, str):
+        return None
+    normalized = value.strip()
+    normalized = _DOI_PREFIX.sub("", normalized, count=1)
+    normalized = normalized.strip().rstrip(".,;:)]}>").strip()
+    return normalized.lower() or None
+
+
+class _Result:
+    def __init__(self) -> None:
+        self.errors: list[str] = []
+        self.evidence_gaps: list[str] = []
+
+    def error(self, code: str) -> None:
+        if code not in self.errors:
+            self.errors.append(code)
+
+    def gap(self, code: str) -> None:
+        if code not in self.evidence_gaps:
+            self.evidence_gaps.append(code)
+
+    def closed(self) -> dict:
+        if self.errors:
+            status = "invalid"
+        elif self.evidence_gaps:
+            status = "evidence_incomplete"
+        else:
+            status = "valid"
+        return {
+            "status": status,
+            "errors": self.errors,
+            "evidence_gaps": self.evidence_gaps,
+        }
+
+
+def _as_list(value: Any, result: _Result, error: str) -> list:
+    if isinstance(value, list):
+        return value
+    result.error(error)
+    return []
+
+
+def _nonempty_text(value: Any) -> bool:
+    return isinstance(value, str) and bool(value.strip())
+
+
+def _valid_checked_at(value: Any) -> bool:
+    if not _nonempty_text(value):
+        return False
+    try:
+        parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
+    except ValueError:
+        return False
+    return parsed.tzinfo is not None and parsed.utcoffset() is not None
+
+
+def _checked_source_is_valid(source: Any) -> bool:
+    return (
+        isinstance(source, dict)
+        and set(source) == {"source_type", "canonical_record", "checked_at", "result"}
+        and isinstance(source.get("source_type"), str)
+        and source.get("source_type") in SOURCE_TYPES
+        and isinstance(source.get("result"), str)
+        and source.get("result") in SOURCE_RESULTS
+        and _nonempty_text(source.get("canonical_record"))
+        and _valid_checked_at(source.get("checked_at"))
+    )
+
+
+def _production_eligibility_is_valid(verification: dict) -> bool:
+    sources = verification.get("checked_sources")
+    blocking = verification.get("blocking_reasons")
+    return (
+        verification.get("status") in ELIGIBLE_STATES
+        and verification.get("recommendation_eligible") is True
+        and verification.get("title_match") in ELIGIBLE_TITLE_MATCHES
+        and verification.get("author_match") in ELIGIBLE_AUTHOR_MATCHES
+        and isinstance(blocking, list)
+        and not blocking
+        and isinstance(sources, list)
+        and bool(sources)
+        and all(_checked_source_is_valid(source) for source in sources)
+        and any(source.get("result") == "match" for source in sources)
+        and not any(source.get("result") in {"conflict", "not_found"} for source in sources)
+    )
+
+
+def _candidate_counts_as_eligible(candidate: dict, fixture_mode: bool) -> bool:
+    verified = candidate.get("verified_record")
+    verification = verified.get("verification") if isinstance(verified, dict) else None
+    if not isinstance(verification, dict):
+        return False
+    if fixture_mode:
+        return (
+            candidate.get("verification_status") == "fixture_only"
+            and candidate.get("recommendation_eligible") is True
+            and verification.get("status") == "fixture_only"
+            and verification.get("recommendation_eligible") is True
+        )
+    return (
+        candidate.get("verification_status") == verification.get("status")
+        and candidate.get("recommendation_eligible")
+        is verification.get("recommendation_eligible")
+        and _production_eligibility_is_valid(verification)
+    )
+
+
+def _validate_candidate(
+    candidate: Any,
+    fixture_mode: bool,
+    result: _Result,
+) -> tuple[str | None, dict | None]:
+    if not isinstance(candidate, dict):
+        result.error("invalid_candidate_record")
+        return None, None
+
+    candidate_id = candidate.get("candidate_id")
+    if not _nonempty_text(candidate_id):
+        result.error("invalid_candidate_id")
+        return None, candidate
+
+    status = candidate.get("verification_status")
+    eligible = candidate.get("recommendation_eligible")
+    basis = candidate.get("basis_level")
+    evidence_roles = candidate.get("evidence_roles")
+    selection_role = candidate.get("selection_role")
+    verified = candidate.get("verified_record")
+    if not isinstance(eligible, bool):
+        result.error("invalid_recommendation_eligibility")
+    if basis not in BASIS_RANK:
+        result.error("invalid_basis_level")
+    if (
+        not isinstance(evidence_roles, list)
+        or not evidence_roles
+        or any(role not in EVIDENCE_ROLES for role in evidence_roles)
+    ):
+        result.error("invalid_evidence_roles")
+    if (
+        not isinstance(selection_role, str)
+        or selection_role not in EVIDENCE_ROLES
+        or not isinstance(evidence_roles, list)
+        or selection_role not in evidence_roles
+    ):
+        result.error("invalid_selection_role")
+    if not isinstance(verified, dict):
+        result.error("missing_verified_record")
+        verified = {}
+
+    verification = verified.get("verification")
+    if not isinstance(verification, dict):
+        result.error("missing_verification_object")
+        verification = {}
+
+    if verified.get("paper_id") != candidate_id:
+        result.error("candidate_record_id_mismatch")
+    if verification.get("status") != status:
+        result.error("candidate_verification_status_mismatch")
+    if verification.get("recommendation_eligible") is not eligible:
+        result.error("candidate_eligibility_mismatch")
+    if verified.get("basis_level") != basis:
+        result.error("candidate_basis_mismatch")
+
+    doi = verified.get("doi")
+    alternate_id = verified.get("alternate_id")
+    authors = verified.get("authors")
+    if doi is not None and not isinstance(doi, str):
+        result.error("invalid_doi_type")
+    if alternate_id is not None and not isinstance(alternate_id, dict):
+        result.error("invalid_alternate_id")
+    elif isinstance(alternate_id, dict) and (
+        set(alternate_id) != {"authority", "value"}
+        or
+        not _nonempty_text(alternate_id.get("authority"))
+        or not _nonempty_text(alternate_id.get("value"))
+    ):
+        result.error("invalid_alternate_id")
+    if not _nonempty_text(verified.get("title")):
+        result.error("invalid_verified_title")
+    if (
+        not isinstance(authors, list)
+        or not authors
+        or any(not _nonempty_text(author) for author in authors)
+    ):
+        result.error("invalid_verified_authors")
+
+    is_fixture_id = candidate_id.startswith("fixture:")
+    if fixture_mode:
+        if not is_fixture_id or status != "fixture_only":
+            result.error("fixture_claims_real_verification")
+        if any(
+            verified.get(field) not in (None, "")
+            for field in ("doi", "alternate_id", "canonical_url")
+        ):
+            result.error("fixture_citation_identifier_present")
+        if verification.get("checked_sources") not in ([], None):
+            result.error("fixture_claims_real_verification")
+    else:
+        if is_fixture_id or status == "fixture_only":
+            result.error("fixture_record_in_production")
+        if status not in REAL_STATES:
+            result.error("invalid_verification_status")
+        checked_sources = verification.get("checked_sources")
+        if status in ELIGIBLE_STATES and (
+            not isinstance(checked_sources, list) or not checked_sources
+        ):
+            result.error("missing_current_checked_sources")
+        if isinstance(checked_sources, list):
+            if any(not _checked_source_is_valid(source) for source in checked_sources):
+                result.error("invalid_checked_source")
+        elif checked_sources is not None:
+            result.error("invalid_checked_source")
+        if eligible is True and not _production_eligibility_is_valid(verification):
+            result.error("production_record_not_eligible")
+
+    if status in BLOCKED_STATES and eligible is True:
+        result.error("blocked_record_marked_eligible")
+    if status in ELIGIBLE_STATES and eligible is not True:
+        result.error("verified_record_marked_ineligible")
+    return candidate_id, candidate
+
+
+def _candidate_index(
+    round_bundle: dict,
+    fixture_mode: bool,
+    result: _Result,
+) -> tuple[dict[str, dict], list[str], int]:
+    candidates = _as_list(
+        round_bundle.get("candidate_pool"), result, "invalid_candidate_pool"
+    )
+    index: dict[str, dict] = {}
+    ordered_ids: list[str] = []
+    eligible_count = 0
+    for candidate in candidates:
+        candidate_id, record = _validate_candidate(candidate, fixture_mode, result)
+        if candidate_id is None or record is None:
+            continue
+        ordered_ids.append(candidate_id)
+        if candidate_id in index:
+            result.error("duplicate_candidate_id")
+        else:
+            index[candidate_id] = record
+        if _candidate_counts_as_eligible(record, fixture_mode):
+            eligible_count += 1
+    return index, ordered_ids, eligible_count
+
+
+def _validate_selection(
+    round_bundle: dict,
+    index: dict[str, dict],
+    fixture_mode: bool,
+    result: _Result,
+) -> list[str]:
+    selected = _as_list(
+        round_bundle.get("selected_ids"), result, "invalid_selected_ids"
+    )
+    selected_ids: list[str] = []
+    for selected_id in selected:
+        if not _nonempty_text(selected_id):
+            result.error("invalid_selected_id")
+            continue
+        selected_ids.append(selected_id)
+    if len(set(selected_ids)) != len(selected_ids):
+        result.error("duplicate_selected_id")
+
+    for selected_id in selected_ids:
+        candidate = index.get(selected_id)
+        if candidate is None:
+            result.error("unknown_selected_id")
+            continue
+        status = candidate.get("verification_status")
+        eligible = candidate.get("recommendation_eligible") is True
+        allowed = status == "fixture_only" if fixture_mode else status in ELIGIBLE_STATES
+        if not eligible or not allowed or status in BLOCKED_STATES:
+            result.error("selected_record_blocked")
+    return selected_ids
+
+
+def _validate_round_count(
+    name: str,
+    round_bundle: dict,
+    candidate_count: int,
+    selected_count: int,
+    result: _Result,
+) -> None:
+    reported_gaps = _as_list(
+        round_bundle.get("evidence_gaps"), result, "invalid_evidence_gaps"
+    )
+    limitations = _as_list(
+        round_bundle.get("search_limitations"),
+        result,
+        "invalid_search_limitations",
+    )
+    has_gap = bool(reported_gaps)
+
+    if name == "round1":
+        if candidate_count < 15:
+            if limitations:
+                result.gap("round1_candidate_pool_below_target")
+            else:
+                result.error("eligible_candidate_count_without_limit")
+        elif candidate_count > 20:
+            result.error("candidate_count_out_of_range")
+        lower = upper = 8
+    else:
+        lower, upper = 5, 10
+
+        request_present = "round_two_request" in round_bundle
+        request = round_bundle.get("round_two_request")
+        valid_request = (
+            isinstance(request, dict)
+            and set(request) == {"explicit_user_request", "requested_count"}
+            and type(request.get("explicit_user_request")) is bool
+            and type(request.get("requested_count")) is int
+            and request.get("requested_count") == selected_count
+        )
+        if request_present and not valid_request:
+            result.error("invalid_round_two_request")
+        if 7 <= selected_count <= 10 and (
+            not valid_request or request.get("explicit_user_request") is not True
+        ):
+            result.error("round_two_expansion_not_authorized")
+
+    if selected_count < lower:
+        if has_gap:
+            result.gap(f"{name}_selection_below_target")
+        else:
+            result.error("selection_count_without_gap")
+    elif selected_count > upper:
+        result.error("selection_count_out_of_range")
+
+    if has_gap:
+        result.gap(f"{name}_reported_evidence_gap")
+
+
+def _validate_round_one_roles(
+    selected_ids: list[str],
+    index: dict[str, dict],
+    round_bundle: dict,
+    result: _Result,
+) -> None:
+    roles = []
+    for candidate_id in selected_ids:
+        candidate = index.get(candidate_id)
+        if isinstance(candidate, dict):
+            role = candidate.get("selection_role")
+            if isinstance(role, str):
+                roles.append(role)
+    counts = Counter(roles)
+    target = Counter(ROUND_ONE_ROLE_COUNTS)
+    if len(roles) != len(selected_ids) or len(selected_ids) > 8:
+        result.error("round1_role_allocation_invalid")
+        return
+    if len(selected_ids) == 8:
+        if counts != target:
+            result.error("round1_role_allocation_invalid")
+        return
+    if any(counts[role] > limit for role, limit in ROUND_ONE_ROLE_COUNTS.items()):
+        result.error("round1_role_allocation_invalid")
+        return
+
+    gaps = round_bundle.get("evidence_gaps")
+    documented: dict[str, int] = {}
+    if isinstance(gaps, list):
+        for gap in gaps:
+            if not isinstance(gap, dict):
+                continue
+            role = gap.get("role")
+            missing_count = gap.get("missing_count")
+            if role in ROUND_ONE_ROLE_COUNTS and type(missing_count) is int:
+                documented[role] = documented.get(role, 0) + missing_count
+    for role, limit in ROUND_ONE_ROLE_COUNTS.items():
+        missing = limit - counts[role]
+        if missing and documented.get(role) != missing:
+            result.error("round1_role_gap_missing")
+
+
+def _validate_map(
+    name: str,
+    round_number: int,
+    round_bundle: dict,
+    index: dict[str, dict],
+    selected_ids: list[str],
+    result: _Result,
+) -> None:
+    paper_map = round_bundle.get("paper_map")
+    if not isinstance(paper_map, dict):
+        result.error("invalid_paper_map")
+        return
+    if paper_map.get("round") != round_number:
+        result.error("paper_map_round_mismatch")
+    if paper_map.get("node_size_basis") != "user_fit":
+        result.error("invalid_node_size_basis")
+
+    legend = paper_map.get("legend")
+    if not isinstance(legend, dict) or legend.get("evidence_roles") != EVIDENCE_ROLES or legend.get(
+        "basis_levels"
+    ) != BASIS_LEVELS:
+        result.error("invalid_map_legend")
+
+    nodes = _as_list(paper_map.get("nodes"), result, "invalid_map_nodes")
+    node_index: dict[str, dict] = {}
+    paper_node_ids: list[str] = []
+    for node in nodes:
+        if not isinstance(node, dict) or not _nonempty_text(node.get("id")):
+            result.error("invalid_map_node")
+            continue
+        node_id = node["id"]
+        if node_id in node_index:
+            result.error("duplicate_map_node_id")
+        else:
+            node_index[node_id] = node
+        if node.get("basis_level") not in BASIS_RANK:
+            result.error("invalid_basis_level")
+        if node.get("node_type") == "paper":
+            paper_node_ids.append(node_id)
+            candidate = index.get(node_id)
+            if candidate is None:
+                result.error("map_contains_unknown_paper")
+                continue
+            candidate_basis = candidate.get("basis_level")
+            node_basis = node.get("basis_level")
+            if (
+                candidate_basis in BASIS_RANK
+                and node_basis in BASIS_RANK
+                and BASIS_RANK[node_basis] > BASIS_RANK[candidate_basis]
+            ):
+                result.error("map_basis_exceeds_source")
+            if node.get("verification_status") != candidate.get("verification_status"):
+                result.error("map_verification_status_mismatch")
+            roles = candidate.get("evidence_roles")
+            if not isinstance(roles, list) or node.get("evidence_role") not in roles:
+                result.error("map_evidence_role_mismatch")
+
+    if Counter(paper_node_ids) != Counter(selected_ids):
+        result.error("map_nodes_do_not_match_selection")
+
+    edges = _as_list(paper_map.get("edges"), result, "invalid_map_edges")
+    edge_keys: list[tuple[Any, Any, Any]] = []
+    for edge in edges:
+        if not isinstance(edge, dict):
+            result.error("invalid_map_edge")
+            continue
+        source = edge.get("source")
+        target = edge.get("target")
+        relation = edge.get("relation")
+        if not all(_nonempty_text(value) for value in (source, target, relation)):
+            result.error("invalid_map_edge")
+            continue
+        edge_keys.append((source, target, relation))
+        if source not in node_index or target not in node_index:
+            result.error("edge_endpoint_missing")
+        if relation not in EDGE_RELATIONS:
+            result.error("invalid_edge_relation")
+        edge_basis = edge.get("basis_level")
+        if edge_basis not in BASIS_RANK:
+            result.error("invalid_basis_level")
+            continue
+        paper_endpoints = [
+            endpoint
+            for endpoint in (source, target)
+            if endpoint in index and node_index.get(endpoint, {}).get("node_type") == "paper"
+        ]
+        if not paper_endpoints:
+            result.error("edge_without_paper_support")
+        for endpoint in paper_endpoints:
+            source_basis = index[endpoint].get("basis_level")
+            if (
+                source_basis in BASIS_RANK
+                and BASIS_RANK[edge_basis] > BASIS_RANK[source_basis]
+            ):
+                result.error("edge_basis_exceeds_source")
+    if len(set(edge_keys)) != len(edge_keys):
+        result.error("duplicate_map_edge")
+
+    fallback = _as_list(
+        paper_map.get("text_fallback"), result, "missing_text_fallback"
+    )
+    fallback_nodes: dict[str, list[dict]] = {}
+    fallback_edges: dict[tuple[Any, Any, Any], list[dict]] = {}
+    for entry in fallback:
+        if not isinstance(entry, dict):
+            result.error("invalid_text_fallback")
+            continue
+        if entry.get("entry_type") == "node":
+            entry_id = entry.get("id")
+            if not _nonempty_text(entry_id):
+                result.error("invalid_text_fallback")
+                continue
+            fallback_nodes.setdefault(entry_id, []).append(entry)
+        elif entry.get("entry_type") == "edge":
+            values = (entry.get("source"), entry.get("target"), entry.get("relation"))
+            if not all(_nonempty_text(value) for value in values):
+                result.error("invalid_text_fallback")
+                continue
+            key = values
+            fallback_edges.setdefault(key, []).append(entry)
+        else:
+            result.error("invalid_text_fallback")
+
+    if set(fallback_nodes) != set(node_index) or any(
+        len(entries) != 1 for entries in fallback_nodes.values()
+    ):
+        result.error("map_fallback_node_mismatch")
+    if set(fallback_edges) != set(edge_keys) or any(
+        len(entries) != 1 for entries in fallback_edges.values()
+    ):
+        result.error("map_fallback_edge_mismatch")
+
+    for node_id, node in node_index.items():
+        entries = fallback_nodes.get(node_id, [])
+        if len(entries) != 1:
+            continue
+        entry = entries[0]
+        fields = ["node_type", "basis_level"]
+        if node.get("node_type") == "paper":
+            fields.extend(["evidence_role", "verification_status"])
+        if any(entry.get(field) != node.get(field) for field in fields):
+            result.error("map_fallback_node_mismatch")
+    for edge in edges:
+        if not isinstance(edge, dict):
+            continue
+        key = (edge.get("source"), edge.get("target"), edge.get("relation"))
+        entries = fallback_edges.get(key, [])
+        if len(entries) == 1 and entries[0].get("basis_level") != edge.get("basis_level"):
+            result.error("map_fallback_edge_mismatch")
+
+
+def _value_at_ref(bundle: dict, reference: str) -> Any:
+    if not isinstance(reference, str):
+        return _MISSING
+    position = 0
+    current: Any = bundle
+    for match in _PATH_TOKEN.finditer(reference):
+        if match.start() != position and not (
+            reference[position : match.start()] == "." and match.group(1)
+        ):
+            return _MISSING
+        position = match.end()
+        key, index = match.groups()
+        if key is not None:
+            if not isinstance(current, dict) or key not in current:
+                return _MISSING
+            current = current[key]
+        else:
+            numeric_index = int(index)
+            if not isinstance(current, list) or numeric_index >= len(current):
+                return _MISSING
+            current = current[numeric_index]
+    return current if position == len(reference) else _MISSING
+
+
+def _resolve_ref(bundle: dict, reference: str) -> bool:
+    return _value_at_ref(bundle, reference) is not _MISSING
+
+
+def _contains_exact_text(value: Any, target: str) -> bool:
+    if isinstance(value, str):
+        return value == target
+    if isinstance(value, list):
+        return any(_contains_exact_text(item, target) for item in value)
+    if isinstance(value, dict):
+        return any(_contains_exact_text(item, target) for item in value.values())
+    return False
+
+
+def _validate_feedback(bundle: dict, result: _Result) -> None:
+    feedback = bundle.get("feedback_delta")
+    if not isinstance(feedback, dict):
+        result.error("invalid_feedback_delta")
+        return
+    if set(feedback) != FEEDBACK_FIELDS:
+        result.error("feedback_delta_fields_invalid")
+
+    from_version = feedback.get("from_brief_version")
+    to_version = feedback.get("to_brief_version")
+    if (
+        isinstance(from_version, bool)
+        or isinstance(to_version, bool)
+        or not isinstance(from_version, int)
+        or not isinstance(to_version, int)
+        or to_version <= from_version
+    ):
+        result.error("invalid_feedback_brief_versions")
+
+    rejected = _as_list(feedback.get("rejected"), result, "invalid_feedback_rejected")
+    reset = _as_list(feedback.get("reset"), result, "invalid_feedback_reset")
+    added = _as_list(feedback.get("added"), result, "invalid_feedback_added")
+    _as_list(feedback.get("inherited"), result, "invalid_feedback_inherited")
+    allocation = feedback.get("allocation")
+    if not isinstance(allocation, dict) or set(allocation) != {"exploit", "explore"}:
+        result.error("invalid_feedback_allocation")
+    else:
+        exploit = allocation.get("exploit")
+        explore = allocation.get("explore")
+        if (
+            isinstance(exploit, bool)
+            or isinstance(explore, bool)
+            or not isinstance(exploit, int)
+            or not isinstance(explore, int)
+            or exploit < 0
+            or explore < 0
+            or exploit + explore != 100
+        ):
+            result.error("invalid_feedback_allocation")
+
+    query_changes = _as_list(
+        feedback.get("query_changes"), result, "invalid_feedback_query_changes"
+    )
+    if (rejected or reset or added) and not query_changes:
+        result.error("feedback_not_applied_to_query")
+
+    round_one = bundle.get("round1")
+    round_two = bundle.get("round2")
+    plan_one = round_one.get("search_plan") if isinstance(round_one, dict) else None
+    plan_two = round_two.get("search_plan") if isinstance(round_two, dict) else None
+    queries_one = plan_one.get("queries") if isinstance(plan_one, dict) else []
+    queries_two = plan_two.get("queries") if isinstance(plan_two, dict) else []
+    if not isinstance(queries_one, list):
+        result.error("invalid_round_brief_or_plan")
+        queries_one = []
+    if not isinstance(queries_two, list):
+        result.error("invalid_round_brief_or_plan")
+        queries_two = []
+
+    covered_material_refs: set[str] = set()
+    for change in query_changes:
+        if not isinstance(change, dict):
+            result.error("invalid_feedback_query_change")
+            continue
+        if set(change) != {"query_id", "reason", "cause_refs", "before", "after"}:
+            result.error("invalid_feedback_query_change")
+        if not _nonempty_text(change.get("reason")):
+            result.error("feedback_query_change_reason_missing")
+        cause_refs = change.get("cause_refs")
+        if not isinstance(cause_refs, list) or not cause_refs:
+            result.error("invalid_feedback_query_cause_refs")
+        else:
+            for cause_ref in cause_refs:
+                if (
+                    not _nonempty_text(cause_ref)
+                    or not _QUERY_MATERIAL_REF.fullmatch(cause_ref)
+                    or not _resolve_ref(bundle, cause_ref)
+                ):
+                    result.error("invalid_feedback_query_cause_refs")
+                else:
+                    covered_material_refs.add(cause_ref)
+        before = change.get("before")
+        after = change.get("after")
+        query_id = change.get("query_id")
+        if (
+            not isinstance(before, str)
+            or not isinstance(after, str)
+            or not _nonempty_text(query_id)
+            or not (before.strip() or after.strip())
+        ):
+            result.error("invalid_feedback_query_change")
+            continue
+
+        matching_one = [
+            query
+            for query in queries_one
+            if isinstance(query, dict) and query.get("query_id") == query_id
+        ]
+        matching_two = [
+            query
+            for query in queries_two
+            if isinstance(query, dict) and query.get("query_id") == query_id
+        ]
+        before_any = [
+            query
+            for query in queries_one
+            if isinstance(query, dict) and _contains_exact_text(query, before)
+        ] if before else []
+
+        if before and not before_any:
+            result.error("feedback_before_not_in_round1")
+        if before and after and before == after:
+            result.error("feedback_query_change_noop")
+        if after:
+            if len(matching_two) != 1 or not _contains_exact_text(matching_two[0], after):
+                result.error("feedback_after_not_in_round2")
+                result.error("feedback_query_change_not_implemented")
+        if not before:
+            if matching_one:
+                result.error("feedback_query_addition_not_explicit")
+        elif not after:
+            if not matching_one or matching_two:
+                result.error("feedback_query_removal_not_explicit")
+
+    expected_material_refs: set[str] = set()
+    for field, items in (("rejected", rejected), ("reset", reset), ("added", added)):
+        for index, item in enumerate(items):
+            expected_material_refs.add(f"feedback_delta.{field}[{index}]")
+            if not isinstance(item, dict) or not _nonempty_text(item.get("reason")):
+                result.error("feedback_material_reason_missing")
+                if field == "rejected":
+                    result.error("feedback_rejection_reason_missing")
+    if not expected_material_refs.issubset(covered_material_refs):
+        result.error("feedback_material_cause_untracked")
+
+    if isinstance(round_one, dict) and isinstance(round_two, dict):
+        brief_one = round_one.get("research_brief")
+        brief_two = round_two.get("research_brief")
+        if not all(isinstance(item, dict) for item in (brief_one, brief_two, plan_one, plan_two)):
+            result.error("invalid_round_brief_or_plan")
+        else:
+            if (
+                brief_one.get("brief_version") != from_version
+                or plan_one.get("brief_version") != from_version
+                or brief_two.get("brief_version") != to_version
+                or plan_two.get("brief_version") != to_version
+            ):
+                result.error("feedback_brief_version_mismatch")
+            if plan_one.get("round") != 1 or plan_two.get("round") != 2:
+                result.error("search_plan_round_mismatch")
+
+
+def _normalize_identity_text(value: str) -> str:
+    return " ".join(value.casefold().split())
+
+
+def _alternate_key(value: Any) -> tuple[str, str] | None:
+    if not isinstance(value, dict) or set(value) != {"authority", "value"}:
+        return None
+    authority = value.get("authority")
+    identifier = value.get("value")
+    if not _nonempty_text(authority) or not _nonempty_text(identifier):
+        return None
+    return (_normalize_identity_text(authority), _normalize_identity_text(identifier))
+
+
+def _same_work_identity(first: dict, second: dict) -> bool | None:
+    first_record = first.get("verified_record")
+    second_record = second.get("verified_record")
+    if not isinstance(first_record, dict) or not isinstance(second_record, dict):
+        return None
+
+    first_doi = first_record.get("doi")
+    second_doi = second_record.get("doi")
+    first_title = first_record.get("title")
+    second_title = second_record.get("title")
+    first_authors = first_record.get("authors")
+    second_authors = second_record.get("authors")
+    if (
+        not _nonempty_text(first_title)
+        or not _nonempty_text(second_title)
+        or not isinstance(first_authors, list)
+        or not isinstance(second_authors, list)
+        or not first_authors
+        or not second_authors
+        or not _nonempty_text(first_authors[0])
+        or not _nonempty_text(second_authors[0])
+    ):
+        return None
+
+    if (
+        isinstance(first_doi, str)
+        and first_doi.strip()
+        and isinstance(second_doi, str)
+        and second_doi.strip()
+    ):
+        identifier_match = normalize_doi(first_doi) == normalize_doi(second_doi)
+    else:
+        first_alternate = _alternate_key(first_record.get("alternate_id"))
+        second_alternate = _alternate_key(second_record.get("alternate_id"))
+        if first_alternate is not None and second_alternate is not None:
+            identifier_match = first_alternate == second_alternate
+        else:
+            identifier_match = (
+                _normalize_identity_text(first_title)
+                == _normalize_identity_text(second_title)
+                and _normalize_identity_text(first_authors[0])
+                == _normalize_identity_text(second_authors[0])
+            )
+    if not identifier_match:
+        return False
+
+    first_type = first_record.get("publication_type")
+    second_type = second_record.get("publication_type")
+    first_verification = first_record.get("verification")
+    second_verification = second_record.get("verification")
+    if (
+        not all(_nonempty_text(author) for author in first_authors)
+        or not all(_nonempty_text(author) for author in second_authors)
+        or not _nonempty_text(first_type)
+        or not _nonempty_text(second_type)
+        or not isinstance(first_verification, dict)
+        or not isinstance(second_verification, dict)
+        or not _nonempty_text(first_verification.get("version_relation"))
+        or not _nonempty_text(second_verification.get("version_relation"))
+    ):
+        return None
+    return (
+        _normalize_identity_text(first_title) == _normalize_identity_text(second_title)
+        and [_normalize_identity_text(author) for author in first_authors]
+        == [_normalize_identity_text(author) for author in second_authors]
+        and _normalize_identity_text(first_type) == _normalize_identity_text(second_type)
+        and first_verification.get("version_relation")
+        == second_verification.get("version_relation")
+    )
+
+
+def _validate_stable_identities(
+    round_one_index: dict[str, dict],
+    round_two_index: dict[str, dict],
+    result: _Result,
+) -> None:
+    for candidate_id in set(round_one_index) & set(round_two_index):
+        same_identity = _same_work_identity(
+            round_one_index[candidate_id], round_two_index[candidate_id]
+        )
+        if same_identity is False:
+            result.error("stable_candidate_identity_changed")
+        elif same_identity is None:
+            result.error("stable_candidate_identity_unresolved")
+
+
+def _observable_downgrade(before: Any, after: Any) -> bool:
+    if not isinstance(before, dict) or not isinstance(after, dict):
+        return False
+    if (
+        before.get("recommendation_eligible") is True
+        and after.get("recommendation_eligible") is False
+    ):
+        return True
+    before_status = before.get("verification_status")
+    after_status = after.get("verification_status")
+    if (
+        before_status in STATUS_RANK
+        and after_status in STATUS_RANK
+        and STATUS_RANK[after_status] < STATUS_RANK[before_status]
+    ):
+        return True
+    before_basis = before.get("basis_level")
+    after_basis = after.get("basis_level")
+    if (
+        before_basis in BASIS_RANK
+        and after_basis in BASIS_RANK
+        and BASIS_RANK[after_basis] < BASIS_RANK[before_basis]
+    ):
+        return True
+    before_roles = before.get("evidence_roles")
+    after_roles = after.get("evidence_roles")
+    if isinstance(before_roles, list) and isinstance(after_roles, list):
+        before_set = set(role for role in before_roles if isinstance(role, str))
+        after_set = set(role for role in after_roles if isinstance(role, str))
+        if after_set < before_set:
+            return True
+    return False
+
+
+def _validate_dispositions(
+    bundle: dict,
+    round_one_selected: list[str],
+    round_two_selected: list[str],
+    round_one_index: dict[str, dict],
+    round_two_index: dict[str, dict],
+    result: _Result,
+) -> None:
+    round_two = bundle.get("round2")
+    dispositions = _as_list(
+        round_two.get("round_one_dispositions") if isinstance(round_two, dict) else None,
+        result,
+        "invalid_round_one_dispositions",
+    )
+    round_one_ids = [
+        entry.get("round_one_id") if isinstance(entry, dict) else None
+        for entry in dispositions
+    ]
+    counts = Counter(round_one_ids)
+    if any(count > 1 for count in counts.values()):
+        result.error("duplicate_round_one_disposition")
+    if counts != Counter(round_one_selected):
+        result.error("disposition_coverage_mismatch")
+
+    selected_two = set(round_two_selected)
+    replacement_targets: list[str] = []
+    retained_or_downgraded_targets: set[str] = set()
+    for entry in dispositions:
+        if not isinstance(entry, dict):
+            result.error("invalid_round_one_disposition")
+            continue
+        round_one_id = entry.get("round_one_id")
+        disposition = entry.get("disposition")
+        round_two_id = entry.get("round_two_id")
+        if not isinstance(disposition, str) or disposition not in DISPOSITIONS:
+            result.error("invalid_disposition")
+        if not _nonempty_text(entry.get("reason")):
+            result.error("disposition_reason_missing")
+
+        cause_type = entry.get("cause_type")
+        cause_ref = entry.get("cause_ref")
+        if cause_type not in CAUSE_TYPES or not _nonempty_text(cause_ref):
+            result.error("invalid_disposition_cause")
+        elif cause_type == "feedback_delta":
+            if not _FEEDBACK_CAUSE_REF.fullmatch(cause_ref) or not _resolve_ref(bundle, cause_ref):
+                result.error("unresolved_disposition_cause_ref")
+        elif not _NEW_EVIDENCE_REF.fullmatch(cause_ref) or not _resolve_ref(bundle, cause_ref):
+            result.error("unresolved_disposition_cause_ref")
+        else:
+            source = _value_at_ref(bundle, cause_ref)
+            if not _checked_source_is_valid(source):
+                result.error("unresolved_disposition_cause_ref")
+
+        if disposition == "retained":
+            if round_two_id != round_one_id or round_one_id not in selected_two:
+                result.error("retained_disposition_conflict")
+            if isinstance(round_two_id, str):
+                retained_or_downgraded_targets.add(round_two_id)
+        elif disposition == "replaced":
+            if (
+                not _nonempty_text(round_two_id)
+                or round_one_id in selected_two
+                or round_two_id == round_one_id
+                or round_two_id not in selected_two
+                or round_two_id not in round_two_index
+            ):
+                result.error("replaced_disposition_conflict")
+            if isinstance(round_two_id, str):
+                replacement_targets.append(round_two_id)
+        elif disposition == "downgraded":
+            if round_two_id is None:
+                if round_one_id in selected_two or round_one_id not in round_two_index:
+                    result.error("downgraded_disposition_conflict")
+            elif round_two_id != round_one_id or round_one_id not in selected_two:
+                result.error("downgraded_disposition_conflict")
+            else:
+                candidate = round_two_index.get(round_one_id)
+                if candidate is None or candidate.get("recommendation_eligible") is not True:
+                    result.error("downgraded_disposition_conflict")
+                retained_or_downgraded_targets.add(round_two_id)
+            before = round_one_index.get(round_one_id)
+            after = round_two_index.get(round_one_id)
+            if not _observable_downgrade(before, after):
+                result.error("downgraded_without_observable_change")
+        elif disposition == "removed":
+            if round_two_id is not None or round_one_id in selected_two:
+                result.error("removed_disposition_conflict")
+
+    if len(set(replacement_targets)) != len(replacement_targets):
+        result.error("duplicate_replacement_target")
+    if set(replacement_targets) & retained_or_downgraded_targets:
+        result.error("replacement_target_conflict")
+
+
+def _validate_duplicate_dois(
+    bundle: dict,
+    round_indexes: list[dict[str, dict]],
+    result: _Result,
+) -> None:
+    doi_owners: dict[str, str] = {}
+    candidate_dois: dict[str, str] = {}
+    for index in round_indexes:
+        for candidate_id, candidate in index.items():
+            verified = candidate.get("verified_record")
+            raw_doi = verified.get("doi") if isinstance(verified, dict) else None
+            if raw_doi is not None and not isinstance(raw_doi, str):
+                result.error("invalid_doi_type")
+                continue
+            doi = normalize_doi(raw_doi)
+            if doi is None:
+                continue
+            previous_for_candidate = candidate_dois.get(candidate_id)
+            if previous_for_candidate is not None and previous_for_candidate != doi:
+                result.error("stable_candidate_doi_changed")
+            candidate_dois[candidate_id] = doi
+            previous_owner = doi_owners.get(doi)
+            if previous_owner is not None and previous_owner != candidate_id:
+                result.error("duplicate_normalized_doi")
+            doi_owners[doi] = candidate_id
+
+    fixture_tokens = bundle.get("fixture_duplicate_doi_tokens", [])
+    if not isinstance(fixture_tokens, list):
+        result.error("invalid_fixture_duplicate_doi_tokens")
+        return
+    normalized_tokens = [
+        normalized
+        for token in fixture_tokens
+        if isinstance(token, str) and (normalized := normalize_doi(token)) is not None
+    ]
+    if len(normalized_tokens) != len(set(normalized_tokens)):
+        result.error("duplicate_normalized_doi")
+
+
+def _validate_bundle(bundle: dict) -> dict:
+    result = _Result()
+    if not isinstance(bundle, dict):
+        result.error("invalid_bundle")
+        return result.closed()
+    if bundle.get("schema_version") != SCHEMA_VERSION:
+        result.error("invalid_schema_version")
+
+    raw_fixture_mode = bundle.get("fixture_mode", False)
+    if not isinstance(raw_fixture_mode, bool):
+        result.error("invalid_fixture_mode")
+        fixture_mode = False
+    else:
+        fixture_mode = raw_fixture_mode
+    if fixture_mode and bundle.get("evidence_class") != "offline_contract_fixture":
+        result.error("invalid_fixture_evidence_class")
+
+    round_data: dict[str, tuple[dict, dict[str, dict], list[str], int]] = {}
+    for name, number in (("round1", 1), ("round2", 2)):
+        round_bundle = bundle.get(name)
+        if not isinstance(round_bundle, dict):
+            result.error(f"missing_{name}")
+            round_bundle = {}
+        if round_bundle.get("schema_version") != SCHEMA_VERSION:
+            result.error("invalid_schema_version")
+        if round_bundle.get("round") != number:
+            result.error("round_number_mismatch")
+        if name == "round1" and "round_two_request" in round_bundle:
+            result.error("round_two_request_in_round_one")
+        index, ordered_ids, eligible_count = _candidate_index(
+            round_bundle, fixture_mode, result
+        )
+        selected_ids = _validate_selection(round_bundle, index, fixture_mode, result)
+        _validate_round_count(
+            name, round_bundle, eligible_count, len(selected_ids), result
+        )
+        if name == "round1":
+            _validate_round_one_roles(selected_ids, index, round_bundle, result)
+        _validate_map(name, number, round_bundle, index, selected_ids, result)
+        round_data[name] = (round_bundle, index, selected_ids, eligible_count)
+
+    _validate_duplicate_dois(
+        bundle,
+        [round_data["round1"][1], round_data["round2"][1]],
+        result,
+    )
+    _validate_stable_identities(round_data["round1"][1], round_data["round2"][1], result)
+    _validate_feedback(bundle, result)
+    _validate_dispositions(
+        bundle,
+        round_data["round1"][2],
+        round_data["round2"][2],
+        round_data["round1"][1],
+        round_data["round2"][1],
+        result,
+    )
+    return result.closed()
+
+
+def validate_bundle(bundle: dict) -> dict:
+    """Return status, errors, and evidence_gaps without performing I/O."""
+
+    try:
+        return _validate_bundle(bundle)
+    except Exception:
+        return _closed_cli_error("malformed_bundle")
+
+
+def _closed_cli_error(code: str) -> dict:
+    return {"status": "invalid", "errors": [code], "evidence_gaps": []}
+
+
+def main(argv: list[str] | None = None) -> int:
+    """Read one JSON bundle, print one JSON result, and return 0, 1, or 2."""
+
+    arguments = sys.argv[1:] if argv is None else argv
+    if len(arguments) != 1:
+        output = _closed_cli_error("expected_one_json_path")
+    else:
+        try:
+            payload = json.loads(Path(arguments[0]).read_text(encoding="utf-8"))
+        except (OSError, UnicodeError, json.JSONDecodeError):
+            output = _closed_cli_error("unreadable_or_invalid_json")
+        else:
+            output = validate_bundle(payload)
+    print(json.dumps(output, ensure_ascii=False, separators=(",", ":")))
+    return {"valid": 0, "invalid": 1, "evidence_incomplete": 2}[output["status"]]
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
