@@ -2,19 +2,44 @@
 
 Use this file after verified, deduplicated papers are available. Use the map for fast orientation before the user reads the papers; do not present it as an interactive knowledge base or a substitute for full-paper reading.
 
+## Contents
+
+- Select eligible papers by round
+- Build the map
+- Encode meaning consistently
+- Label the evidence basis
+- Keep notes minimal
+- Render with graceful fallback
+- Use the required data shape
+- Enforce Mermaid and fallback equivalence
+- Accept chat feedback
+
+## Select eligible papers by round
+
+For round one, select up to eight recommendation-eligible papers with this fixed role allocation:
+
+- three `direct_problem` papers;
+- two `method` papers;
+- two `transfer_bridge` papers;
+- one `counter_limitation` paper.
+
+Fill a role slot only with a verified record that is recommendation-eligible and supported at the declared basis level. Do not reassign a weaker, blocked, partial, or merely discovered paper to fill a missing role. Do not borrow an eligible paper from another role to make the total look complete. Record every unfilled role and count in `evidence_gaps`, set the round outcome to `evidence_incomplete`, leave the slot empty, and stop on the non-success path defined by the calibration contract.
+
+For round two, show five to six recommendation-eligible papers by default when reliable evidence supports that count. Show seven to ten only after the user explicitly requests an expanded second round. Never show more than ten, and never pad a short second round with weak or ineligible evidence.
+
 ## Build the map
 
 1. Place the current research problem or brief at the center.
 2. Create two to four direction, problem, method, or transfer clusters.
-3. Show eight papers in round one and five to six in round two by default.
-4. Assign stable labels `P1` through `P8` within a round and place exact citations in a table below the map.
+3. Apply the round-specific selection rules above before drawing any paper node.
+4. Preserve each candidate's stable ID throughout the calibration cycle and place exact citations in a table below the map.
 5. Limit each paper to one or two explanatory edges.
 
 ## Encode meaning consistently
 
 - Size a paper node by relative fit to the current `ResearchBrief`, not by citation count or general prestige.
 - Color a paper node by evidence role: direct problem, method, transfer/bridge, or counter/limitation.
-- Use the border to distinguish formal publication, verified preprint, and limited/partial evidence.
+- Use the border or an explicit marker to distinguish `verified_primary`, `verified_registry`, and `verified_preprint`. Keep partial or blocked records outside selected paper nodes.
 - Use only these edge relations:
   - `same_problem`
   - `shared_method`
@@ -54,12 +79,17 @@ Below the graph, show exact title, ordered authors, year, venue, DOI or official
 3. Export a static SVG only when the user explicitly requests a file or competition asset.
 4. Do not create an interactive HTML application, click handlers, a graph service, or a new network dependency.
 
-## Use this data shape
+## Use the required data shape
+
+Include all of these fields in every round map. Set `node_size_basis` exactly to `user_fit`; do not omit it or substitute citation count, venue prestige, or general popularity.
 
 ```yaml
 paper_map:
   round: 1
-  brief_version: 2
+  node_size_basis: "user_fit"
+  legend:
+    evidence_roles: ["direct_problem", "method", "transfer_bridge", "counter_limitation"]
+    basis_levels: ["metadata_level", "abstract_level", "fulltext_level"]
   nodes:
     - id: "P1"
       node_type: "paper"
@@ -68,6 +98,10 @@ paper_map:
       verification_status: "verified_primary"
       basis_level: "abstract_level"
       short_note: "Method transfer evidence from a similar data regime"
+    - id: "D2"
+      node_type: "cluster"
+      basis_level: "abstract_level"
+      short_note: "Public simulation evidence cluster"
   edges:
     - source: "P1"
       target: "D2"
@@ -76,7 +110,44 @@ paper_map:
       confidence: "medium"
       basis_level: "abstract_level"
       note: "Mechanism is similar; boundary conditions still require testing"
+  text_fallback:
+    - entry_type: "node"
+      id: "P1"
+      node_type: "paper"
+      evidence_role: "transfer_bridge"
+      verification_status: "verified_primary"
+      basis_level: "abstract_level"
+      text: "P1: Method transfer evidence from a similar data regime"
+    - entry_type: "node"
+      id: "D2"
+      node_type: "cluster"
+      basis_level: "abstract_level"
+      text: "D2: Public simulation evidence cluster"
+    - entry_type: "edge"
+      source: "P1"
+      target: "D2"
+      relation: "transfer_bridge"
+      basis_level: "abstract_level"
+      text: "P1 --transfer_bridge--> D2: Mechanism is similar; boundary conditions still require testing"
 ```
+
+Treat `legend.evidence_roles` and `legend.basis_levels` as closed lists for M1. Use the exact role and basis tokens shown above. Require every selected paper ID to appear exactly once as a paper node. Do not place an unselected, blocked, partial, or unresolved citation in a paper node.
+
+## Enforce Mermaid and fallback equivalence
+
+Generate Mermaid and `text_fallback` from the same structured `nodes` and `edges`; do not maintain separate semantic versions by hand.
+
+Require the Mermaid rendering and text fallback to preserve all of the following without renaming:
+
+- every node ID and edge endpoint;
+- every paper's evidence role;
+- every edge relation label;
+- every paper's verification state;
+- every node and edge basis level.
+
+Add exactly one `entry_type: node` fallback entry for every structured node and exactly one `entry_type: edge` fallback entry for every structured edge. Keep the fallback IDs, roles, relation labels, verification states, and basis levels identical to their structured records and visible Mermaid markers or labels. Include non-paper brief or cluster nodes in both renderings when they appear in either one.
+
+Reject a map when Mermaid and `text_fallback` differ on an ID, endpoint, role, relation, verification state, or basis level. Reject an edge whose declared basis exceeds the supporting paper basis. Treat an omitted fallback, an incomplete fallback, or a citation-count-sized map as invalid rather than as a degraded success.
 
 ## Accept chat feedback
 

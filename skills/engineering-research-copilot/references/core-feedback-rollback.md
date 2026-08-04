@@ -2,6 +2,17 @@
 
 Use this file whenever the user reacts to papers, changes constraints, rejects a direction, questions a citation, or requests a reset.
 
+## Contents
+
+- Maintain a versioned research brief
+- Diagnose dissatisfaction before searching
+- Control history influence
+- Produce the exact feedback delta
+- Apply material feedback to queries
+- Show the change log before searching
+- Follow the state flow
+- Preserve uncertainty
+
 ## Maintain a versioned research brief
 
 Store the reasoning state in this shape:
@@ -49,6 +60,44 @@ Use these default query/candidate allocation budgets:
 | Full reset | 0% | 100% |
 
 Treat these as allocation defaults, not probabilities. Let the user request a more conservative or more divergent search.
+
+## Produce the exact feedback delta
+
+Expose every round-one-to-round-two transition with exactly these top-level fields. Do not rename a field, omit a field, or hide an additional transition state outside this object:
+
+```yaml
+feedback_delta:
+  from_brief_version: 1
+  to_brief_version: 2
+  inherited: []
+  rejected:
+    - object_id: "P3"
+      reason: "Requires inaccessible proprietary data"
+  reset: []
+  added: []
+  allocation:
+    exploit: 30
+    explore: 70
+  query_changes:
+    - query_id: "Q2-R2"
+      reason: "Exclude proprietary-data routes and expand public simulation evidence"
+      before: "data-driven control using proprietary industrial datasets"
+      after: "data-driven control using public simulation datasets excluding proprietary data"
+```
+
+Increment `to_brief_version` beyond `from_brief_version`. Put inherited constraints and preferences in `inherited`, rejected objects with non-empty reasons in `rejected`, explicitly discarded assumptions or state in `reset`, and new constraints or evidence needs in `added`. Preserve the user's wording when it determines a hard exclusion; do not strengthen ambiguous dissatisfaction into a hard constraint.
+
+Set integer `allocation.exploit` and `allocation.explore` values whose sum is exactly 100. Treat the values as percentages of the round-two query-and-candidate budget, not as probabilities, confidence, or evidence weights.
+
+## Apply material feedback to queries
+
+Treat a rejection reason, a new constraint, or a reset as material when it changes an inclusion term, exclusion term, source boundary, time boundary, language boundary, expected evidence role, query purpose, query text, or whether a query is added or removed.
+
+Add at least one `query_changes` entry whenever any rejection reason, new constraint, or reset materially affects the next search. Make every material cause traceable to at least one entry. Use the round-two query ID, state the causal reason, and record the prior and revised query expression or boundary in `before` and `after`. Allow one side to be empty only when adding or removing a query; never leave both sides empty for an applied material change.
+
+Match each `query_changes.query_id` to exactly one query in the revised round-two `SearchPlan`, except when the entry explicitly documents a removed round-one query. Require the revised plan to implement the stated `after` value. If the material feedback does not change a query because an existing query already enforces it, say so in `reason` and point to that exact existing query; do not falsely claim a change.
+
+Treat material feedback with no traceable query change as invalid. Do not proceed to round-two selection until the discrepancy is fixed or the feedback is explicitly classified as non-material with a visible reason.
 
 ## Show the change log before searching
 

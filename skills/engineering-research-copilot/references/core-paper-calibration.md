@@ -110,7 +110,9 @@ Assemble 15–20 verified, deduplicated candidates for round one when reliable e
 
 ## Select round one
 
-Select eight recommendation-eligible records when the pool and evidence-role coverage support eight. Require every entry in `selected_ids` to resolve to exactly one candidate-pool item and exactly one verified paper record. Reject missing IDs, duplicate IDs, ambiguous resolutions, and blocked verification states.
+Select eight recommendation-eligible records only when the pool supports this fixed allocation: three `direct_problem`, two `method`, two `transfer_bridge`, and one `counter_limitation`. Count each selected record against its declared selection role. Require every entry in `selected_ids` to resolve to exactly one candidate-pool item and exactly one verified paper record. Reject missing IDs, duplicate IDs, ambiguous resolutions, and blocked verification states.
+
+Do not substitute a weaker record, a record from another role, or an ineligible discovery hit when any role quota is short. Leave the affected slot unfilled, record the missing role and count in `evidence_gaps`, set the outcome to `evidence_incomplete`, and end the attempt in `WAITING_FOR_EVIDENCE_DECISION`.
 
 Build the user-facing static map and equivalent text fallback under [Static paper evidence map](core-paper-map.md). Keep every map claim within its declared metadata-, abstract-, or full-text-level basis.
 
@@ -142,24 +144,55 @@ feedback_delta:
   from_brief_version: 1
   to_brief_version: 2
   inherited: []
-  rejected: []
+  rejected:
+    - object_id: "P3"
+      reason: "Requires inaccessible proprietary data"
   reset: []
   added: []
   allocation:
-    exploit: 50
-    explore: 50
-  query_changes: []
+    exploit: 30
+    explore: 70
+  query_changes:
+    - query_id: "Q2-R2"
+      reason: "Exclude proprietary-data routes and expand public simulation evidence"
+      before: "data-driven control using proprietary industrial datasets"
+      after: "data-driven control using public simulation datasets excluding proprietary data"
 ```
 
-Record reasons with rejected items. Show inherited, rejected, reset, and newly added constraints before planning the next search branch. Make `allocation` total 100 and treat it as a query-and-candidate budget, not a probability.
+Use exactly the top-level fields shown in `feedback_delta`. Record a non-empty reason with every rejected item. Show inherited, rejected, reset, and newly added constraints before planning the next search branch. Make integer `allocation` values total 100 and treat them as a query-and-candidate budget, not a probability.
 
-Create a new brief version before round two. Match the second-round plan to the new version and retain the same branch only when the rollback rules permit it. Explain each material query change caused by rejection reasons, new constraints, or resets. Do not claim feedback was applied when the new plan is unchanged for no stated reason.
+Create a new brief version before round two. Match the second-round plan to the new version and retain the same branch only when the rollback rules permit it. Add at least one `query_changes` entry whenever a rejection reason, new constraint, or reset materially affects the search. Make every material feedback cause traceable to a changed, added, or removed query and require the revised plan to implement the recorded change. Do not claim feedback was applied when the new plan is unchanged for no stated reason.
 
 ## Select round two
 
 Build a second `RoundBundle` with `round: 2`, the revised brief, the revised search plan, and the verified candidate state used for selection. Keep candidate IDs stable for carried records and assign new IDs only to newly admitted works.
 
-Return five to six recommendation-eligible papers by default when reliable evidence exists. Expand to at most ten only after an explicit user request. Explain which first-round items remain, change status, or leave the selection and tie each change to feedback or newly verified evidence. Preserve missing role coverage and search limits instead of filling slots with weak records.
+Return five to six recommendation-eligible papers by default when reliable evidence exists. Return seven to ten only after an explicit user request to expand round two, record that request in the round limitations or transition evidence, and never exceed ten. Preserve missing role coverage and search limits instead of filling slots with weak records.
+
+Attach `round_one_dispositions` to the round-two bundle with this shape:
+
+```yaml
+round_one_dispositions:
+  - round_one_id: "P3"
+    disposition: "removed"
+    round_two_id: null
+    reason: "Requires inaccessible proprietary data"
+    cause_type: "feedback_delta"
+    cause_ref: "feedback_delta.rejected[0]"
+```
+
+Include exactly one disposition entry for every round-one `selected_id` and no entry for an ID that was not selected in round one. Use exactly one disposition from `retained`, `replaced`, `downgraded`, or `removed`:
+
+- Set `retained` when the same stable candidate remains selected in round two; set `round_two_id` to the same ID.
+- Set `replaced` when the round-one candidate leaves the selection and a newly admitted or newly preferred candidate takes its place; set `round_two_id` to that selected replacement ID.
+- Set `downgraded` when new verification or reasoning evidence reduces the candidate's eligibility, role, or basis. Set `round_two_id` to the same ID only if it remains recommendation-eligible and selected; otherwise set it to null and keep the record as labeled supplemental or blocked evidence outside `selected_ids`.
+- Set `removed` when the round-one candidate leaves without a one-for-one replacement; set `round_two_id` to null.
+
+Give every disposition a non-empty `reason`. Set `cause_type` to `feedback_delta` or `new_evidence`. Point `cause_ref` to the exact feedback-delta entry or to the exact newly checked verification source or evidence record that caused the disposition. Do not cite a vague narrative, model memory, or an unverified discovery hit as a cause.
+
+Require the disposition entries to cover the round-one selection exactly once before calling round two ready. Keep a replaced candidate out of round-two `selected_ids`, require its non-null `round_two_id` to resolve to one eligible selected record, and keep retained IDs in round-two `selected_ids`.
+
+Map replacement targets one-to-one. Require every `replaced.round_two_id` to be unique across the disposition list. Do not let two replaced entries share one round-two target, and do not let a replaced target equal the `round_two_id` claimed by a retained or downgraded entry. Treat a missing, null, duplicate, shared, or conflicting replacement target as invalid. Treat any other missing, duplicate, untraceable, or contradictory disposition as invalid.
 
 ## Report incomplete evidence
 
