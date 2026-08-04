@@ -969,7 +969,7 @@ Use the actual times/tools/sources from each case, not the example values from a
 5. assert A `valid`, B `evidence_incomplete`, C `valid`;
 6. exit `1` with closed JSON on any mismatch and `0` with a per-case summary on success.
 
-- [ ] **Step 7: Run and independently audit machine artifacts**
+- [x] **Step 7: Run and independently audit machine artifacts**
 
 ```powershell
 python evals/m1/replay_machine_artifacts.py
