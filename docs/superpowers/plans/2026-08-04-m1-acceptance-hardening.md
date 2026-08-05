@@ -1199,7 +1199,7 @@ git add -- STATUS.md docs/superpowers/plans/2026-08-04-m1-two-round-paper-calibr
 git commit -m "docs: close M1.2 acceptance hardening"
 ```
 
-- [ ] **Step 7: Re-run exact-HEAD CI after the closure commit**
+- [x] **Step 7: Re-run exact-HEAD CI after the closure commit**
 
 Because the closure commit changes HEAD, push it only with authorization and require a second successful `M1 Validation` run on the closure SHA. If it does not pass, revert `STATUS.md` to `IN_PROGRESS` in a new commit and record the failing check; do not claim completion from the pre-closure run.
 

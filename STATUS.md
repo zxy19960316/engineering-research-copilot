@@ -12,6 +12,7 @@ Validated by:
 
 - clean local validation with 108 passing tests;
 - successful first-round exact-HEAD GitHub Actions run `30965919907` on `2842b6bc99f48ea17561b67a97205e271a370e4d`;
+- successful closure exact-HEAD GitHub Actions run `30966375373` on `37ac4617fa5c506f2d087628b61570cef9c4cdf9`;
 - complete two-round machine-valid Case A;
 - second-round `evidence_incomplete` machine-valid Case B;
 - citation-conflict blocking gate Case C;
@@ -23,6 +24,8 @@ Acceptance evidence:
 - pre-push executable-input HEAD: `e234e90364ace4aa203716575ab37a0130b4d322`;
 - first remote-CI input HEAD: `2842b6bc99f48ea17561b67a97205e271a370e4d`;
 - GitHub Actions workflow/job: `M1 Validation` run `30965919907`, job `92179712580`, conclusion `success`;
+- closure commit: `37ac4617fa5c506f2d087628b61570cef9c4cdf9`;
+- closure GitHub Actions workflow/job: `M1 Validation` run `30966375373`, job `92181118237`, conclusion `success`;
 - Python compilation: exit `0`;
 - unit tests: 108 passed;
 - frozen fixture replay: `valid`, zero mismatches;
@@ -31,7 +34,7 @@ Acceptance evidence:
 - root Skill: 106 lines;
 - closure record: `evals/m1/results/2026-08-04-m1.2-final-validation.md`.
 
-The closure commit changes only status, plans, and this validation record. Its SHA cannot be embedded in itself and still requires a second exact-HEAD `M1 Validation` run; any failure must reopen M1 in a new commit. This completion does not claim that Case B became complete or that Case C's citation conflict was resolved.
+Closure commit `37ac4617fa5c506f2d087628b61570cef9c4cdf9` was successfully validated by exact-HEAD `M1 Validation` run `30966375373`. This post-CI evidence-record commit cannot embed its own SHA or pre-claim its own final exact-HEAD run; root will push it and confirm that run externally. M1.2 completion does not claim that Case B became complete or that Case C's citation conflict was resolved.
 
 ## M1 checklist
 
