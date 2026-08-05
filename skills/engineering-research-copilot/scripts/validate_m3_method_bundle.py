@@ -818,6 +818,9 @@ def _validate_m3_bundle(bundle: Any) -> dict:
     coaching_mode = root.get("coaching_mode")
     if coaching_mode not in COACHING_MODES:
         result.error("invalid_coaching_mode")
+    elif coaching_mode == "bounded":
+        if route is not None:
+            result.error("bounded_coaching_requires_route_absent")
     elif coaching_mode == "route_specific":
         if route is None:
             result.error("route_specific_requires_route")
