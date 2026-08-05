@@ -69,6 +69,7 @@ SOURCE_LEDGER_FIELDS = {
     "source_id",
     "candidate_id",
     "basis_level",
+    "support_types",
     "supports",
     "does_not_support",
     "limitations",
@@ -134,13 +135,13 @@ BLOCKED_VERIFICATION_STATES = {
 }
 CRITERION_OPERATORS = {"<", "<=", ">", ">="}
 LEDGER_REQUIRED_LISTS = {"supports", "does_not_support", "limitations"}
-METADATA_PROHIBITED_SUPPORT_TERMS = (
+SUPPORT_TYPES = {
+    "bibliographic_identity",
+    "method",
     "result",
-    "performance",
+    "transfer",
     "safety",
-    "transfer success",
-    "successful transfer",
-)
+}
 
 
 class _Result:
@@ -413,6 +414,27 @@ def _validate_source_ledger(
 
         if not _nonempty_text(row.get("source_id")):
             result.error("invalid_source_ledger_source_id")
+
+        support_types = row.get("support_types")
+        support_types_are_closed = False
+        if "support_types" not in row:
+            result.error("missing_source_ledger_support_types")
+        elif not isinstance(support_types, list):
+            result.error("invalid_source_ledger_support_type")
+        elif not support_types:
+            result.error("empty_source_ledger_support_types")
+        elif (
+            any(
+                not isinstance(support_type, str)
+                or support_type not in SUPPORT_TYPES
+                for support_type in support_types
+            )
+            or len(set(support_types)) != len(support_types)
+        ):
+            result.error("invalid_source_ledger_support_type")
+        else:
+            support_types_are_closed = True
+
         candidate_id = row.get("candidate_id")
         if not _nonempty_text(candidate_id) or candidate_id not in candidates:
             result.error("source_ledger_unknown_candidate")
@@ -425,16 +447,12 @@ def _validate_source_ledger(
         if not _candidate_is_eligible(candidate, fixture_mode):
             result.error("source_ledger_ineligible_candidate")
 
-        supports = row.get("supports")
-        if mapped_basis == "metadata" and isinstance(supports, list):
-            normalized_supports = " ".join(
-                item.casefold() for item in supports if isinstance(item, str)
-            )
-            if any(
-                term in normalized_supports
-                for term in METADATA_PROHIBITED_SUPPORT_TERMS
-            ):
-                result.error("metadata_only_source_overclaim")
+        if (
+            mapped_basis == "metadata"
+            and support_types_are_closed
+            and set(support_types) != {"bibliographic_identity"}
+        ):
+            result.error("metadata_basis_cannot_support_claim")
     return rows
 
 
@@ -631,15 +649,8 @@ def _validate_domain_overlay(
     safety_support_rows = [
         row
         for row in ledger
-        if isinstance(row.get("supports"), list)
-        and any(
-            isinstance(statement, str)
-            and any(
-                term in statement.casefold()
-                for term in ("safety", "hazard", "risk")
-            )
-            for statement in row["supports"]
-        )
+        if isinstance(row.get("support_types"), list)
+        and "safety" in row["support_types"]
     ]
     if not any(
         isinstance(row.get("candidate_id"), str)
