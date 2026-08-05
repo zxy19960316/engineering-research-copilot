@@ -285,6 +285,11 @@ def _derive_m2_context(source_m2_bundle: dict) -> dict:
             for claim in claims.values()
             for metric in claim["required_decision_metrics"]
         },
+        "metric_to_claim_type": {
+            metric["metric_id"]: claim["claim_type"]
+            for claim in claims.values()
+            for metric in claim["required_decision_metrics"]
+        },
         "candidates": _candidate_context(source_m2_bundle),
         "fixture_mode": source_m2_bundle.get("fixture_mode") is True,
         "resource_limits": copy.deepcopy(selected_direction["resource_limits"]),
@@ -416,9 +421,9 @@ def _candidate_is_eligible(candidate: dict, fixture_mode: bool) -> bool:
 
 
 def _candidate_is_non_preprint(candidate: dict, fixture_mode: bool) -> bool:
-    return _candidate_is_eligible(candidate, fixture_mode) and (
-        fixture_mode or candidate.get("verification_status") != "verified_preprint"
-    )
+    return _candidate_is_eligible(candidate, fixture_mode) and candidate.get(
+        "verification_status"
+    ) != "verified_preprint"
 
 
 def _validate_source_ledger(
@@ -507,7 +512,7 @@ def _validate_resource_bounds(card: dict, context: dict, result: _Result) -> Non
         if not isinstance(resource, dict):
             continue
         required_value = resource.get("required_value")
-        if not _finite_number(required_value):
+        if not _finite_number(required_value) or required_value < 0:
             result.error("invalid_minimum_resource_required_value")
 
         source_constraint_id = resource.get("source_constraint_id")
@@ -634,6 +639,27 @@ def _validate_method_card(
         if _has_duplicates(primary_metrics):
             result.error("duplicate_method_card_primary_metric")
 
+    primary_metric_set = set(primary_metrics) if isinstance(primary_metrics, list) else set()
+    applicability = card.get("applicability")
+    supported_claim_types = (
+        set(applicability.get("supported_claim_types", []))
+        if isinstance(applicability, dict)
+        else set()
+    )
+    for condition in [
+        *(card.get("stop_conditions", [])
+          if isinstance(card.get("stop_conditions"), list)
+          else []),
+        *(card.get("pivot_conditions", [])
+          if isinstance(card.get("pivot_conditions"), list)
+          else []),
+    ]:
+        if isinstance(condition, dict) and condition.get("metric_id") not in primary_metric_set:
+            result.error("method_card_condition_metric_not_primary")
+    for metric_id in primary_metric_set:
+        if context["metric_to_claim_type"].get(metric_id) not in supported_claim_types:
+            result.error("method_card_primary_metric_claim_type_mismatch")
+
     _validate_resource_bounds(card, context, result)
     _validate_conditions(
         card.get("stop_conditions"),
@@ -653,7 +679,22 @@ def _validate_method_card(
         None if authority is None else authority["pivot"],
         "method_card_pivot_condition_not_authoritative",
     )
-    _validate_source_ledger(card.get("source_ledger"), context, result)
+    ledger = _validate_source_ledger(card.get("source_ledger"), context, result)
+    safety_rows = [
+        row
+        for row in ledger
+        if isinstance(row.get("support_types"), list)
+        and "safety" in row["support_types"]
+    ]
+    if safety_rows and not any(
+        row.get("candidate_id") in context["candidates"]
+        and _candidate_is_non_preprint(
+            context["candidates"][row["candidate_id"]],
+            context["fixture_mode"],
+        )
+        for row in safety_rows
+    ):
+        result.error("safety_support_requires_non_preprint_source")
     return card
 
 
