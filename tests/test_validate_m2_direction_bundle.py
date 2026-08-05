@@ -892,6 +892,46 @@ class ValidateM2DirectionBundleTests(unittest.TestCase):
             validate_bundle(bundle)["errors"],
         )
 
+    def test_main_direction_with_one_eligible_non_preprint_passes_policy(self):
+        bundle = make_valid_m2_bundle()
+        candidate = bundle["source_m1_bundle"]["round2"]["candidate_pool"][3]
+        candidate["verification_status"] = "verified_preprint"
+        candidate["verified_record"]["verification"]["status"] = "verified_preprint"
+        _refresh_hash(bundle)
+        self.assertNotIn(
+            "provisional_main_requires_non_preprint_support",
+            validate_bundle(bundle)["errors"],
+        )
+
+    def test_transfer_exploration_may_include_preprint_support(self):
+        bundle = make_valid_m2_bundle()
+        candidate = bundle["source_m1_bundle"]["round2"]["candidate_pool"][3]
+        candidate["verification_status"] = "verified_preprint"
+        candidate["verified_record"]["verification"]["status"] = "verified_preprint"
+        transfer = bundle["direction_portfolio"]["directions"][2]
+        transfer["supporting_candidate_ids"] = ["fixture:P04"]
+        _refresh_hash(bundle)
+        errors = validate_bundle(bundle)["errors"]
+        self.assertNotIn("provisional_main_requires_non_preprint_support", errors)
+        self.assertNotIn("safety_gate_requires_non_preprint_support", errors)
+
+    def test_blocked_non_preprint_cannot_bypass_main_support_policy(self):
+        bundle = make_valid_m2_bundle()
+        for candidate in bundle["source_m1_bundle"]["round2"]["candidate_pool"]:
+            if candidate["candidate_id"] == "fixture:P01":
+                candidate["verification_status"] = "verified_primary"
+                candidate["recommendation_eligible"] = False
+                candidate["verified_record"]["verification"]["status"] = "verified_primary"
+                candidate["verified_record"]["verification"]["recommendation_eligible"] = False
+            elif candidate["candidate_id"] == "fixture:P04":
+                candidate["verification_status"] = "verified_preprint"
+                candidate["verified_record"]["verification"]["status"] = "verified_preprint"
+        _refresh_hash(bundle)
+        self.assertIn(
+            "provisional_main_requires_non_preprint_support",
+            validate_bundle(bundle)["errors"],
+        )
+
     def test_safety_gate_cannot_be_supported_only_by_preprints(self):
         bundle = make_valid_m2_bundle()
         main = bundle["direction_portfolio"]["directions"][0]
@@ -916,6 +956,13 @@ class ValidateM2DirectionBundleTests(unittest.TestCase):
             "unresolved_blocking_precondition_passed_gate",
             validate_bundle(bundle)["errors"],
         )
+
+    def test_core_claim_candidate_ids_must_exist_in_m1_ledger(self):
+        bundle = make_valid_m2_bundle()
+        bundle["direction_portfolio"]["directions"][0]["core_claims"][0][
+            "evidence_candidate_ids"
+        ] = ["fixture:UNKNOWN"]
+        self.assertIn("unknown_m1_candidate_id", validate_bundle(bundle)["errors"])
 
     def test_axis_changes_are_derived_from_common_main_profile(self):
         bundle = make_valid_m2_bundle()
