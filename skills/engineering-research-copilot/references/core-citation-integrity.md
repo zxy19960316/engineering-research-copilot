@@ -122,6 +122,8 @@ For a verified status with `recommendation_eligible: false`, require nonempty `b
 - Keep preprint and journal records separate when their content or relationship is unclear.
 - Prefer a verified journal record for the same claim when it is available and applicable.
 
+For an M2.1.1 bundle, enforce this contract from the embedded M1 candidate ledger. Require at least one recommendation-eligible `verified_primary` or `verified_registry` supporting candidate for `provisional_main`; otherwise return `provisional_main_requires_non_preprint_support`. Apply the same non-preprint requirement to a passing safety-related hard gate that cites evidence; otherwise return `safety_gate_requires_non_preprint_support`. Do not count blocked or `recommendation_eligible: false` records toward either requirement, and do not accept a caller-supplied source class in place of the M1 fields.
+
 ## Deduplicate deterministically
 
 Apply these keys in order and do not fall back after a stronger key produces a match or mismatch:

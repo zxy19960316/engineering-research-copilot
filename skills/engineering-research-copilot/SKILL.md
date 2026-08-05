@@ -44,7 +44,7 @@ Load and apply [Paper calibration](references/core-paper-calibration.md) as the 
 
 ## Decide a direction without suppressing innovation
 
-Enter M2 only from an accepted `M1_COMPLETE` bundle. Preserve that bundle verbatim, bind it with its canonical SHA-256 hash, and apply the state and data contract in [Direction decision](references/core-direction-decision.md).
+Enter M2 only from an accepted `M1_COMPLETE` bundle. Preserve that bundle verbatim, bind it with its canonical SHA-256 hash, and apply the m2.1.1 state and data contract in [Direction decision](references/core-direction-decision.md).
 
 Return:
 
@@ -59,9 +59,9 @@ Never turn principle compatibility or analogy into an established conclusion. La
 
 ## Enforce the direction gate
 
-Mark the system's direction recommendation as `provisional`. Pass every hard gate before scoring. Show the M1 candidate lineage, evidence tier, risks, unknowns, and a minimum decisive test with numeric success, stop, and pivot thresholds for each formal direction.
+Mark the system's direction recommendation as `provisional`. Pass every hard gate before scoring. Show the M1 candidate lineage, evidence tier, closed core claims, structured data preconditions, risks, unknowns, and a bounded minimum decisive test with numeric success, stop, and pivot thresholds for each formal direction.
 
-Do not generate a detailed route until the user explicitly confirms one formal direction ID. On confirmation, set the direction status to `user_confirmed`; only then may the route gate open and produce:
+Do not generate a detailed route until the user explicitly confirms one formal direction ID. Record the exact confirmation message provenance and bind it to the canonical pre-confirmation bundle. On confirmation, set the direction status to `user_confirmed`; only then may the route gate open. Bind any route to the selected direction, confirmation event, confirmed bundle, claims, test metrics, preconditions, and resource limits, then produce:
 
 - a falsifiable hypothesis;
 - baseline and controls;
