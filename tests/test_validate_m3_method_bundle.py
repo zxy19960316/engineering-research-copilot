@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import copy
 import json
+import math
 import sys
 import unittest
 from pathlib import Path
@@ -21,6 +22,46 @@ from test_validate_m2_direction_bundle import (  # noqa: E402
 )
 from test_validate_m1_bundle import make_structurally_valid_production_bundle  # noqa: E402
 from validate_m3_method_bundle import validate_m3_bundle  # noqa: E402
+
+
+BASIS_LEVEL_MAP = {
+    "metadata_level": "metadata",
+    "abstract_level": "abstract",
+    "fulltext_level": "full_text",
+}
+REQUIRED_NONEMPTY_CARD_LISTS = (
+    "assumptions",
+    "minimum_resources",
+    "inherited_constraints",
+    "baselines",
+    "controls",
+    "procedure_outline",
+    "primary_metrics",
+    "uncertainty_handling",
+    "validation_checks",
+    "failure_modes",
+    "stop_conditions",
+    "pivot_conditions",
+    "safety_boundaries",
+    "source_ledger",
+)
+
+
+def _candidate_by_id(source_m1_bundle: dict, round_name: str, candidate_id: str) -> dict:
+    matches = [
+        candidate
+        for candidate in source_m1_bundle[round_name]["candidate_pool"]
+        if candidate["candidate_id"] == candidate_id
+    ]
+    if len(matches) != 1:
+        raise AssertionError(
+            f"expected exactly one {candidate_id} in {round_name}, found {len(matches)}"
+        )
+    return matches[0]
+
+
+def _m3_basis_level(candidate: dict) -> str:
+    return BASIS_LEVEL_MAP[candidate["basis_level"]]
 
 
 def _selected_direction(source_m2_bundle: dict) -> dict:
@@ -50,7 +91,12 @@ def _reconfirm_after_m1_change(bundle: dict) -> None:
     _refresh_m3_hashes(bundle)
 
 
-def _complete_method_card(direction: dict) -> dict:
+def _complete_method_card(direction: dict, source_m1_bundle: dict) -> dict:
+    source_candidate = _candidate_by_id(
+        source_m1_bundle,
+        "round2",
+        direction["supporting_candidate_ids"][1],
+    )
     return {
         "schema_version": "m3.1",
         "card_id": "card:data-ml-hybrid:1",
@@ -104,9 +150,9 @@ def _complete_method_card(direction: dict) -> dict:
         "safety_boundaries": ["No operational or safety conclusion"],
         "source_ledger": [
             {
-                "source_id": "source:fixture:P04",
-                "candidate_id": "fixture:P04",
-                "basis_level": "abstract",
+                "source_id": f"source:{source_candidate['candidate_id']}",
+                "candidate_id": source_candidate["candidate_id"],
+                "basis_level": _m3_basis_level(source_candidate),
                 "supports": ["Offline method-card structure"],
                 "does_not_support": ["Real method performance"],
                 "limitations": ["Synthetic abstract-level fixture only"],
@@ -164,7 +210,7 @@ def make_valid_m3_bundle(coaching_mode: str = "bounded") -> dict:
         "selected_direction_id": direction["direction_id"],
         "selected_direction_hash": canonical_sha256(direction),
         "coaching_mode": coaching_mode,
-        "method_cards": [_complete_method_card(direction)],
+        "method_cards": [_complete_method_card(direction, source["source_m1_bundle"])],
         "domain_overlays": [],
     }
 
@@ -183,9 +229,7 @@ def _make_production_m3_bundle() -> dict:
     )
     _confirm_bundle(source)
     direction = _selected_direction(source)
-    card = _complete_method_card(direction)
-    card["source_ledger"][0]["source_id"] = "source:contract:P04"
-    card["source_ledger"][0]["candidate_id"] = "contract:P04"
+    card = _complete_method_card(direction, source["source_m1_bundle"])
     return {
         "schema_version": "m3.1",
         "source_m2_bundle": source,
@@ -254,9 +298,14 @@ class ValidateM3MethodBundleTests(unittest.TestCase):
             "approval_message_id": "message:unverifiable-change",
             "approval_message_sha256": "0" * 64,
         }]
-        self.assertIn(
-            "unsupported_approved_constraint_change_provenance",
-            validate_m3_bundle(bundle)["errors"],
+        _refresh_m3_hashes(bundle)
+        self.assertEqual(
+            validate_m3_bundle(bundle),
+            {
+                "status": "invalid",
+                "errors": ["unsupported_approved_constraint_change_provenance"],
+                "evidence_gaps": [],
+            },
         )
 
     def test_route_preconditions_must_equal_claim_coverage(self):
@@ -264,6 +313,7 @@ class ValidateM3MethodBundleTests(unittest.TestCase):
         bundle["source_m2_bundle"]["route_output"]["route_traceability"][0][
             "source_precondition_ids"
         ] = []
+        _refresh_m3_hashes(bundle)
         self.assertIn(
             "route_precondition_traceability_mismatch",
             validate_m3_bundle(bundle)["errors"],
@@ -278,6 +328,7 @@ class ValidateM3MethodBundleTests(unittest.TestCase):
             "value": 2,
             "unit": "hours",
         }]
+        _refresh_m3_hashes(bundle)
         self.assertIn(
             "route_condition_traceability_mismatch",
             validate_m3_bundle(bundle)["errors"],
@@ -310,33 +361,35 @@ class ValidateM3MethodBundleTests(unittest.TestCase):
         bundle["coaching_mode"] = "route_specific"
         self.assertIn("route_specific_requires_route", validate_m3_bundle(bundle)["errors"])
 
-    def test_missing_assumptions_is_rejected(self):
-        bundle = make_valid_m3_bundle()
-        del bundle["method_cards"][0]["assumptions"]
-        self.assertIn("missing_method_card_assumptions", validate_m3_bundle(bundle)["errors"])
+    def test_required_nonempty_card_lists_cannot_be_missing(self):
+        for field in REQUIRED_NONEMPTY_CARD_LISTS:
+            with self.subTest(field=field):
+                bundle = make_valid_m3_bundle()
+                del bundle["method_cards"][0][field]
+                self.assertIn(
+                    f"missing_method_card_{field}",
+                    validate_m3_bundle(bundle)["errors"],
+                )
 
-    def test_missing_baselines_is_rejected(self):
-        bundle = make_valid_m3_bundle()
-        del bundle["method_cards"][0]["baselines"]
-        self.assertIn("missing_method_card_baselines", validate_m3_bundle(bundle)["errors"])
+    def test_required_nonempty_card_lists_cannot_be_empty(self):
+        for field in REQUIRED_NONEMPTY_CARD_LISTS:
+            with self.subTest(field=field):
+                bundle = make_valid_m3_bundle()
+                bundle["method_cards"][0][field] = []
+                self.assertIn(
+                    f"empty_method_card_{field}",
+                    validate_m3_bundle(bundle)["errors"],
+                )
 
-    def test_missing_failure_modes_is_rejected(self):
-        bundle = make_valid_m3_bundle()
-        del bundle["method_cards"][0]["failure_modes"]
-        self.assertIn("missing_method_card_failure_modes", validate_m3_bundle(bundle)["errors"])
-
-    def test_missing_uncertainty_handling_is_rejected(self):
-        bundle = make_valid_m3_bundle()
-        del bundle["method_cards"][0]["uncertainty_handling"]
-        self.assertIn(
-            "missing_method_card_uncertainty_handling",
-            validate_m3_bundle(bundle)["errors"],
-        )
-
-    def test_stop_condition_requires_numeric_value(self):
-        bundle = make_valid_m3_bundle()
-        bundle["method_cards"][0]["stop_conditions"][0]["value"] = "not-numeric"
-        self.assertIn("invalid_method_card_stop_condition", validate_m3_bundle(bundle)["errors"])
+    def test_stop_condition_requires_finite_nonboolean_numeric_value(self):
+        for value in (True, math.nan, math.inf, -math.inf, "not-numeric"):
+            with self.subTest(value=value):
+                bundle = make_valid_m3_bundle()
+                bundle["method_cards"][0]["stop_conditions"][0]["value"] = value
+                self.assertIn(
+                    "invalid_method_card_stop_condition",
+                    validate_m3_bundle(bundle)["errors"],
+                )
 
     def test_source_ledger_requires_does_not_support(self):
         bundle = make_valid_m3_bundle()
@@ -351,12 +404,54 @@ class ValidateM3MethodBundleTests(unittest.TestCase):
         bundle["method_cards"][0]["source_ledger"][0]["basis_level"] = "metadata"
         self.assertIn("source_ledger_basis_level_mismatch", validate_m3_bundle(bundle)["errors"])
 
+    def test_closed_basis_mapping_covers_all_upstream_levels(self):
+        self.assertEqual(
+            {
+                source_level: _m3_basis_level({"basis_level": source_level})
+                for source_level in BASIS_LEVEL_MAP
+            },
+            {
+                "metadata_level": "metadata",
+                "abstract_level": "abstract",
+                "fulltext_level": "full_text",
+            },
+        )
+
+    def test_all_closed_basis_levels_match_embedded_candidates(self):
+        bundle = _make_production_m3_bundle()
+        source_m1 = bundle["source_m2_bundle"]["source_m1_bundle"]
+        ledger_rows = []
+        for candidate_id, source_level in (
+            ("contract:P13", "metadata_level"),
+            ("contract:P14", "abstract_level"),
+            ("contract:P15", "fulltext_level"),
+        ):
+            for round_name in ("round1", "round2"):
+                candidate = _candidate_by_id(source_m1, round_name, candidate_id)
+                candidate["basis_level"] = source_level
+                candidate["verified_record"]["basis_level"] = source_level
+            ledger_rows.append(
+                {
+                    "source_id": f"source:{candidate_id}",
+                    "candidate_id": candidate_id,
+                    "basis_level": BASIS_LEVEL_MAP[source_level],
+                    "supports": ["Offline method-card structure"],
+                    "does_not_support": ["Real method performance"],
+                    "limitations": ["Synthetic contract record"],
+                }
+            )
+        bundle["method_cards"][0]["source_ledger"] = ledger_rows
+        _reconfirm_after_m1_change(bundle)
+        self.assertEqual(validate_m3_bundle(bundle)["status"], "valid")
+
     def test_ineligible_source_is_rejected(self):
         bundle = _make_production_m3_bundle()
         for round_name in ("round1", "round2"):
-            candidate = bundle["source_m2_bundle"]["source_m1_bundle"][round_name][
-                "candidate_pool"
-            ][14]
+            candidate = _candidate_by_id(
+                bundle["source_m2_bundle"]["source_m1_bundle"],
+                round_name,
+                "contract:P15",
+            )
             candidate["recommendation_eligible"] = False
             candidate["verified_record"]["verification"][
                 "recommendation_eligible"
@@ -382,10 +477,42 @@ class ValidateM3MethodBundleTests(unittest.TestCase):
         bundle["method_cards"][0]["minimum_resources"][0]["required_value"] = 3
         self.assertIn("minimum_resource_exceeds_ceiling", validate_m3_bundle(bundle)["errors"])
 
+    def test_inherited_constraints_must_exactly_copy_selected_direction(self):
+        bundle = make_valid_m3_bundle()
+        bundle["method_cards"][0]["inherited_constraints"][0]["value"] = 3
+        self.assertIn(
+            "method_card_inherited_constraints_mismatch",
+            validate_m3_bundle(bundle)["errors"],
+        )
+
     def test_unknown_method_family_is_rejected(self):
         bundle = make_valid_m3_bundle()
         bundle["method_cards"][0]["method_family"] = "quantum_oracle"
         self.assertIn("unknown_method_family", validate_m3_bundle(bundle)["errors"])
+
+    def test_closed_objects_reject_unknown_fields(self):
+        cases = (
+            ("top_level", "unknown_m3_bundle_fields"),
+            ("method_card", "unknown_method_card_fields"),
+            ("source_ledger", "unknown_source_ledger_fields"),
+            ("domain_overlay", "unknown_domain_overlay_fields"),
+        )
+        for level, expected_error in cases:
+            with self.subTest(level=level):
+                bundle = make_valid_m3_bundle()
+                overlay = _nuclear_overlay()
+                bundle["domain_overlays"] = [overlay]
+                targets = {
+                    "top_level": bundle,
+                    "method_card": bundle["method_cards"][0],
+                    "source_ledger": bundle["method_cards"][0]["source_ledger"][0],
+                    "domain_overlay": overlay,
+                }
+                targets[level]["unexpected_field"] = "must fail closed"
+                self.assertIn(
+                    expected_error,
+                    validate_m3_bundle(bundle)["errors"],
+                )
 
     def test_nuclear_overlay_requires_existing_base_cards(self):
         bundle = make_valid_m3_bundle()
@@ -393,6 +520,13 @@ class ValidateM3MethodBundleTests(unittest.TestCase):
         overlay["base_card_ids"] = []
         bundle["domain_overlays"] = [overlay]
         self.assertIn("nuclear_overlay_missing_base_card", validate_m3_bundle(bundle)["errors"])
+
+    def test_nuclear_overlay_rejects_unknown_nonempty_base_card(self):
+        bundle = make_valid_m3_bundle()
+        overlay = _nuclear_overlay()
+        overlay["base_card_ids"] = ["card:unknown:1"]
+        bundle["domain_overlays"] = [overlay]
+        self.assertIn("nuclear_overlay_unknown_base_card", validate_m3_bundle(bundle)["errors"])
 
     def test_nuclear_overlay_transfer_must_remain_hypothesis(self):
         bundle = make_valid_m3_bundle()
@@ -407,9 +541,11 @@ class ValidateM3MethodBundleTests(unittest.TestCase):
     def test_preprint_cannot_be_sole_nuclear_safety_support(self):
         bundle = _make_production_m3_bundle()
         for round_name in ("round1", "round2"):
-            candidate = bundle["source_m2_bundle"]["source_m1_bundle"][round_name][
-                "candidate_pool"
-            ][14]
+            candidate = _candidate_by_id(
+                bundle["source_m2_bundle"]["source_m1_bundle"],
+                round_name,
+                "contract:P15",
+            )
             candidate["verification_status"] = "verified_preprint"
             candidate["verified_record"]["verification"]["status"] = (
                 "verified_preprint"
