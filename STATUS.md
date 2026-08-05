@@ -4,9 +4,9 @@
 
 `M2 — Direction decision and route gate`
 
-Status: `IN_PROGRESS`
+Status: `COMPLETE`
 
-Target contract: `m2.1`
+Acceptance revision: `m2.1`
 
 Started from accepted M1.2 HEAD `f7d9009986527e72e5b60e22b43920886b0be179` on branch `codex/m2-direction-decision`.
 
@@ -22,7 +22,26 @@ M2 converts one hash-bound `M1_COMPLETE` evidence bundle into an auditable direc
 - [x] User confirmation gate enforced for detailed route content.
 - [x] Adversarial fixtures and deterministic replay pass.
 - [x] Fresh-context direction-decision forward evaluation passes or preserves honest incomplete/blocked evidence.
-- [ ] Standard Skill validation, full unit suite, package audit, and final M2 scope audit pass.
+- [x] Standard Skill validation, full unit suite, package audit, and final M2 scope audit pass.
+
+## M2 result
+
+Status: `COMPLETE`
+
+Validated on `2026-08-05` from acceptance input HEAD `aec8531fa0565e87651b87761717158994afaec1` with:
+
+- Python compilation: exit `0`;
+- unit tests: 138 passed;
+- M1 frozen replay and machine-artifact replay: valid with the preserved Case B `evidence_incomplete` outcome;
+- M2 adversarial replay: 12/12 exact matches;
+- standard Skill validator: exit `0`, `Skill is valid!`;
+- package audit: 108-line root Skill, five linked references, zero missing or unlinked references, zero unresolved template markers;
+- fresh-context Case A/B/D/E bundles: `valid`, zero errors and gaps;
+- fresh-context Case C: correctly stopped at M1 `evidence_incomplete`, expected exit `2`;
+- confirmation gate: pre-confirmation route refused; explicit D1 confirmation opened the gate without generating or executing a route;
+- final record: `evals/m2/results/2026-08-05-m2.1-final-validation.md`.
+
+Remote exact-HEAD GitHub Actions was not run because no push was authorized. It is not claimed as M2 evidence. M2 completion does not claim empirical transfer success, experiment or simulation performance, model training, download, deployment, operational nuclear safety, or M3 work.
 
 ## M1 acceptance baseline
 
@@ -101,7 +120,7 @@ Evidence is recorded under `evals/m1/`, including preserved failed runs and inde
 
 ## Later milestones
 
-- M2: `IN_PROGRESS`
+- M2: `COMPLETE`
 - M3: `NOT_STARTED`
 - M4: `NOT_STARTED`
 - M5: `NOT_STARTED`
