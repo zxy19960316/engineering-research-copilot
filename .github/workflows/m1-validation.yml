@@ -30,6 +30,7 @@ jobs:
             skills/engineering-research-copilot/scripts/validate_m3_method_bundle.py \
             evals/m3/build_fixtures.py \
             evals/m3/replay_offline_results.py \
+            evals/m3/run_forward_validation_once.py \
             evals/m3/audit_skill_package.py
       - name: Unit tests
         run: python -m unittest discover -s tests -p "test_*.py" -v
