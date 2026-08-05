@@ -25,7 +25,18 @@ Before route-specific method-card instantiation, M3 must validate the complete M
 - [x] Closed `m3.1` method-card, typed source-ledger, resource-bound, and nuclear-overlay schema implemented offline; 47 M3 tests pass.
 - [x] Six general method families and the nuclear engineering × machine learning overlay implemented as directly linked one-level references; the root Skill links all eight M3 references.
 - [x] Fourteen M3 adversarial fixtures, deterministic regeneration, strict manifest replay, and frozen replay pass without changing accepted M1/M2 evidence.
-- [ ] Existing M1 and M2 validation remain green; M3 package and final scope audits pass.
+- [x] Existing M1 and M2 validation remain green; M3 deterministic replay, standard Skill validation, package, link, marker, and final local scope audits pass.
+- [x] M3 implementation and local validation completed on input HEAD `41fcc030415395b562b5b722ec09f142b354d7b4`: 226 unit tests, 34/34 M2 replay cases, 14/14 M3 replay cases, and byte-stable fixture regeneration all passed on first attempt.
+- [ ] Required genuinely fresh-context M3 forward evaluation remains `NOT_RUN`; the independent accepted upstream inputs listed in `evals/m3/results/2026-08-05-forward-evaluation-not-run.md` are unavailable.
+- [ ] Exact-closure-HEAD GitHub Actions remains `NOT_RUN — push not authorized`; baseline run `30977286846` is not M3 implementation CI.
+
+## M3 local result
+
+Status: `LOCAL_IMPLEMENTATION_AND_VALIDATION_COMPLETE; ACCEPTANCE_PENDING`
+
+M3.1 passed all local implementation, regression, deterministic replay, standard Skill validation, and package-audit gates on `2026-08-05`. The local record is `evals/m3/results/2026-08-05-m3.1-final-validation.md`. M3 remains `IN_PROGRESS`, because fresh-context forward evaluation and exact-closure-HEAD remote CI are both honestly preserved as `NOT_RUN`; no offline fixture or baseline M2.1.1 Actions run is relabeled as those missing gates.
+
+This local result does not claim a real experiment, simulation, training run, download, deployment, route execution, target-domain transfer result, operational readiness, or nuclear safety conclusion.
 
 ## M2 checklist
 
