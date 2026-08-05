@@ -6,6 +6,9 @@ Apply [Method coaching](core-method-coaching.md) first. Use this family protocol
 
 - Select `control_optimization_identification` for claims about system identification, state or parameter estimation, controller design, constrained optimization, or closed-loop performance.
 - Bind the card only to M2-derived claims, decision metrics, required preconditions, and resource ceilings.
+- Put the plant or model identity, excitation and observation records, objective and constraint definitions, operating envelope, baseline implementation, and safety-limit specification in `applicability.required_inputs`.
+- Put invalid provenance, unavailable safe excitation, failed identifiability or observability, undefined constraints or shutdown authority, unresolved required inputs, and unavailable specialist safety review in `applicability.incompatible_conditions`.
+- Reserve `stop_conditions` and `pivot_conditions` exclusively for closed numeric criterion objects; do not encode missing artifacts, provenance failures, or safety gates there.
 - Separate identification, estimation, optimization, and closed-loop claims so evidence for one does not automatically support another.
 
 ## Assumptions
@@ -16,9 +19,10 @@ Apply [Method coaching](core-method-coaching.md) first. Use this family protocol
 
 ## Minimum resources
 
-- Identify only the minimum excitation record, sensors, actuator authority, sampling capacity, baseline implementation, validation scenarios, and compute needed for the bound claim.
-- Bind every quantitative minimum to an inherited M2 ceiling as required by the core protocol.
-- Treat unavailable safe excitation, observability, constraint data, or shutdown authority as unmet preconditions.
+- Put only finite, non-boolean numeric requirements such as excitation-sample counts, validation-scenario counts, sampling capacity, time, memory, or compute capacity in `minimum_resources`.
+- Bind every row by `source_constraint_id`, `resource`, and `unit` to an inherited M2 resource ceiling whose operator is `<` or `<=`; remain strictly within that ceiling.
+- Keep excitation records, sensors, plant or model definitions, objective and constraint records, baseline implementations, and shutdown specifications in `applicability.required_inputs`, not in `minimum_resources`.
+- Treat an absent matching ceiling as an incompatible input state, not as permission to invent or widen a resource allowance.
 
 ## Baselines and controls
 
@@ -62,9 +66,11 @@ Apply [Method coaching](core-method-coaching.md) first. Use this family protocol
 
 ## Stop/Pivot conditions
 
-- Set at least one numeric stop condition, with a selected-direction metric and unit, for instability, unacceptable constraint violation, estimator divergence, infeasibility, or failed identifiability.
-- Stop operation-specific coaching when safe excitation, identifiability, observability, stability, constraint enforcement, or shutdown boundaries cannot be established.
-- Pivot to a simpler model, baseline controller, narrower operating envelope, revised excitation, or reformulated objective only within inherited resources and with the changed assumption explicit.
+- Populate `stop_conditions` and `pivot_conditions` only with the closed numeric criterion objects defined by [Method coaching](core-method-coaching.md).
+- In `bounded` mode, copy each applicable `metric_id`, `operator`, finite `value`, and `unit` from a matching selected-direction `minimum_decisive_test` stop or pivot criterion; in `route_specific` mode, copy them from the corresponding validated route condition.
+- Use only criteria relevant to instability, constraint violation, estimator divergence, infeasibility, or identifiability; preserve the upstream operator, value, and unit verbatim.
+- Fail closed and request upstream criterion repair when no applicable numeric stop or pivot criterion exists; never invent, estimate, or tune a threshold inside M3.
+- Put unsafe excitation, failed identifiability or observability, invalid provenance, undefined constraints or shutdown authority, and safety-review failures in `applicability.incompatible_conditions`, not in numeric condition lists.
 
 ## Safety boundaries
 

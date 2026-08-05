@@ -6,6 +6,9 @@ Apply [Method coaching](core-method-coaching.md) first. Use this family protocol
 
 - Select `signal_diagnostics` for claims about sensing, preprocessing, feature extraction, detection, localization, diagnosis, prognosis inputs, or condition monitoring.
 - Bind the card only to M2-derived claims, decision metrics, required preconditions, and resource ceilings.
+- Put raw-signal provenance, sampling and clock metadata, sensor calibration, label definitions and provenance, independent-unit identities, segmentation boundaries, and preprocessing specifications in `applicability.required_inputs`.
+- Put invalid signal or label provenance, unresolved sampling or alignment, non-independent partitions, unsupported operational use, unresolved required inputs, and unavailable specialist safety review in `applicability.incompatible_conditions`.
+- Reserve `stop_conditions` and `pivot_conditions` exclusively for closed numeric criterion objects; do not encode missing artifacts, provenance failures, or safety gates there.
 - Distinguish event detection, fault diagnosis, localization, and severity estimation so a metric for one task does not stand in for another.
 
 ## Assumptions
@@ -16,9 +19,10 @@ Apply [Method coaching](core-method-coaching.md) first. Use this family protocol
 
 ## Minimum resources
 
-- Identify only the minimum raw signal provenance, sampling metadata, sensor calibration, labeled events, normal exposure, independent units, storage, and analysis capacity needed for the bound claim.
-- Bind every quantitative minimum to an inherited M2 ceiling as required by the core protocol.
-- Treat missing timestamps, sampling rates, labels, asset identities, or acquisition provenance as unmet preconditions rather than reconstructing them silently.
+- Put only finite, non-boolean numeric requirements such as labeled-event counts, normal-exposure duration, independent-unit counts, storage, time, or analysis capacity in `minimum_resources`.
+- Bind every row by `source_constraint_id`, `resource`, and `unit` to an inherited M2 resource ceiling whose operator is `<` or `<=`; remain strictly within that ceiling.
+- Keep raw signals, timestamps, sampling metadata, calibration records, labels, asset identities, split definitions, and preprocessing specifications in `applicability.required_inputs`, not in `minimum_resources`.
+- Treat an absent matching ceiling as an incompatible input state, not as permission to invent or widen a resource allowance.
 
 ## Baselines and controls
 
@@ -63,9 +67,11 @@ Apply [Method coaching](core-method-coaching.md) first. Use this family protocol
 
 ## Stop/Pivot conditions
 
-- Set at least one numeric stop condition, with a selected-direction metric and unit, for excessive false-alarm exposure, missed events, detection delay, shift degradation, or invalid sampling behavior.
-- Stop immediately when raw signal provenance, sampling rate, time alignment, partition independence, or label origin is invalid or unresolved.
-- Pivot to corrected acquisition metadata, coarser claims, a simpler baseline, revised segmentation, or human review only within inherited resources and with the changed assumption explicit.
+- Populate `stop_conditions` and `pivot_conditions` only with the closed numeric criterion objects defined by [Method coaching](core-method-coaching.md).
+- In `bounded` mode, copy each applicable `metric_id`, `operator`, finite `value`, and `unit` from a matching selected-direction `minimum_decisive_test` stop or pivot criterion; in `route_specific` mode, copy them from the corresponding validated route condition.
+- Use only criteria relevant to false-alarm exposure, missed events, detection delay, sampling validity, or shift degradation; preserve the upstream operator, value, and unit verbatim.
+- Fail closed and request upstream criterion repair when no applicable numeric stop or pivot criterion exists; never invent, estimate, or tune a threshold inside M3.
+- Put invalid signal or label provenance, unresolved sampling or alignment, non-independent partitions, unsupported operational use, and safety-review failures in `applicability.incompatible_conditions`, not in numeric condition lists.
 
 ## Safety boundaries
 

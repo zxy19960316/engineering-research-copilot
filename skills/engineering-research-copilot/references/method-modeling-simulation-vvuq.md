@@ -6,6 +6,9 @@ Apply [Method coaching](core-method-coaching.md) first. Use this family protocol
 
 - Select `modeling_simulation_vvuq` for claims about mathematical or computational models, numerical predictions, scenario studies, digital twins, or multiphysics simulation.
 - Bind the card only to M2-derived claims, decision metrics, required preconditions, and resource ceilings.
+- Put the governing-model specification, code and configuration identity, benchmark or reference solution, convergence-study inputs, validation-data provenance, and uncertainty specification in `applicability.required_inputs`.
+- Put missing or invalid code, benchmark, configuration, or validation provenance; use outside the declared validation domain; unresolved required inputs; and unavailable specialist safety review in `applicability.incompatible_conditions`.
+- Reserve `stop_conditions` and `pivot_conditions` exclusively for closed numeric criterion objects; do not encode missing artifacts, provenance failures, or safety gates there.
 - Keep code verification, solution verification, validation, and uncertainty quantification distinct throughout the card.
 
 ## Assumptions
@@ -16,9 +19,10 @@ Apply [Method coaching](core-method-coaching.md) first. Use this family protocol
 
 ## Minimum resources
 
-- Identify only the minimum code access, benchmark problems, reference solutions, discretizations, solver runs, validation observations, and compute budget needed for the bound claim.
-- Bind every quantitative minimum to an inherited M2 ceiling as required by the core protocol.
-- Treat missing reference solutions, convergence evidence, validation data, or compute capacity as explicit preconditions rather than silently simplifying the claim.
+- Put only finite, non-boolean numeric requirements such as solver-run counts, discretization counts, validation-observation counts, time, memory, or compute capacity in `minimum_resources`.
+- Bind every row by `source_constraint_id`, `resource`, and `unit` to an inherited M2 resource ceiling whose operator is `<` or `<=`; remain strictly within that ceiling.
+- Keep code access, model files, benchmark definitions, reference solutions, solver configurations, and validation datasets in `applicability.required_inputs`, not in `minimum_resources`.
+- Treat an absent matching ceiling as an incompatible input state, not as permission to invent or widen a resource allowance.
 
 ## Baselines and controls
 
@@ -62,9 +66,11 @@ Apply [Method coaching](core-method-coaching.md) first. Use this family protocol
 
 ## Stop/Pivot conditions
 
-- Set at least one numeric stop condition, with a selected-direction metric and unit, for failed convergence, unacceptable conservation residual, excessive validation discrepancy, or uncertainty too large for the decision.
-- Stop predictive interpretation when code verification, solution verification, validation independence, or an M2-required precondition fails.
-- Pivot only within inherited resources, for example to a simpler model, narrower validation domain, or different observable, and state which claim is reduced.
+- Populate `stop_conditions` and `pivot_conditions` only with the closed numeric criterion objects defined by [Method coaching](core-method-coaching.md).
+- In `bounded` mode, copy each applicable `metric_id`, `operator`, finite `value`, and `unit` from a matching selected-direction `minimum_decisive_test` stop or pivot criterion; in `route_specific` mode, copy them from the corresponding validated route condition.
+- Use only criteria relevant to convergence, conservation residual, validation discrepancy, or decision uncertainty; preserve the upstream operator, value, and unit verbatim.
+- Fail closed and request upstream criterion repair when no applicable numeric stop or pivot criterion exists; never invent, estimate, or tune a threshold inside M3.
+- Put failed code verification, missing solution verification, non-independent validation, invalid provenance, extrapolation beyond the validation domain, and safety-review failures in `applicability.incompatible_conditions`, not in numeric condition lists.
 
 ## Safety boundaries
 

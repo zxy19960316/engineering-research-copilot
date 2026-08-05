@@ -6,6 +6,9 @@ Apply [Method coaching](core-method-coaching.md) first. Use this family protocol
 
 - Select `experiment_measurement_uq` for claims that require controlled intervention, physical measurement, calibration, repeatability, reproducibility, or propagated measurement uncertainty.
 - Bind the card only to M2-derived claims, decision metrics, required preconditions, and resource ceilings.
+- Put the measurement model, calibration trace, data provenance, control definition, randomization or blocking decision, repeatability and reproducibility plan, and uncertainty-budget specification in `applicability.required_inputs`.
+- Put missing or invalid provenance, calibration outside its valid range, unresolved required inputs, unavailable safety approval, and any other qualitative condition that makes the method unsuitable in `applicability.incompatible_conditions`.
+- Reserve `stop_conditions` and `pivot_conditions` exclusively for closed numeric criterion objects; do not encode missing artifacts, provenance failures, or safety gates there.
 - Hand off modeling-, control-, or signal-dominant checks to their directly linked family protocol instead of duplicating them here.
 
 ## Assumptions
@@ -16,9 +19,10 @@ Apply [Method coaching](core-method-coaching.md) first. Use this family protocol
 
 ## Minimum resources
 
-- Identify only the minimum specimens or units, repetitions, reference standards, sensors, acquisition capacity, time, and analysis resources needed for the bound claim.
-- Bind every quantitative minimum to an inherited M2 ceiling as required by the core protocol.
-- Treat unavailable calibration, control, or uncertainty inputs as unmet preconditions, not as permission to widen resources.
+- Put only finite, non-boolean numeric requirements such as independent-unit counts, repetition counts, acquisition capacity, time, or analysis capacity in `minimum_resources`.
+- Bind every row by `source_constraint_id`, `resource`, and `unit` to an inherited M2 resource ceiling whose operator is `<` or `<=`; remain strictly within that ceiling.
+- Keep reference standards, sensors, calibration records, controls, protocols, and datasets in `applicability.required_inputs`, not in `minimum_resources`.
+- Treat an absent matching ceiling as an incompatible input state, not as permission to invent or widen a resource allowance.
 
 ## Baselines and controls
 
@@ -60,9 +64,11 @@ Apply [Method coaching](core-method-coaching.md) first. Use this family protocol
 
 ## Stop/Pivot conditions
 
-- Set at least one numeric stop condition, with a selected-direction metric and unit, for invalid calibration, excessive drift, inadequate precision, failed controls, or an uncertainty interval too wide for the decision.
-- Stop before collection when the measurement model, calibration trace, control, uncertainty budget, or required precondition is missing.
-- Pivot only to a bounded alternative that remains within inherited resources and state which assumption or design element changes.
+- Populate `stop_conditions` and `pivot_conditions` only with the closed numeric criterion objects defined by [Method coaching](core-method-coaching.md).
+- In `bounded` mode, copy each applicable `metric_id`, `operator`, finite `value`, and `unit` from a matching selected-direction `minimum_decisive_test` stop or pivot criterion; in `route_specific` mode, copy them from the corresponding validated route condition.
+- Use only criteria relevant to invalid calibration, excessive drift, inadequate precision, failed controls, or excessive decision uncertainty; preserve the upstream operator, value, and unit verbatim.
+- Fail closed and request upstream criterion repair when no applicable numeric stop or pivot criterion exists; never invent, estimate, or tune a threshold inside M3.
+- Put missing measurement models, calibration traces, controls, uncertainty budgets, provenance, and safety approvals in `applicability.incompatible_conditions`, not in numeric condition lists.
 
 ## Safety boundaries
 
