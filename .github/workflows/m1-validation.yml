@@ -1,4 +1,4 @@
-name: M1, M2.1.1, and M3.1 Validation
+name: M1, M2.1.1, and M3.1.1 Validation
 
 on:
   push:
@@ -32,6 +32,7 @@ jobs:
             evals/m3/replay_offline_results.py \
             evals/m3/run_forward_validation_once.py \
             evals/m3/audit_forward_inputs.py \
+            evals/m3/audit_forward_acceptance.py \
             evals/m3/audit_skill_package.py
       - name: Unit tests
         run: python -m unittest discover -s tests -p "test_*.py" -v
@@ -53,3 +54,7 @@ jobs:
         run: python evals/m3/replay_offline_results.py
       - name: Tracked M3.1 package audit
         run: python evals/m3/audit_skill_package.py
+      - name: Audit M3 forward input prerequisites
+        run: python evals/m3/audit_forward_inputs.py evals/m3/forward-inputs-r2/manifest.json
+      - name: Audit M3 fresh acceptance
+        run: python evals/m3/audit_forward_acceptance.py evals/m3/results/forward-r2/acceptance-manifest.json

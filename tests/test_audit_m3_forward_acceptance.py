@@ -36,7 +36,19 @@ def _case_fixture(root: Path, case_id: str, expected_status: str, errors: list[s
     context_path = root / f"{case_id}.context.md"
     _write_json(input_path, {"case_id": case_id, "immutable": True})
     prompt_path.write_text(f"Frozen prompt for {case_id}\n", encoding="utf-8")
-    _write_json(output_path, {"case_id": case_id, "schema_version": "m3.1"})
+    _write_json(
+        output_path,
+        {
+            "schema_version": "m3.1",
+            "source_m2_bundle": {},
+            "source_m2_bundle_hash": "0" * 64,
+            "selected_direction_id": "D1",
+            "selected_direction_hash": "0" * 64,
+            "coaching_mode": "bounded",
+            "method_cards": [],
+            "domain_overlays": [],
+        },
+    )
     _write_json(
         validation_path,
         {"status": expected_status, "errors": errors, "evidence_gaps": []},
