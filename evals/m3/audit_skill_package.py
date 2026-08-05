@@ -64,6 +64,45 @@ def _mask_fenced_code(text: str) -> str:
     return "".join(characters)
 
 
+def _indent_columns(content: str) -> int:
+    columns = 0
+    for character in content:
+        if character == " ":
+            columns += 1
+        elif character == "\t":
+            columns += 4 - (columns % 4)
+        else:
+            break
+    return columns
+
+
+def _mask_indented_code(text: str) -> str:
+    characters = list(text)
+    offset = 0
+    in_code = False
+    may_start = True
+    for line in text.splitlines(keepends=True):
+        content = line.rstrip("\r\n")
+        blank = not content.strip(" \t")
+        indented = _indent_columns(content) >= 4
+        if in_code:
+            if blank or indented:
+                _mask_span(characters, offset, offset + len(line))
+            else:
+                in_code = False
+                may_start = False
+        elif blank:
+            may_start = True
+        elif may_start and indented:
+            in_code = True
+            may_start = False
+            _mask_span(characters, offset, offset + len(line))
+        else:
+            may_start = False
+        offset += len(line)
+    return "".join(characters)
+
+
 def _mask_html_comments(text: str) -> str:
     characters = list(text)
     for match in HTML_COMMENT.finditer(text):
@@ -114,7 +153,10 @@ def _escaped_at(text: str, index: int) -> bool:
 
 
 def _rendered_markdown_targets(text: str) -> list[str]:
-    visible = _mask_inline_code(_mask_html_comments(_mask_fenced_code(text)))
+    visible = _mask_fenced_code(text)
+    visible = _mask_indented_code(visible)
+    visible = _mask_html_comments(visible)
+    visible = _mask_inline_code(visible)
     targets = []
     for match in MARKDOWN_LINK.finditer(visible):
         opening_bracket = match.start()
