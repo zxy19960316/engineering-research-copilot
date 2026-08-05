@@ -23,7 +23,7 @@ Before route-specific method-card instantiation, M3 must validate the complete M
 - [x] M3 implementation plan created outside the installable Skill.
 - [x] M3 input compatibility and fail-closed provenance gates specified red-first in 33 test methods; collection stops solely because the M3 validator module is intentionally absent.
 - [x] Closed `m3.1` method-card, typed source-ledger, resource-bound, and nuclear-overlay schema implemented offline; 47 M3 tests pass.
-- [ ] Six general method families and the nuclear engineering × machine learning overlay implemented as directly linked one-level references.
+- [x] Six general method families and the nuclear engineering × machine learning overlay implemented as directly linked one-level references; the root Skill links all eight M3 references.
 - [ ] Adversarial fixtures, deterministic regeneration, and frozen replay pass.
 - [ ] Existing M1 and M2 validation remain green; M3 package and final scope audits pass.
 
