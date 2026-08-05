@@ -4,7 +4,9 @@
 from __future__ import annotations
 
 import json
+import os
 import re
+import stat
 import sys
 from collections import Counter
 from pathlib import Path
@@ -21,8 +23,131 @@ MARKERS = (
     "PLACE" + "HOLDER",
 )
 AUDITED_SUFFIXES = {".md", ".py", ".yaml", ".yml"}
-MARKDOWN_LINK = re.compile(r"(?<!!)\[[^\]\r\n]+\]\(([^)\r\n]+)\)")
+MARKDOWN_LINK = re.compile(r"\[[^\]\r\n]+\]\(([^)\r\n]+)\)")
 DIRECT_REFERENCE_TARGET = re.compile(r"references/[^/\\]+\.md")
+FENCE_OPEN = re.compile(r"^ {0,3}(`{3,}|~{3,})[^\r\n]*$")
+HTML_COMMENT = re.compile(r"<!--.*?(?:-->|\Z)", re.DOTALL)
+REPARSE_POINT = getattr(stat, "FILE_ATTRIBUTE_REPARSE_POINT", 0x400)
+
+
+def _mask_span(characters: list[str], start: int, end: int) -> None:
+    for index in range(start, end):
+        if characters[index] not in {"\r", "\n"}:
+            characters[index] = " "
+
+
+def _mask_fenced_code(text: str) -> str:
+    characters = list(text)
+    offset = 0
+    fence_character: str | None = None
+    fence_length = 0
+    for line in text.splitlines(keepends=True):
+        content = line.rstrip("\r\n")
+        if fence_character is None:
+            opened = FENCE_OPEN.fullmatch(content)
+            if opened is not None:
+                marker = opened.group(1)
+                fence_character = marker[0]
+                fence_length = len(marker)
+                _mask_span(characters, offset, offset + len(line))
+        else:
+            _mask_span(characters, offset, offset + len(line))
+            closing = re.fullmatch(
+                rf" {{0,3}}{re.escape(fence_character)}"
+                rf"{{{fence_length},}}[ \t]*",
+                content,
+            )
+            if closing is not None:
+                fence_character = None
+                fence_length = 0
+        offset += len(line)
+    return "".join(characters)
+
+
+def _mask_html_comments(text: str) -> str:
+    characters = list(text)
+    for match in HTML_COMMENT.finditer(text):
+        _mask_span(characters, match.start(), match.end())
+    return "".join(characters)
+
+
+def _mask_inline_code(text: str) -> str:
+    characters = list(text)
+    index = 0
+    while index < len(text):
+        if text[index] != "`":
+            index += 1
+            continue
+        run_end = index
+        while run_end < len(text) and text[run_end] == "`":
+            run_end += 1
+        marker = text[index:run_end]
+        search_from = run_end
+        closing_start = -1
+        while True:
+            candidate = text.find(marker, search_from)
+            if candidate < 0:
+                break
+            before_is_tick = candidate > 0 and text[candidate - 1] == "`"
+            after = candidate + len(marker)
+            after_is_tick = after < len(text) and text[after] == "`"
+            if not before_is_tick and not after_is_tick:
+                closing_start = candidate
+                break
+            search_from = candidate + 1
+        if closing_start < 0:
+            index = run_end
+            continue
+        closing_end = closing_start + len(marker)
+        _mask_span(characters, index, closing_end)
+        index = closing_end
+    return "".join(characters)
+
+
+def _escaped_at(text: str, index: int) -> bool:
+    backslashes = 0
+    cursor = index - 1
+    while cursor >= 0 and text[cursor] == "\\":
+        backslashes += 1
+        cursor -= 1
+    return backslashes % 2 == 1
+
+
+def _rendered_markdown_targets(text: str) -> list[str]:
+    visible = _mask_inline_code(_mask_html_comments(_mask_fenced_code(text)))
+    targets = []
+    for match in MARKDOWN_LINK.finditer(visible):
+        opening_bracket = match.start()
+        if _escaped_at(visible, opening_bracket):
+            continue
+        if (
+            opening_bracket > 0
+            and visible[opening_bracket - 1] == "!"
+            and not _escaped_at(visible, opening_bracket - 1)
+        ):
+            continue
+        targets.append(match.group(1))
+    return targets
+
+
+def _regular_unlinked_readable_file(path: Path) -> bool:
+    try:
+        metadata = os.lstat(path)
+    except OSError:
+        return False
+    attributes = getattr(metadata, "st_file_attributes", 0)
+    if (
+        stat.S_ISLNK(metadata.st_mode)
+        or attributes & REPARSE_POINT
+        or not stat.S_ISREG(metadata.st_mode)
+    ):
+        return False
+    try:
+        with path.open("rb") as handle:
+            handle.read(1)
+    except OSError:
+        return False
+    return True
 
 
 def _result(
@@ -79,7 +204,14 @@ def audit_package(package_root: Path) -> dict[str, object]:
         errors.append("invalid_skill_description")
 
     try:
-        top_level_references = sorted(references_root.glob("*.md"))
+        top_level_entries = sorted(references_root.glob("*.md"))
+        top_level_references = [
+            path
+            for path in top_level_entries
+            if _regular_unlinked_readable_file(path)
+        ]
+        if len(top_level_references) != len(top_level_entries):
+            errors.append("invalid_top_level_reference")
         nested_references = sorted(
             path
             for path in references_root.rglob("*.md")
@@ -99,7 +231,7 @@ def audit_package(package_root: Path) -> dict[str, object]:
     }
     reference_like_targets = [
         target
-        for target in MARKDOWN_LINK.findall(skill_text)
+        for target in _rendered_markdown_targets(skill_text)
         if target.startswith("references/")
     ]
     invalid_targets = [
@@ -131,7 +263,9 @@ def audit_package(package_root: Path) -> dict[str, object]:
         errors.append("forbidden_package_file")
     marker_found = False
     for path in package_entries:
-        if not path.is_file() or path.suffix not in AUDITED_SUFFIXES:
+        if path.suffix not in AUDITED_SUFFIXES:
+            continue
+        if not _regular_unlinked_readable_file(path):
             continue
         try:
             body = path.read_text(encoding="utf-8")
