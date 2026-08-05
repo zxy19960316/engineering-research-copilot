@@ -4,7 +4,7 @@
 
 `M2 — Direction decision and route gate`
 
-Status: `IN_PROGRESS`
+Status: `COMPLETE`
 
 Acceptance revision: `m2.1.1`
 
@@ -24,7 +24,7 @@ M2 converts one hash-bound `M1_COMPLETE` evidence bundle into an auditable direc
 - [x] Direction axes derived and scorecard rationales hardened.
 - [x] M2.1.1 adversarial fixtures generated and replayed deterministically.
 - [x] Case A repaired and Case F audited without route execution.
-- [ ] Local validation and acceptance record pass; final exact-HEAD Actions remains pending because push was not authorized.
+- [x] Local validation and acceptance record pass; implementation HEAD `94a41f423d12630c1058451da2d84b278a5285cf` passed exact-HEAD GitHub Actions run `30977203464`.
 
 ### Accepted M2.1 baseline
 
@@ -40,9 +40,9 @@ M2 converts one hash-bound `M1_COMPLETE` evidence bundle into an auditable direc
 
 ## M2 result
 
-Status: `M2.1 COMPLETE; M2.1.1 IN_PROGRESS (REMOTE_CI_PENDING)`
+Status: `M2.1 COMPLETE; M2.1.1 COMPLETE`
 
-M2.1.1 local acceptance passed on `2026-08-05` from implementation HEAD `b66bb5122c11730377ee587d59df3717a37e90ba` with 163 unit tests, both unchanged M1 replays, 34/34 M2.1.1 adversarial cases, byte-stable fixture regeneration, the local standard Skill validator, a repository package audit, revised Case A, and independent Case F. The final exact-HEAD Actions gate is not run because the branch has not been pushed; M2.1.1 therefore remains open and M3 remains `NOT_STARTED`. See `evals/m2/results/2026-08-05-m2.1.1-final-validation.md`.
+M2.1.1 local acceptance passed on `2026-08-05` from implementation HEAD `b66bb5122c11730377ee587d59df3717a37e90ba` with 163 unit tests, both unchanged M1 replays, 34/34 M2.1.1 adversarial cases, byte-stable fixture regeneration, the local standard Skill validator, a repository package audit, revised Case A, and independent Case F. The final implementation-and-evidence HEAD `94a41f423d12630c1058451da2d84b278a5285cf` passed exact-HEAD GitHub Actions run `30977203464`; M2.1.1 is complete and M3 remains `NOT_STARTED`. See `evals/m2/results/2026-08-05-m2.1.1-final-validation.md`.
 
 Validated on `2026-08-05` from acceptance input HEAD `aec8531fa0565e87651b87761717158994afaec1` with:
 
@@ -136,7 +136,7 @@ Evidence is recorded under `evals/m1/`, including preserved failed runs and inde
 
 ## Later milestones
 
-- M2: `M2.1 COMPLETE; M2.1.1 IN_PROGRESS (REMOTE_CI_PENDING)`
+- M2: `M2.1 COMPLETE; M2.1.1 COMPLETE`
 - M3: `NOT_STARTED`
 - M4: `NOT_STARTED`
 - M5: `NOT_STARTED`
