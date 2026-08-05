@@ -437,6 +437,18 @@ class ValidateM3MethodBundleTests(unittest.TestCase):
         bundle["coaching_mode"] = "route_specific"
         self.assertIn("route_specific_requires_route", validate_m3_bundle(bundle)["errors"])
 
+    def test_bounded_coaching_requires_route_absent(self):
+        bundle = make_valid_m3_bundle("route_specific")
+        bundle["coaching_mode"] = "bounded"
+        self.assertEqual(
+            validate_m3_bundle(bundle),
+            {
+                "status": "invalid",
+                "errors": ["bounded_coaching_requires_route_absent"],
+                "evidence_gaps": [],
+            },
+        )
+
     def test_required_nonempty_card_lists_cannot_be_missing(self):
         for field in REQUIRED_NONEMPTY_CARD_LISTS:
             with self.subTest(field=field):
