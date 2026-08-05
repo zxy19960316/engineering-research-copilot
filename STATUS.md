@@ -16,7 +16,7 @@ M2 converts one hash-bound `M1_COMPLETE` evidence bundle into an auditable direc
 
 - [x] M1.2 baseline confirmed complete and the M2 work branch confirmed clean.
 - [x] M2 implementation plan created outside the installable Skill.
-- [ ] `m2.1` direction portfolio and source-evidence lineage contract frozen.
+- [x] `m2.1` direction portfolio and source-evidence lineage contract frozen.
 - [ ] Hard-gate, evidence-tier, formal-position, axis-separation, scorecard, and decisive-test behavior specified red-first.
 - [ ] Offline M2 direction bundle validator implemented.
 - [ ] User confirmation gate enforced for detailed route content.
