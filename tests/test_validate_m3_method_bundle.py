@@ -3,7 +3,10 @@ from __future__ import annotations
 import copy
 import json
 import math
+import os
+import subprocess
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -310,6 +313,57 @@ class ValidateM3MethodBundleTests(unittest.TestCase):
         bundle["domain_overlays"] = [_nuclear_overlay()]
         _assert_valid(self, bundle)
 
+    def test_cli_multi_error_order_is_hash_seed_independent(self):
+        bundle = make_valid_m3_bundle()
+        card = bundle["method_cards"][0]
+        for field in (
+            "assumptions",
+            "baselines",
+            "controls",
+            "failure_modes",
+            "uncertainty_handling",
+        ):
+            del card[field]
+        for field in (
+            "supported_claim_types",
+            "required_inputs",
+            "incompatible_conditions",
+        ):
+            del card["applicability"][field]
+        ledger = card["source_ledger"][0]
+        for field in ("supports", "does_not_support", "limitations"):
+            del ledger[field]
+
+        outputs = []
+        with tempfile.TemporaryDirectory(prefix="m3-hash-seed-") as temp_dir:
+            fixture = Path(temp_dir) / "multi-error.json"
+            fixture.write_text(
+                json.dumps(bundle, ensure_ascii=False),
+                encoding="utf-8",
+            )
+            for seed in ("1", "2", "3", "47", "101"):
+                environment = os.environ.copy()
+                environment["PYTHONHASHSEED"] = seed
+                completed = subprocess.run(
+                    [
+                        sys.executable,
+                        "-X",
+                        "utf8",
+                        str(SCRIPTS_DIR / "validate_m3_method_bundle.py"),
+                        str(fixture),
+                    ],
+                    cwd=REPO_ROOT,
+                    env=environment,
+                    check=False,
+                    capture_output=True,
+                )
+                self.assertEqual(completed.returncode, 1)
+                self.assertEqual(completed.stderr, b"")
+                self.assertEqual(len(completed.stdout.splitlines()), 1)
+                outputs.append(completed.stdout)
+
+        self.assertTrue(all(output == outputs[0] for output in outputs[1:]))
+
     def test_nonempty_approved_constraint_changes_fail_closed(self):
         bundle = make_valid_m3_bundle(coaching_mode="route_specific")
         bundle["source_m2_bundle"]["route_output"]["approved_constraint_changes"] = [{
@@ -576,6 +630,89 @@ class ValidateM3MethodBundleTests(unittest.TestCase):
         bundle["method_cards"][0]["inherited_constraints"][0]["value"] = 3
         self.assertIn(
             "method_card_inherited_constraints_mismatch",
+            validate_m3_bundle(bundle)["errors"],
+        )
+
+    def test_inherited_constraints_copy_is_type_strict(self):
+        bundle = make_valid_m3_bundle()
+        source = bundle["source_m2_bundle"]
+        direction = _selected_direction(source)
+        direction["resource_limits"][0]["value"] = 1
+        _confirm_bundle(source)
+        bundle["method_cards"][0]["inherited_constraints"] = copy.deepcopy(
+            direction["resource_limits"]
+        )
+        _refresh_m3_hashes(bundle)
+        bundle["method_cards"][0]["inherited_constraints"][0]["value"] = True
+        self.assertIn(
+            "method_card_inherited_constraints_mismatch",
+            validate_m3_bundle(bundle)["errors"],
+        )
+
+    def test_duplicate_method_card_id_is_rejected(self):
+        bundle = make_valid_m3_bundle()
+        bundle["method_cards"].append(copy.deepcopy(bundle["method_cards"][0]))
+        self.assertIn(
+            "duplicate_method_card_id",
+            validate_m3_bundle(bundle)["errors"],
+        )
+
+    def test_duplicate_supported_claim_type_is_rejected(self):
+        bundle = make_valid_m3_bundle()
+        supported = bundle["method_cards"][0]["applicability"][
+            "supported_claim_types"
+        ]
+        supported.append(supported[0])
+        self.assertIn(
+            "duplicate_method_card_supported_claim_type",
+            validate_m3_bundle(bundle)["errors"],
+        )
+
+    def test_duplicate_primary_metric_is_rejected(self):
+        bundle = make_valid_m3_bundle()
+        metrics = bundle["method_cards"][0]["primary_metrics"]
+        metrics.append(metrics[0])
+        self.assertIn(
+            "duplicate_method_card_primary_metric",
+            validate_m3_bundle(bundle)["errors"],
+        )
+
+    def test_duplicate_source_support_type_is_rejected(self):
+        bundle = make_valid_m3_bundle()
+        support_types = bundle["method_cards"][0]["source_ledger"][0][
+            "support_types"
+        ]
+        support_types.append(support_types[0])
+        self.assertIn(
+            "duplicate_source_ledger_support_type",
+            validate_m3_bundle(bundle)["errors"],
+        )
+
+    def test_duplicate_source_id_within_ledger_is_rejected(self):
+        bundle = make_valid_m3_bundle()
+        ledger = bundle["method_cards"][0]["source_ledger"]
+        ledger.append(copy.deepcopy(ledger[0]))
+        self.assertIn(
+            "duplicate_source_ledger_source_id",
+            validate_m3_bundle(bundle)["errors"],
+        )
+
+    def test_duplicate_domain_overlay_id_is_rejected(self):
+        bundle = make_valid_m3_bundle()
+        overlay = _nuclear_overlay()
+        bundle["domain_overlays"] = [overlay, copy.deepcopy(overlay)]
+        self.assertIn(
+            "duplicate_domain_overlay_id",
+            validate_m3_bundle(bundle)["errors"],
+        )
+
+    def test_duplicate_nuclear_base_card_id_is_rejected(self):
+        bundle = make_valid_m3_bundle()
+        overlay = _nuclear_overlay()
+        overlay["base_card_ids"].append(overlay["base_card_ids"][0])
+        bundle["domain_overlays"] = [overlay]
+        self.assertIn(
+            "duplicate_nuclear_overlay_base_card_id",
             validate_m3_bundle(bundle)["errors"],
         )
 
