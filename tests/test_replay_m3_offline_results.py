@@ -374,7 +374,7 @@ class M3OfflineResultsReplayTests(unittest.TestCase):
                     expected_output = (
                         {
                             "all_matched": False,
-                            "case_count": 14,
+                            "case_count": 16,
                             "matched_frozen_record": False,
                             "status": "invalid",
                         }
@@ -478,7 +478,7 @@ class M3OfflineResultsReplayTests(unittest.TestCase):
             for path in after_paths
         }
         self.assertEqual(after, before)
-        self.assertEqual(len(after) - 1, 14)
+        self.assertEqual(len(after) - 1, 16)
 
 
 if __name__ == "__main__":

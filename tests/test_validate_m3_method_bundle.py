@@ -108,6 +108,32 @@ def _reconfirm_after_m1_change(bundle: dict) -> None:
     _refresh_m3_hashes(bundle)
 
 
+def _add_bounded_condition_authority(source_m2_bundle: dict) -> None:
+    direction = source_m2_bundle["direction_portfolio"]["directions"][0]
+    coverage_by_claim = {
+        coverage["claim_id"]: coverage
+        for coverage in direction["minimum_decisive_test"]["claim_coverage"]
+    }
+    coverage_by_claim["C-PRED"]["decision_criteria"].append(
+        {
+            "criterion_type": "stop",
+            "metric_id": "M-PRED",
+            "operator": "<",
+            "value": 0.6,
+            "unit": "ratio",
+        }
+    )
+    coverage_by_claim["C-UQ"]["decision_criteria"].append(
+        {
+            "criterion_type": "pivot",
+            "metric_id": "M-UQ",
+            "operator": ">",
+            "value": 0.2,
+            "unit": "ratio",
+        }
+    )
+
+
 def _complete_method_card(direction: dict, source_m1_bundle: dict) -> dict:
     source_candidate = _candidate_by_id(
         source_m1_bundle,
@@ -216,11 +242,20 @@ def _make_route_compatible(source: dict) -> None:
 
 def make_valid_m3_bundle(coaching_mode: str = "bounded") -> dict:
     source = make_valid_m2_bundle()
+    _add_bounded_condition_authority(source)
     if coaching_mode == "route_specific":
         _make_route_compatible(source)
     else:
         _confirm_bundle(source)
     direction = _selected_direction(source)
+    card = _complete_method_card(direction, source["source_m1_bundle"])
+    if coaching_mode == "route_specific":
+        card["stop_conditions"] = copy.deepcopy(
+            source["route_output"]["stop_conditions"]
+        )
+        card["pivot_conditions"] = copy.deepcopy(
+            source["route_output"]["pivot_conditions"]
+        )
     return {
         "schema_version": "m3.1",
         "source_m2_bundle": source,
@@ -228,7 +263,7 @@ def make_valid_m3_bundle(coaching_mode: str = "bounded") -> dict:
         "selected_direction_id": direction["direction_id"],
         "selected_direction_hash": canonical_sha256(direction),
         "coaching_mode": coaching_mode,
-        "method_cards": [_complete_method_card(direction, source["source_m1_bundle"])],
+        "method_cards": [card],
         "domain_overlays": [],
     }
 
@@ -242,6 +277,7 @@ def _make_production_m3_bundle() -> dict:
     del source["evidence_class"]
     del source["proves"]
     del source["does_not_prove"]
+    _add_bounded_condition_authority(source)
     source["direction_portfolio"]["source_m1_bundle_hash"] = canonical_sha256(
         source["source_m1_bundle"]
     )
@@ -274,7 +310,7 @@ def _nuclear_overlay(candidate_id: str = "fixture:P04") -> dict:
                 "criterion_type": "stop",
                 "metric_id": "M-PRED",
                 "operator": "<",
-                "value": 0.7,
+                "value": 0.6,
                 "unit": "ratio",
             }
         ],
@@ -312,6 +348,102 @@ class ValidateM3MethodBundleTests(unittest.TestCase):
         bundle = make_valid_m3_bundle()
         bundle["domain_overlays"] = [_nuclear_overlay()]
         _assert_valid(self, bundle)
+
+    def test_bounded_card_conditions_match_decisive_test_authority(self):
+        _assert_valid(self, make_valid_m3_bundle())
+
+    def test_route_card_conditions_match_route_authority(self):
+        _assert_valid(self, make_valid_m3_bundle("route_specific"))
+
+    def test_overlay_stop_condition_matches_bounded_authority(self):
+        bundle = make_valid_m3_bundle()
+        bundle["domain_overlays"] = [_nuclear_overlay()]
+        _assert_valid(self, bundle)
+
+    def test_bounded_card_rejects_fabricated_stop_value(self):
+        bundle = make_valid_m3_bundle()
+        bundle["method_cards"][0]["stop_conditions"][0]["value"] = 0.61
+        self.assertEqual(
+            validate_m3_bundle(bundle),
+            {
+                "status": "invalid",
+                "errors": ["method_card_stop_condition_not_authoritative"],
+                "evidence_gaps": [],
+            },
+        )
+
+    def test_bounded_card_rejects_changed_pivot_unit(self):
+        bundle = make_valid_m3_bundle()
+        bundle["method_cards"][0]["pivot_conditions"][0]["unit"] = "percent"
+        self.assertEqual(
+            validate_m3_bundle(bundle),
+            {
+                "status": "invalid",
+                "errors": [
+                    "invalid_method_card_pivot_condition",
+                    "method_card_pivot_condition_not_authoritative",
+                ],
+                "evidence_gaps": [],
+            },
+        )
+
+    def test_route_card_rejects_fabricated_stop_value(self):
+        bundle = make_valid_m3_bundle("route_specific")
+        bundle["method_cards"][0]["stop_conditions"][0]["value"] = 0.51
+        self.assertEqual(
+            validate_m3_bundle(bundle),
+            {
+                "status": "invalid",
+                "errors": ["method_card_stop_condition_not_authoritative"],
+                "evidence_gaps": [],
+            },
+        )
+
+    def test_route_card_rejects_changed_pivot_unit(self):
+        bundle = make_valid_m3_bundle("route_specific")
+        bundle["method_cards"][0]["pivot_conditions"][0]["unit"] = "percent"
+        self.assertEqual(
+            validate_m3_bundle(bundle),
+            {
+                "status": "invalid",
+                "errors": [
+                    "invalid_method_card_pivot_condition",
+                    "method_card_pivot_condition_not_authoritative",
+                ],
+                "evidence_gaps": [],
+            },
+        )
+
+    def test_overlay_rejects_fabricated_stop_value(self):
+        bundle = make_valid_m3_bundle()
+        overlay = _nuclear_overlay()
+        overlay["additional_stop_conditions"][0]["value"] = 0.61
+        bundle["domain_overlays"] = [overlay]
+        self.assertEqual(
+            validate_m3_bundle(bundle),
+            {
+                "status": "invalid",
+                "errors": ["nuclear_overlay_stop_condition_not_authoritative"],
+                "evidence_gaps": [],
+            },
+        )
+
+    def test_overlay_rejects_changed_stop_unit(self):
+        bundle = make_valid_m3_bundle()
+        overlay = _nuclear_overlay()
+        overlay["additional_stop_conditions"][0]["unit"] = "percent"
+        bundle["domain_overlays"] = [overlay]
+        self.assertEqual(
+            validate_m3_bundle(bundle),
+            {
+                "status": "invalid",
+                "errors": [
+                    "invalid_nuclear_overlay_stop_condition",
+                    "nuclear_overlay_stop_condition_not_authoritative",
+                ],
+                "evidence_gaps": [],
+            },
+        )
 
     def test_cli_multi_error_order_is_hash_seed_independent(self):
         bundle = make_valid_m3_bundle()

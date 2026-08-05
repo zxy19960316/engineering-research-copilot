@@ -63,7 +63,20 @@ EXPECTED_RESULTS: dict[str, dict[str, object]] = {
     },
     "nonnumeric-stop-condition": {
         "status": "invalid",
-        "errors": ["invalid_method_card_stop_condition"],
+        "errors": [
+            "invalid_method_card_stop_condition",
+            "method_card_stop_condition_not_authoritative",
+        ],
+        "evidence_gaps": [],
+    },
+    "unbound-stop-condition": {
+        "status": "invalid",
+        "errors": ["method_card_stop_condition_not_authoritative"],
+        "evidence_gaps": [],
+    },
+    "unbound-pivot-condition": {
+        "status": "invalid",
+        "errors": ["method_card_pivot_condition_not_authoritative"],
         "evidence_gaps": [],
     },
     "source-missing-does-not-support": {
@@ -96,7 +109,10 @@ EXPECTED_RESULTS: dict[str, dict[str, object]] = {
     },
     "route-condition-mismatch": {
         "status": "invalid",
-        "errors": ["route_condition_traceability_mismatch"],
+        "errors": [
+            "method_card_stop_condition_not_authoritative",
+            "route_condition_traceability_mismatch",
+        ],
         "evidence_gaps": [],
     },
     "nuclear-transfer-overclaim": {
@@ -143,6 +159,14 @@ def build_cases() -> dict[str, dict]:
         "not-numeric"
     )
     cases["nonnumeric-stop-condition"] = nonnumeric_stop
+
+    unbound_stop = make_valid_m3_bundle()
+    unbound_stop["method_cards"][0]["stop_conditions"][0]["value"] = 0.61
+    cases["unbound-stop-condition"] = unbound_stop
+
+    unbound_pivot = make_valid_m3_bundle()
+    unbound_pivot["method_cards"][0]["pivot_conditions"][0]["value"] = 0.21
+    cases["unbound-pivot-condition"] = unbound_pivot
 
     missing_non_support = make_valid_m3_bundle()
     del missing_non_support["method_cards"][0]["source_ledger"][0][
