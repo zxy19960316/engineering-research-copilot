@@ -99,7 +99,7 @@ Expected: only milestone activation and current Git remote/branch facts change.
 - Consumes: `core-citation-integrity.md`, `core-paper-map.md`, and `core-feedback-rollback.md`.
 - Produces: `ResearchBrief`, `SearchPlan`, `CandidatePool`, `RoundBundle`, and `FeedbackDelta` contracts used by all later M1 tasks.
 
-- [ ] **Step 1: Add the M1 reference with explicit contents and state flow**
+- [x] **Step 1: Add the M1 reference with explicit contents and state flow**
 
 Write these sections in imperative language: `Build the brief`, `Plan the search`, `Assemble the pool`, `Select round one`, `Apply feedback`, `Select round two`, `Report incomplete evidence`, and `Stop at the M1 boundary`.
 
@@ -125,7 +125,7 @@ research_brief:
 
 Ask at most three questions and only for missing fields that materially change query construction or recommendation eligibility.
 
-- [ ] **Step 2: Define a query plan that exposes purpose and boundaries**
+- [x] **Step 2: Define a query plan that exposes purpose and boundaries**
 
 Use:
 
@@ -149,7 +149,7 @@ search_plan:
 
 Require the system to report a boundary instead of claiming exhaustive or novelty-complete coverage.
 
-- [ ] **Step 3: Define candidate and round bundles**
+- [x] **Step 3: Define candidate and round bundles**
 
 Use stable candidate IDs within one calibration cycle and require every selected ID to resolve to exactly one verified record:
 
@@ -168,11 +168,11 @@ round_bundle:
 
 Require 15–20 verified, deduplicated round-one candidates and eight selected papers when reliable evidence exists. If the pool or role coverage is insufficient, return `evidence_incomplete`, keep the gap visible, and never pad with weak or unverified records.
 
-- [ ] **Step 4: Route paper calibration through the new reference**
+- [x] **Step 4: Route paper calibration through the new reference**
 
 In `SKILL.md`, change the paper route to load `core-paper-calibration.md` plus the three specialized core references. Keep the root sequence concise and remove duplicated low-level fields from the root if the new reference owns them.
 
-- [ ] **Step 5: Validate root routing**
+- [x] **Step 5: Validate root routing**
 
 Run:
 
@@ -182,7 +182,7 @@ python -X utf8 C:\Users\94310\.codex\skills\.system\skill-creator\scripts\quick_
 
 Expected: `Skill is valid!`.
 
-- [ ] **Step 6: Commit the state contract**
+- [x] **Step 6: Commit the state contract**
 
 Run:
 
@@ -202,11 +202,11 @@ Expected: one commit containing only the root route and M1 workflow reference.
 - Consumes: discovery hits from the host and the frozen verification states.
 - Produces: a `VerifiedPaperRecord` plus `recommendation_eligible: true|false` and explicit provenance.
 
-- [ ] **Step 1: Separate candidate discovery records from verified records**
+- [x] **Step 1: Separate candidate discovery records from verified records**
 
 Require discovery records to remain `unverified_candidate` until an authoritative source has been checked. Do not allow a search snippet, aggregator match, or model memory to set a verified state.
 
-- [ ] **Step 2: Add closed provenance fields**
+- [x] **Step 2: Add closed provenance fields**
 
 Require:
 
@@ -227,15 +227,15 @@ verification:
 
 Permit `recommendation_eligible: true` only for `verified_primary`, `verified_registry`, and conditionally `verified_preprint`. Keep `partial` supplemental and block the three unresolved states.
 
-- [ ] **Step 3: Define deterministic deduplication order**
+- [x] **Step 3: Define deterministic deduplication order**
 
 Apply normalized DOI first, then exact official alternate identifier, then normalized title plus first author for candidate review. Never merge records when work type or version relation remains unresolved.
 
-- [ ] **Step 4: Add an explicit real-evidence limitation**
+- [x] **Step 4: Add an explicit real-evidence limitation**
 
 State that structural validation can check fields and gates but cannot prove DOI existence. Require a current authoritative lookup for every real recommendation.
 
-- [ ] **Step 5: Validate and commit**
+- [x] **Step 5: Validate and commit**
 
 Run the standard Skill validator, then:
 
@@ -257,11 +257,11 @@ Expected: the reference validates and no unrelated file is staged.
 - Consumes: verified candidate pool, selected round-one IDs, and natural-language user feedback.
 - Produces: eight-paper round-one view, a visible `FeedbackDelta`, a changed second-round `SearchPlan`, and five-to-six-paper round-two view.
 
-- [ ] **Step 1: Freeze round-one selection behavior**
+- [x] **Step 1: Freeze round-one selection behavior**
 
 Select three direct-problem, two method, two transfer/bridge, and one counter/limitation paper when eligible evidence exists. Record a missing role as an evidence gap instead of filling the slot with a weaker paper.
 
-- [ ] **Step 2: Make map semantics machine-checkable**
+- [x] **Step 2: Make map semantics machine-checkable**
 
 Add these required fields:
 
@@ -279,7 +279,7 @@ paper_map:
 
 Require `text_fallback` to preserve the same IDs, roles, relation labels, verification states, and basis levels as Mermaid.
 
-- [ ] **Step 3: Define the feedback delta**
+- [x] **Step 3: Define the feedback delta**
 
 Use:
 
@@ -305,11 +305,11 @@ feedback_delta:
 
 Require at least one `query_changes` entry whenever rejection reasons, new constraints, or a reset materially affect the search.
 
-- [ ] **Step 4: Define second-round dispositions**
+- [x] **Step 4: Define second-round dispositions**
 
 Return five to six papers by default and attach exactly one disposition to each round-one selection: `retained`, `replaced`, `downgraded`, or `removed`. Give a reason and point to the feedback or new evidence that caused it. Expand to at most ten only after an explicit user request.
 
-- [ ] **Step 5: Validate and commit**
+- [x] **Step 5: Validate and commit**
 
 Run the standard Skill validator, then:
 
@@ -330,7 +330,7 @@ Expected: only M1 reference files are committed.
 - Consumes: a UTF-8 JSON file following `schema_version: m1.1`.
 - Produces: one closed JSON result with status `valid`, `evidence_incomplete`, or `invalid`; exit codes `0`, `2`, and `1` respectively.
 
-- [ ] **Step 1: Write unit tests for the three result classes**
+- [x] **Step 1: Write unit tests for the three result classes**
 
 Create fixture builders that use `fixture_mode: true` and internal IDs such as `fixture:P01`. Do not attach DOI, PMID, arXiv ID, or `verified_primary` claims to synthetic records.
 
@@ -398,7 +398,7 @@ class ValidateM1BundleTests(unittest.TestCase):
 
 Define `make_complete_fixture_bundle()` in the same test file. Generate 15 candidate records with IDs `fixture:P01` through `fixture:P15`, `verification_status: fixture_only`, `recommendation_eligible: true`, and `basis_level: abstract_level`. Select eight IDs in round one and six in round two, set both maps to `node_size_basis: user_fit`, and include one rejection reason plus one matching query change. The validator may accept `fixture_only` only when `fixture_mode: true`.
 
-- [ ] **Step 2: Run tests to verify the validator is absent**
+- [x] **Step 2: Run tests to verify the validator is absent**
 
 Run:
 
@@ -408,7 +408,7 @@ python -m unittest discover -s tests -p "test_validate_m1_bundle.py" -v
 
 Expected: FAIL because `validate_m1_bundle` cannot be imported.
 
-- [ ] **Step 3: Implement the validator with no network access**
+- [x] **Step 3: Implement the validator with no network access**
 
 Expose:
 
@@ -441,7 +441,7 @@ Implement these closed checks:
 - treat `fixture_duplicate_doi_tokens` as test-only normalization inputs and never as citation records;
 - never make a network request or claim that structural checks verified a real identifier.
 
-- [ ] **Step 4: Run unit and CLI tests**
+- [x] **Step 4: Run unit and CLI tests**
 
 Run:
 
@@ -451,7 +451,7 @@ python -m unittest discover -s tests -p "test_validate_m1_bundle.py" -v
 
 Expected: all validator unit tests pass.
 
-- [ ] **Step 5: Commit the validator**
+- [x] **Step 5: Commit the validator**
 
 Run:
 
@@ -476,7 +476,7 @@ Expected: deterministic validator and tests only.
 - Consumes: validator interface from Task 5.
 - Produces: reproducible offline evidence for structural and gating behavior only.
 
-- [ ] **Step 1: Declare fixture provenance**
+- [x] **Step 1: Declare fixture provenance**
 
 Set `fixture_mode: true`, use only `fixture:` IDs, omit real citation identifiers, and include:
 
@@ -488,11 +488,11 @@ Set `fixture_mode: true`, use only `fixture:` IDs, omit real citation identifier
 }
 ```
 
-- [ ] **Step 2: Encode each named failure independently**
+- [x] **Step 2: Encode each named failure independently**
 
 Make every failing fixture differ from `valid-complete.json` by one targeted corruption. Record its expected status and exact error code in `adversarial-cases.json`.
 
-- [ ] **Step 3: Execute all fixtures and preserve results**
+- [x] **Step 3: Execute all fixtures and preserve results**
 
 Run every fixture separately with:
 
@@ -506,7 +506,7 @@ python skills/engineering-research-copilot/scripts/validate_m1_bundle.py evals/m
 
 Expect `valid`, `invalid`, `invalid`, `invalid`, and `evidence_incomplete` in the order listed above. Do not convert `evidence_incomplete` to pass.
 
-- [ ] **Step 4: Commit fixture evidence**
+- [x] **Step 4: Commit fixture evidence**
 
 Run:
 
@@ -528,7 +528,7 @@ Expected: only M1 evaluation artifacts are committed.
 - Consumes: the completed Skill, host-provided scholarly/web tools, and fresh context.
 - Produces: provenance-separated real-search evidence or an explicit failed/not-run record.
 
-- [ ] **Step 1: Freeze three prompts before execution**
+- [x] **Step 1: Freeze three prompts before execution**
 
 Include:
 
@@ -538,23 +538,25 @@ Include:
 
 Do not include expected paper titles or the desired answer in the prompts.
 
-- [ ] **Step 2: Obtain explicit authorization for fresh-context execution**
+- [x] **Step 2: Obtain explicit authorization for fresh-context execution**
 
 Use a new user-authorized subagent or task. Pass only the Skill path and one frozen prompt. Do not leak intended fixes, expected papers, or validator conclusions.
 
-- [ ] **Step 3: Run round one and record provenance**
+- [x] **Step 3: Run round one and record provenance**
 
 Require current authoritative metadata checks, 15–20 verified/deduplicated candidates or an explicit `evidence_incomplete` result, an eight-paper view when evidence permits, Mermaid plus text fallback, exact citation index, and basis labels.
 
-- [ ] **Step 4: Supply frozen feedback and run round two**
+- [x] **Step 4: Supply frozen feedback and run round two**
 
 Require a visible feedback delta, a materially changed query plan, five-to-six recommendations, and dispositions for round-one papers.
 
-- [ ] **Step 5: Record pass, fail, or not run without repair-by-relabeling**
+- [x] **Step 5: Record pass, fail, or not run without repair-by-relabeling**
+
+Initial failed forward attempts remain preserved in `evals/m1/results/2026-08-04-forward-audit.md` and Git. Accepted reruns and their machine artifacts are named and hash-bound in `evals/m1/results/2026-08-04-m1.2-final-validation.md`; Case B remains `evidence_incomplete`, and Case C validates only the blocking gate.
 
 For every case, record timestamp, tools/sources used, round counts, blocked citations, unresolved conflicts, output basis levels, validator result, and deviations. A search or registry outage remains `not_run` or `evidence_incomplete`.
 
-- [ ] **Step 6: Commit forward-test evidence**
+- [x] **Step 6: Commit forward-test evidence**
 
 Run:
 
@@ -574,7 +576,7 @@ Expected: prompts, immutable result records, and status evidence only.
 - Consumes: standard validator, offline unit tests, adversarial fixture results, and fresh-context real-search results.
 - Produces: M1 `COMPLETE` or an honest `IN_PROGRESS`/`BLOCKED` status with later milestones untouched.
 
-- [ ] **Step 1: Run all local gates**
+- [x] **Step 1: Run all local gates**
 
 Run:
 
@@ -585,13 +587,13 @@ python -m unittest discover -s tests -p "test_validate_m1_bundle.py" -v
 
 Expected: `Skill is valid!` and all M1 unit tests pass.
 
-- [ ] **Step 2: Check router links, line count, and placeholders**
+- [x] **Step 2: Check router links, line count, and placeholders**
 
 Run a deterministic local check that every `references/*.md` link in `SKILL.md` exists, `SKILL.md` is below 500 lines, and no unresolved template marker remains inside the installable Skill.
 
 Expected: zero missing references, root length below 500, zero placeholders.
 
-- [ ] **Step 3: Audit acceptance evidence**
+- [x] **Step 3: Audit acceptance evidence**
 
 Require evidence for:
 
@@ -602,11 +604,11 @@ Require evidence for:
 - five-to-six second-round papers or an honest incomplete result;
 - no M2 route generation before user direction confirmation.
 
-- [ ] **Step 4: Update status without overstating completion**
+- [x] **Step 4: Update status without overstating completion**
 
 Set M1 to `COMPLETE` only if every required offline and real forward-test gate passes. Otherwise leave M1 `IN_PROGRESS` and list the failed or not-run gate; keep M2–M5 `NOT_STARTED`.
 
-- [ ] **Step 5: Review exact final scope**
+- [x] **Step 5: Review exact final scope**
 
 Run:
 

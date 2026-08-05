@@ -1150,11 +1150,11 @@ Record command, exit, test count, fixture summary, A/B/C artifact hashes and sta
 
 Steps 1–2 produce a pre-push local acceptance checkpoint, not the final closure claim. Bind the record to the clean executable-input HEAD rather than inventing a self-referential checkpoint commit hash. Stage only `evals/m1/results/2026-08-04-m1.2-final-validation.md`, `STATUS.md`, and this plan, then commit them as `docs: record M1.2 local acceptance`. Step 3 and every later remote/closure step remain open.
 
-- [ ] **Step 3: Obtain authorization before remote mutation**
+- [x] **Step 3: Obtain authorization before remote mutation**
 
 If the user has not explicitly requested a push for this hardening branch, stop with M1.1 `IN_PROGRESS` and ask for push authorization. Do not infer authorization from the earlier M1 branch push.
 
-- [ ] **Step 4: Push and require exact-HEAD CI**
+- [x] **Step 4: Push and require exact-HEAD CI**
 
 After authorization:
 
@@ -1165,7 +1165,7 @@ gh run list --branch codex/m1-acceptance-hardening --workflow "M1 Validation" --
 
 Wait for the run whose `headSha` equals local `git rev-parse HEAD`. Require conclusion `success`; a run on another SHA does not satisfy the gate.
 
-- [ ] **Step 5: Update status only after the CI gate**
+- [x] **Step 5: Update status only after the CI gate**
 
 Set:
 
@@ -1190,7 +1190,7 @@ Validated by:
 
 Keep M2–M5 `NOT_STARTED`.
 
-- [ ] **Step 6: Mark executed plan items and commit closure**
+- [x] **Step 6: Mark executed plan items and commit closure**
 
 Mark only actually executed checkboxes. Under forward tests record that initial failures remain preserved and accepted reruns/artifacts are named in the final record.
 

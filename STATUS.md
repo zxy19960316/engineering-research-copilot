@@ -2,29 +2,36 @@
 
 ## Active milestone
 
-`M1.1 — M1 acceptance hardening`
+`M1 — Two-round paper calibration and evidence map`
 
-Status: `IN_PROGRESS`
+Status: `COMPLETE`
 
-M1 feature implementation and the M1.1 local acceptance-hardening gates are complete, but final M1.2 acceptance remains open pending authorized publication and exact-HEAD remote CI.
+Acceptance revision: `m1.2`
 
-Blocking items:
+Validated by:
 
-- user authorization to push `codex/m1-acceptance-hardening`;
-- a successful GitHub Actions `M1 Validation` run on the final exact hardening HEAD.
+- clean local validation with 108 passing tests;
+- successful first-round exact-HEAD GitHub Actions run `30965919907` on `2842b6bc99f48ea17561b67a97205e271a370e4d`;
+- complete two-round machine-valid Case A;
+- second-round `evidence_incomplete` machine-valid Case B;
+- citation-conflict blocking gate Case C;
+- DOI and alternate-ID identity tests;
+- round-one and round-two terminal-state tests.
 
-Local acceptance checkpoint:
+Acceptance evidence:
 
-- validated executable-input HEAD: `e234e90364ace4aa203716575ab37a0130b4d322`;
+- pre-push executable-input HEAD: `e234e90364ace4aa203716575ab37a0130b4d322`;
+- first remote-CI input HEAD: `2842b6bc99f48ea17561b67a97205e271a370e4d`;
+- GitHub Actions workflow/job: `M1 Validation` run `30965919907`, job `92179712580`, conclusion `success`;
 - Python compilation: exit `0`;
 - unit tests: 108 passed;
 - frozen fixture replay: `valid`, zero mismatches;
 - machine artifacts: Case A `valid`, Case B `evidence_incomplete`, Case C blocking gate `valid`, zero mismatches;
 - standard Skill validator: exit `0`, `Skill is valid!`;
 - root Skill: 106 lines;
-- local checkpoint record: `evals/m1/results/2026-08-04-m1.2-final-validation.md`.
+- closure record: `evals/m1/results/2026-08-04-m1.2-final-validation.md`.
 
-This local checkpoint does not claim a push, a remote CI result, or M1.1/M1.2 completion.
+The closure commit changes only status, plans, and this validation record. Its SHA cannot be embedded in itself and still requires a second exact-HEAD `M1 Validation` run; any failure must reopen M1 in a new commit. This completion does not claim that Case B became complete or that Case C's citation conflict was resolved.
 
 ## M1 checklist
 
