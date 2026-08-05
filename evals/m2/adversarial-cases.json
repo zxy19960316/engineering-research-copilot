@@ -6,6 +6,7 @@
     {"fixture": "valid-confirmed.json", "expected_status": "valid", "expected_errors": []},
     {"fixture": "hard-gate-score-override.json", "expected_status": "invalid", "expected_errors": ["failed_hard_gate_has_scorecard", "failed_hard_gate_ranked", "incomplete_portfolio_marked_provisional"]},
     {"fixture": "speculative-formal-main.json", "expected_status": "invalid", "expected_errors": ["invalid_tier_for_formal_position"]},
+    {"fixture": "tier-language-mismatch.json", "expected_status": "invalid", "expected_errors": ["evidence_tier_language_mismatch"]},
     {"fixture": "blocked-m1-citation.json", "expected_status": "invalid", "expected_errors": ["blocked_m1_candidate"]},
     {"fixture": "missing-supporting-id.json", "expected_status": "invalid", "expected_errors": ["unknown_m1_candidate_id"]},
     {"fixture": "route-before-confirmation.json", "expected_status": "invalid", "expected_errors": ["route_output_before_user_confirmation"]},

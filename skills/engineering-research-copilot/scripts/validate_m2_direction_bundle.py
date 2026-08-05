@@ -41,6 +41,7 @@ DIRECTION_FIELDS = {
     "position",
     "title",
     "evidence_tier",
+    "claim_language",
     "axis_changes",
     "hard_gates",
     "transfer_case",
@@ -75,7 +76,9 @@ HARD_GATES = {
     "target_problem_evidence",
     "data_availability",
     "falsifiability",
-    "feasibility_and_governance",
+    "resource_feasibility",
+    "time_feasibility",
+    "safety_ethics_compliance",
     "m1_citation_integrity",
 }
 TRANSFER_FIELDS = {
@@ -132,6 +135,7 @@ HIGH_RISK_FIELDS = {
     "direction_id",
     "title",
     "evidence_tier",
+    "claim_language",
     "supporting_candidate_ids",
     "unknowns",
     "recommendation_status",
@@ -172,6 +176,12 @@ ROUTE_FIELDS = {
 ROUTE_TEXT_FIELDS = {"selected_direction_id", "hypothesis", "minimum_meaningful_improvement"}
 ROUTE_LIST_FIELDS = ROUTE_FIELDS - ROUTE_TEXT_FIELDS - {"evidence_chain"}
 EVIDENCE_CHAIN_FIELDS = {"design", "data", "analysis", "result", "claim"}
+TIER_LANGUAGE = {
+    "established-in-target": "Direct evidence supports applicability",
+    "transfer-supported": "Recommended for priority validation",
+    "mechanism-plausible": "Divergent exploration suggestion",
+    "speculative": "High-uncertainty idea",
+}
 ELIGIBLE_M1_STATES = {"verified_primary", "verified_registry", "verified_preprint"}
 BLOCKED_M1_STATES = {"partial", "conflicted", "not_found", "manual_needed"}
 PROHIBITED_PRECONFIRMATION_KEYS = {
@@ -648,6 +658,8 @@ def _validate_direction(
     }
     if tier not in allowed_tiers.get(position, set()):
         result.error("invalid_tier_for_formal_position")
+    if direction.get("claim_language") != TIER_LANGUAGE.get(tier):
+        result.error("evidence_tier_language_mismatch")
     confidence = direction.get("confidence")
     if confidence not in CONFIDENCE_LEVELS:
         result.error("invalid_direction_confidence")
@@ -722,6 +734,8 @@ def _validate_high_risk_ideas(
         if not _nonempty_text(idea.get("title")):
             valid = False
         if idea.get("evidence_tier") != "speculative":
+            valid = False
+        if idea.get("claim_language") != TIER_LANGUAGE["speculative"]:
             valid = False
         if idea.get("recommendation_status") != "unranked_high_risk":
             valid = False

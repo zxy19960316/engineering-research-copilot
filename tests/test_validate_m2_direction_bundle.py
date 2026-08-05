@@ -50,7 +50,9 @@ def _hard_gates() -> list[dict]:
         "target_problem_evidence": ["fixture:P01"],
         "data_availability": [],
         "falsifiability": [],
-        "feasibility_and_governance": [],
+        "resource_feasibility": [],
+        "time_feasibility": [],
+        "safety_ethics_compliance": [],
         "m1_citation_integrity": ["fixture:P01", "fixture:P04", "fixture:P09"],
     }
     return [
@@ -112,6 +114,11 @@ def _direction(
         "position": position,
         "title": title,
         "evidence_tier": tier,
+        "claim_language": {
+            "established-in-target": "Direct evidence supports applicability",
+            "transfer-supported": "Recommended for priority validation",
+            "mechanism-plausible": "Divergent exploration suggestion",
+        }[tier],
         "axis_changes": axis_changes,
         "hard_gates": _hard_gates(),
         "transfer_case": {
@@ -337,6 +344,15 @@ class ValidateM2DirectionBundleTests(unittest.TestCase):
         bundle["direction_portfolio"]["directions"][0]["confidence"] = "high"
         self.assertIn("transfer_supported_confidence_too_high", validate_bundle(bundle)["errors"])
 
+    def test_evidence_tier_is_bound_to_exact_allowed_language(self):
+        bundle = make_valid_m2_bundle()
+        bundle["direction_portfolio"]["directions"][0][
+            "claim_language"
+        ] = "Established and ready to deploy"
+        self.assertIn(
+            "evidence_tier_language_mismatch", validate_bundle(bundle)["errors"]
+        )
+
     def test_formal_positions_and_ids_are_unique_and_closed(self):
         bundle = make_valid_m2_bundle()
         bundle["direction_portfolio"]["directions"][1]["direction_id"] = "D1"
@@ -401,6 +417,7 @@ class ValidateM2DirectionBundleTests(unittest.TestCase):
             "direction_id": "H1",
             "title": "Fixture high-risk idea",
             "evidence_tier": "transfer-supported",
+            "claim_language": "Recommended for priority validation",
             "supporting_candidate_ids": ["fixture:P01"],
             "unknowns": ["Everything important"],
             "recommendation_status": "provisional",

@@ -1676,6 +1676,7 @@
         "position": "provisional_main",
         "title": "Offline fixture main direction",
         "evidence_tier": "transfer-supported",
+        "claim_language": "Recommended for priority validation",
         "axis_changes": [],
         "hard_gates": [
           {
@@ -1704,10 +1705,24 @@
             "blockers": []
           },
           {
-            "gate_id": "feasibility_and_governance",
+            "gate_id": "resource_feasibility",
             "status": "pass",
             "evidence_candidate_ids": [],
-            "rationale": "Offline contract rationale for feasibility_and_governance",
+            "rationale": "Offline contract rationale for resource_feasibility",
+            "blockers": []
+          },
+          {
+            "gate_id": "time_feasibility",
+            "status": "pass",
+            "evidence_candidate_ids": [],
+            "rationale": "Offline contract rationale for time_feasibility",
+            "blockers": []
+          },
+          {
+            "gate_id": "safety_ethics_compliance",
+            "status": "pass",
+            "evidence_candidate_ids": [],
+            "rationale": "Offline contract rationale for safety_ethics_compliance",
             "blockers": []
           },
           {
@@ -1934,6 +1949,7 @@
         "position": "adjacent_alternative",
         "title": "Offline fixture adjacent direction",
         "evidence_tier": "established-in-target",
+        "claim_language": "Direct evidence supports applicability",
         "axis_changes": [
           {
             "axis": "method",
@@ -1966,10 +1982,24 @@
             "blockers": []
           },
           {
-            "gate_id": "feasibility_and_governance",
+            "gate_id": "resource_feasibility",
             "status": "pass",
             "evidence_candidate_ids": [],
-            "rationale": "Offline contract rationale for feasibility_and_governance",
+            "rationale": "Offline contract rationale for resource_feasibility",
+            "blockers": []
+          },
+          {
+            "gate_id": "time_feasibility",
+            "status": "pass",
+            "evidence_candidate_ids": [],
+            "rationale": "Offline contract rationale for time_feasibility",
+            "blockers": []
+          },
+          {
+            "gate_id": "safety_ethics_compliance",
+            "status": "pass",
+            "evidence_candidate_ids": [],
+            "rationale": "Offline contract rationale for safety_ethics_compliance",
             "blockers": []
           },
           {
@@ -2196,6 +2226,7 @@
         "position": "transfer_exploration",
         "title": "Offline fixture transfer direction",
         "evidence_tier": "mechanism-plausible",
+        "claim_language": "Divergent exploration suggestion",
         "axis_changes": [
           {
             "axis": "method",
@@ -2233,10 +2264,24 @@
             "blockers": []
           },
           {
-            "gate_id": "feasibility_and_governance",
+            "gate_id": "resource_feasibility",
             "status": "pass",
             "evidence_candidate_ids": [],
-            "rationale": "Offline contract rationale for feasibility_and_governance",
+            "rationale": "Offline contract rationale for resource_feasibility",
+            "blockers": []
+          },
+          {
+            "gate_id": "time_feasibility",
+            "status": "pass",
+            "evidence_candidate_ids": [],
+            "rationale": "Offline contract rationale for time_feasibility",
+            "blockers": []
+          },
+          {
+            "gate_id": "safety_ethics_compliance",
+            "status": "pass",
+            "evidence_candidate_ids": [],
+            "rationale": "Offline contract rationale for safety_ethics_compliance",
             "blockers": []
           },
           {

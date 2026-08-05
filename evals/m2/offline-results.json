@@ -48,7 +48,21 @@
       ],
       "actual_status": "invalid",
       "actual_errors": [
-        "invalid_tier_for_formal_position"
+        "invalid_tier_for_formal_position",
+        "evidence_tier_language_mismatch"
+      ],
+      "actual_evidence_gaps": [],
+      "matched": true
+    },
+    {
+      "fixture": "tier-language-mismatch.json",
+      "expected_status": "invalid",
+      "expected_errors": [
+        "evidence_tier_language_mismatch"
+      ],
+      "actual_status": "invalid",
+      "actual_errors": [
+        "evidence_tier_language_mismatch"
       ],
       "actual_evidence_gaps": [],
       "matched": true

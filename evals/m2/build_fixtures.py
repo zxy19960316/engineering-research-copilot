@@ -37,7 +37,9 @@ def _hard_gates() -> list[dict]:
         "target_problem_evidence": ["fixture:P01"],
         "data_availability": [],
         "falsifiability": [],
-        "feasibility_and_governance": [],
+        "resource_feasibility": [],
+        "time_feasibility": [],
+        "safety_ethics_compliance": [],
         "m1_citation_integrity": ["fixture:P01", "fixture:P04", "fixture:P09"],
     }
     return [
@@ -84,6 +86,11 @@ def _direction(
         "position": position,
         "title": title,
         "evidence_tier": tier,
+        "claim_language": {
+            "established-in-target": "Direct evidence supports applicability",
+            "transfer-supported": "Recommended for priority validation",
+            "mechanism-plausible": "Divergent exploration suggestion",
+        }[tier],
         "axis_changes": axis_changes,
         "hard_gates": _hard_gates(),
         "transfer_case": {
@@ -246,6 +253,12 @@ def build_cases() -> dict[str, dict]:
     speculative = copy.deepcopy(cases["valid-waiting"])
     speculative["direction_portfolio"]["directions"][0]["evidence_tier"] = "speculative"
     cases["speculative-formal-main"] = speculative
+
+    language = copy.deepcopy(cases["valid-waiting"])
+    language["direction_portfolio"]["directions"][0][
+        "claim_language"
+    ] = "Established and ready to deploy"
+    cases["tier-language-mismatch"] = language
 
     blocked = copy.deepcopy(cases["valid-waiting"])
     candidate = blocked["source_m1_bundle"]["round2"]["candidate_pool"][14]

@@ -1676,7 +1676,7 @@
         "position": "provisional_main",
         "title": "Offline fixture main direction",
         "evidence_tier": "transfer-supported",
-        "claim_language": "Recommended for priority validation",
+        "claim_language": "Established and ready to deploy",
         "axis_changes": [],
         "hard_gates": [
           {
@@ -2506,81 +2506,15 @@
     "portfolio_status": "provisional"
   },
   "direction_decision": {
-    "selected_direction_id": "D1",
-    "status": "user_confirmed",
+    "selected_direction_id": null,
+    "status": "waiting_for_user_confirmation",
     "permitted_next_actions": [
+      "confirm",
       "modify",
-      "reject",
-      "generate_route"
+      "reject"
     ]
   },
-  "route_output": {
-    "selected_direction_id": "D1",
-    "hypothesis": "Confirmed offline fixture hypothesis",
-    "baselines": [
-      "Fixture baseline"
-    ],
-    "controls": [
-      "Fixture control"
-    ],
-    "sequence": [
-      "Run the bounded fixture sequence"
-    ],
-    "inputs": [
-      "Fixture input"
-    ],
-    "outputs": [
-      "Fixture output"
-    ],
-    "controlled_variables": [
-      "Fixture controlled variable"
-    ],
-    "confounders": [
-      "Fixture confounder"
-    ],
-    "primary_metrics": [
-      "Fixture primary metric"
-    ],
-    "secondary_metrics": [
-      "Fixture secondary metric"
-    ],
-    "minimum_meaningful_improvement": "At least 0.1 fixture ratio",
-    "uncertainty_checks": [
-      "Fixture uncertainty check"
-    ],
-    "sensitivity_checks": [
-      "Fixture sensitivity check"
-    ],
-    "validity_checks": [
-      "Fixture validity check"
-    ],
-    "go_conditions": [
-      "Fixture success threshold passes"
-    ],
-    "stop_conditions": [
-      "Fixture stop threshold passes"
-    ],
-    "pivot_conditions": [
-      "Fixture pivot threshold passes"
-    ],
-    "evidence_chain": {
-      "design": [
-        "Fixture design evidence"
-      ],
-      "data": [
-        "Fixture data evidence"
-      ],
-      "analysis": [
-        "Fixture analysis evidence"
-      ],
-      "result": [
-        "Fixture result evidence"
-      ],
-      "claim": [
-        "Fixture claim boundary"
-      ]
-    }
-  },
+  "route_output": null,
   "fixture_mode": true,
   "evidence_class": "offline_contract_fixture",
   "proves": [

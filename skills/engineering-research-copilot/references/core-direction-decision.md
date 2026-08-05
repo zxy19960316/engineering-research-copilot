@@ -88,6 +88,7 @@ direction_id: "D1"
 position: "provisional_main"
 title: ""
 evidence_tier: "transfer-supported"
+claim_language: "Recommended for priority validation"
 axis_changes: []
 hard_gates: []
 transfer_case: {}
@@ -102,7 +103,7 @@ recommendation_status: "provisional"
 
 Assign a unique non-empty direction ID and title. Require at least one recommendation-eligible supporting M1 candidate and one recommendation-eligible counter or limitation candidate for every formal direction. Keep the system recommendation `provisional` even when all hard gates pass.
 
-Optionally add at most two high-risk ideas under `high_risk_ideas`. Use exactly `direction_id`, `title`, `evidence_tier`, `supporting_candidate_ids`, `unknowns`, and `recommendation_status`. Require `evidence_tier: speculative` and `recommendation_status: unranked_high_risk`; never include a high-risk idea in formal scores or positions.
+Optionally add at most two high-risk ideas under `high_risk_ideas`. Use exactly `direction_id`, `title`, `evidence_tier`, `claim_language`, `supporting_candidate_ids`, `unknowns`, and `recommendation_status`. Require `evidence_tier: speculative`, `claim_language: High-uncertainty idea`, and `recommendation_status: unranked_high_risk`; never include a high-risk idea in formal scores or positions.
 
 Set `portfolio_status` to `provisional` only when all three formal directions pass their hard gates and are eligible for comparison. Set it to `evidence_incomplete` when any formal direction fails a hard gate; do not disguise the stop by omitting the failed direction or promoting a high-risk idea.
 
@@ -113,7 +114,9 @@ Require exactly these hard gates for every formal direction:
 - `target_problem_evidence`;
 - `data_availability`;
 - `falsifiability`;
-- `feasibility_and_governance`;
+- `resource_feasibility`;
+- `time_feasibility`;
+- `safety_ethics_compliance`;
 - `m1_citation_integrity`.
 
 Use this exact gate shape:
@@ -132,7 +135,7 @@ When any gate fails, require `scorecard: null` and `recommendation_status: exclu
 
 ## Assign transfer-evidence tiers
 
-Use only this closed evidence-tier set and bind claims to the allowed language:
+Use only this closed evidence-tier set. Copy the exact allowed phrase into `claim_language`; do not paraphrase it into stronger wording:
 
 | Tier | Required basis | Allowed language and position |
 |---|---|---|
