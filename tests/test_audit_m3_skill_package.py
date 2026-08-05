@@ -134,6 +134,37 @@ class M3SkillPackageAuditTests(unittest.TestCase):
         self.assertIn("unlinked_reference", result["errors"])
         self.assertNotIn("dangling_reference_link", result["errors"])
 
+    def test_four_space_nested_list_link_after_blank_is_rendered(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            package = self._make_package(
+                Path(temp_dir),
+                "---\n"
+                "name: engineering-research-copilot\n"
+                "description: \"test package\"\n"
+                "---\n\n"
+                "- Outer\n\n"
+                "    - [Reference](references/reference.md)\n",
+            )
+            result = audit_package(package)
+        self.assertEqual("valid", result["status"])
+        self.assertEqual(1, result["direct_link_count"])
+
+    def test_six_space_code_inside_list_does_not_render_link(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            package = self._make_package(
+                Path(temp_dir),
+                "---\n"
+                "name: engineering-research-copilot\n"
+                "description: \"test package\"\n"
+                "---\n\n"
+                "- Outer\n\n"
+                "      [Reference](references/reference.md)\n",
+            )
+            result = audit_package(package)
+        self.assertEqual(0, result["direct_link_count"])
+        self.assertIn("unlinked_reference", result["errors"])
+        self.assertNotIn("dangling_reference_link", result["errors"])
+
     def test_dangling_and_unlinked_direct_links_are_rejected(self):
         with tempfile.TemporaryDirectory() as temp_dir:
             package = self._make_package(
