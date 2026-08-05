@@ -20,6 +20,11 @@ if _TEST_SPEC is None or _TEST_SPEC.loader is None:
 _TEST_MODULE = importlib.util.module_from_spec(_TEST_SPEC)
 _TEST_SPEC.loader.exec_module(_TEST_MODULE)
 _nuclear_overlay = _TEST_MODULE._nuclear_overlay
+_make_production_m3_bundle = _TEST_MODULE._make_production_m3_bundle
+_set_ledger_candidate = _TEST_MODULE._set_ledger_candidate
+make_ledger_candidate_verified_preprint = (
+    _TEST_MODULE.make_ledger_candidate_verified_preprint
+)
 _refresh_m3_hashes = _TEST_MODULE._refresh_m3_hashes
 _refresh_m3_hashes_for_nonconfirmed = (
     _TEST_MODULE._refresh_m3_hashes_for_nonconfirmed
@@ -118,6 +123,26 @@ EXPECTED_RESULTS: dict[str, dict[str, object]] = {
     "nuclear-transfer-overclaim": {
         "status": "invalid",
         "errors": ["nuclear_overlay_transfer_status_not_hypothesis"],
+        "evidence_gaps": [],
+    },
+    "preprint-only-general-safety": {
+        "status": "invalid",
+        "errors": ["safety_support_requires_non_preprint_source"],
+        "evidence_gaps": [],
+    },
+    "negative-minimum-resource": {
+        "status": "invalid",
+        "errors": ["invalid_minimum_resource_required_value"],
+        "evidence_gaps": [],
+    },
+    "card-condition-outside-primary-metrics": {
+        "status": "invalid",
+        "errors": ["method_card_condition_metric_not_primary"],
+        "evidence_gaps": [],
+    },
+    "card-primary-metric-claim-mismatch": {
+        "status": "invalid",
+        "errors": ["method_card_primary_metric_claim_type_mismatch"],
         "evidence_gaps": [],
     },
 }
@@ -231,6 +256,39 @@ def build_cases() -> dict[str, dict]:
     overlay["transfer_status"] = "validated"
     transfer_overclaim["domain_overlays"] = [overlay]
     cases["nuclear-transfer-overclaim"] = transfer_overclaim
+
+    preprint_only_safety = _make_production_m3_bundle()
+    safety_card = preprint_only_safety["method_cards"][0]
+    safety_card["method_family"] = "reliability_safety_risk"
+    safety_row = safety_card["source_ledger"][0]
+    _set_ledger_candidate(
+        safety_row,
+        preprint_only_safety["source_m2_bundle"]["source_m1_bundle"],
+        "contract:P02",
+    )
+    safety_row["support_types"] = ["safety"]
+    make_ledger_candidate_verified_preprint(preprint_only_safety, "contract:P02")
+    cases["preprint-only-general-safety"] = preprint_only_safety
+
+    negative_resource = make_valid_m3_bundle()
+    negative_resource["method_cards"][0]["minimum_resources"][0][
+        "required_value"
+    ] = -1
+    cases["negative-minimum-resource"] = negative_resource
+
+    condition_outside_primary = make_valid_m3_bundle()
+    condition_card = condition_outside_primary["method_cards"][0]
+    condition_card["primary_metrics"] = ["M-PRED"]
+    condition_card["pivot_conditions"][0]["metric_id"] = "M-UQ"
+    cases["card-condition-outside-primary-metrics"] = condition_outside_primary
+
+    claim_mismatch = make_valid_m3_bundle()
+    mismatch_card = claim_mismatch["method_cards"][0]
+    mismatch_card["applicability"]["supported_claim_types"] = [
+        "predictive_performance"
+    ]
+    mismatch_card["primary_metrics"] = ["M-PRED", "M-UQ"]
+    cases["card-primary-metric-claim-mismatch"] = claim_mismatch
 
     if set(cases) != set(EXPECTED_RESULTS):
         raise ValueError("fixture_case_manifest_mismatch")

@@ -146,6 +146,42 @@
       "expected_evidence_gaps": [],
       "expected_status": "invalid",
       "fixture": "nuclear-transfer-overclaim.json"
+    },
+    {
+      "case_id": "preprint-only-general-safety",
+      "expected_errors": [
+        "safety_support_requires_non_preprint_source"
+      ],
+      "expected_evidence_gaps": [],
+      "expected_status": "invalid",
+      "fixture": "preprint-only-general-safety.json"
+    },
+    {
+      "case_id": "negative-minimum-resource",
+      "expected_errors": [
+        "invalid_minimum_resource_required_value"
+      ],
+      "expected_evidence_gaps": [],
+      "expected_status": "invalid",
+      "fixture": "negative-minimum-resource.json"
+    },
+    {
+      "case_id": "card-condition-outside-primary-metrics",
+      "expected_errors": [
+        "method_card_condition_metric_not_primary"
+      ],
+      "expected_evidence_gaps": [],
+      "expected_status": "invalid",
+      "fixture": "card-condition-outside-primary-metrics.json"
+    },
+    {
+      "case_id": "card-primary-metric-claim-mismatch",
+      "expected_errors": [
+        "method_card_primary_metric_claim_type_mismatch"
+      ],
+      "expected_evidence_gaps": [],
+      "expected_status": "invalid",
+      "fixture": "card-primary-metric-claim-mismatch.json"
     }
   ],
   "evidence_class": "offline_contract_fixture",

@@ -230,6 +230,62 @@
       "expected_status": "invalid",
       "fixture": "nuclear-transfer-overclaim.json",
       "matched": true
+    },
+    {
+      "actual_errors": [
+        "safety_support_requires_non_preprint_source"
+      ],
+      "actual_evidence_gaps": [],
+      "actual_status": "invalid",
+      "expected_errors": [
+        "safety_support_requires_non_preprint_source"
+      ],
+      "expected_evidence_gaps": [],
+      "expected_status": "invalid",
+      "fixture": "preprint-only-general-safety.json",
+      "matched": true
+    },
+    {
+      "actual_errors": [
+        "invalid_minimum_resource_required_value"
+      ],
+      "actual_evidence_gaps": [],
+      "actual_status": "invalid",
+      "expected_errors": [
+        "invalid_minimum_resource_required_value"
+      ],
+      "expected_evidence_gaps": [],
+      "expected_status": "invalid",
+      "fixture": "negative-minimum-resource.json",
+      "matched": true
+    },
+    {
+      "actual_errors": [
+        "method_card_condition_metric_not_primary"
+      ],
+      "actual_evidence_gaps": [],
+      "actual_status": "invalid",
+      "expected_errors": [
+        "method_card_condition_metric_not_primary"
+      ],
+      "expected_evidence_gaps": [],
+      "expected_status": "invalid",
+      "fixture": "card-condition-outside-primary-metrics.json",
+      "matched": true
+    },
+    {
+      "actual_errors": [
+        "method_card_primary_metric_claim_type_mismatch"
+      ],
+      "actual_evidence_gaps": [],
+      "actual_status": "invalid",
+      "expected_errors": [
+        "method_card_primary_metric_claim_type_mismatch"
+      ],
+      "expected_evidence_gaps": [],
+      "expected_status": "invalid",
+      "fixture": "card-primary-metric-claim-mismatch.json",
+      "matched": true
     }
   ],
   "does_not_prove": [
