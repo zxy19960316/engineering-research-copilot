@@ -1,4 +1,4 @@
-name: M1 and M2.1.1 Validation
+name: M1, M2.1.1, and M3.1 Validation
 
 on:
   push:
@@ -26,7 +26,10 @@ jobs:
             evals/m1/replay_machine_artifacts.py \
             evals/m2/build_fixtures.py \
             evals/m2/build_forward_case_f.py \
-            evals/m2/replay_offline_results.py
+            evals/m2/replay_offline_results.py \
+            skills/engineering-research-copilot/scripts/validate_m3_method_bundle.py \
+            evals/m3/build_fixtures.py \
+            evals/m3/replay_offline_results.py
       - name: Unit tests
         run: python -m unittest discover -s tests -p "test_*.py" -v
       - name: Replay fixtures
@@ -39,6 +42,12 @@ jobs:
         run: git diff --exit-code -- evals/m2/adversarial-cases.json evals/m2/fixtures
       - name: Replay M2.1.1 frozen fixtures
         run: python evals/m2/replay_offline_results.py
+      - name: Generate M3.1 fixtures
+        run: python evals/m3/build_fixtures.py
+      - name: Require M3.1 fixture regeneration diff to be empty
+        run: git diff --exit-code -- evals/m3/adversarial-cases.json evals/m3/fixtures
+      - name: Replay M3.1 frozen fixtures
+        run: python evals/m3/replay_offline_results.py
       - name: Repository package audit (not the standard Skill validator)
         shell: python
         run: |
