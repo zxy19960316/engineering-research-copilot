@@ -1,0 +1,221 @@
+{
+  "schema_version": "m3.1-forward-acceptance-r2",
+  "status": "not_accepted",
+  "m3_status": "IN_PROGRESS",
+  "m4_status": "NOT_STARTED",
+  "cases": [
+    {
+      "case_id": "m3-f01",
+      "input_path": "evals/m3/forward-inputs-r2/m3-f01-bounded-confirmed.bundle.json",
+      "input_raw_sha256": "b0c47b0135d9a2340eb37cd3bb661fff7f4c9bee8738676c4b0976dd6796d091",
+      "prompt_path": "evals/m3/results/forward-r2/prompts/m3-f01.prompt.txt",
+      "prompt_sha256": "c3ea62697d44efab6f3d6f625bdaee86d3a320362dc234eb353b82ecf4263bf3",
+      "output_path": "evals/m3/results/forward-r2/m3-f01.output.json",
+      "output_raw_sha256": "b91eca002c7afb274b5b608f65b186b5a1b1e45de4c3848a796f9bb5740ed030",
+      "validation_path": "evals/m3/results/forward-r2/m3-f01.validation.json",
+      "validation_raw_sha256": "54aad1f7ebc027e8016883d053769bd575150716524e657c6628c891b4fff87c",
+      "context_path": "evals/m3/results/forward-r2/m3-f01.context.md",
+      "expected_status": "valid",
+      "expected_errors": [],
+      "expected_evidence_gaps": [],
+      "observed_status": "invalid",
+      "observed_errors": [
+        "unreadable_or_invalid_json"
+      ],
+      "observed_evidence_gaps": [],
+      "finalization_count": 1,
+      "validator_invocation_count": 1,
+      "loaded_references": [
+        "skills/engineering-research-copilot/SKILL.md",
+        "skills/engineering-research-copilot/references/core-method-coaching.md",
+        "skills/engineering-research-copilot/references/method-data-ml-hybrid.md",
+        "evals/m3/forward-inputs-r2/m3-f01-bounded-confirmed.bundle.json",
+        "evals/m3/results/forward-r2/prompts/m3-f01.prompt.txt"
+      ],
+      "side_effects": [],
+      "deviations": [],
+      "limitations": [
+        "The one-time validator exited with code 1 and emitted no standard output; the failure receipt is preserved in validation_sha256."
+      ],
+      "accepted": false
+    },
+    {
+      "case_id": "m3-f02",
+      "input_path": "evals/m3/forward-inputs-r2/m3-f02-route-compatible.bundle.json",
+      "input_raw_sha256": "8db4db7f9173a8d10598af49e8ffd83dca12e34692c2827ec47031a30ab49da1",
+      "prompt_path": "evals/m3/results/forward-r2/prompts/m3-f02.prompt.txt",
+      "prompt_sha256": "4d1130edd2b13fba1e18175868ead064d6690b7f0738200f5765edc52b0d5058",
+      "output_path": "evals/m3/results/forward-r2/m3-f02.output.json",
+      "output_raw_sha256": "b9e4a212269d4891b19f9018c0904d4503adf299a549825db6ace585b5d5c6b1",
+      "validation_path": "evals/m3/results/forward-r2/m3-f02.validation.json",
+      "validation_raw_sha256": "62fb2db969cf694b58e07e5ec938e593da0f3e23c0e18c392b72c1920c4234ae",
+      "context_path": "evals/m3/results/forward-r2/m3-f02.context.md",
+      "expected_status": "valid",
+      "expected_errors": [],
+      "expected_evidence_gaps": [],
+      "observed_status": "valid",
+      "observed_errors": [],
+      "observed_evidence_gaps": [],
+      "finalization_count": 1,
+      "validator_invocation_count": 1,
+      "loaded_references": [
+        "skills/engineering-research-copilot/SKILL.md",
+        "skills/engineering-research-copilot/references/core-method-coaching.md",
+        "skills/engineering-research-copilot/references/method-data-ml-hybrid.md",
+        "skills/engineering-research-copilot/references/domain-nuclear-ml.md",
+        "evals/m3/forward-inputs-r2/m3-f02-route-compatible.bundle.json",
+        "evals/m3/results/forward-r2/prompts/m3-f02.prompt.txt"
+      ],
+      "side_effects": [],
+      "deviations": [],
+      "limitations": [
+        "Validation is deterministic offline contract evidence only; no route step, experiment, simulation, training, inference, download, network, service, deployment, or empirical claim was performed."
+      ],
+      "accepted": true
+    },
+    {
+      "case_id": "m3-f03",
+      "input_path": "evals/m3/forward-inputs-r2/m3-f03-approved-change.bundle.json",
+      "input_raw_sha256": "eb20714de4ef2b6897e69a20169d29c4f38e6f9587d0091994dad6e3e8daafe4",
+      "prompt_path": "evals/m3/results/forward-r2/prompts/m3-f03.prompt.txt",
+      "prompt_sha256": "09119efd8f092005e0fb866a737fdabece8d6426ded7d5e91ffe40970641dd8f",
+      "output_path": "evals/m3/results/forward-r2/m3-f03.output.json",
+      "output_raw_sha256": "b5ea79afd6b11b8caad94e18e397dcc571d74138a5ad53d735cd215c625a0e51",
+      "validation_path": "evals/m3/results/forward-r2/m3-f03.validation.json",
+      "validation_raw_sha256": "c47995d417952457f4259aefcca0005c8e1390c18ef713ed359695521c04aec4",
+      "context_path": "evals/m3/results/forward-r2/m3-f03.context.md",
+      "expected_status": "invalid",
+      "expected_errors": [
+        "unsupported_approved_constraint_change_provenance"
+      ],
+      "expected_evidence_gaps": [],
+      "observed_status": "invalid",
+      "observed_errors": [
+        "invalid_m3_bundle",
+        "invalid_source_m2_bundle",
+        "unknown_m3_bundle_fields"
+      ],
+      "observed_evidence_gaps": [],
+      "finalization_count": 1,
+      "validator_invocation_count": 1,
+      "loaded_references": [
+        "skills/engineering-research-copilot/SKILL.md",
+        "skills/engineering-research-copilot/references/core-method-coaching.md",
+        "evals/m3/forward-inputs-r2/m3-f03-approved-change.bundle.json",
+        "evals/m3/results/forward-r2/prompts/m3-f03.prompt.txt"
+      ],
+      "side_effects": [],
+      "deviations": [],
+      "limitations": [
+        "One-shot validator exited with code 1 and produced no standard output; the failure receipt is preserved."
+      ],
+      "accepted": false
+    },
+    {
+      "case_id": "m3-f04",
+      "input_path": null,
+      "input_raw_sha256": null,
+      "prompt_path": "evals/m3/results/forward-r2/prompts/m3-f04.prompt.txt",
+      "prompt_sha256": "1da44184c86b7834ecbe6eb2fb66946df905ccff7313f60f69b3991c88bd2c7c",
+      "output_path": null,
+      "output_raw_sha256": null,
+      "validation_path": null,
+      "validation_raw_sha256": null,
+      "context_path": "evals/m3/results/forward-r2/m3-f04.not-run.md",
+      "expected_status": "valid",
+      "expected_errors": [],
+      "expected_evidence_gaps": [],
+      "observed_status": "NOT_RUN",
+      "observed_errors": [],
+      "observed_evidence_gaps": [],
+      "finalization_count": 0,
+      "validator_invocation_count": 0,
+      "loaded_references": [],
+      "side_effects": [],
+      "deviations": [],
+      "limitations": [],
+      "accepted": false
+    },
+    {
+      "case_id": "m3-f05",
+      "input_path": "evals/m3/forward-inputs-r2/m3-f05-nuclear-ml.bundle.json",
+      "input_raw_sha256": "ff0a68409b50123d800c895ab0e8d6ee46374549cc9ffc7e490d7db89b126377",
+      "prompt_path": "evals/m3/results/forward-r2/prompts/m3-f05.prompt.txt",
+      "prompt_sha256": "ae9b319fec3db5f47e729c1990ceb3f53fa83fb3f1c9966562d95685f2fd29f6",
+      "output_path": null,
+      "output_raw_sha256": null,
+      "validation_path": "evals/m3/results/forward-r2/m3-f05.validation.json",
+      "validation_raw_sha256": "54aad1f7ebc027e8016883d053769bd575150716524e657c6628c891b4fff87c",
+      "context_path": "evals/m3/results/forward-r2/m3-f05.context.md",
+      "expected_status": "valid",
+      "expected_errors": [],
+      "expected_evidence_gaps": [],
+      "observed_status": "invalid",
+      "observed_errors": [
+        "unreadable_or_invalid_json"
+      ],
+      "observed_evidence_gaps": [],
+      "finalization_count": 1,
+      "validator_invocation_count": 1,
+      "loaded_references": [
+        "skills/engineering-research-copilot/SKILL.md",
+        "skills/engineering-research-copilot/references/core-method-coaching.md",
+        "skills/engineering-research-copilot/references/method-data-ml-hybrid.md",
+        "skills/engineering-research-copilot/references/domain-nuclear-ml.md",
+        "evals/m3/forward-inputs-r2/m3-f05-nuclear-ml.bundle.json",
+        "evals/m3/results/forward-r2/prompts/m3-f05.prompt.txt"
+      ],
+      "side_effects": [],
+      "deviations": [],
+      "limitations": [
+        "The immutable input bundle was not valid JSON because source_message_excerpt lacked a closing quote; no input file modification was made.",
+        "The one finalization attempt did not save m3-f05.output.json.",
+        "The single validator invocation exited with code 1 and produced no captured validation hash."
+      ],
+      "accepted": false
+    }
+  ],
+  "preserved_previous_results": [
+    {
+      "path": "evals/m3/results/forward/m3-f02.output.json",
+      "raw_sha256": "3e2be914cb9b59c0517cda8fd83afa1aaa513138e2f190920a940bb0197879ae"
+    },
+    {
+      "path": "evals/m3/results/forward/m3-f02.validation.json",
+      "raw_sha256": "65322e848d1844829d5ffba661a35454915e4553f4cbcc02da3dffb0eddeca03"
+    },
+    {
+      "path": "evals/m3/results/forward/m3-f02.context.md",
+      "raw_sha256": "94e0d8911f7e685b7acbb3019de5a8305652ed342cff29830994a005b4fd826b"
+    },
+    {
+      "path": "evals/m3/results/forward/m3-f03.output.json",
+      "raw_sha256": "b1c959020fe2335d1e61180248eb29688bf2e6646ce39588579dc410ed506bc4"
+    },
+    {
+      "path": "evals/m3/results/forward/m3-f03.validation.json",
+      "raw_sha256": "e175a6a45523676982e5925f71932ebf4eb727f79d3cff72e1e6a99f33f9c6d7"
+    },
+    {
+      "path": "evals/m3/results/forward/m3-f03.context.md",
+      "raw_sha256": "114bf8400ef4c114a43c9b74ceaf3d3a9a2f39496d0d776ad67b8ba2409137ae"
+    },
+    {
+      "path": "evals/m3/results/forward/m3-f05.output.json",
+      "raw_sha256": "686ea1c2c1b5e8188fa6ad7bac5205986ad32621e05fad3581bf9472a351c0f8"
+    },
+    {
+      "path": "evals/m3/results/forward/m3-f05.validation.json",
+      "raw_sha256": "65322e848d1844829d5ffba661a35454915e4553f4cbcc02da3dffb0eddeca03"
+    },
+    {
+      "path": "evals/m3/results/forward/m3-f05.context.md",
+      "raw_sha256": "35e6954ff6d6e35743a86200450a148aa7a0c7714554b77087f6c3a9fc24fe1f"
+    }
+  ],
+  "notes": [
+    "This record freezes observed fresh-context outcomes and is not a closure claim.",
+    "F01, F03, and F05 retain one-shot validator failures; F04 is NOT_RUN because its upstream non-nuclear M1/M2 prerequisite is absent.",
+    "Only F02 matched its closure expectation. No case was repaired or retried."
+  ]
+}
