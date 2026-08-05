@@ -41,15 +41,16 @@ def evaluate(manifest_path: Path) -> dict:
             }
         )
     return {
-        "schema_version": "m2.1-offline-results",
+        "schema_version": "m2.1.1-offline-results",
         "evidence_class": "offline_contract_fixture",
         "cases": cases,
         "all_matched": all(case["matched"] for case in cases),
         "proves": [
-            "M2 source lineage, hard-gate, evidence-tier, portfolio, decisive-test, and confirmation-gate contracts"
+            "M2.1.1 source lineage, confirmation provenance, route binding, claim coverage, preprint, precondition, axis, scorecard, and bounded-test contracts"
         ],
         "does_not_prove": [
             "Real citation existence or metadata accuracy",
+            "Host-system user identity",
             "Real research-direction merit",
             "Target-domain transfer success",
             "Execution of any experiment, simulation, training, download, deployment, or large-resource route",

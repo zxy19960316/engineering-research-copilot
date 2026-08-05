@@ -1675,7 +1675,7 @@
         "direction_id": "D1",
         "position": "provisional_main",
         "title": "Fixture main direction",
-        "evidence_tier": "speculative",
+        "evidence_tier": "transfer-supported",
         "claim_language": "Recommended for priority validation",
         "axis_profile": {
           "problem": "fixture problem A",
@@ -1712,7 +1712,7 @@
               {
                 "metric_id": "M-UQ",
                 "metric": "Fixture calibration error",
-                "metric_role": "uncertainty_quality",
+                "metric_role": "predictive_performance",
                 "unit": "ratio"
               }
             ]

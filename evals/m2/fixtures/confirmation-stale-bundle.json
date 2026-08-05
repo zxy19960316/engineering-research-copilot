@@ -1675,7 +1675,7 @@
         "direction_id": "D1",
         "position": "provisional_main",
         "title": "Fixture main direction",
-        "evidence_tier": "speculative",
+        "evidence_tier": "transfer-supported",
         "claim_language": "Recommended for priority validation",
         "axis_profile": {
           "problem": "fixture problem A",
@@ -2783,16 +2783,174 @@
     "portfolio_status": "provisional"
   },
   "direction_decision": {
-    "selected_direction_id": null,
-    "status": "waiting_for_user_confirmation",
+    "selected_direction_id": "D1",
+    "status": "user_confirmed",
     "permitted_next_actions": [
-      "confirm",
       "modify",
-      "reject"
+      "reject",
+      "generate_route"
     ],
-    "confirmation_event": null
+    "confirmation_event": {
+      "actor_role": "user",
+      "selected_direction_id": "D1",
+      "source_message_id": "message:confirm-d1",
+      "source_message_excerpt": "I explicitly confirm formal direction D1.",
+      "source_message_sha256": "c88483205cf2070ba1c6a84af9eaa88d0c46a56940b86d422fce817f998cc844",
+      "previous_bundle_hash": "0000000000000000000000000000000000000000000000000000000000000000"
+    }
   },
-  "route_output": null,
+  "route_output": {
+    "selected_direction_id": "D1",
+    "source_direction_hash": "bcd962b7ab923c7d994e233a88df812addd1bf1110a9bb4a5010010e69fd7582",
+    "confirmation_event_hash": "08a17a113610703f41270281d6d05a65e21eed6879d372aac359ef1d615a187e",
+    "source_bundle_hash": "3dcedecafe90866b96a7ef1d6f2665f335522129a217b56664ff4ea52ef94dd8",
+    "hypothesis": "Confirmed fixture hypothesis",
+    "baselines": [
+      "Fixture baseline"
+    ],
+    "controls": [
+      "Fixture control"
+    ],
+    "sequence": [
+      "Run the bounded fixture sequence"
+    ],
+    "inputs": [
+      "Fixture input"
+    ],
+    "outputs": [
+      "Fixture output"
+    ],
+    "controlled_variables": [
+      "Fixture controlled variable"
+    ],
+    "confounders": [
+      "Fixture confounder"
+    ],
+    "primary_metrics": [
+      "M-PRED",
+      "M-UQ"
+    ],
+    "secondary_metrics": [
+      "M-COST"
+    ],
+    "minimum_meaningful_improvement": "At least 0.1 fixture ratio",
+    "uncertainty_checks": [
+      "Fixture uncertainty check"
+    ],
+    "sensitivity_checks": [
+      "Fixture sensitivity check"
+    ],
+    "validity_checks": [
+      "Fixture validity check"
+    ],
+    "go_conditions": [
+      {
+        "criterion_type": "success",
+        "metric_id": "M-PRED",
+        "operator": ">=",
+        "value": 0.8,
+        "unit": "ratio"
+      },
+      {
+        "criterion_type": "success",
+        "metric_id": "M-UQ",
+        "operator": ">=",
+        "value": 0.8,
+        "unit": "ratio"
+      }
+    ],
+    "stop_conditions": [
+      {
+        "criterion_type": "stop",
+        "metric_id": "M-COST",
+        "operator": ">",
+        "value": 2,
+        "unit": "hours"
+      }
+    ],
+    "pivot_conditions": [
+      {
+        "criterion_type": "pivot",
+        "metric_id": "M-PRED",
+        "operator": "<",
+        "value": 0.6,
+        "unit": "ratio"
+      }
+    ],
+    "route_traceability": [
+      {
+        "claim_id": "C-PRED",
+        "route_metric_ids": [
+          "M-PRED"
+        ],
+        "source_precondition_ids": [],
+        "route_condition_types": [
+          "go",
+          "stop",
+          "pivot"
+        ]
+      },
+      {
+        "claim_id": "C-UQ",
+        "route_metric_ids": [
+          "M-UQ"
+        ],
+        "source_precondition_ids": [],
+        "route_condition_types": [
+          "go",
+          "stop",
+          "pivot"
+        ]
+      }
+    ],
+    "source_test_mapping": [
+      {
+        "claim_id": "C-PRED",
+        "minimum_test_metric_ids": [
+          "M-PRED"
+        ],
+        "route_metric_ids": [
+          "M-PRED"
+        ]
+      },
+      {
+        "claim_id": "C-UQ",
+        "minimum_test_metric_ids": [
+          "M-UQ"
+        ],
+        "route_metric_ids": [
+          "M-UQ"
+        ]
+      }
+    ],
+    "inherited_constraints": [
+      {
+        "constraint_id": "R-CPU-HOURS",
+        "resource": "CPU time",
+        "operator": "<=",
+        "value": 2,
+        "unit": "hours"
+      }
+    ],
+    "approved_constraint_changes": [],
+    "evidence_chain": {
+      "design": [
+        "Fixture design evidence"
+      ],
+      "data": [
+        "Fixture data evidence"
+      ],
+      "analysis": [
+        "Fixture analysis evidence"
+      ],
+      "result": [
+        "Fixture result evidence"
+      ],
+      "claim": [
+        "Fixture claim boundary"
+      ]
+    }
+  },
   "fixture_mode": true,
   "evidence_class": "offline_contract_fixture",
   "proves": [

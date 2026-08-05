@@ -1675,7 +1675,7 @@
         "direction_id": "D1",
         "position": "provisional_main",
         "title": "Fixture main direction",
-        "evidence_tier": "speculative",
+        "evidence_tier": "transfer-supported",
         "claim_language": "Recommended for priority validation",
         "axis_profile": {
           "problem": "fixture problem A",
@@ -1984,22 +1984,6 @@
                 {
                   "criterion_type": "success",
                   "metric_id": "M-PRED",
-                  "operator": ">=",
-                  "value": 0.8,
-                  "unit": "ratio"
-                }
-              ],
-              "required_precondition_ids": []
-            },
-            {
-              "claim_id": "C-UQ",
-              "metric_ids": [
-                "M-UQ"
-              ],
-              "decision_criteria": [
-                {
-                  "criterion_type": "success",
-                  "metric_id": "M-UQ",
                   "operator": ">=",
                   "value": 0.8,
                   "unit": "ratio"

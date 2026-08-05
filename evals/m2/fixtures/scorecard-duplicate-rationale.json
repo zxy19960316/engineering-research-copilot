@@ -1675,7 +1675,7 @@
         "direction_id": "D1",
         "position": "provisional_main",
         "title": "Fixture main direction",
-        "evidence_tier": "speculative",
+        "evidence_tier": "transfer-supported",
         "claim_language": "Recommended for priority validation",
         "axis_profile": {
           "problem": "fixture problem A",
@@ -1830,13 +1830,13 @@
               "evidence_candidate_ids": [
                 "fixture:P01"
               ],
-              "evidence": "Offline fixture evidence specific to engineering_value",
+              "evidence": "Same evidence",
               "confidence": "medium",
               "unknowns": [
-                "Real engineering_value merit was not evaluated"
+                "Same unknown"
               ],
               "change_triggers": [
-                "Target-domain engineering_value evidence"
+                "Same trigger"
               ]
             },
             {
@@ -1846,13 +1846,13 @@
               "evidence_candidate_ids": [
                 "fixture:P01"
               ],
-              "evidence": "Offline fixture evidence specific to gap_and_evidence_quality",
+              "evidence": "Same evidence",
               "confidence": "medium",
               "unknowns": [
-                "Real gap_and_evidence_quality merit was not evaluated"
+                "Same unknown"
               ],
               "change_triggers": [
-                "Target-domain gap_and_evidence_quality evidence"
+                "Same trigger"
               ]
             },
             {
@@ -1862,13 +1862,13 @@
               "evidence_candidate_ids": [
                 "fixture:P01"
               ],
-              "evidence": "Offline fixture evidence specific to data_and_resource_fit",
+              "evidence": "Same evidence",
               "confidence": "medium",
               "unknowns": [
-                "Real data_and_resource_fit merit was not evaluated"
+                "Same unknown"
               ],
               "change_triggers": [
-                "Target-domain data_and_resource_fit evidence"
+                "Same trigger"
               ]
             },
             {
@@ -1878,13 +1878,13 @@
               "evidence_candidate_ids": [
                 "fixture:P01"
               ],
-              "evidence": "Offline fixture evidence specific to validation_and_falsifiability",
+              "evidence": "Same evidence",
               "confidence": "medium",
               "unknowns": [
-                "Real validation_and_falsifiability merit was not evaluated"
+                "Same unknown"
               ],
               "change_triggers": [
-                "Target-domain validation_and_falsifiability evidence"
+                "Same trigger"
               ]
             },
             {
@@ -1894,13 +1894,13 @@
               "evidence_candidate_ids": [
                 "fixture:P01"
               ],
-              "evidence": "Offline fixture evidence specific to method_maturity",
+              "evidence": "Same evidence",
               "confidence": "medium",
               "unknowns": [
-                "Real method_maturity merit was not evaluated"
+                "Same unknown"
               ],
               "change_triggers": [
-                "Target-domain method_maturity evidence"
+                "Same trigger"
               ]
             },
             {
@@ -1910,13 +1910,13 @@
               "evidence_candidate_ids": [
                 "fixture:P01"
               ],
-              "evidence": "Offline fixture evidence specific to time_to_decisive_signal",
+              "evidence": "Same evidence",
               "confidence": "medium",
               "unknowns": [
-                "Real time_to_decisive_signal merit was not evaluated"
+                "Same unknown"
               ],
               "change_triggers": [
-                "Target-domain time_to_decisive_signal evidence"
+                "Same trigger"
               ]
             },
             {
@@ -1926,13 +1926,13 @@
               "evidence_candidate_ids": [
                 "fixture:P01"
               ],
-              "evidence": "Offline fixture evidence specific to interdisciplinary_interface_quality",
+              "evidence": "Same evidence",
               "confidence": "medium",
               "unknowns": [
-                "Real interdisciplinary_interface_quality merit was not evaluated"
+                "Same unknown"
               ],
               "change_triggers": [
-                "Target-domain interdisciplinary_interface_quality evidence"
+                "Same trigger"
               ]
             },
             {
@@ -1942,13 +1942,13 @@
               "evidence_candidate_ids": [
                 "fixture:P01"
               ],
-              "evidence": "Offline fixture evidence specific to safety_ethics_compliance",
+              "evidence": "Same evidence",
               "confidence": "medium",
               "unknowns": [
-                "Real safety_ethics_compliance merit was not evaluated"
+                "Same unknown"
               ],
               "change_triggers": [
-                "Target-domain safety_ethics_compliance evidence"
+                "Same trigger"
               ]
             }
           ],

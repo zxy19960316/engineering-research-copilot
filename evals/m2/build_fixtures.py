@@ -1,247 +1,61 @@
 #!/usr/bin/env python3
-"""Build deterministic offline-only M2 adversarial fixture bundles."""
+"""Build deterministic offline-only M2.1.1 adversarial fixtures and manifest."""
 
 from __future__ import annotations
 
 import copy
+import hashlib
 import json
 import sys
 from pathlib import Path
 
 
-REPO_ROOT = Path(__file__).resolve().parents[2]
-SCRIPTS_DIR = REPO_ROOT / "skills" / "engineering-research-copilot" / "scripts"
-sys.path.insert(0, str(SCRIPTS_DIR))
+M2_DIR = Path(__file__).resolve().parent
+REPO_ROOT = M2_DIR.parents[1]
+sys.path.insert(0, str(REPO_ROOT))
 
+from tests.test_validate_m2_direction_bundle import (  # noqa: E402
+    _confirm_bundle,
+    _refresh_hash,
+    _route_output,
+    _set_nonconfirmed_decision,
+    make_valid_m2_bundle,
+)
 from validate_m2_direction_bundle import canonical_sha256  # noqa: E402
 
 
-DIMENSION_WEIGHTS = {
-    "engineering_value": 15,
-    "gap_and_evidence_quality": 15,
-    "data_and_resource_fit": 20,
-    "validation_and_falsifiability": 15,
-    "method_maturity": 10,
-    "time_to_decisive_signal": 10,
-    "interdisciplinary_interface_quality": 10,
-    "safety_ethics_compliance": 5,
-}
-
-
-def _threshold(metric: str, operator: str, value: float, unit: str) -> dict:
-    return {"metric": metric, "operator": operator, "value": value, "unit": unit}
-
-
-def _hard_gates() -> list[dict]:
-    evidence = {
-        "target_problem_evidence": ["fixture:P01"],
-        "data_availability": [],
-        "falsifiability": [],
-        "resource_feasibility": [],
-        "time_feasibility": [],
-        "safety_ethics_compliance": [],
-        "m1_citation_integrity": ["fixture:P01", "fixture:P04", "fixture:P09"],
-    }
-    return [
-        {
-            "gate_id": gate_id,
-            "status": "pass",
-            "evidence_candidate_ids": candidate_ids,
-            "rationale": f"Offline contract rationale for {gate_id}",
-            "blockers": [],
-        }
-        for gate_id, candidate_ids in evidence.items()
-    ]
-
-
-def _scorecard(score: int) -> dict:
-    return {
-        "dimensions": [
-            {
-                "dimension": dimension,
-                "weight": weight,
-                "score": score,
-                "evidence_candidate_ids": ["fixture:P01"],
-                "evidence": "Offline contract score evidence",
-                "confidence": "medium",
-                "unknowns": ["Real direction merit was not evaluated"],
-                "change_triggers": ["Target-domain decisive evidence"],
-            }
-            for dimension, weight in DIMENSION_WEIGHTS.items()
-        ],
-        "weighted_total": float(score * 20),
-    }
-
-
-def _direction(
-    direction_id: str,
-    position: str,
-    title: str,
-    tier: str,
-    score: int,
-    axis_changes: list[dict],
-) -> dict:
-    return {
-        "direction_id": direction_id,
-        "position": position,
-        "title": title,
-        "evidence_tier": tier,
-        "claim_language": {
-            "established-in-target": "Direct evidence supports applicability",
-            "transfer-supported": "Recommended for priority validation",
-            "mechanism-plausible": "Divergent exploration suggestion",
-        }[tier],
-        "axis_changes": axis_changes,
-        "hard_gates": _hard_gates(),
-        "transfer_case": {
-            "target_problem_evidence": ["fixture:P01"],
-            "source_success_evidence": ["fixture:P04"],
-            "transfer_compatibility": {
-                "concepts": ["fixture concept mapping"],
-                "units": ["fixture unit mapping"],
-                "scales": ["fixture scale mapping"],
-                "boundary_conditions": ["fixture boundary mapping"],
-                "assumptions": ["fixture assumption mapping"],
-            },
-            "anti_transfer_factors": ["Fixture domain shift"],
-        },
-        "scorecard": _scorecard(score),
-        "minimum_decisive_test": {
-            "hypothesis": "The candidate method beats the fixture baseline",
-            "inputs": ["Frozen fixture input"],
-            "baseline": "Frozen fixture baseline",
-            "steps": ["Compare one bounded candidate against the baseline"],
-            "primary_metric": "fixture_score",
-            "success_threshold": _threshold("fixture_score", ">=", 0.8, "ratio"),
-            "stop_condition": _threshold("fixture_cost", ">", 10.0, "fixture_units"),
-            "pivot_condition": _threshold("fixture_score", "<", 0.6, "ratio"),
-            "expected_time": "One offline fixture pass",
-            "required_resources": ["Offline fixture data"],
-        },
-        "supporting_candidate_ids": ["fixture:P01", "fixture:P04"],
-        "counter_candidate_ids": ["fixture:P09"],
-        "unknowns": ["Real-world transfer remains untested"],
-        "confidence": "medium" if tier == "transfer-supported" else "low",
-        "recommendation_status": "provisional",
-    }
-
-
-def _route_output() -> dict:
-    return {
-        "selected_direction_id": "D1",
-        "hypothesis": "Confirmed offline fixture hypothesis",
-        "baselines": ["Fixture baseline"],
-        "controls": ["Fixture control"],
-        "sequence": ["Run the bounded fixture sequence"],
-        "inputs": ["Fixture input"],
-        "outputs": ["Fixture output"],
-        "controlled_variables": ["Fixture controlled variable"],
-        "confounders": ["Fixture confounder"],
-        "primary_metrics": ["Fixture primary metric"],
-        "secondary_metrics": ["Fixture secondary metric"],
-        "minimum_meaningful_improvement": "At least 0.1 fixture ratio",
-        "uncertainty_checks": ["Fixture uncertainty check"],
-        "sensitivity_checks": ["Fixture sensitivity check"],
-        "validity_checks": ["Fixture validity check"],
-        "go_conditions": ["Fixture success threshold passes"],
-        "stop_conditions": ["Fixture stop threshold passes"],
-        "pivot_conditions": ["Fixture pivot threshold passes"],
-        "evidence_chain": {
-            "design": ["Fixture design evidence"],
-            "data": ["Fixture data evidence"],
-            "analysis": ["Fixture analysis evidence"],
-            "result": ["Fixture result evidence"],
-            "claim": ["Fixture claim boundary"],
-        },
-    }
-
-
-def valid_waiting_bundle() -> dict:
+def _frozen_waiting_bundle() -> dict:
+    bundle = make_valid_m2_bundle()
     source_path = REPO_ROOT / "evals" / "m1" / "fixtures" / "valid-complete.json"
-    source = json.loads(source_path.read_text(encoding="utf-8"))
-    return {
-        "source_m1_bundle": source,
-        "direction_portfolio": {
-            "schema_version": "m2.1",
-            "source_m1_terminal_state": "M1_COMPLETE",
-            "source_m1_bundle_hash": canonical_sha256(source),
-            "brief_version": 2,
-            "branch_id": "branch-a",
-            "directions": [
-                _direction(
-                    "D1",
-                    "provisional_main",
-                    "Offline fixture main direction",
-                    "transfer-supported",
-                    4,
-                    [],
-                ),
-                _direction(
-                    "D2",
-                    "adjacent_alternative",
-                    "Offline fixture adjacent direction",
-                    "established-in-target",
-                    3,
-                    [
-                        {
-                            "axis": "method",
-                            "from": "fixture method A",
-                            "to": "fixture method B",
-                        }
-                    ],
-                ),
-                _direction(
-                    "D3",
-                    "transfer_exploration",
-                    "Offline fixture transfer direction",
-                    "mechanism-plausible",
-                    2,
-                    [
-                        {
-                            "axis": "method",
-                            "from": "fixture method A",
-                            "to": "fixture method C",
-                        },
-                        {
-                            "axis": "data",
-                            "from": "fixture data A",
-                            "to": "fixture data B",
-                        },
-                    ],
-                ),
-            ],
-            "high_risk_ideas": [],
-            "portfolio_status": "provisional",
-        },
-        "direction_decision": {
-            "selected_direction_id": None,
-            "status": "waiting_for_user_confirmation",
-            "permitted_next_actions": ["confirm", "modify", "reject"],
-        },
-        "route_output": None,
-        "fixture_mode": True,
-        "evidence_class": "offline_contract_fixture",
-        "proves": ["M2 structural contract and gate behavior"],
-        "does_not_prove": [
-            "Real citation accuracy",
-            "Real direction merit",
-            "Target-domain transfer success",
-            "Executed route feasibility",
-        ],
-    }
+    bundle["source_m1_bundle"] = json.loads(source_path.read_text(encoding="utf-8"))
+    _refresh_hash(bundle)
+    bundle["proves"] = ["M2.1.1 offline structural contract behavior"]
+    bundle["does_not_prove"] = [
+        "Real citation existence or metadata accuracy",
+        "Host-system user identity",
+        "Real direction merit or target-domain transfer success",
+        "Execution of any experiment, simulation, training, download, deployment, or route",
+    ]
+    return bundle
+
+
+def _confirmed_route_bundle() -> dict:
+    bundle = _frozen_waiting_bundle()
+    _confirm_bundle(bundle)
+    bundle["route_output"] = _route_output(bundle)
+    return bundle
+
+
+def _mark_preprint(candidate: dict) -> None:
+    candidate["verification_status"] = "verified_preprint"
+    candidate["verified_record"]["verification"]["status"] = "verified_preprint"
 
 
 def build_cases() -> dict[str, dict]:
-    cases: dict[str, dict] = {"valid-waiting": valid_waiting_bundle()}
-
-    confirmed = copy.deepcopy(cases["valid-waiting"])
-    confirmed["direction_decision"] = {
-        "selected_direction_id": "D1",
-        "status": "user_confirmed",
-        "permitted_next_actions": ["modify", "reject", "generate_route"],
+    cases: dict[str, dict] = {
+        "valid-waiting": _frozen_waiting_bundle(),
+        "valid-confirmed": _confirmed_route_bundle(),
     }
-    confirmed["route_output"] = _route_output()
-    cases["valid-confirmed"] = confirmed
 
     hard_gate = copy.deepcopy(cases["valid-waiting"])
     main = hard_gate["direction_portfolio"]["directions"][0]
@@ -255,9 +69,9 @@ def build_cases() -> dict[str, dict]:
     cases["speculative-formal-main"] = speculative
 
     language = copy.deepcopy(cases["valid-waiting"])
-    language["direction_portfolio"]["directions"][0][
-        "claim_language"
-    ] = "Established and ready to deploy"
+    language["direction_portfolio"]["directions"][0]["claim_language"] = (
+        "Established and ready to deploy"
+    )
     cases["tier-language-mismatch"] = language
 
     blocked = copy.deepcopy(cases["valid-waiting"])
@@ -270,9 +84,7 @@ def build_cases() -> dict[str, dict]:
     blocked["direction_portfolio"]["directions"][0]["supporting_candidate_ids"] = [
         "fixture:P15"
     ]
-    blocked["direction_portfolio"]["source_m1_bundle_hash"] = canonical_sha256(
-        blocked["source_m1_bundle"]
-    )
+    _refresh_hash(blocked)
     cases["blocked-m1-citation"] = blocked
 
     missing = copy.deepcopy(cases["valid-waiting"])
@@ -281,9 +93,9 @@ def build_cases() -> dict[str, dict]:
     ]
     cases["missing-supporting-id"] = missing
 
-    route = copy.deepcopy(cases["valid-waiting"])
-    route["route_output"] = _route_output()
-    cases["route-before-confirmation"] = route
+    route_before = _confirmed_route_bundle()
+    _set_nonconfirmed_decision(route_before, "waiting_for_user_confirmation")
+    cases["route-before-confirmation"] = route_before
 
     renamed = copy.deepcopy(cases["valid-waiting"])
     renamed["direction_portfolio"]["directions"][1]["axis_changes"] = []
@@ -297,29 +109,250 @@ def build_cases() -> dict[str, dict]:
 
     decisive = copy.deepcopy(cases["valid-waiting"])
     decisive["direction_portfolio"]["directions"][0]["minimum_decisive_test"][
-        "success_threshold"
-    ] = "meaningful improvement"
+        "claim_coverage"
+    ][0]["decision_criteria"] = "meaningful improvement"
     cases["vague-decisive-test"] = decisive
 
     incomplete = copy.deepcopy(cases["valid-waiting"])
     incomplete["source_m1_bundle"]["terminal_state"] = "WAITING_FOR_EVIDENCE_DECISION"
     incomplete["source_m1_bundle"]["outcome"] = "evidence_incomplete"
-    incomplete["direction_portfolio"]["source_m1_bundle_hash"] = canonical_sha256(
-        incomplete["source_m1_bundle"]
-    )
+    _refresh_hash(incomplete)
     cases["m1-evidence-incomplete-upgrade"] = incomplete
+
+    missing_event = copy.deepcopy(cases["valid-waiting"])
+    missing_event["direction_decision"] = {
+        "selected_direction_id": "D1",
+        "status": "user_confirmed",
+        "permitted_next_actions": ["modify", "reject", "generate_route"],
+        "confirmation_event": None,
+    }
+    cases["confirmation-missing-event"] = missing_event
+
+    non_user = copy.deepcopy(cases["valid-confirmed"])
+    non_user["direction_decision"]["confirmation_event"]["actor_role"] = "assistant"
+    cases["confirmation-non-user"] = non_user
+
+    mismatch = copy.deepcopy(cases["valid-confirmed"])
+    mismatch["direction_decision"]["confirmation_event"]["selected_direction_id"] = "D2"
+    cases["confirmation-direction-mismatch"] = mismatch
+
+    stale_confirmation = copy.deepcopy(cases["valid-confirmed"])
+    stale_confirmation["direction_decision"]["confirmation_event"][
+        "previous_bundle_hash"
+    ] = "0" * 64
+    cases["confirmation-stale-bundle"] = stale_confirmation
+
+    implicit_message = copy.deepcopy(cases["valid-confirmed"])
+    event = implicit_message["direction_decision"]["confirmation_event"]
+    event["source_message_excerpt"] = "I confirm the recommended option."
+    event["source_message_sha256"] = hashlib.sha256(
+        event["source_message_excerpt"].encode("utf-8")
+    ).hexdigest()
+    cases["confirmation-message-without-id"] = implicit_message
+
+    high_risk = copy.deepcopy(cases["valid-waiting"])
+    _confirm_bundle(high_risk, "H1")
+    cases["confirmation-high-risk-id"] = high_risk
+
+    for name, field in (
+        ("route-wrong-direction-hash", "source_direction_hash"),
+        ("route-wrong-confirmation-hash", "confirmation_event_hash"),
+        ("route-wrong-bundle-hash", "source_bundle_hash"),
+    ):
+        changed = copy.deepcopy(cases["valid-confirmed"])
+        changed["route_output"][field] = "0" * 64
+        cases[name] = changed
+
+    d2_route = copy.deepcopy(cases["valid-confirmed"])
+    d2_route["route_output"]["source_direction_hash"] = canonical_sha256(
+        d2_route["direction_portfolio"]["directions"][1]
+    )
+    cases["route-d2-relabelled"] = d2_route
+
+    missing_trace = copy.deepcopy(cases["valid-confirmed"])
+    missing_trace["route_output"]["route_traceability"] = missing_trace["route_output"][
+        "route_traceability"
+    ][:1]
+    cases["route-missing-claim-trace"] = missing_trace
+
+    resource_expansion = copy.deepcopy(cases["valid-confirmed"])
+    resource_expansion["route_output"]["inherited_constraints"][0]["value"] = 20
+    cases["route-resource-expansion"] = resource_expansion
+
+    oversized = copy.deepcopy(cases["valid-waiting"])
+    oversized["direction_portfolio"]["directions"][0]["minimum_decisive_test"]["steps"][0][
+        "action"
+    ] = "x" * 1000
+    cases["decisive-test-oversized-step"] = oversized
+
+    too_many = copy.deepcopy(cases["valid-waiting"])
+    steps = too_many["direction_portfolio"]["directions"][0]["minimum_decisive_test"]["steps"]
+    steps.extend(copy.deepcopy(steps[0]) for _ in range(3))
+    cases["decisive-test-too-many-steps"] = too_many
+
+    nested = copy.deepcopy(cases["valid-waiting"])
+    nested["direction_portfolio"]["directions"][0]["minimum_decisive_test"]["steps"][0][
+        "bounded_output"
+    ] = {"route_output": {"sequence": []}}
+    cases["decisive-test-nested-route"] = nested
+
+    preprint_main = copy.deepcopy(cases["valid-waiting"])
+    for candidate in preprint_main["source_m1_bundle"]["round2"]["candidate_pool"]:
+        if candidate["candidate_id"] in {"fixture:P01", "fixture:P04"}:
+            _mark_preprint(candidate)
+    _refresh_hash(preprint_main)
+    cases["preprint-only-main"] = preprint_main
+
+    preprint_safety = copy.deepcopy(cases["valid-waiting"])
+    main = preprint_safety["direction_portfolio"]["directions"][0]
+    safety = next(
+        gate for gate in main["hard_gates"] if gate["gate_id"] == "safety_ethics_compliance"
+    )
+    safety["evidence_candidate_ids"] = ["fixture:P01"]
+    _mark_preprint(preprint_safety["source_m1_bundle"]["round2"]["candidate_pool"][0])
+    _refresh_hash(preprint_safety)
+    cases["preprint-only-safety"] = preprint_safety
+
+    missing_coverage = copy.deepcopy(cases["valid-waiting"])
+    missing_coverage["direction_portfolio"]["directions"][0]["minimum_decisive_test"][
+        "claim_coverage"
+    ] = missing_coverage["direction_portfolio"]["directions"][0][
+        "minimum_decisive_test"
+    ]["claim_coverage"][:1]
+    cases["claim-missing-coverage"] = missing_coverage
+
+    wrong_uq = copy.deepcopy(cases["valid-waiting"])
+    wrong_uq["direction_portfolio"]["directions"][0]["core_claims"][1][
+        "required_decision_metrics"
+    ][0]["metric_role"] = "predictive_performance"
+    cases["uq-wrong-metric-role"] = wrong_uq
+
+    unresolved = copy.deepcopy(cases["valid-waiting"])
+    unresolved["direction_portfolio"]["directions"][0]["minimum_decisive_test"][
+        "required_preconditions"
+    ][0]["status"] = "unresolved"
+    cases["unresolved-data-precondition"] = unresolved
+
+    axis = copy.deepcopy(cases["valid-waiting"])
+    axis["direction_portfolio"]["directions"][1]["axis_profile"] = copy.deepcopy(
+        axis["direction_portfolio"]["directions"][0]["axis_profile"]
+    )
+    cases["axis-profile-mismatch"] = axis
+
+    duplicate_score = copy.deepcopy(cases["valid-waiting"])
+    for item in duplicate_score["direction_portfolio"]["directions"][0]["scorecard"][
+        "dimensions"
+    ]:
+        item["evidence"] = "Same evidence"
+        item["unknowns"] = ["Same unknown"]
+        item["change_triggers"] = ["Same trigger"]
+    cases["scorecard-duplicate-rationale"] = duplicate_score
     return cases
 
 
+EXPECTED_ERRORS = {
+    "valid-waiting": ("valid", []),
+    "valid-confirmed": ("valid", []),
+    "hard-gate-score-override": (
+        "invalid",
+        [
+            "failed_hard_gate_has_scorecard",
+            "failed_hard_gate_ranked",
+            "incomplete_portfolio_marked_provisional",
+        ],
+    ),
+    "speculative-formal-main": ("invalid", ["invalid_tier_for_formal_position"]),
+    "tier-language-mismatch": ("invalid", ["evidence_tier_language_mismatch"]),
+    "blocked-m1-citation": ("invalid", ["blocked_m1_candidate"]),
+    "missing-supporting-id": ("invalid", ["unknown_m1_candidate_id"]),
+    "route-before-confirmation": ("invalid", ["route_output_before_user_confirmation"]),
+    "renamed-duplicate-direction": ("invalid", ["adjacent_requires_one_axis_change"]),
+    "missing-anti-transfer-factors": ("invalid", ["missing_anti_transfer_factors"]),
+    "vague-decisive-test": ("invalid", ["invalid_claim_decision_criteria"]),
+    "m1-evidence-incomplete-upgrade": ("invalid", ["source_m1_not_complete"]),
+    "confirmation-missing-event": ("invalid", ["confirmed_without_confirmation_event"]),
+    "confirmation-non-user": ("invalid", ["confirmation_actor_not_user"]),
+    "confirmation-direction-mismatch": ("invalid", ["confirmation_direction_mismatch"]),
+    "confirmation-stale-bundle": (
+        "invalid",
+        ["confirmation_previous_bundle_hash_mismatch"],
+    ),
+    "confirmation-message-without-id": (
+        "invalid",
+        ["confirmation_message_missing_explicit_direction_id"],
+    ),
+    "confirmation-high-risk-id": ("invalid", ["selected_direction_not_formal"]),
+    "route-wrong-direction-hash": ("invalid", ["route_source_direction_hash_mismatch"]),
+    "route-wrong-confirmation-hash": (
+        "invalid",
+        ["route_confirmation_event_hash_mismatch"],
+    ),
+    "route-wrong-bundle-hash": ("invalid", ["route_source_bundle_hash_mismatch"]),
+    "route-d2-relabelled": ("invalid", ["route_source_direction_hash_mismatch"]),
+    "route-missing-claim-trace": ("invalid", ["route_missing_claim_traceability"]),
+    "route-resource-expansion": ("invalid", ["route_inherited_constraints_mismatch"]),
+    "decisive-test-oversized-step": ("invalid", ["decisive_test_step_too_large"]),
+    "decisive-test-too-many-steps": ("invalid", ["invalid_decisive_test_step_count"]),
+    "decisive-test-nested-route": ("invalid", ["invalid_decisive_test_step"]),
+    "preprint-only-main": (
+        "invalid",
+        ["provisional_main_requires_non_preprint_support"],
+    ),
+    "preprint-only-safety": (
+        "invalid",
+        ["safety_gate_requires_non_preprint_support"],
+    ),
+    "claim-missing-coverage": ("invalid", ["core_claim_without_test_coverage"]),
+    "uq-wrong-metric-role": (
+        "invalid",
+        ["uncertainty_claim_requires_uncertainty_metric"],
+    ),
+    "unresolved-data-precondition": (
+        "invalid",
+        ["unresolved_blocking_precondition_passed_gate"],
+    ),
+    "axis-profile-mismatch": ("invalid", ["axis_changes_do_not_match_profiles"]),
+    "scorecard-duplicate-rationale": (
+        "invalid",
+        ["duplicate_score_dimension_rationale"],
+    ),
+}
+
+
+def build_manifest(cases: dict[str, dict]) -> dict:
+    if set(cases) != set(EXPECTED_ERRORS):
+        raise ValueError("fixture_case_manifest_mismatch")
+    return {
+        "schema_version": "m2.1.1-adversarial-cases",
+        "evidence_class": "offline_contract_fixture",
+        "cases": [
+            {
+                "fixture": f"{name}.json",
+                "expected_status": EXPECTED_ERRORS[name][0],
+                "expected_errors": EXPECTED_ERRORS[name][1],
+            }
+            for name in cases
+        ],
+    }
+
+
 def main() -> int:
-    fixture_dir = Path(__file__).resolve().parent / "fixtures"
+    fixture_dir = M2_DIR / "fixtures"
     fixture_dir.mkdir(parents=True, exist_ok=True)
-    for name, payload in build_cases().items():
-        path = fixture_dir / f"{name}.json"
-        path.write_text(
+    cases = build_cases()
+    expected_names = {f"{name}.json" for name in cases}
+    for old_path in fixture_dir.glob("*.json"):
+        if old_path.name not in expected_names:
+            old_path.unlink()
+    for name, payload in cases.items():
+        (fixture_dir / f"{name}.json").write_text(
             json.dumps(payload, ensure_ascii=False, indent=2, allow_nan=False) + "\n",
             encoding="utf-8",
         )
+    (M2_DIR / "adversarial-cases.json").write_text(
+        json.dumps(build_manifest(cases), ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
     return 0
 
 

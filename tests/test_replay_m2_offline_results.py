@@ -3,6 +3,8 @@ from __future__ import annotations
 import copy
 import importlib.util
 import json
+import subprocess
+import sys
 import tempfile
 import unittest
 from pathlib import Path
@@ -49,6 +51,25 @@ class M2OfflineResultsReplayTests(unittest.TestCase):
             result = evaluate(temp_manifest)
         self.assertFalse(result["all_matched"])
         self.assertFalse(result["cases"][0]["matched"])
+
+    def test_fixture_builder_is_byte_deterministic(self):
+        manifest = M2_EVAL_DIR / "adversarial-cases.json"
+        fixture_dir = M2_EVAL_DIR / "fixtures"
+        paths = [manifest, *sorted(fixture_dir.glob("*.json"))]
+        before = {path.name: path.read_bytes() for path in paths}
+        completed = subprocess.run(
+            [sys.executable, "-X", "utf8", str(M2_EVAL_DIR / "build_fixtures.py")],
+            cwd=REPO_ROOT,
+            check=False,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+        )
+        self.assertEqual(completed.returncode, 0, completed.stderr)
+        after_paths = [manifest, *sorted(fixture_dir.glob("*.json"))]
+        after = {path.name: path.read_bytes() for path in after_paths}
+        self.assertEqual(after, before)
+        self.assertEqual(len(after) - 1, 34)
 
 
 if __name__ == "__main__":

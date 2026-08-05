@@ -1675,7 +1675,7 @@
         "direction_id": "D1",
         "position": "provisional_main",
         "title": "Fixture main direction",
-        "evidence_tier": "speculative",
+        "evidence_tier": "transfer-supported",
         "claim_language": "Recommended for priority validation",
         "axis_profile": {
           "problem": "fixture problem A",
@@ -2013,7 +2013,7 @@
               "precondition_id": "data-preflight",
               "description": "Fixture data are split without trajectory leakage",
               "gate_id": "data_availability",
-              "status": "verified",
+              "status": "unresolved",
               "evidence_candidate_ids": [
                 "fixture:P01"
               ],

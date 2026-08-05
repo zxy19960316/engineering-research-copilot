@@ -1665,7 +1665,7 @@
     ]
   },
   "direction_portfolio": {
-    "schema_version": "m2.1",
+    "schema_version": "m2.1.1",
     "source_m1_terminal_state": "M1_COMPLETE",
     "source_m1_bundle_hash": "a11fd192eb23c3804be9bb24dadf9a3a047387117d1310c423b84cb9d1708d02",
     "brief_version": 2,
@@ -1674,10 +1674,59 @@
       {
         "direction_id": "D1",
         "position": "provisional_main",
-        "title": "Offline fixture main direction",
+        "title": "Fixture main direction",
         "evidence_tier": "transfer-supported",
         "claim_language": "Recommended for priority validation",
+        "axis_profile": {
+          "problem": "fixture problem A",
+          "method": "fixture method A",
+          "data": "fixture data A"
+        },
         "axis_changes": [],
+        "core_claims": [
+          {
+            "claim_id": "C-PRED",
+            "claim": "The direction can improve bounded predictive performance",
+            "claim_type": "predictive_performance",
+            "evidence_candidate_ids": [
+              "fixture:P01",
+              "fixture:P04"
+            ],
+            "required_decision_metrics": [
+              {
+                "metric_id": "M-PRED",
+                "metric": "Fixture predictive score",
+                "metric_role": "predictive_performance",
+                "unit": "ratio"
+              }
+            ]
+          },
+          {
+            "claim_id": "C-UQ",
+            "claim": "The direction can produce calibrated uncertainty",
+            "claim_type": "uncertainty_quality",
+            "evidence_candidate_ids": [
+              "fixture:P04"
+            ],
+            "required_decision_metrics": [
+              {
+                "metric_id": "M-UQ",
+                "metric": "Fixture calibration error",
+                "metric_role": "uncertainty_quality",
+                "unit": "ratio"
+              }
+            ]
+          }
+        ],
+        "resource_limits": [
+          {
+            "constraint_id": "R-CPU-HOURS",
+            "resource": "CPU time",
+            "operator": "<=",
+            "value": 2,
+            "unit": "hours"
+          }
+        ],
         "hard_gates": [
           {
             "gate_id": "target_problem_evidence",
@@ -1685,42 +1734,50 @@
             "evidence_candidate_ids": [
               "fixture:P01"
             ],
-            "rationale": "Offline contract rationale for target_problem_evidence",
+            "required_precondition_ids": [],
+            "rationale": "Offline fixture rationale for target_problem_evidence",
             "blockers": []
           },
           {
             "gate_id": "data_availability",
             "status": "pass",
             "evidence_candidate_ids": [],
-            "rationale": "Offline contract rationale for data_availability",
+            "required_precondition_ids": [
+              "data-preflight"
+            ],
+            "rationale": "Offline fixture rationale for data_availability",
             "blockers": []
           },
           {
             "gate_id": "falsifiability",
             "status": "pass",
             "evidence_candidate_ids": [],
-            "rationale": "Offline contract rationale for falsifiability",
+            "required_precondition_ids": [],
+            "rationale": "Offline fixture rationale for falsifiability",
             "blockers": []
           },
           {
             "gate_id": "resource_feasibility",
             "status": "pass",
             "evidence_candidate_ids": [],
-            "rationale": "Offline contract rationale for resource_feasibility",
+            "required_precondition_ids": [],
+            "rationale": "Offline fixture rationale for resource_feasibility",
             "blockers": []
           },
           {
             "gate_id": "time_feasibility",
             "status": "pass",
             "evidence_candidate_ids": [],
-            "rationale": "Offline contract rationale for time_feasibility",
+            "required_precondition_ids": [],
+            "rationale": "Offline fixture rationale for time_feasibility",
             "blockers": []
           },
           {
             "gate_id": "safety_ethics_compliance",
             "status": "pass",
             "evidence_candidate_ids": [],
-            "rationale": "Offline contract rationale for safety_ethics_compliance",
+            "required_precondition_ids": [],
+            "rationale": "Offline fixture rationale for safety_ethics_compliance",
             "blockers": []
           },
           {
@@ -1731,7 +1788,8 @@
               "fixture:P04",
               "fixture:P09"
             ],
-            "rationale": "Offline contract rationale for m1_citation_integrity",
+            "required_precondition_ids": [],
+            "rationale": "Offline fixture rationale for m1_citation_integrity",
             "blockers": []
           }
         ],
@@ -1772,13 +1830,13 @@
               "evidence_candidate_ids": [
                 "fixture:P01"
               ],
-              "evidence": "Offline contract score evidence",
+              "evidence": "Offline fixture evidence specific to engineering_value",
               "confidence": "medium",
               "unknowns": [
-                "Real direction merit was not evaluated"
+                "Real engineering_value merit was not evaluated"
               ],
               "change_triggers": [
-                "Target-domain decisive evidence"
+                "Target-domain engineering_value evidence"
               ]
             },
             {
@@ -1788,13 +1846,13 @@
               "evidence_candidate_ids": [
                 "fixture:P01"
               ],
-              "evidence": "Offline contract score evidence",
+              "evidence": "Offline fixture evidence specific to gap_and_evidence_quality",
               "confidence": "medium",
               "unknowns": [
-                "Real direction merit was not evaluated"
+                "Real gap_and_evidence_quality merit was not evaluated"
               ],
               "change_triggers": [
-                "Target-domain decisive evidence"
+                "Target-domain gap_and_evidence_quality evidence"
               ]
             },
             {
@@ -1804,13 +1862,13 @@
               "evidence_candidate_ids": [
                 "fixture:P01"
               ],
-              "evidence": "Offline contract score evidence",
+              "evidence": "Offline fixture evidence specific to data_and_resource_fit",
               "confidence": "medium",
               "unknowns": [
-                "Real direction merit was not evaluated"
+                "Real data_and_resource_fit merit was not evaluated"
               ],
               "change_triggers": [
-                "Target-domain decisive evidence"
+                "Target-domain data_and_resource_fit evidence"
               ]
             },
             {
@@ -1820,13 +1878,13 @@
               "evidence_candidate_ids": [
                 "fixture:P01"
               ],
-              "evidence": "Offline contract score evidence",
+              "evidence": "Offline fixture evidence specific to validation_and_falsifiability",
               "confidence": "medium",
               "unknowns": [
-                "Real direction merit was not evaluated"
+                "Real validation_and_falsifiability merit was not evaluated"
               ],
               "change_triggers": [
-                "Target-domain decisive evidence"
+                "Target-domain validation_and_falsifiability evidence"
               ]
             },
             {
@@ -1836,13 +1894,13 @@
               "evidence_candidate_ids": [
                 "fixture:P01"
               ],
-              "evidence": "Offline contract score evidence",
+              "evidence": "Offline fixture evidence specific to method_maturity",
               "confidence": "medium",
               "unknowns": [
-                "Real direction merit was not evaluated"
+                "Real method_maturity merit was not evaluated"
               ],
               "change_triggers": [
-                "Target-domain decisive evidence"
+                "Target-domain method_maturity evidence"
               ]
             },
             {
@@ -1852,13 +1910,13 @@
               "evidence_candidate_ids": [
                 "fixture:P01"
               ],
-              "evidence": "Offline contract score evidence",
+              "evidence": "Offline fixture evidence specific to time_to_decisive_signal",
               "confidence": "medium",
               "unknowns": [
-                "Real direction merit was not evaluated"
+                "Real time_to_decisive_signal merit was not evaluated"
               ],
               "change_triggers": [
-                "Target-domain decisive evidence"
+                "Target-domain time_to_decisive_signal evidence"
               ]
             },
             {
@@ -1868,13 +1926,13 @@
               "evidence_candidate_ids": [
                 "fixture:P01"
               ],
-              "evidence": "Offline contract score evidence",
+              "evidence": "Offline fixture evidence specific to interdisciplinary_interface_quality",
               "confidence": "medium",
               "unknowns": [
-                "Real direction merit was not evaluated"
+                "Real interdisciplinary_interface_quality merit was not evaluated"
               ],
               "change_triggers": [
-                "Target-domain decisive evidence"
+                "Target-domain interdisciplinary_interface_quality evidence"
               ]
             },
             {
@@ -1884,46 +1942,91 @@
               "evidence_candidate_ids": [
                 "fixture:P01"
               ],
-              "evidence": "Offline contract score evidence",
+              "evidence": "Offline fixture evidence specific to safety_ethics_compliance",
               "confidence": "medium",
               "unknowns": [
-                "Real direction merit was not evaluated"
+                "Real safety_ethics_compliance merit was not evaluated"
               ],
               "change_triggers": [
-                "Target-domain decisive evidence"
+                "Target-domain safety_ethics_compliance evidence"
               ]
             }
           ],
           "weighted_total": 80.0
         },
         "minimum_decisive_test": {
-          "hypothesis": "The candidate method beats the fixture baseline",
+          "scope": "minimum_decisive_test",
+          "hypothesis": "The candidate method beats the fixture baseline on the primary metric",
           "inputs": [
             "Frozen fixture input"
           ],
           "baseline": "Frozen fixture baseline",
           "steps": [
-            "Compare one bounded candidate against the baseline"
+            {
+              "step_id": "S1",
+              "action": "Run one bounded fixture comparison",
+              "bounded_output": "One frozen prediction and uncertainty table"
+            },
+            {
+              "step_id": "S2",
+              "action": "Evaluate only preregistered decision metrics",
+              "bounded_output": "One pass, stop, or pivot decision"
+            }
           ],
-          "primary_metric": "fixture_score",
-          "success_threshold": {
-            "metric": "fixture_score",
-            "operator": ">=",
-            "value": 0.8,
-            "unit": "ratio"
-          },
-          "stop_condition": {
-            "metric": "fixture_cost",
-            "operator": ">",
-            "value": 10.0,
-            "unit": "fixture_units"
-          },
-          "pivot_condition": {
-            "metric": "fixture_score",
-            "operator": "<",
-            "value": 0.6,
-            "unit": "ratio"
-          },
+          "primary_metric_id": "M-PRED",
+          "claim_coverage": [
+            {
+              "claim_id": "C-PRED",
+              "metric_ids": [
+                "M-PRED"
+              ],
+              "decision_criteria": [
+                {
+                  "criterion_type": "success",
+                  "metric_id": "M-PRED",
+                  "operator": ">=",
+                  "value": 0.8,
+                  "unit": "ratio"
+                }
+              ],
+              "required_precondition_ids": []
+            },
+            {
+              "claim_id": "C-UQ",
+              "metric_ids": [
+                "M-UQ"
+              ],
+              "decision_criteria": [
+                {
+                  "criterion_type": "success",
+                  "metric_id": "M-UQ",
+                  "operator": ">=",
+                  "value": 0.8,
+                  "unit": "ratio"
+                }
+              ],
+              "required_precondition_ids": []
+            }
+          ],
+          "required_preconditions": [
+            {
+              "precondition_id": "data-preflight",
+              "description": "Fixture data are split without trajectory leakage",
+              "gate_id": "data_availability",
+              "status": "verified",
+              "evidence_candidate_ids": [
+                "fixture:P01"
+              ],
+              "blocking_if_unresolved": true,
+              "preflight_check": "Check split, count, labels, sampling rate, and horizon",
+              "stop_condition": {
+                "metric": "eligible_trajectories",
+                "operator": "<",
+                "value": 10,
+                "unit": "count"
+              }
+            }
+          ],
           "expected_time": "One offline fixture pass",
           "required_resources": [
             "Offline fixture data"
@@ -1945,10 +2048,43 @@
       {
         "direction_id": "D2",
         "position": "adjacent_alternative",
-        "title": "Offline fixture adjacent direction",
+        "title": "Fixture adjacent direction",
         "evidence_tier": "established-in-target",
         "claim_language": "Direct evidence supports applicability",
+        "axis_profile": {
+          "problem": "fixture problem A",
+          "method": "fixture method B",
+          "data": "fixture data A"
+        },
         "axis_changes": [],
+        "core_claims": [
+          {
+            "claim_id": "C-PRED",
+            "claim": "The direction can improve bounded predictive performance",
+            "claim_type": "predictive_performance",
+            "evidence_candidate_ids": [
+              "fixture:P01",
+              "fixture:P04"
+            ],
+            "required_decision_metrics": [
+              {
+                "metric_id": "M-PRED",
+                "metric": "Fixture predictive score",
+                "metric_role": "predictive_performance",
+                "unit": "ratio"
+              }
+            ]
+          }
+        ],
+        "resource_limits": [
+          {
+            "constraint_id": "R-CPU-HOURS",
+            "resource": "CPU time",
+            "operator": "<=",
+            "value": 2,
+            "unit": "hours"
+          }
+        ],
         "hard_gates": [
           {
             "gate_id": "target_problem_evidence",
@@ -1956,42 +2092,50 @@
             "evidence_candidate_ids": [
               "fixture:P01"
             ],
-            "rationale": "Offline contract rationale for target_problem_evidence",
+            "required_precondition_ids": [],
+            "rationale": "Offline fixture rationale for target_problem_evidence",
             "blockers": []
           },
           {
             "gate_id": "data_availability",
             "status": "pass",
             "evidence_candidate_ids": [],
-            "rationale": "Offline contract rationale for data_availability",
+            "required_precondition_ids": [
+              "data-preflight"
+            ],
+            "rationale": "Offline fixture rationale for data_availability",
             "blockers": []
           },
           {
             "gate_id": "falsifiability",
             "status": "pass",
             "evidence_candidate_ids": [],
-            "rationale": "Offline contract rationale for falsifiability",
+            "required_precondition_ids": [],
+            "rationale": "Offline fixture rationale for falsifiability",
             "blockers": []
           },
           {
             "gate_id": "resource_feasibility",
             "status": "pass",
             "evidence_candidate_ids": [],
-            "rationale": "Offline contract rationale for resource_feasibility",
+            "required_precondition_ids": [],
+            "rationale": "Offline fixture rationale for resource_feasibility",
             "blockers": []
           },
           {
             "gate_id": "time_feasibility",
             "status": "pass",
             "evidence_candidate_ids": [],
-            "rationale": "Offline contract rationale for time_feasibility",
+            "required_precondition_ids": [],
+            "rationale": "Offline fixture rationale for time_feasibility",
             "blockers": []
           },
           {
             "gate_id": "safety_ethics_compliance",
             "status": "pass",
             "evidence_candidate_ids": [],
-            "rationale": "Offline contract rationale for safety_ethics_compliance",
+            "required_precondition_ids": [],
+            "rationale": "Offline fixture rationale for safety_ethics_compliance",
             "blockers": []
           },
           {
@@ -2002,7 +2146,8 @@
               "fixture:P04",
               "fixture:P09"
             ],
-            "rationale": "Offline contract rationale for m1_citation_integrity",
+            "required_precondition_ids": [],
+            "rationale": "Offline fixture rationale for m1_citation_integrity",
             "blockers": []
           }
         ],
@@ -2043,13 +2188,13 @@
               "evidence_candidate_ids": [
                 "fixture:P01"
               ],
-              "evidence": "Offline contract score evidence",
+              "evidence": "Offline fixture evidence specific to engineering_value",
               "confidence": "medium",
               "unknowns": [
-                "Real direction merit was not evaluated"
+                "Real engineering_value merit was not evaluated"
               ],
               "change_triggers": [
-                "Target-domain decisive evidence"
+                "Target-domain engineering_value evidence"
               ]
             },
             {
@@ -2059,13 +2204,13 @@
               "evidence_candidate_ids": [
                 "fixture:P01"
               ],
-              "evidence": "Offline contract score evidence",
+              "evidence": "Offline fixture evidence specific to gap_and_evidence_quality",
               "confidence": "medium",
               "unknowns": [
-                "Real direction merit was not evaluated"
+                "Real gap_and_evidence_quality merit was not evaluated"
               ],
               "change_triggers": [
-                "Target-domain decisive evidence"
+                "Target-domain gap_and_evidence_quality evidence"
               ]
             },
             {
@@ -2075,13 +2220,13 @@
               "evidence_candidate_ids": [
                 "fixture:P01"
               ],
-              "evidence": "Offline contract score evidence",
+              "evidence": "Offline fixture evidence specific to data_and_resource_fit",
               "confidence": "medium",
               "unknowns": [
-                "Real direction merit was not evaluated"
+                "Real data_and_resource_fit merit was not evaluated"
               ],
               "change_triggers": [
-                "Target-domain decisive evidence"
+                "Target-domain data_and_resource_fit evidence"
               ]
             },
             {
@@ -2091,13 +2236,13 @@
               "evidence_candidate_ids": [
                 "fixture:P01"
               ],
-              "evidence": "Offline contract score evidence",
+              "evidence": "Offline fixture evidence specific to validation_and_falsifiability",
               "confidence": "medium",
               "unknowns": [
-                "Real direction merit was not evaluated"
+                "Real validation_and_falsifiability merit was not evaluated"
               ],
               "change_triggers": [
-                "Target-domain decisive evidence"
+                "Target-domain validation_and_falsifiability evidence"
               ]
             },
             {
@@ -2107,13 +2252,13 @@
               "evidence_candidate_ids": [
                 "fixture:P01"
               ],
-              "evidence": "Offline contract score evidence",
+              "evidence": "Offline fixture evidence specific to method_maturity",
               "confidence": "medium",
               "unknowns": [
-                "Real direction merit was not evaluated"
+                "Real method_maturity merit was not evaluated"
               ],
               "change_triggers": [
-                "Target-domain decisive evidence"
+                "Target-domain method_maturity evidence"
               ]
             },
             {
@@ -2123,13 +2268,13 @@
               "evidence_candidate_ids": [
                 "fixture:P01"
               ],
-              "evidence": "Offline contract score evidence",
+              "evidence": "Offline fixture evidence specific to time_to_decisive_signal",
               "confidence": "medium",
               "unknowns": [
-                "Real direction merit was not evaluated"
+                "Real time_to_decisive_signal merit was not evaluated"
               ],
               "change_triggers": [
-                "Target-domain decisive evidence"
+                "Target-domain time_to_decisive_signal evidence"
               ]
             },
             {
@@ -2139,13 +2284,13 @@
               "evidence_candidate_ids": [
                 "fixture:P01"
               ],
-              "evidence": "Offline contract score evidence",
+              "evidence": "Offline fixture evidence specific to interdisciplinary_interface_quality",
               "confidence": "medium",
               "unknowns": [
-                "Real direction merit was not evaluated"
+                "Real interdisciplinary_interface_quality merit was not evaluated"
               ],
               "change_triggers": [
-                "Target-domain decisive evidence"
+                "Target-domain interdisciplinary_interface_quality evidence"
               ]
             },
             {
@@ -2155,46 +2300,75 @@
               "evidence_candidate_ids": [
                 "fixture:P01"
               ],
-              "evidence": "Offline contract score evidence",
+              "evidence": "Offline fixture evidence specific to safety_ethics_compliance",
               "confidence": "medium",
               "unknowns": [
-                "Real direction merit was not evaluated"
+                "Real safety_ethics_compliance merit was not evaluated"
               ],
               "change_triggers": [
-                "Target-domain decisive evidence"
+                "Target-domain safety_ethics_compliance evidence"
               ]
             }
           ],
           "weighted_total": 60.0
         },
         "minimum_decisive_test": {
-          "hypothesis": "The candidate method beats the fixture baseline",
+          "scope": "minimum_decisive_test",
+          "hypothesis": "The candidate method beats the fixture baseline on the primary metric",
           "inputs": [
             "Frozen fixture input"
           ],
           "baseline": "Frozen fixture baseline",
           "steps": [
-            "Compare one bounded candidate against the baseline"
+            {
+              "step_id": "S1",
+              "action": "Run one bounded fixture comparison",
+              "bounded_output": "One frozen prediction and uncertainty table"
+            },
+            {
+              "step_id": "S2",
+              "action": "Evaluate only preregistered decision metrics",
+              "bounded_output": "One pass, stop, or pivot decision"
+            }
           ],
-          "primary_metric": "fixture_score",
-          "success_threshold": {
-            "metric": "fixture_score",
-            "operator": ">=",
-            "value": 0.8,
-            "unit": "ratio"
-          },
-          "stop_condition": {
-            "metric": "fixture_cost",
-            "operator": ">",
-            "value": 10.0,
-            "unit": "fixture_units"
-          },
-          "pivot_condition": {
-            "metric": "fixture_score",
-            "operator": "<",
-            "value": 0.6,
-            "unit": "ratio"
-          },
+          "primary_metric_id": "M-PRED",
+          "claim_coverage": [
+            {
+              "claim_id": "C-PRED",
+              "metric_ids": [
+                "M-PRED"
+              ],
+              "decision_criteria": [
+                {
+                  "criterion_type": "success",
+                  "metric_id": "M-PRED",
+                  "operator": ">=",
+                  "value": 0.8,
+                  "unit": "ratio"
+                }
+              ],
+              "required_precondition_ids": []
+            }
+          ],
+          "required_preconditions": [
+            {
+              "precondition_id": "data-preflight",
+              "description": "Fixture data are split without trajectory leakage",
+              "gate_id": "data_availability",
+              "status": "verified",
+              "evidence_candidate_ids": [
+                "fixture:P01"
+              ],
+              "blocking_if_unresolved": true,
+              "preflight_check": "Check split, count, labels, sampling rate, and horizon",
+              "stop_condition": {
+                "metric": "eligible_trajectories",
+                "operator": "<",
+                "value": 10,
+                "unit": "count"
+              }
+            }
+          ],
           "expected_time": "One offline fixture pass",
           "required_resources": [
             "Offline fixture data"
@@ -2216,9 +2390,14 @@
       {
         "direction_id": "D3",
         "position": "transfer_exploration",
-        "title": "Offline fixture transfer direction",
+        "title": "Fixture transfer direction",
         "evidence_tier": "mechanism-plausible",
         "claim_language": "Divergent exploration suggestion",
+        "axis_profile": {
+          "problem": "fixture problem A",
+          "method": "fixture method C",
+          "data": "fixture data B"
+        },
         "axis_changes": [
           {
             "axis": "method",
@@ -2231,6 +2410,50 @@
             "to": "fixture data B"
           }
         ],
+        "core_claims": [
+          {
+            "claim_id": "C-PRED",
+            "claim": "The direction can improve bounded predictive performance",
+            "claim_type": "predictive_performance",
+            "evidence_candidate_ids": [
+              "fixture:P01",
+              "fixture:P04"
+            ],
+            "required_decision_metrics": [
+              {
+                "metric_id": "M-PRED",
+                "metric": "Fixture predictive score",
+                "metric_role": "predictive_performance",
+                "unit": "ratio"
+              }
+            ]
+          },
+          {
+            "claim_id": "C-OOD",
+            "claim": "The direction can distinguish an open-set fixture",
+            "claim_type": "open_set_detection",
+            "evidence_candidate_ids": [
+              "fixture:P04"
+            ],
+            "required_decision_metrics": [
+              {
+                "metric_id": "M-OOD",
+                "metric": "Fixture open-set detection rate",
+                "metric_role": "open_set_detection",
+                "unit": "ratio"
+              }
+            ]
+          }
+        ],
+        "resource_limits": [
+          {
+            "constraint_id": "R-CPU-HOURS",
+            "resource": "CPU time",
+            "operator": "<=",
+            "value": 2,
+            "unit": "hours"
+          }
+        ],
         "hard_gates": [
           {
             "gate_id": "target_problem_evidence",
@@ -2238,42 +2461,50 @@
             "evidence_candidate_ids": [
               "fixture:P01"
             ],
-            "rationale": "Offline contract rationale for target_problem_evidence",
+            "required_precondition_ids": [],
+            "rationale": "Offline fixture rationale for target_problem_evidence",
             "blockers": []
           },
           {
             "gate_id": "data_availability",
             "status": "pass",
             "evidence_candidate_ids": [],
-            "rationale": "Offline contract rationale for data_availability",
+            "required_precondition_ids": [
+              "data-preflight"
+            ],
+            "rationale": "Offline fixture rationale for data_availability",
             "blockers": []
           },
           {
             "gate_id": "falsifiability",
             "status": "pass",
             "evidence_candidate_ids": [],
-            "rationale": "Offline contract rationale for falsifiability",
+            "required_precondition_ids": [],
+            "rationale": "Offline fixture rationale for falsifiability",
             "blockers": []
           },
           {
             "gate_id": "resource_feasibility",
             "status": "pass",
             "evidence_candidate_ids": [],
-            "rationale": "Offline contract rationale for resource_feasibility",
+            "required_precondition_ids": [],
+            "rationale": "Offline fixture rationale for resource_feasibility",
             "blockers": []
           },
           {
             "gate_id": "time_feasibility",
             "status": "pass",
             "evidence_candidate_ids": [],
-            "rationale": "Offline contract rationale for time_feasibility",
+            "required_precondition_ids": [],
+            "rationale": "Offline fixture rationale for time_feasibility",
             "blockers": []
           },
           {
             "gate_id": "safety_ethics_compliance",
             "status": "pass",
             "evidence_candidate_ids": [],
-            "rationale": "Offline contract rationale for safety_ethics_compliance",
+            "required_precondition_ids": [],
+            "rationale": "Offline fixture rationale for safety_ethics_compliance",
             "blockers": []
           },
           {
@@ -2284,7 +2515,8 @@
               "fixture:P04",
               "fixture:P09"
             ],
-            "rationale": "Offline contract rationale for m1_citation_integrity",
+            "required_precondition_ids": [],
+            "rationale": "Offline fixture rationale for m1_citation_integrity",
             "blockers": []
           }
         ],
@@ -2325,13 +2557,13 @@
               "evidence_candidate_ids": [
                 "fixture:P01"
               ],
-              "evidence": "Offline contract score evidence",
+              "evidence": "Offline fixture evidence specific to engineering_value",
               "confidence": "medium",
               "unknowns": [
-                "Real direction merit was not evaluated"
+                "Real engineering_value merit was not evaluated"
               ],
               "change_triggers": [
-                "Target-domain decisive evidence"
+                "Target-domain engineering_value evidence"
               ]
             },
             {
@@ -2341,13 +2573,13 @@
               "evidence_candidate_ids": [
                 "fixture:P01"
               ],
-              "evidence": "Offline contract score evidence",
+              "evidence": "Offline fixture evidence specific to gap_and_evidence_quality",
               "confidence": "medium",
               "unknowns": [
-                "Real direction merit was not evaluated"
+                "Real gap_and_evidence_quality merit was not evaluated"
               ],
               "change_triggers": [
-                "Target-domain decisive evidence"
+                "Target-domain gap_and_evidence_quality evidence"
               ]
             },
             {
@@ -2357,13 +2589,13 @@
               "evidence_candidate_ids": [
                 "fixture:P01"
               ],
-              "evidence": "Offline contract score evidence",
+              "evidence": "Offline fixture evidence specific to data_and_resource_fit",
               "confidence": "medium",
               "unknowns": [
-                "Real direction merit was not evaluated"
+                "Real data_and_resource_fit merit was not evaluated"
               ],
               "change_triggers": [
-                "Target-domain decisive evidence"
+                "Target-domain data_and_resource_fit evidence"
               ]
             },
             {
@@ -2373,13 +2605,13 @@
               "evidence_candidate_ids": [
                 "fixture:P01"
               ],
-              "evidence": "Offline contract score evidence",
+              "evidence": "Offline fixture evidence specific to validation_and_falsifiability",
               "confidence": "medium",
               "unknowns": [
-                "Real direction merit was not evaluated"
+                "Real validation_and_falsifiability merit was not evaluated"
               ],
               "change_triggers": [
-                "Target-domain decisive evidence"
+                "Target-domain validation_and_falsifiability evidence"
               ]
             },
             {
@@ -2389,13 +2621,13 @@
               "evidence_candidate_ids": [
                 "fixture:P01"
               ],
-              "evidence": "Offline contract score evidence",
+              "evidence": "Offline fixture evidence specific to method_maturity",
               "confidence": "medium",
               "unknowns": [
-                "Real direction merit was not evaluated"
+                "Real method_maturity merit was not evaluated"
               ],
               "change_triggers": [
-                "Target-domain decisive evidence"
+                "Target-domain method_maturity evidence"
               ]
             },
             {
@@ -2405,13 +2637,13 @@
               "evidence_candidate_ids": [
                 "fixture:P01"
               ],
-              "evidence": "Offline contract score evidence",
+              "evidence": "Offline fixture evidence specific to time_to_decisive_signal",
               "confidence": "medium",
               "unknowns": [
-                "Real direction merit was not evaluated"
+                "Real time_to_decisive_signal merit was not evaluated"
               ],
               "change_triggers": [
-                "Target-domain decisive evidence"
+                "Target-domain time_to_decisive_signal evidence"
               ]
             },
             {
@@ -2421,13 +2653,13 @@
               "evidence_candidate_ids": [
                 "fixture:P01"
               ],
-              "evidence": "Offline contract score evidence",
+              "evidence": "Offline fixture evidence specific to interdisciplinary_interface_quality",
               "confidence": "medium",
               "unknowns": [
-                "Real direction merit was not evaluated"
+                "Real interdisciplinary_interface_quality merit was not evaluated"
               ],
               "change_triggers": [
-                "Target-domain decisive evidence"
+                "Target-domain interdisciplinary_interface_quality evidence"
               ]
             },
             {
@@ -2437,46 +2669,91 @@
               "evidence_candidate_ids": [
                 "fixture:P01"
               ],
-              "evidence": "Offline contract score evidence",
+              "evidence": "Offline fixture evidence specific to safety_ethics_compliance",
               "confidence": "medium",
               "unknowns": [
-                "Real direction merit was not evaluated"
+                "Real safety_ethics_compliance merit was not evaluated"
               ],
               "change_triggers": [
-                "Target-domain decisive evidence"
+                "Target-domain safety_ethics_compliance evidence"
               ]
             }
           ],
           "weighted_total": 40.0
         },
         "minimum_decisive_test": {
-          "hypothesis": "The candidate method beats the fixture baseline",
+          "scope": "minimum_decisive_test",
+          "hypothesis": "The candidate method beats the fixture baseline on the primary metric",
           "inputs": [
             "Frozen fixture input"
           ],
           "baseline": "Frozen fixture baseline",
           "steps": [
-            "Compare one bounded candidate against the baseline"
+            {
+              "step_id": "S1",
+              "action": "Run one bounded fixture comparison",
+              "bounded_output": "One frozen prediction and uncertainty table"
+            },
+            {
+              "step_id": "S2",
+              "action": "Evaluate only preregistered decision metrics",
+              "bounded_output": "One pass, stop, or pivot decision"
+            }
           ],
-          "primary_metric": "fixture_score",
-          "success_threshold": {
-            "metric": "fixture_score",
-            "operator": ">=",
-            "value": 0.8,
-            "unit": "ratio"
-          },
-          "stop_condition": {
-            "metric": "fixture_cost",
-            "operator": ">",
-            "value": 10.0,
-            "unit": "fixture_units"
-          },
-          "pivot_condition": {
-            "metric": "fixture_score",
-            "operator": "<",
-            "value": 0.6,
-            "unit": "ratio"
-          },
+          "primary_metric_id": "M-PRED",
+          "claim_coverage": [
+            {
+              "claim_id": "C-PRED",
+              "metric_ids": [
+                "M-PRED"
+              ],
+              "decision_criteria": [
+                {
+                  "criterion_type": "success",
+                  "metric_id": "M-PRED",
+                  "operator": ">=",
+                  "value": 0.8,
+                  "unit": "ratio"
+                }
+              ],
+              "required_precondition_ids": []
+            },
+            {
+              "claim_id": "C-OOD",
+              "metric_ids": [
+                "M-OOD"
+              ],
+              "decision_criteria": [
+                {
+                  "criterion_type": "success",
+                  "metric_id": "M-OOD",
+                  "operator": ">=",
+                  "value": 0.8,
+                  "unit": "ratio"
+                }
+              ],
+              "required_precondition_ids": []
+            }
+          ],
+          "required_preconditions": [
+            {
+              "precondition_id": "data-preflight",
+              "description": "Fixture data are split without trajectory leakage",
+              "gate_id": "data_availability",
+              "status": "verified",
+              "evidence_candidate_ids": [
+                "fixture:P01"
+              ],
+              "blocking_if_unresolved": true,
+              "preflight_check": "Check split, count, labels, sampling rate, and horizon",
+              "stop_condition": {
+                "metric": "eligible_trajectories",
+                "operator": "<",
+                "value": 10,
+                "unit": "count"
+              }
+            }
+          ],
           "expected_time": "One offline fixture pass",
           "required_resources": [
             "Offline fixture data"
@@ -2506,18 +2783,19 @@
       "confirm",
       "modify",
       "reject"
-    ]
+    ],
+    "confirmation_event": null
   },
   "route_output": null,
   "fixture_mode": true,
   "evidence_class": "offline_contract_fixture",
   "proves": [
-    "M2 structural contract and gate behavior"
+    "M2.1.1 offline structural contract behavior"
   ],
   "does_not_prove": [
-    "Real citation accuracy",
-    "Real direction merit",
-    "Target-domain transfer success",
-    "Executed route feasibility"
+    "Real citation existence or metadata accuracy",
+    "Host-system user identity",
+    "Real direction merit or target-domain transfer success",
+    "Execution of any experiment, simulation, training, download, deployment, or route"
   ]
 }

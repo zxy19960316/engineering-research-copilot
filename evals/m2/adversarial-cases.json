@@ -1,18 +1,242 @@
 {
-  "schema_version": "m2.1-adversarial-cases",
+  "schema_version": "m2.1.1-adversarial-cases",
   "evidence_class": "offline_contract_fixture",
   "cases": [
-    {"fixture": "valid-waiting.json", "expected_status": "valid", "expected_errors": []},
-    {"fixture": "valid-confirmed.json", "expected_status": "valid", "expected_errors": []},
-    {"fixture": "hard-gate-score-override.json", "expected_status": "invalid", "expected_errors": ["failed_hard_gate_has_scorecard", "failed_hard_gate_ranked", "incomplete_portfolio_marked_provisional"]},
-    {"fixture": "speculative-formal-main.json", "expected_status": "invalid", "expected_errors": ["invalid_tier_for_formal_position"]},
-    {"fixture": "tier-language-mismatch.json", "expected_status": "invalid", "expected_errors": ["evidence_tier_language_mismatch"]},
-    {"fixture": "blocked-m1-citation.json", "expected_status": "invalid", "expected_errors": ["blocked_m1_candidate"]},
-    {"fixture": "missing-supporting-id.json", "expected_status": "invalid", "expected_errors": ["unknown_m1_candidate_id"]},
-    {"fixture": "route-before-confirmation.json", "expected_status": "invalid", "expected_errors": ["route_output_before_user_confirmation"]},
-    {"fixture": "renamed-duplicate-direction.json", "expected_status": "invalid", "expected_errors": ["adjacent_requires_one_axis_change"]},
-    {"fixture": "missing-anti-transfer-factors.json", "expected_status": "invalid", "expected_errors": ["missing_anti_transfer_factors"]},
-    {"fixture": "vague-decisive-test.json", "expected_status": "invalid", "expected_errors": ["invalid_success_threshold"]},
-    {"fixture": "m1-evidence-incomplete-upgrade.json", "expected_status": "invalid", "expected_errors": ["source_m1_not_complete"]}
+    {
+      "fixture": "valid-waiting.json",
+      "expected_status": "valid",
+      "expected_errors": []
+    },
+    {
+      "fixture": "valid-confirmed.json",
+      "expected_status": "valid",
+      "expected_errors": []
+    },
+    {
+      "fixture": "hard-gate-score-override.json",
+      "expected_status": "invalid",
+      "expected_errors": [
+        "failed_hard_gate_has_scorecard",
+        "failed_hard_gate_ranked",
+        "incomplete_portfolio_marked_provisional"
+      ]
+    },
+    {
+      "fixture": "speculative-formal-main.json",
+      "expected_status": "invalid",
+      "expected_errors": [
+        "invalid_tier_for_formal_position"
+      ]
+    },
+    {
+      "fixture": "tier-language-mismatch.json",
+      "expected_status": "invalid",
+      "expected_errors": [
+        "evidence_tier_language_mismatch"
+      ]
+    },
+    {
+      "fixture": "blocked-m1-citation.json",
+      "expected_status": "invalid",
+      "expected_errors": [
+        "blocked_m1_candidate"
+      ]
+    },
+    {
+      "fixture": "missing-supporting-id.json",
+      "expected_status": "invalid",
+      "expected_errors": [
+        "unknown_m1_candidate_id"
+      ]
+    },
+    {
+      "fixture": "route-before-confirmation.json",
+      "expected_status": "invalid",
+      "expected_errors": [
+        "route_output_before_user_confirmation"
+      ]
+    },
+    {
+      "fixture": "renamed-duplicate-direction.json",
+      "expected_status": "invalid",
+      "expected_errors": [
+        "adjacent_requires_one_axis_change"
+      ]
+    },
+    {
+      "fixture": "missing-anti-transfer-factors.json",
+      "expected_status": "invalid",
+      "expected_errors": [
+        "missing_anti_transfer_factors"
+      ]
+    },
+    {
+      "fixture": "vague-decisive-test.json",
+      "expected_status": "invalid",
+      "expected_errors": [
+        "invalid_claim_decision_criteria"
+      ]
+    },
+    {
+      "fixture": "m1-evidence-incomplete-upgrade.json",
+      "expected_status": "invalid",
+      "expected_errors": [
+        "source_m1_not_complete"
+      ]
+    },
+    {
+      "fixture": "confirmation-missing-event.json",
+      "expected_status": "invalid",
+      "expected_errors": [
+        "confirmed_without_confirmation_event"
+      ]
+    },
+    {
+      "fixture": "confirmation-non-user.json",
+      "expected_status": "invalid",
+      "expected_errors": [
+        "confirmation_actor_not_user"
+      ]
+    },
+    {
+      "fixture": "confirmation-direction-mismatch.json",
+      "expected_status": "invalid",
+      "expected_errors": [
+        "confirmation_direction_mismatch"
+      ]
+    },
+    {
+      "fixture": "confirmation-stale-bundle.json",
+      "expected_status": "invalid",
+      "expected_errors": [
+        "confirmation_previous_bundle_hash_mismatch"
+      ]
+    },
+    {
+      "fixture": "confirmation-message-without-id.json",
+      "expected_status": "invalid",
+      "expected_errors": [
+        "confirmation_message_missing_explicit_direction_id"
+      ]
+    },
+    {
+      "fixture": "confirmation-high-risk-id.json",
+      "expected_status": "invalid",
+      "expected_errors": [
+        "selected_direction_not_formal"
+      ]
+    },
+    {
+      "fixture": "route-wrong-direction-hash.json",
+      "expected_status": "invalid",
+      "expected_errors": [
+        "route_source_direction_hash_mismatch"
+      ]
+    },
+    {
+      "fixture": "route-wrong-confirmation-hash.json",
+      "expected_status": "invalid",
+      "expected_errors": [
+        "route_confirmation_event_hash_mismatch"
+      ]
+    },
+    {
+      "fixture": "route-wrong-bundle-hash.json",
+      "expected_status": "invalid",
+      "expected_errors": [
+        "route_source_bundle_hash_mismatch"
+      ]
+    },
+    {
+      "fixture": "route-d2-relabelled.json",
+      "expected_status": "invalid",
+      "expected_errors": [
+        "route_source_direction_hash_mismatch"
+      ]
+    },
+    {
+      "fixture": "route-missing-claim-trace.json",
+      "expected_status": "invalid",
+      "expected_errors": [
+        "route_missing_claim_traceability"
+      ]
+    },
+    {
+      "fixture": "route-resource-expansion.json",
+      "expected_status": "invalid",
+      "expected_errors": [
+        "route_inherited_constraints_mismatch"
+      ]
+    },
+    {
+      "fixture": "decisive-test-oversized-step.json",
+      "expected_status": "invalid",
+      "expected_errors": [
+        "decisive_test_step_too_large"
+      ]
+    },
+    {
+      "fixture": "decisive-test-too-many-steps.json",
+      "expected_status": "invalid",
+      "expected_errors": [
+        "invalid_decisive_test_step_count"
+      ]
+    },
+    {
+      "fixture": "decisive-test-nested-route.json",
+      "expected_status": "invalid",
+      "expected_errors": [
+        "invalid_decisive_test_step"
+      ]
+    },
+    {
+      "fixture": "preprint-only-main.json",
+      "expected_status": "invalid",
+      "expected_errors": [
+        "provisional_main_requires_non_preprint_support"
+      ]
+    },
+    {
+      "fixture": "preprint-only-safety.json",
+      "expected_status": "invalid",
+      "expected_errors": [
+        "safety_gate_requires_non_preprint_support"
+      ]
+    },
+    {
+      "fixture": "claim-missing-coverage.json",
+      "expected_status": "invalid",
+      "expected_errors": [
+        "core_claim_without_test_coverage"
+      ]
+    },
+    {
+      "fixture": "uq-wrong-metric-role.json",
+      "expected_status": "invalid",
+      "expected_errors": [
+        "uncertainty_claim_requires_uncertainty_metric"
+      ]
+    },
+    {
+      "fixture": "unresolved-data-precondition.json",
+      "expected_status": "invalid",
+      "expected_errors": [
+        "unresolved_blocking_precondition_passed_gate"
+      ]
+    },
+    {
+      "fixture": "axis-profile-mismatch.json",
+      "expected_status": "invalid",
+      "expected_errors": [
+        "axis_changes_do_not_match_profiles"
+      ]
+    },
+    {
+      "fixture": "scorecard-duplicate-rationale.json",
+      "expected_status": "invalid",
+      "expected_errors": [
+        "duplicate_score_dimension_rationale"
+      ]
+    }
   ]
 }

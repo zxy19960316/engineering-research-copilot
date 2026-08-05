@@ -1675,7 +1675,7 @@
         "direction_id": "D1",
         "position": "provisional_main",
         "title": "Fixture main direction",
-        "evidence_tier": "speculative",
+        "evidence_tier": "transfer-supported",
         "claim_language": "Recommended for priority validation",
         "axis_profile": {
           "problem": "fixture problem A",
@@ -2053,7 +2053,7 @@
         "claim_language": "Direct evidence supports applicability",
         "axis_profile": {
           "problem": "fixture problem A",
-          "method": "fixture method B",
+          "method": "fixture method A",
           "data": "fixture data A"
         },
         "axis_changes": [

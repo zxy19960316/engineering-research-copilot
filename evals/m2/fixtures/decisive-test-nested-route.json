@@ -1675,7 +1675,7 @@
         "direction_id": "D1",
         "position": "provisional_main",
         "title": "Fixture main direction",
-        "evidence_tier": "speculative",
+        "evidence_tier": "transfer-supported",
         "claim_language": "Recommended for priority validation",
         "axis_profile": {
           "problem": "fixture problem A",
@@ -1965,7 +1965,11 @@
             {
               "step_id": "S1",
               "action": "Run one bounded fixture comparison",
-              "bounded_output": "One frozen prediction and uncertainty table"
+              "bounded_output": {
+                "route_output": {
+                  "sequence": []
+                }
+              }
             },
             {
               "step_id": "S2",

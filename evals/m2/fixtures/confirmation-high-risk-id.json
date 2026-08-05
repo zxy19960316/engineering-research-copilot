@@ -1675,7 +1675,7 @@
         "direction_id": "D1",
         "position": "provisional_main",
         "title": "Fixture main direction",
-        "evidence_tier": "speculative",
+        "evidence_tier": "transfer-supported",
         "claim_language": "Recommended for priority validation",
         "axis_profile": {
           "problem": "fixture problem A",
@@ -2783,14 +2783,21 @@
     "portfolio_status": "provisional"
   },
   "direction_decision": {
-    "selected_direction_id": null,
-    "status": "waiting_for_user_confirmation",
+    "selected_direction_id": "H1",
+    "status": "user_confirmed",
     "permitted_next_actions": [
-      "confirm",
       "modify",
-      "reject"
+      "reject",
+      "generate_route"
     ],
-    "confirmation_event": null
+    "confirmation_event": {
+      "actor_role": "user",
+      "selected_direction_id": "H1",
+      "source_message_id": "message:confirm-h1",
+      "source_message_excerpt": "I explicitly confirm formal direction H1.",
+      "source_message_sha256": "ed12076d8e16b00aa88986adb3f7ad4bda70531ee167c16b45abe6f19ad6c6d2",
+      "previous_bundle_hash": "7f3ee0f4caea5c63cd06f8bb1de46228ca6d0a30a1eff9477bce1bedea291ff0"
+    }
   },
   "route_output": null,
   "fixture_mode": true,

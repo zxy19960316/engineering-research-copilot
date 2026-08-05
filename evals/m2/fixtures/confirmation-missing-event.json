@@ -1675,7 +1675,7 @@
         "direction_id": "D1",
         "position": "provisional_main",
         "title": "Fixture main direction",
-        "evidence_tier": "speculative",
+        "evidence_tier": "transfer-supported",
         "claim_language": "Recommended for priority validation",
         "axis_profile": {
           "problem": "fixture problem A",
@@ -2783,12 +2783,12 @@
     "portfolio_status": "provisional"
   },
   "direction_decision": {
-    "selected_direction_id": null,
-    "status": "waiting_for_user_confirmation",
+    "selected_direction_id": "D1",
+    "status": "user_confirmed",
     "permitted_next_actions": [
-      "confirm",
       "modify",
-      "reject"
+      "reject",
+      "generate_route"
     ],
     "confirmation_event": null
   },

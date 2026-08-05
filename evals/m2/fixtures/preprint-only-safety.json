@@ -890,7 +890,7 @@
       "candidate_pool": [
         {
           "candidate_id": "fixture:P01",
-          "verification_status": "fixture_only",
+          "verification_status": "verified_preprint",
           "recommendation_eligible": true,
           "evidence_roles": [
             "direct_problem"
@@ -911,7 +911,7 @@
             "canonical_url": "",
             "alternate_id": null,
             "verification": {
-              "status": "fixture_only",
+              "status": "verified_preprint",
               "checked_sources": [],
               "title_match": "not_checked",
               "author_match": "not_checked",
@@ -1667,7 +1667,7 @@
   "direction_portfolio": {
     "schema_version": "m2.1.1",
     "source_m1_terminal_state": "M1_COMPLETE",
-    "source_m1_bundle_hash": "a11fd192eb23c3804be9bb24dadf9a3a047387117d1310c423b84cb9d1708d02",
+    "source_m1_bundle_hash": "ebc2d6ff0f5c7b1abd366c76db776d443de9ecb3342481de41475e2ba1790cd2",
     "brief_version": 2,
     "branch_id": "branch-a",
     "directions": [
@@ -1675,7 +1675,7 @@
         "direction_id": "D1",
         "position": "provisional_main",
         "title": "Fixture main direction",
-        "evidence_tier": "speculative",
+        "evidence_tier": "transfer-supported",
         "claim_language": "Recommended for priority validation",
         "axis_profile": {
           "problem": "fixture problem A",
@@ -1775,7 +1775,9 @@
           {
             "gate_id": "safety_ethics_compliance",
             "status": "pass",
-            "evidence_candidate_ids": [],
+            "evidence_candidate_ids": [
+              "fixture:P01"
+            ],
             "required_precondition_ids": [],
             "rationale": "Offline fixture rationale for safety_ethics_compliance",
             "blockers": []
