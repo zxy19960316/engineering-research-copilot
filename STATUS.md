@@ -4,15 +4,29 @@
 
 `M2 — Direction decision and route gate`
 
-Status: `COMPLETE`
+Status: `IN_PROGRESS`
 
-Acceptance revision: `m2.1`
+Acceptance revision: `m2.1.1`
 
 Started from accepted M1.2 HEAD `f7d9009986527e72e5b60e22b43920886b0be179` on branch `codex/m2-direction-decision`.
+
+M2.1.1 semantic hardening started from accepted M2 HEAD `f0a44890fb9e3244ad86fb60f01065715ddb4de0` on branch `codex/m2.1.1-semantic-hardening`. That input HEAD has successful GitHub Actions run `30972309423`, job `92199125940`. The revision is limited to confirmation provenance, direction-to-route binding, bounded decisive tests, preprint support policy, claim coverage, structured data preconditions, derived direction axes, and dimension-specific scorecards.
 
 M2 converts one hash-bound `M1_COMPLETE` evidence bundle into an auditable direction portfolio. Detailed experiment, simulation, training, download, deployment, or large-resource route content remains blocked until the selected direction status is `user_confirmed`.
 
 ## M2 checklist
+
+- [x] Accepted M2 input HEAD, clean worktree, and exact-HEAD Actions success confirmed.
+- [x] M2.1.1 implementation plan created outside the installable Skill.
+- [ ] `m2.1.1` provenance and semantic gates specified red-first.
+- [ ] Confirmation and route provenance hash-bound.
+- [ ] Claim coverage, preprint support, and data-precondition policies enforced.
+- [ ] Direction axes derived and scorecard rationales hardened.
+- [ ] M2.1.1 adversarial fixtures generated and replayed deterministically.
+- [ ] Case A repaired and Case F audited without route execution.
+- [ ] Standard Skill validator, package audit, full tests, CI definition, and final acceptance record complete.
+
+### Accepted M2.1 baseline
 
 - [x] M1.2 baseline confirmed complete and the M2 work branch confirmed clean.
 - [x] M2 implementation plan created outside the installable Skill.
@@ -26,7 +40,7 @@ M2 converts one hash-bound `M1_COMPLETE` evidence bundle into an auditable direc
 
 ## M2 result
 
-Status: `COMPLETE`
+Status: `M2.1 COMPLETE; M2.1.1 IN_PROGRESS`
 
 Validated on `2026-08-05` from acceptance input HEAD `aec8531fa0565e87651b87761717158994afaec1` with:
 
