@@ -2,17 +2,30 @@
 
 ## Active milestone
 
-`M2 — Direction decision and route gate`
+`M3 — Engineering method cards`
 
-Status: `COMPLETE`
+Status: `IN_PROGRESS`
 
-Acceptance revision: `m2.1.1`
+Acceptance revision: `m3.1`
 
-Started from accepted M1.2 HEAD `f7d9009986527e72e5b60e22b43920886b0be179` on branch `codex/m2-direction-decision`.
+Acceptance input HEAD: `d0f5e9017044ba35d0ac4559591028228f3b22d8`
 
-M2.1.1 semantic hardening started from accepted M2 HEAD `f0a44890fb9e3244ad86fb60f01065715ddb4de0` on branch `codex/m2.1.1-semantic-hardening`. That input HEAD has successful GitHub Actions run `30972309423`, job `92199125940`. The revision is limited to confirmation provenance, direction-to-route binding, bounded decisive tests, preprint support policy, claim coverage, structured data preconditions, derived direction axes, and dimension-specific scorecards.
+Baseline Actions run: `30977286846` (`push`, exact HEAD, `success`).
 
-M2 converts one hash-bound `M1_COMPLETE` evidence bundle into an auditable direction portfolio. Detailed experiment, simulation, training, download, deployment, or large-resource route content remains blocked until the selected direction status is `user_confirmed`.
+M3 started from the exact accepted M2.1.1 closure HEAD on branch `codex/m3-engineering-method-cards`; it was not created from the older `origin/main` HEAD `f7d9009986527e72e5b60e22b43920886b0be179`. M3 is limited to offline, evidence-grounded method coaching and its deterministic validation artifacts. It does not authorize experiment or route execution, training, downloads, services, deployment, uploads, RRC integration, or platform integration.
+
+Before route-specific method-card instantiation, M3 must validate the complete M2.1.1 bundle, require `user_confirmed`, recompute the selected-direction binding, reject every non-empty `approved_constraint_changes` list with `unsupported_approved_constraint_change_provenance`, and rederive claim metrics, claim-specific preconditions, resource ceilings, and actual Go/Stop/Pivot coverage from upstream structures.
+
+## M3 checklist
+
+- [x] Exact accepted M2.1.1 input HEAD, clean worktree, remote branch, and exact-HEAD Actions success confirmed.
+- [x] Local branch `codex/m3-engineering-method-cards` created directly from `d0f5e9017044ba35d0ac4559591028228f3b22d8`.
+- [x] M3 implementation plan created outside the installable Skill.
+- [ ] M3 input compatibility and fail-closed provenance gates specified red-first.
+- [ ] Closed `m3.1` method-card and source-ledger schema implemented offline.
+- [ ] Six general method families and the nuclear engineering × machine learning overlay implemented as directly linked one-level references.
+- [ ] Adversarial fixtures, deterministic regeneration, and frozen replay pass.
+- [ ] Existing M1 and M2 validation remain green; M3 package and final scope audits pass.
 
 ## M2 checklist
 
@@ -137,14 +150,14 @@ Evidence is recorded under `evals/m1/`, including preserved failed runs and inde
 ## Later milestones
 
 - M2: `M2.1 COMPLETE; M2.1.1 COMPLETE`
-- M3: `NOT_STARTED`
+- M3: `IN_PROGRESS`
 - M4: `NOT_STARTED`
 - M5: `NOT_STARTED`
 
 ## External state
 
 - Git remote: `https://github.com/zxy19960316/engineering-research-copilot.git`
-- Active local branch: `codex/m2.1.1-semantic-hardening`
+- Active local branch: `codex/m3-engineering-method-cards`
 - External APIs/services configured: none
 - RRC integration: not started
 - Platform integration: not required for the local Skill competition track
