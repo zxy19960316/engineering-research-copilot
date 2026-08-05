@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import copy
 import hashlib
+import importlib.util
 import json
 import sys
 from pathlib import Path
@@ -13,14 +14,18 @@ from pathlib import Path
 M2_DIR = Path(__file__).resolve().parent
 REPO_ROOT = M2_DIR.parents[1]
 sys.path.insert(0, str(REPO_ROOT))
-
-from tests.test_validate_m2_direction_bundle import (  # noqa: E402
-    _confirm_bundle,
-    _refresh_hash,
-    _route_output,
-    _set_nonconfirmed_decision,
-    make_valid_m2_bundle,
+_TEST_SPEC = importlib.util.spec_from_file_location(
+    "m2_fixture_builders", REPO_ROOT / "tests" / "test_validate_m2_direction_bundle.py"
 )
+if _TEST_SPEC is None or _TEST_SPEC.loader is None:
+    raise RuntimeError("Unable to load M2 fixture builders")
+_TEST_MODULE = importlib.util.module_from_spec(_TEST_SPEC)
+_TEST_SPEC.loader.exec_module(_TEST_MODULE)
+_confirm_bundle = _TEST_MODULE._confirm_bundle
+_refresh_hash = _TEST_MODULE._refresh_hash
+_route_output = _TEST_MODULE._route_output
+_set_nonconfirmed_decision = _TEST_MODULE._set_nonconfirmed_decision
+make_valid_m2_bundle = _TEST_MODULE.make_valid_m2_bundle
 from validate_m2_direction_bundle import canonical_sha256  # noqa: E402
 
 

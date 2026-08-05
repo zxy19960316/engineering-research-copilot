@@ -1,4 +1,4 @@
-name: M1 and M2 Validation
+name: M1 and M2.1.1 Validation
 
 on:
   push:
@@ -25,6 +25,7 @@ jobs:
             evals/m1/replay_offline_results.py \
             evals/m1/replay_machine_artifacts.py \
             evals/m2/build_fixtures.py \
+            evals/m2/build_forward_case_f.py \
             evals/m2/replay_offline_results.py
       - name: Unit tests
         run: python -m unittest discover -s tests -p "test_*.py" -v
@@ -32,5 +33,44 @@ jobs:
         run: python evals/m1/replay_offline_results.py
       - name: Replay machine artifacts
         run: python evals/m1/replay_machine_artifacts.py
-      - name: Replay M2 fixtures
+      - name: Generate M2.1.1 fixtures
+        run: python evals/m2/build_fixtures.py
+      - name: Require M2.1.1 fixture regeneration diff to be empty
+        run: git diff --exit-code -- evals/m2/adversarial-cases.json evals/m2/fixtures
+      - name: Replay M2.1.1 frozen fixtures
         run: python evals/m2/replay_offline_results.py
+      - name: Repository package audit (not the standard Skill validator)
+        shell: python
+        run: |
+          from pathlib import Path
+
+          root = Path("skills/engineering-research-copilot")
+          skill = root / "SKILL.md"
+          text = skill.read_text(encoding="utf-8")
+          lines = text.splitlines()
+          assert len(lines) < 500, len(lines)
+          assert lines[0] == "---"
+          assert any(line.startswith("name: engineering-research-copilot") for line in lines[:10])
+          assert any(line.startswith("description:") for line in lines[:10])
+          references = sorted((root / "references").glob("*.md"))
+          unlinked = [path.name for path in references if path.name not in text]
+          assert not unlinked, unlinked
+          forbidden_names = {"README.md", "CHANGELOG.md", "INSTALLATION_GUIDE.md"}
+          forbidden = [path.as_posix() for path in root.rglob("*") if path.name in forbidden_names]
+          assert not forbidden, forbidden
+          markers = []
+          for path in root.rglob("*"):
+              if path.is_file() and path.suffix in {".md", ".py", ".yaml", ".yml"}:
+                  body = path.read_text(encoding="utf-8")
+                  for marker in ("TODO", "TBD", "[TODO]", "PLACEHOLDER"):
+                      if marker in body:
+                          markers.append((path.as_posix(), marker))
+          assert not markers, markers
+          print({
+              "audit": "repository_equivalent_not_standard_skill_validator",
+              "skill_lines": len(lines),
+              "linked_references": len(references),
+              "unlinked_references": len(unlinked),
+              "placeholder_matches": len(markers),
+              "forbidden_files": len(forbidden),
+          })
