@@ -27,6 +27,7 @@ MARKDOWN_LINK = re.compile(r"\[[^\]\r\n]+\]\(([^)\r\n]+)\)")
 DIRECT_REFERENCE_TARGET = re.compile(r"references/[^/\\]+\.md")
 FENCE_OPEN = re.compile(r"^ {0,3}(`{3,}|~{3,})[^\r\n]*$")
 HTML_COMMENT = re.compile(r"<!--.*?(?:-->|\Z)", re.DOTALL)
+LIST_MARKER = re.compile(r"(?:[-+*]|[0-9]{1,9}[.)])([ \t]+)")
 REPARSE_POINT = getattr(stat, "FILE_ATTRIBUTE_REPARSE_POINT", 0x400)
 
 
@@ -76,25 +77,81 @@ def _indent_columns(content: str) -> int:
     return columns
 
 
+def _columns_through(text: str) -> int:
+    columns = 0
+    for character in text:
+        if character == "\t":
+            columns += 4 - (columns % 4)
+        else:
+            columns += 1
+    return columns
+
+
+def _list_marker_indents(content: str) -> tuple[int, int] | None:
+    prefix_end = 0
+    while prefix_end < len(content) and content[prefix_end] in {" ", "\t"}:
+        prefix_end += 1
+    marker = LIST_MARKER.match(content, prefix_end)
+    if marker is None:
+        return None
+    leading_indent = _indent_columns(content[:prefix_end])
+    content_indent = _columns_through(content[: marker.end()])
+    return leading_indent, content_indent
+
+
 def _mask_indented_code(text: str) -> str:
     characters = list(text)
     offset = 0
     in_code = False
+    code_indent = 4
     may_start = True
+    list_content_indents: list[int] = []
     for line in text.splitlines(keepends=True):
         content = line.rstrip("\r\n")
         blank = not content.strip(" \t")
-        indented = _indent_columns(content) >= 4
+        indent = _indent_columns(content)
         if in_code:
-            if blank or indented:
+            if blank or indent >= code_indent:
                 _mask_span(characters, offset, offset + len(line))
-            else:
-                in_code = False
-                may_start = False
-        elif blank:
+                offset += len(line)
+                continue
+            in_code = False
+        if blank:
             may_start = True
-        elif may_start and indented:
+            offset += len(line)
+            continue
+
+        marker_indents = _list_marker_indents(content)
+        if marker_indents is not None:
+            marker_indent, marker_content_indent = marker_indents
+            while (
+                list_content_indents
+                and marker_indent < list_content_indents[-1]
+            ):
+                list_content_indents.pop()
+            if not list_content_indents and marker_indent < 4:
+                list_content_indents.append(marker_content_indent)
+                may_start = False
+                offset += len(line)
+                continue
+            if list_content_indents and (
+                list_content_indents[-1]
+                <= marker_indent
+                < list_content_indents[-1] + 4
+            ):
+                list_content_indents.append(marker_content_indent)
+                may_start = False
+                offset += len(line)
+                continue
+
+        while list_content_indents and indent < list_content_indents[-1]:
+            list_content_indents.pop()
+        required_indent = (
+            list_content_indents[-1] + 4 if list_content_indents else 4
+        )
+        if may_start and indent >= required_indent:
             in_code = True
+            code_indent = required_indent
             may_start = False
             _mask_span(characters, offset, offset + len(line))
         else:
