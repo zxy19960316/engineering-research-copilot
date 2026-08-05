@@ -6,37 +6,34 @@
 
 Status: `IN_PROGRESS`
 
-Acceptance revision: `m3.1`
+Acceptance revision: `m3.1.1`
 
-Acceptance input HEAD: `d0f5e9017044ba35d0ac4559591028228f3b22d8`
+Input HEAD: `b0a1b9e41e85a1b57c80a8b571bac9ca01c88778`
 
-Baseline Actions run: `30977286846` (`push`, exact HEAD, `success`).
+M4: `NOT_STARTED`
 
-M3 started from the exact accepted M2.1.1 closure HEAD on branch `codex/m3-engineering-method-cards`; it was not created from the older `origin/main` HEAD `f7d9009986527e72e5b60e22b43920886b0be179`. M3 is limited to offline, evidence-grounded method coaching and its deterministic validation artifacts. It does not authorize experiment or route execution, training, downloads, services, deployment, uploads, RRC integration, or platform integration.
+M3.1 implementation is complete. M3.1.1 acceptance hardening is in progress on branch `codex/m3.1.1-acceptance-hardening`, created directly from the recorded M3 HEAD above. M3 remains limited to offline, evidence-grounded method coaching and deterministic validation artifacts. It does not authorize experiment or route execution, training, downloads, services, deployment, uploads, RRC integration, or platform integration.
 
-Before route-specific method-card instantiation, M3 must validate the complete M2.1.1 bundle, require `user_confirmed`, recompute the selected-direction binding, reject every non-empty `approved_constraint_changes` list with `unsupported_approved_constraint_change_provenance`, and rederive claim metrics, claim-specific preconditions, resource ceilings, and actual Go/Stop/Pivot coverage from upstream structures.
+Before route-specific method-card instantiation, M3.1.1 must validate the complete M2.1.1 bundle, require `user_confirmed`, recompute the selected-direction binding, reject every non-empty `approved_constraint_changes` list with `unsupported_approved_constraint_change_provenance`, and rederive claim metrics, claim-specific preconditions, resource ceilings, actual Go/Stop/Pivot coverage, safety-source eligibility, and method-card internal bindings from upstream structures.
 
 ## M3 checklist
 
-- [x] Exact accepted M2.1.1 input HEAD, clean worktree, remote branch, and exact-HEAD Actions success confirmed.
-- [x] Local branch `codex/m3-engineering-method-cards` created directly from `d0f5e9017044ba35d0ac4559591028228f3b22d8`.
-- [x] M3 implementation plan created outside the installable Skill.
-- [x] M3 input compatibility and fail-closed provenance gates specified red-first in 33 test methods; collection stops solely because the M3 validator module is intentionally absent.
-- [x] Closed `m3.1` method-card, typed source-ledger, resource-bound, upstream-threshold-bound, and nuclear-overlay schema implemented offline; 57 focused M3 validator tests pass.
-- [x] Six general method families and the nuclear engineering × machine learning overlay implemented as directly linked one-level references; the root Skill links all eight M3 references.
-- [x] Sixteen M3 adversarial fixtures, including two unbound-threshold cases, deterministic regeneration, strict manifest replay, and frozen replay pass without changing accepted M1/M2 evidence.
-- [x] Existing M1 and M2 validation remain green; the tracked M3 package audit enforces 13 unique rendered Markdown links to 13 readable regular top-level references, with no dangling, unlinked, duplicate, nested, linked/reparse, forbidden, or marker violations.
-- [x] M3 implementation and local validation refreshed on input HEAD `675e0091849e57633a720f2d5f854b98d270f9ad`: 251 unit tests, 34/34 M2 replay cases, 16/16 M3 replay cases, byte-stable fixture regeneration, standard Skill validation, and the tracked package audit all passed on first attempt.
-- [ ] Required genuinely fresh-context M3 forward evaluation remains `NOT_RUN`; the independent accepted upstream inputs listed in `evals/m3/results/2026-08-05-forward-evaluation-not-run.md` are unavailable.
-- [ ] Exact-closure-HEAD GitHub Actions remains `NOT_RUN — push not authorized`; baseline run `30977286846` is not M3 implementation CI.
+- [x] Existing M3.1 implementation, references, 57 focused validator tests, 16 offline cases, local validation record, and package audit are preserved as historical evidence.
+- [x] M3.1.1 branch `codex/m3.1.1-acceptance-hardening` created directly from exact input HEAD `b0a1b9e41e85a1b57c80a8b571bac9ca01c88778` with a clean worktree.
+- [x] M3.1.1 acceptance plan created outside the installable Skill.
+- [ ] Safety-source, non-negative-resource, and method-card claim/metric binding gates implemented and locally green.
+- [ ] Twenty deterministic M3 adversarial cases regenerated and replayed byte-stably.
+- [ ] Five independently accepted M2.1.1 forward inputs prepared, or each unavailable prerequisite preserved as blocked/NOT_RUN.
+- [ ] Five genuinely fresh-context forward evaluations completed without repair, retry, input mutation, or side effects.
+- [ ] Complete local regression and exact-closure-HEAD GitHub Actions success recorded.
 
 ## M3 local result
 
-Status: `LOCAL_IMPLEMENTATION_AND_VALIDATION_COMPLETE; ACCEPTANCE_PENDING`
+Status: `M3.1 IMPLEMENTATION_COMPLETE; M3.1.1 ACCEPTANCE_PENDING`
 
-M3.1 passed all local implementation, regression, deterministic replay, standard Skill validation, and package-audit gates on `2026-08-05`. The local record is `evals/m3/results/2026-08-05-m3.1-final-validation.md`. M3 remains `IN_PROGRESS`, because fresh-context forward evaluation and exact-closure-HEAD remote CI are both honestly preserved as `NOT_RUN`; no offline fixture or baseline M2.1.1 Actions run is relabeled as those missing gates.
+Historical M3.1 local implementation and validation passed on `2026-08-05`; see `evals/m3/results/2026-08-05-m3.1-final-validation.md`. That record remains a local/offline result and does not satisfy M3.1.1 acceptance. No stale claim that M3 closure candidate HEAD `b0a1b9e` passed Actions run `31000758678` is accepted here. The baseline M2.1.1 Actions run `30977286846` is not M3 implementation CI, and exact-closure-HEAD CI remains `NOT_RUN` until an explicitly authorized push.
 
-This local result does not claim a real experiment, simulation, training run, download, deployment, route execution, target-domain transfer result, operational readiness, or nuclear safety conclusion.
+Neither the historical local result nor this acceptance revision claims a real experiment, simulation, training run, download, deployment, route execution, target-domain transfer result, operational readiness, or nuclear safety conclusion.
 
 ## M2 checklist
 
