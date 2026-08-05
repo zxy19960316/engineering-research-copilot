@@ -25,8 +25,8 @@ Before route-specific method-card instantiation, M3 must validate the complete M
 - [x] Closed `m3.1` method-card, typed source-ledger, resource-bound, upstream-threshold-bound, and nuclear-overlay schema implemented offline; 57 focused M3 validator tests pass.
 - [x] Six general method families and the nuclear engineering × machine learning overlay implemented as directly linked one-level references; the root Skill links all eight M3 references.
 - [x] Sixteen M3 adversarial fixtures, including two unbound-threshold cases, deterministic regeneration, strict manifest replay, and frozen replay pass without changing accepted M1/M2 evidence.
-- [x] Existing M1 and M2 validation remain green; the tracked M3 package audit enforces 13 unique exact Markdown links to all 13 top-level references, with no dangling, unlinked, duplicate, nested, forbidden, or marker violations.
-- [x] M3 implementation and local validation refreshed on input HEAD `4d679c936caf04e00aa462a55fcb1b1d309ff9e2`: 242 unit tests, 34/34 M2 replay cases, 16/16 M3 replay cases, byte-stable fixture regeneration, standard Skill validation, and the tracked package audit all passed on first attempt.
+- [x] Existing M1 and M2 validation remain green; the tracked M3 package audit enforces 13 unique rendered Markdown links to 13 readable regular top-level references, with no dangling, unlinked, duplicate, nested, linked/reparse, forbidden, or marker violations.
+- [x] M3 implementation and local validation refreshed on input HEAD `4a31fae47d85a1ce70ea944db38fb2ebfa7c4eb6`: 247 unit tests, 34/34 M2 replay cases, 16/16 M3 replay cases, byte-stable fixture regeneration, standard Skill validation, and the tracked package audit all passed on first attempt.
 - [ ] Required genuinely fresh-context M3 forward evaluation remains `NOT_RUN`; the independent accepted upstream inputs listed in `evals/m3/results/2026-08-05-forward-evaluation-not-run.md` are unavailable.
 - [ ] Exact-closure-HEAD GitHub Actions remains `NOT_RUN — push not authorized`; baseline run `30977286846` is not M3 implementation CI.
 
