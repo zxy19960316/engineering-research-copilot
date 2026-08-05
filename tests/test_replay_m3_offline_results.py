@@ -152,6 +152,79 @@ class M3OfflineResultsReplayTests(unittest.TestCase):
             (temp_root / "fixtures" / manifest["cases"][0]["fixture"]).unlink()
             self._assert_contract_rejected(manifest_path)
 
+    def test_linked_fixture_root_is_rejected_before_external_fixture_read(self):
+        with tempfile.TemporaryDirectory(dir=M3_EVAL_DIR) as directory:
+            temp_root = Path(directory)
+            manifest_root = temp_root / "manifest"
+            manifest_root.mkdir()
+            manifest_path, _ = self._copy_replay_tree(manifest_root)
+            fixture_entry = manifest_root / "fixtures"
+            external_fixture_dir = temp_root / "external-fixtures"
+            fixture_entry.rename(external_fixture_dir)
+            try:
+                os.symlink(
+                    external_fixture_dir,
+                    fixture_entry,
+                    target_is_directory=True,
+                )
+            except OSError as error:
+                if os.name == "nt":
+                    self.skipTest(f"directory symlink unavailable: {error.winerror}")
+                raise
+
+            loaded_paths: list[Path] = []
+            real_load_json = _REPLAY_MODULE._load_json
+
+            def tracked_load_json(path: Path) -> object:
+                loaded_paths.append(path)
+                return real_load_json(path)
+
+            try:
+                with mock.patch.object(
+                    _REPLAY_MODULE,
+                    "_load_json",
+                    side_effect=tracked_load_json,
+                ):
+                    self._assert_contract_rejected(manifest_path)
+                self.assertEqual(
+                    [path.resolve() for path in loaded_paths],
+                    [manifest_path.resolve()],
+                )
+
+                loaded_paths.clear()
+                with mock.patch.object(
+                    _REPLAY_MODULE,
+                    "_load_json",
+                    side_effect=tracked_load_json,
+                ):
+                    exit_code, stdout, stderr = self._run_main(manifest_root, [])
+                self.assertEqual(exit_code, 1)
+                self.assertEqual(stderr, "")
+                self.assertEqual(
+                    json.loads(stdout),
+                    {"error": "invalid_replay_contract", "status": "invalid"},
+                )
+                self.assertEqual(
+                    [path.resolve() for path in loaded_paths],
+                    [manifest_path.resolve()],
+                )
+            finally:
+                fixture_entry.unlink(missing_ok=True)
+
+    def test_windows_reparse_attribute_marks_fixture_root_as_linked(self):
+        reparse_metadata = mock.Mock(
+            st_mode=0o040000,
+            st_file_attributes=0x400,
+        )
+        with mock.patch.object(
+            _REPLAY_MODULE.os,
+            "lstat",
+            return_value=reparse_metadata,
+        ):
+            self.assertTrue(
+                _REPLAY_MODULE._fixture_root_is_linked(Path("fixtures"))
+            )
+
     def test_manifest_and_case_objects_are_closed_and_typed(self):
         mutations = {
             "unknown_manifest_field": lambda manifest: manifest.update(
