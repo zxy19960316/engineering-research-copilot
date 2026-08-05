@@ -3,16 +3,21 @@ from __future__ import annotations
 import contextlib
 import io
 import json
+import os
+import stat
 import sys
 import tempfile
 import unittest
 from pathlib import Path
+from types import SimpleNamespace
+from unittest import mock
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 M3_EVAL_DIR = REPO_ROOT / "evals" / "m3"
 sys.path.insert(0, str(M3_EVAL_DIR))
 
+import audit_skill_package  # noqa: E402
 from audit_skill_package import audit_package, main  # noqa: E402
 
 
@@ -55,6 +60,36 @@ class M3SkillPackageAuditTests(unittest.TestCase):
             result = audit_package(package)
         self.assertIn("unlinked_reference", result["errors"])
 
+    def test_nonrendered_link_like_text_is_not_a_direct_link(self):
+        cases = {
+            "backtick_fence": (
+                "```markdown\n[Reference](references/reference.md)\n```\n"
+            ),
+            "tilde_fence": (
+                "~~~markdown\n[Reference](references/reference.md)\n~~~\n"
+            ),
+            "inline_code": "`[Reference](references/reference.md)`\n",
+            "multiline_html_comment": (
+                "<!--\n[Reference](references/reference.md)\n-->\n"
+            ),
+            "escaped_open_bracket": (
+                "\\[Reference](references/reference.md)\n"
+            ),
+        }
+        for name, link_like_text in cases.items():
+            with self.subTest(name=name), tempfile.TemporaryDirectory() as temp_dir:
+                package = self._make_package(
+                    Path(temp_dir),
+                    "---\n"
+                    "name: engineering-research-copilot\n"
+                    "description: \"test package\"\n"
+                    "---\n\n"
+                    + link_like_text,
+                )
+                result = audit_package(package)
+            self.assertEqual(0, result["direct_link_count"])
+            self.assertIn("unlinked_reference", result["errors"])
+
     def test_dangling_and_unlinked_direct_links_are_rejected(self):
         with tempfile.TemporaryDirectory() as temp_dir:
             package = self._make_package(
@@ -92,6 +127,75 @@ class M3SkillPackageAuditTests(unittest.TestCase):
             )
             result = audit_package(package)
         self.assertIn("nested_reference_markdown", result["errors"])
+
+    def test_directory_named_markdown_is_not_a_valid_reference(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            package = self._make_package(Path(temp_dir))
+            reference = package / "references" / "reference.md"
+            reference.unlink()
+            reference.mkdir()
+            result = audit_package(package)
+        self.assertEqual(0, result["reference_count"])
+        self.assertIn("invalid_top_level_reference", result["errors"])
+
+    def _replace_with_symlink(self, link: Path, target: Path | str) -> None:
+        link.unlink()
+        try:
+            os.symlink(target, link)
+        except (NotImplementedError, OSError) as error:
+            self.skipTest(f"symlink creation unavailable: {error}")
+
+    def test_broken_symlink_is_not_a_valid_reference(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            package = self._make_package(Path(temp_dir))
+            reference = package / "references" / "reference.md"
+            self._replace_with_symlink(reference, "missing-target.md")
+            result = audit_package(package)
+        self.assertEqual(0, result["reference_count"])
+        self.assertIn("invalid_top_level_reference", result["errors"])
+
+    def test_file_symlink_is_not_a_valid_reference(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            temp_root = Path(temp_dir)
+            package = self._make_package(temp_root)
+            external = temp_root / "external.md"
+            self._write(external, "# External\n")
+            reference = package / "references" / "reference.md"
+            self._replace_with_symlink(reference, external)
+            result = audit_package(package)
+        self.assertEqual(0, result["reference_count"])
+        self.assertIn("invalid_top_level_reference", result["errors"])
+
+    def test_windows_reparse_reference_is_not_valid(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            package = self._make_package(Path(temp_dir))
+            reference = package / "references" / "reference.md"
+            real_lstat = os.lstat
+
+            def mark_reference(path):
+                metadata = real_lstat(path)
+                if Path(path) == reference:
+                    return SimpleNamespace(
+                        st_mode=metadata.st_mode,
+                        st_file_attributes=(
+                            getattr(metadata, "st_file_attributes", 0)
+                            | getattr(
+                                stat,
+                                "FILE_ATTRIBUTE_REPARSE_POINT",
+                                0x400,
+                            )
+                        ),
+                    )
+                return metadata
+
+            with mock.patch.object(
+                audit_skill_package.os,
+                "lstat",
+                side_effect=mark_reference,
+            ):
+                result = audit_package(package)
+        self.assertEqual(0, result["reference_count"])
+        self.assertIn("invalid_top_level_reference", result["errors"])
 
     def test_forbidden_file_and_marker_are_rejected(self):
         with tempfile.TemporaryDirectory() as temp_dir:
