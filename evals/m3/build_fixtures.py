@@ -219,6 +219,7 @@ def build_manifest(cases: dict[str, dict]) -> dict:
         "evidence_class": "offline_contract_fixture",
         "cases": [
             {
+                "case_id": name,
                 "fixture": f"{name}.json",
                 "expected_status": EXPECTED_RESULTS[name]["status"],
                 "expected_errors": EXPECTED_RESULTS[name]["errors"],

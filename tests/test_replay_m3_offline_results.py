@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import copy
 import contextlib
+import hashlib
 import importlib.util
 import io
 import json
@@ -156,17 +157,33 @@ class M3OfflineResultsReplayTests(unittest.TestCase):
             "unknown_manifest_field": lambda manifest: manifest.update(
                 {"unexpected": True}
             ),
-            "missing_manifest_field": lambda manifest: manifest.pop("evidence_class"),
+            "missing_manifest_schema": lambda manifest: manifest.pop("schema_version"),
+            "missing_manifest_evidence_class": lambda manifest: manifest.pop(
+                "evidence_class"
+            ),
+            "missing_manifest_cases": lambda manifest: manifest.pop("cases"),
             "wrong_manifest_schema_type": lambda manifest: manifest.update(
                 {"schema_version": 31}
+            ),
+            "wrong_manifest_evidence_class_type": lambda manifest: manifest.update(
+                {"evidence_class": []}
             ),
             "wrong_cases_type": lambda manifest: manifest.update({"cases": {}}),
             "unknown_case_field": lambda manifest: manifest["cases"][0].update(
                 {"unexpected": True}
             ),
             "missing_case_id": lambda manifest: manifest["cases"][0].pop("case_id"),
-            "missing_case_field": lambda manifest: manifest["cases"][0].pop(
+            "missing_case_fixture": lambda manifest: manifest["cases"][0].pop(
+                "fixture"
+            ),
+            "missing_case_status": lambda manifest: manifest["cases"][0].pop(
+                "expected_status"
+            ),
+            "missing_case_errors": lambda manifest: manifest["cases"][0].pop(
                 "expected_errors"
+            ),
+            "missing_case_gaps": lambda manifest: manifest["cases"][0].pop(
+                "expected_evidence_gaps"
             ),
             "wrong_case_id_type": lambda manifest: manifest["cases"][0].update(
                 {"case_id": 1}
@@ -179,6 +196,9 @@ class M3OfflineResultsReplayTests(unittest.TestCase):
             ),
             "wrong_status_value": lambda manifest: manifest["cases"][0].update(
                 {"expected_status": "unknown"}
+            ),
+            "wrong_status_type": lambda manifest: manifest["cases"][0].update(
+                {"expected_status": []}
             ),
             "wrong_errors_type": lambda manifest: manifest["cases"][0].update(
                 {"expected_errors": "invalid_method_card"}
@@ -206,9 +226,13 @@ class M3OfflineResultsReplayTests(unittest.TestCase):
             temp_root = Path(directory)
             manifest_path, manifest = self._copy_replay_tree(temp_root)
             manifest_text = manifest_path.read_text(encoding="utf-8")
-            duplicate = '  "schema_version": "m3.1-adversarial-cases",\n'
+            duplicate = '  "schema_version": "m3.1-adversarial-cases"\n'
             manifest_path.write_text(
-                manifest_text.replace(duplicate, duplicate + duplicate, 1),
+                manifest_text.replace(
+                    duplicate,
+                    duplicate.rstrip("\n") + ",\n" + duplicate,
+                    1,
+                ),
                 encoding="utf-8",
                 newline="\n",
             )
@@ -270,11 +294,29 @@ class M3OfflineResultsReplayTests(unittest.TestCase):
                     frozen_path = temp_root / "offline-results.json"
                     sentinel = b"preserve-existing-frozen-record\n"
                     frozen_path.write_bytes(sentinel)
+                    before_sha256 = hashlib.sha256(sentinel).hexdigest()
                     exit_code, stdout, stderr = self._run_main(temp_root, ["--record"])
                     self.assertEqual(exit_code, 1)
                     self.assertEqual(stderr, "")
-                    self.assertEqual(json.loads(stdout)["status"], "invalid")
+                    expected_output = (
+                        {
+                            "all_matched": False,
+                            "case_count": 14,
+                            "matched_frozen_record": False,
+                            "status": "invalid",
+                        }
+                        if failure_kind == "mismatch"
+                        else {
+                            "error": "invalid_replay_contract",
+                            "status": "invalid",
+                        }
+                    )
+                    self.assertEqual(json.loads(stdout), expected_output)
                     self.assertEqual(frozen_path.read_bytes(), sentinel)
+                    self.assertEqual(
+                        hashlib.sha256(frozen_path.read_bytes()).hexdigest(),
+                        before_sha256,
+                    )
 
     def test_successful_record_is_atomic_canonical_and_leaves_no_temp_file(self):
         with tempfile.TemporaryDirectory(dir=M3_EVAL_DIR) as directory:
