@@ -1,0 +1,119 @@
+{
+  "cases": [
+    {
+      "expected_errors": [],
+      "expected_evidence_gaps": [],
+      "expected_status": "valid",
+      "fixture": "valid-bounded.json"
+    },
+    {
+      "expected_errors": [],
+      "expected_evidence_gaps": [],
+      "expected_status": "valid",
+      "fixture": "valid-route-specific.json"
+    },
+    {
+      "expected_errors": [
+        "invalid_method_card",
+        "missing_method_card_assumptions"
+      ],
+      "expected_evidence_gaps": [],
+      "expected_status": "invalid",
+      "fixture": "missing-assumptions.json"
+    },
+    {
+      "expected_errors": [
+        "invalid_method_card",
+        "missing_method_card_baselines"
+      ],
+      "expected_evidence_gaps": [],
+      "expected_status": "invalid",
+      "fixture": "missing-baseline.json"
+    },
+    {
+      "expected_errors": [
+        "invalid_method_card",
+        "missing_method_card_failure_modes"
+      ],
+      "expected_evidence_gaps": [],
+      "expected_status": "invalid",
+      "fixture": "missing-failure-mode.json"
+    },
+    {
+      "expected_errors": [
+        "invalid_method_card",
+        "missing_method_card_uncertainty_handling"
+      ],
+      "expected_evidence_gaps": [],
+      "expected_status": "invalid",
+      "fixture": "missing-uncertainty-handling.json"
+    },
+    {
+      "expected_errors": [
+        "invalid_method_card_stop_condition"
+      ],
+      "expected_evidence_gaps": [],
+      "expected_status": "invalid",
+      "fixture": "nonnumeric-stop-condition.json"
+    },
+    {
+      "expected_errors": [
+        "invalid_source_ledger",
+        "missing_source_ledger_does_not_support"
+      ],
+      "expected_evidence_gaps": [],
+      "expected_status": "invalid",
+      "fixture": "source-missing-does-not-support.json"
+    },
+    {
+      "expected_errors": [
+        "direction_not_user_confirmed"
+      ],
+      "expected_evidence_gaps": [],
+      "expected_status": "invalid",
+      "fixture": "unconfirmed-direction.json"
+    },
+    {
+      "expected_errors": [
+        "unsupported_approved_constraint_change_provenance"
+      ],
+      "expected_evidence_gaps": [],
+      "expected_status": "invalid",
+      "fixture": "nonempty-approved-constraint-changes.json"
+    },
+    {
+      "expected_errors": [
+        "minimum_resource_exceeds_ceiling"
+      ],
+      "expected_evidence_gaps": [],
+      "expected_status": "invalid",
+      "fixture": "resource-expansion.json"
+    },
+    {
+      "expected_errors": [
+        "route_precondition_traceability_mismatch"
+      ],
+      "expected_evidence_gaps": [],
+      "expected_status": "invalid",
+      "fixture": "route-precondition-mismatch.json"
+    },
+    {
+      "expected_errors": [
+        "route_condition_traceability_mismatch"
+      ],
+      "expected_evidence_gaps": [],
+      "expected_status": "invalid",
+      "fixture": "route-condition-mismatch.json"
+    },
+    {
+      "expected_errors": [
+        "nuclear_overlay_transfer_status_not_hypothesis"
+      ],
+      "expected_evidence_gaps": [],
+      "expected_status": "invalid",
+      "fixture": "nuclear-transfer-overclaim.json"
+    }
+  ],
+  "evidence_class": "offline_contract_fixture",
+  "schema_version": "m3.1-adversarial-cases"
+}
