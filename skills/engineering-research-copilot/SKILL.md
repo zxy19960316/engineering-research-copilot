@@ -32,7 +32,7 @@ Treat the two searches as one calibration cycle, not a permanent limit. If the u
 | Confirm or compare research directions | [Direction decision](references/core-direction-decision.md) and, when papers are used, [Citation integrity](references/core-citation-integrity.md) |
 | React to dissatisfaction or changed constraints | [Feedback rollback](references/core-feedback-rollback.md) |
 | Plan an experiment, simulation, or minimum decisive test | [Direction decision](references/core-direction-decision.md); require `user_confirmed` direction status first |
-| Coach a research method | [Method coaching](references/core-method-coaching.md) |
+| Coach an experiment, simulation, control, or signal method | [Method coaching](references/core-method-coaching.md), then load only the applicable family: [Experiment, measurement, and UQ](references/method-experiment-measurement-uq.md), [Modeling, simulation, and VVUQ](references/method-modeling-simulation-vvuq.md), [Control, optimization, and identification](references/method-control-optimization-identification.md), or [Signal processing and diagnostics](references/method-signal-diagnostics.md) |
 | Check data-result-claim consistency | Perform a read-only claim-evidence audit; distinguish observed data, analysis output, interpretation, and speculation |
 | Review writing, figures, or format | Perform a read-only red-team pass, then hand off execution to a dedicated writing, figure, document, or data Skill when available |
 
