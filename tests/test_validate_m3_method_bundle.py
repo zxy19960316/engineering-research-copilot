@@ -167,6 +167,7 @@ def _complete_method_card(direction: dict, source_m1_bundle: dict) -> dict:
                 "source_id": f"source:{source_candidate['candidate_id']}",
                 "candidate_id": source_candidate["candidate_id"],
                 "basis_level": _m3_basis_level(source_candidate),
+                "support_types": ["method"],
                 "supports": ["Offline method-card structure"],
                 "does_not_support": ["Real method performance"],
                 "limitations": ["Synthetic abstract-level fixture only"],
@@ -281,6 +282,7 @@ def _nuclear_overlay(candidate_id: str = "fixture:P04") -> dict:
                 "source_id": f"source:{candidate_id}",
                 "candidate_id": candidate_id,
                 "basis_level": "abstract",
+                "support_types": ["safety"],
                 "supports": ["Safety-related method checks"],
                 "does_not_support": ["Operational nuclear safety"],
                 "limitations": ["Synthetic abstract-level fixture only"],
@@ -439,6 +441,33 @@ class ValidateM3MethodBundleTests(unittest.TestCase):
                     validate_m3_bundle(bundle)["errors"],
                 )
 
+    def test_source_ledger_requires_support_types(self):
+        bundle = make_valid_m3_bundle()
+        del bundle["method_cards"][0]["source_ledger"][0]["support_types"]
+        self.assertIn(
+            "missing_source_ledger_support_types",
+            validate_m3_bundle(bundle)["errors"],
+        )
+
+    def test_source_ledger_support_types_must_be_nonempty(self):
+        bundle = make_valid_m3_bundle()
+        bundle["method_cards"][0]["source_ledger"][0]["support_types"] = []
+        self.assertIn(
+            "empty_source_ledger_support_types",
+            validate_m3_bundle(bundle)["errors"],
+        )
+
+    def test_source_ledger_support_types_are_closed(self):
+        bundle = make_valid_m3_bundle()
+        bundle["method_cards"][0]["source_ledger"][0]["support_types"] = [
+            "method",
+            "untyped_claim",
+        ]
+        self.assertIn(
+            "invalid_source_ledger_support_type",
+            validate_m3_bundle(bundle)["errors"],
+        )
+
     def test_source_ledger_basis_level_must_match_candidate(self):
         bundle = make_valid_m3_bundle()
         bundle["method_cards"][0]["source_ledger"][0]["basis_level"] = "metadata"
@@ -475,6 +504,11 @@ class ValidateM3MethodBundleTests(unittest.TestCase):
                     "source_id": f"source:{candidate_id}",
                     "candidate_id": candidate_id,
                     "basis_level": BASIS_LEVEL_MAP[source_level],
+                    "support_types": (
+                        ["bibliographic_identity"]
+                        if source_level == "metadata_level"
+                        else ["method"]
+                    ),
                     "supports": ["Offline method-card structure"],
                     "does_not_support": ["Real method performance"],
                     "limitations": ["Synthetic contract record"],
@@ -633,6 +667,59 @@ class ValidateM3MethodBundleTests(unittest.TestCase):
             )
         _reconfirm_after_m1_change(bundle)
         bundle["domain_overlays"] = [_nuclear_overlay("contract:P15")]
+        self.assertIn(
+            "nuclear_safety_requires_non_preprint_support",
+            validate_m3_bundle(bundle)["errors"],
+        )
+
+    def test_metadata_basis_cannot_support_result_claim(self):
+        bundle = _make_production_m3_bundle()
+        for round_name in ("round1", "round2"):
+            candidate = _candidate_by_id(
+                bundle["source_m2_bundle"]["source_m1_bundle"],
+                round_name,
+                "contract:P13",
+            )
+            candidate["basis_level"] = "metadata_level"
+            candidate["verified_record"]["basis_level"] = "metadata_level"
+        ledger = bundle["method_cards"][0]["source_ledger"][0]
+        ledger["source_id"] = "source:contract:P13"
+        ledger["candidate_id"] = "contract:P13"
+        ledger["basis_level"] = "metadata"
+        ledger["support_types"] = ["result"]
+        ledger["supports"] = ["Observed endpoint statement"]
+        _reconfirm_after_m1_change(bundle)
+        self.assertIn(
+            "metadata_basis_cannot_support_claim",
+            validate_m3_bundle(bundle)["errors"],
+        )
+
+    def test_nuclear_safety_support_must_itself_be_non_preprint(self):
+        bundle = _make_production_m3_bundle()
+        for round_name in ("round1", "round2"):
+            candidate = _candidate_by_id(
+                bundle["source_m2_bundle"]["source_m1_bundle"],
+                round_name,
+                "contract:P15",
+            )
+            candidate["verification_status"] = "verified_preprint"
+            candidate["verified_record"]["verification"]["status"] = (
+                "verified_preprint"
+            )
+        _reconfirm_after_m1_change(bundle)
+        overlay = _nuclear_overlay("contract:P15")
+        overlay["source_ledger"].append(
+            {
+                "source_id": "source:contract:P14",
+                "candidate_id": "contract:P14",
+                "basis_level": "abstract",
+                "support_types": ["bibliographic_identity"],
+                "supports": ["Record identity"],
+                "does_not_support": ["Safety-related method checks"],
+                "limitations": ["Identity support only"],
+            }
+        )
+        bundle["domain_overlays"] = [overlay]
         self.assertIn(
             "nuclear_safety_requires_non_preprint_support",
             validate_m3_bundle(bundle)["errors"],
