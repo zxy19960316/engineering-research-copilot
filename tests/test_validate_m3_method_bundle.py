@@ -108,6 +108,46 @@ def _reconfirm_after_m1_change(bundle: dict) -> None:
     _refresh_m3_hashes(bundle)
 
 
+def _set_ledger_candidate(row: dict, source_m1_bundle: dict, candidate_id: str) -> None:
+    candidate = _candidate_by_id(source_m1_bundle, "round2", candidate_id)
+    row["source_id"] = f"source:{candidate_id}"
+    row["candidate_id"] = candidate_id
+    row["basis_level"] = _m3_basis_level(candidate)
+
+
+def make_ledger_candidate_verified_preprint(bundle: dict, candidate_id: str) -> None:
+    source = bundle["source_m2_bundle"]
+    for round_name in ("round1", "round2"):
+        candidate = _candidate_by_id(
+            source["source_m1_bundle"], round_name, candidate_id
+        )
+        candidate["verification_status"] = "verified_preprint"
+        candidate["verified_record"]["verification"]["status"] = "verified_preprint"
+        paper_map = source["source_m1_bundle"][round_name]["paper_map"]
+        for node in paper_map["nodes"]:
+            if node.get("id") == candidate_id:
+                node["verification_status"] = "verified_preprint"
+        for entry in paper_map["text_fallback"]:
+            if entry.get("id") == candidate_id:
+                entry["verification_status"] = "verified_preprint"
+        paper_map["mermaid"] = "\n".join(
+            line.replace("status=verified_registry", "status=verified_preprint")
+            if f"id={candidate_id};" in line
+            else line
+            for line in paper_map["mermaid"].splitlines()
+        )
+
+    had_route = source["route_output"] is not None
+    source["route_output"] = None
+    source["direction_portfolio"]["source_m1_bundle_hash"] = canonical_sha256(
+        source["source_m1_bundle"]
+    )
+    _confirm_bundle(source)
+    if had_route:
+        source["route_output"] = _route_output(source)
+    _refresh_m3_hashes(bundle)
+
+
 def _add_bounded_condition_authority(source_m2_bundle: dict) -> None:
     direction = source_m2_bundle["direction_portfolio"]["directions"][0]
     coverage_by_claim = {
@@ -760,6 +800,75 @@ class ValidateM3MethodBundleTests(unittest.TestCase):
                     "invalid_minimum_resource_required_value",
                     validate_m3_bundle(bundle)["errors"],
                 )
+
+    def test_negative_minimum_resource_is_rejected(self):
+        bundle = make_valid_m3_bundle()
+        bundle["method_cards"][0]["minimum_resources"][0]["required_value"] = -1
+        self.assertIn(
+            "invalid_minimum_resource_required_value",
+            validate_m3_bundle(bundle)["errors"],
+        )
+
+    def test_general_safety_support_requires_non_preprint(self):
+        bundle = _make_production_m3_bundle()
+        card = bundle["method_cards"][0]
+        card["method_family"] = "reliability_safety_risk"
+        row = card["source_ledger"][0]
+        _set_ledger_candidate(
+            row,
+            bundle["source_m2_bundle"]["source_m1_bundle"],
+            "contract:P02",
+        )
+        row["support_types"] = ["safety"]
+        make_ledger_candidate_verified_preprint(bundle, row["candidate_id"])
+        self.assertIn(
+            "safety_support_requires_non_preprint_source",
+            validate_m3_bundle(bundle)["errors"],
+        )
+
+    def test_general_safety_support_passes_with_preprint_and_non_preprint_rows(self):
+        bundle = _make_production_m3_bundle()
+        card = bundle["method_cards"][0]
+        card["method_family"] = "reliability_safety_risk"
+        preprint_row = card["source_ledger"][0]
+        _set_ledger_candidate(
+            preprint_row,
+            bundle["source_m2_bundle"]["source_m1_bundle"],
+            "contract:P02",
+        )
+        preprint_row["support_types"] = ["safety"]
+        non_preprint_row = copy.deepcopy(preprint_row)
+        _set_ledger_candidate(
+            non_preprint_row,
+            bundle["source_m2_bundle"]["source_m1_bundle"],
+            "contract:P03",
+        )
+        non_preprint_row["supports"] = ["Fixture safety boundary"]
+        card["source_ledger"].append(non_preprint_row)
+        make_ledger_candidate_verified_preprint(bundle, preprint_row["candidate_id"])
+        _assert_valid(self, bundle)
+
+    def test_card_condition_metric_must_be_primary(self):
+        bundle = make_valid_m3_bundle()
+        card = bundle["method_cards"][0]
+        card["primary_metrics"] = ["M-PRED"]
+        card["pivot_conditions"][0]["metric_id"] = "M-UQ"
+        self.assertIn(
+            "method_card_condition_metric_not_primary",
+            validate_m3_bundle(bundle)["errors"],
+        )
+
+    def test_primary_metric_claim_type_must_be_supported(self):
+        bundle = make_valid_m3_bundle()
+        card = bundle["method_cards"][0]
+        card["applicability"]["supported_claim_types"] = [
+            "predictive_performance"
+        ]
+        card["primary_metrics"] = ["M-UQ"]
+        self.assertIn(
+            "method_card_primary_metric_claim_type_mismatch",
+            validate_m3_bundle(bundle)["errors"],
+        )
 
     def test_minimum_resource_unit_must_match_inherited_constraint(self):
         bundle = make_valid_m3_bundle()
