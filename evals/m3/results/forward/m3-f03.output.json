@@ -1,0 +1,40 @@
+{
+  "schema_version": "m3.1",
+  "status": "blocked",
+  "result": "unsupported_approved_constraint_change_provenance",
+  "selected_direction_id": "D1",
+  "original_selected_direction_resource_limits": [
+    {
+      "constraint_id": "R-D1-GPU-COUNT",
+      "operator": "<=",
+      "resource": "GPU devices",
+      "unit": "count",
+      "value": 1
+    },
+    {
+      "constraint_id": "R-D1-VRAM",
+      "operator": "<=",
+      "resource": "Peak GPU memory",
+      "unit": "GiB",
+      "value": 24
+    },
+    {
+      "constraint_id": "R-D1-WALL",
+      "operator": "<=",
+      "resource": "Elapsed route duration",
+      "unit": "calendar_days",
+      "value": 14
+    },
+    {
+      "constraint_id": "R-D1-FITS",
+      "operator": "<=",
+      "resource": "Total bounded model fits",
+      "unit": "fits",
+      "value": 2
+    }
+  ],
+  "applied_constraint_changes": [],
+  "upstream_provenance_repair_request": "Repair upstream provenance for the approved constraint change before M3 processing. Do not infer user identity or approval from a hash.",
+  "method_cards": [],
+  "domain_overlays": []
+}

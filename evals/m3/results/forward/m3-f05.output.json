@@ -1,0 +1,10 @@
+{
+  "schema_version": "m3.1",
+  "source_m2_bundle": {},
+  "source_m2_bundle_hash": "1b2a1c24bcf688c812d477c375aa40af00eee1c177e67fe13fa9dc8ec93b0251",
+  "selected_direction_id": "D1",
+  "selected_direction_hash": "0f92190cf923e2940e18b2a4ecffd6ebe62c6ee5b3e0bde044b92dbd8b88d1fe",
+  "coaching_mode": "bounded",
+  "method_cards": [],
+  "domain_overlays": []
+}

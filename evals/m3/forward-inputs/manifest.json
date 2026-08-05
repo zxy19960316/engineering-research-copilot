@@ -32,7 +32,7 @@
       "m2_validation_errors": [],
       "m2_validation_evidence_gaps": [],
       "m2_validation_status": "valid",
-      "raw_sha256": "5dfda369cf29b1dfe1ddd90c04f9aa12bd24f2e2eb40b7495f62963ddb4fdea4",
+      "raw_sha256": "73d8dd1c2c3aac56ee865dc9b9465b5a16a967d4b5ff9eb3d78b2afb722bad4e",
       "reviewed_by_context": "m2-input-preparation-context-2026-08-05:m3-f02:validator-recheck",
       "source_m1_artifact": "evals/m1/results/2026-08-04-pwr-sb-loca-rerun.bundle.json",
       "source_m1_raw_sha256": "ff6d4eed792358049213b114dbca3d3850c1c95caad68bb0e50cfb6f5b802529"
@@ -50,7 +50,7 @@
       "m2_validation_errors": [],
       "m2_validation_evidence_gaps": [],
       "m2_validation_status": "valid",
-      "raw_sha256": "b76a8ad2043e6b3a31ea63106145dbfe88fb239dac6a432b65e8b4d41ff03957",
+      "raw_sha256": "58d7b2724f414cb1c5c7a831284ec12ba2bcd8c34b929e7efd1a18d1c7e68c9c",
       "reviewed_by_context": "m2-input-preparation-context-2026-08-05:m3-f03:validator-recheck",
       "source_m1_artifact": "evals/m1/results/2026-08-04-pwr-sb-loca-rerun.bundle.json",
       "source_m1_raw_sha256": "ff6d4eed792358049213b114dbca3d3850c1c95caad68bb0e50cfb6f5b802529"
@@ -90,7 +90,7 @@
       "m2_validation_errors": [],
       "m2_validation_evidence_gaps": [],
       "m2_validation_status": "valid",
-      "raw_sha256": "3f3b0c0a9cd7e575388f71cac5c98677eedc87aee0441380a3c9067e309d799f",
+      "raw_sha256": "10275a834ed6cc29265da63f649ddfd0250fa32b28700a52416a0f0e9f7c7cf4",
       "reviewed_by_context": "m2-input-preparation-context-2026-08-05:m3-f05:validator-recheck",
       "source_m1_artifact": "evals/m1/results/2026-08-04-pwr-sb-loca-rerun.bundle.json",
       "source_m1_raw_sha256": "ff6d4eed792358049213b114dbca3d3850c1c95caad68bb0e50cfb6f5b802529"

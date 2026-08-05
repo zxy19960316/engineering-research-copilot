@@ -21,17 +21,17 @@ Before route-specific method-card instantiation, M3.1.1 must validate the comple
 - [x] Existing M3.1 implementation, references, 57 focused validator tests, 16 offline cases, local validation record, and package audit are preserved as historical evidence.
 - [x] M3.1.1 branch `codex/m3.1.1-acceptance-hardening` created directly from exact input HEAD `b0a1b9e41e85a1b57c80a8b571bac9ca01c88778` with a clean worktree.
 - [x] M3.1.1 acceptance plan created outside the installable Skill.
-- [ ] Safety-source, non-negative-resource, and method-card claim/metric binding gates implemented and locally green.
-- [ ] Twenty deterministic M3 adversarial cases regenerated and replayed byte-stably.
-- [ ] Five independently accepted M2.1.1 forward inputs prepared, or each unavailable prerequisite preserved as blocked/NOT_RUN.
-- [ ] Five genuinely fresh-context forward evaluations completed without repair, retry, input mutation, or side effects.
-- [ ] Complete local regression and exact-closure-HEAD GitHub Actions success recorded.
+- [x] Safety-source, non-negative-resource, and method-card claim/metric binding gates implemented; focused validator suite passes 62/62.
+- [x] Twenty deterministic M3 adversarial cases regenerated and replayed byte-stably.
+- [x] Independent M2 input preparation preserved: F02/F03/F05 M2-valid artifacts; F01 and F04 explicit NOT_RUN records.
+- [ ] Five genuinely fresh-context forward evaluations completed with accepted validator results; F01/F04 are NOT_RUN and F02/F03/F05 are preserved blocked/invalid outcomes.
+- [x] Complete local regression, package audit, Skill validation, and replay gates pass; exact-closure-HEAD GitHub Actions remains NOT_RUN because no push was authorized.
 
 ## M3 local result
 
-Status: `M3.1 IMPLEMENTATION_COMPLETE; M3.1.1 ACCEPTANCE_PENDING`
+Status: `M3.1.1 LOCAL_HARDENING_COMPLETE; ACCEPTANCE_BLOCKED`
 
-Historical M3.1 local implementation and validation passed on `2026-08-05`; see `evals/m3/results/2026-08-05-m3.1-final-validation.md`. That record remains a local/offline result and does not satisfy M3.1.1 acceptance. No stale claim that M3 closure candidate HEAD `b0a1b9e` passed Actions run `31000758678` is accepted here. The baseline M2.1.1 Actions run `30977286846` is not M3 implementation CI, and exact-closure-HEAD CI remains `NOT_RUN` until an explicitly authorized push.
+Historical M3.1 local implementation and validation passed on `2026-08-05`; the M3.1.1 local hardening and deterministic replay also pass. The blocked acceptance record is `evals/m3/results/2026-08-05-m3.1.1-final-validation.md`. F01 lacks an independently accepted confirmed no-route M2 input with upstream numeric stop/pivot criteria; F04 stops at an independent non-nuclear M1 `evidence_incomplete` result; F02 detects upstream route-condition traceability mismatch; F03 stops on the required approved-change provenance boundary; and F05 has a route-present input conflicting with the frozen bounded prompt. No fresh case was repaired or retried. No stale claim that M3 closure candidate HEAD `b0a1b9e` passed Actions run `31000758678` is accepted here. The baseline M2.1.1 Actions run `30977286846` is not M3 implementation CI, and exact-closure-HEAD CI remains `NOT_RUN` until an explicitly authorized push.
 
 Neither the historical local result nor this acceptance revision claims a real experiment, simulation, training run, download, deployment, route execution, target-domain transfer result, operational readiness, or nuclear safety conclusion.
 
