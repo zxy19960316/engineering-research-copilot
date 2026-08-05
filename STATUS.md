@@ -18,13 +18,13 @@ M2 converts one hash-bound `M1_COMPLETE` evidence bundle into an auditable direc
 
 - [x] Accepted M2 input HEAD, clean worktree, and exact-HEAD Actions success confirmed.
 - [x] M2.1.1 implementation plan created outside the installable Skill.
-- [ ] `m2.1.1` provenance and semantic gates specified red-first.
-- [ ] Confirmation and route provenance hash-bound.
-- [ ] Claim coverage, preprint support, and data-precondition policies enforced.
-- [ ] Direction axes derived and scorecard rationales hardened.
-- [ ] M2.1.1 adversarial fixtures generated and replayed deterministically.
-- [ ] Case A repaired and Case F audited without route execution.
-- [ ] Standard Skill validator, package audit, full tests, CI definition, and final acceptance record complete.
+- [x] `m2.1.1` provenance and semantic gates specified red-first.
+- [x] Confirmation and route provenance hash-bound.
+- [x] Claim coverage, preprint support, and data-precondition policies enforced.
+- [x] Direction axes derived and scorecard rationales hardened.
+- [x] M2.1.1 adversarial fixtures generated and replayed deterministically.
+- [x] Case A repaired and Case F audited without route execution.
+- [ ] Local validation and acceptance record pass; final exact-HEAD Actions remains pending because push was not authorized.
 
 ### Accepted M2.1 baseline
 
@@ -40,7 +40,9 @@ M2 converts one hash-bound `M1_COMPLETE` evidence bundle into an auditable direc
 
 ## M2 result
 
-Status: `M2.1 COMPLETE; M2.1.1 IN_PROGRESS`
+Status: `M2.1 COMPLETE; M2.1.1 IN_PROGRESS (REMOTE_CI_PENDING)`
+
+M2.1.1 local acceptance passed on `2026-08-05` from implementation HEAD `b66bb5122c11730377ee587d59df3717a37e90ba` with 163 unit tests, both unchanged M1 replays, 34/34 M2.1.1 adversarial cases, byte-stable fixture regeneration, the local standard Skill validator, a repository package audit, revised Case A, and independent Case F. The final exact-HEAD Actions gate is not run because the branch has not been pushed; M2.1.1 therefore remains open and M3 remains `NOT_STARTED`. See `evals/m2/results/2026-08-05-m2.1.1-final-validation.md`.
 
 Validated on `2026-08-05` from acceptance input HEAD `aec8531fa0565e87651b87761717158994afaec1` with:
 
@@ -55,7 +57,7 @@ Validated on `2026-08-05` from acceptance input HEAD `aec8531fa0565e87651b877617
 - confirmation gate: pre-confirmation route refused; explicit D1 confirmation opened the gate without generating or executing a route;
 - final record: `evals/m2/results/2026-08-05-m2.1-final-validation.md`.
 
-Remote exact-HEAD GitHub Actions was not run because no push was authorized. It is not claimed as M2 evidence. M2 completion does not claim empirical transfer success, experiment or simulation performance, model training, download, deployment, operational nuclear safety, or M3 work.
+The accepted M2 closure HEAD `f0a44890fb9e3244ad86fb60f01065715ddb4de0` later passed exact-HEAD GitHub Actions run `30972309423`, job `92199125940`. This supersedes the earlier pre-push remote-not-run state without erasing that historical sequence. M2 completion does not claim empirical transfer success, experiment or simulation performance, model training, download, deployment, operational nuclear safety, or M3 work.
 
 ## M1 acceptance baseline
 
@@ -134,7 +136,7 @@ Evidence is recorded under `evals/m1/`, including preserved failed runs and inde
 
 ## Later milestones
 
-- M2: `COMPLETE`
+- M2: `M2.1 COMPLETE; M2.1.1 IN_PROGRESS (REMOTE_CI_PENDING)`
 - M3: `NOT_STARTED`
 - M4: `NOT_STARTED`
 - M5: `NOT_STARTED`
@@ -142,7 +144,7 @@ Evidence is recorded under `evals/m1/`, including preserved failed runs and inde
 ## External state
 
 - Git remote: `https://github.com/zxy19960316/engineering-research-copilot.git`
-- Active local branch: `codex/m2-direction-decision`
+- Active local branch: `codex/m2.1.1-semantic-hardening`
 - External APIs/services configured: none
 - RRC integration: not started
 - Platform integration: not required for the local Skill competition track
