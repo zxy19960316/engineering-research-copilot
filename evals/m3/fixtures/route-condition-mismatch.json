@@ -49,10 +49,17 @@
       "pivot_conditions": [
         {
           "criterion_type": "pivot",
-          "metric_id": "M-UQ",
-          "operator": ">",
+          "metric_id": "M-PRED",
+          "operator": "<",
           "unit": "ratio",
-          "value": 0.2
+          "value": 0.6
+        },
+        {
+          "criterion_type": "pivot",
+          "metric_id": "M-UQ",
+          "operator": "<",
+          "unit": "ratio",
+          "value": 0.6
         }
       ],
       "primary_metrics": [
@@ -91,7 +98,14 @@
           "metric_id": "M-PRED",
           "operator": "<",
           "unit": "ratio",
-          "value": 0.6
+          "value": 0.5
+        },
+        {
+          "criterion_type": "stop",
+          "metric_id": "M-UQ",
+          "operator": "<",
+          "unit": "ratio",
+          "value": 0.5
         }
       ],
       "uncertainty_handling": [
@@ -103,13 +117,13 @@
     }
   ],
   "schema_version": "m3.1",
-  "selected_direction_hash": "b3088d3f7d7c344d797a863e4212fcc2f305e3749d93e85dd7baca554f9a1c58",
+  "selected_direction_hash": "e107ebc6b3e677a31c1b2458bcdefa011e304a82dd57edbdb9d6d82da135e226",
   "selected_direction_id": "D1",
   "source_m2_bundle": {
     "direction_decision": {
       "confirmation_event": {
         "actor_role": "user",
-        "previous_bundle_hash": "28c5eaa41ced9bc0f61e5b705e394e771f4b232d7ba78e7bbbe294895febdb17",
+        "previous_bundle_hash": "96bf0ca9e6596117af21910ab10a112b9b74fe8a1f2bfa2fe250435385831384",
         "selected_direction_id": "D1",
         "source_message_excerpt": "I explicitly confirm formal direction D1.",
         "source_message_id": "message:confirm-d1",
@@ -254,6 +268,13 @@
                     "operator": ">=",
                     "unit": "ratio",
                     "value": 0.8
+                  },
+                  {
+                    "criterion_type": "stop",
+                    "metric_id": "M-PRED",
+                    "operator": "<",
+                    "unit": "ratio",
+                    "value": 0.6
                   }
                 ],
                 "metric_ids": [
@@ -272,6 +293,13 @@
                     "operator": ">=",
                     "unit": "ratio",
                     "value": 0.8
+                  },
+                  {
+                    "criterion_type": "pivot",
+                    "metric_id": "M-UQ",
+                    "operator": ">",
+                    "unit": "ratio",
+                    "value": 0.2
                   }
                 ],
                 "metric_ids": [
@@ -1256,7 +1284,7 @@
       "baselines": [
         "Fixture baseline"
       ],
-      "confirmation_event_hash": "a2ee1140072806c93b5f366b6014fec05a6261456c56cb1d6b35cefc0158bb7b",
+      "confirmation_event_hash": "4adf5bcf74d413b586670777bf563d772bc8945ada264329dabb4623c6257ffa",
       "confounders": [
         "Fixture confounder"
       ],
@@ -1374,8 +1402,8 @@
       "sequence": [
         "Run the bounded fixture sequence"
       ],
-      "source_bundle_hash": "1d062d69c4d13f7205876bb2c8cc5a3aab43e7da2ffc6cca925f30b8bb954342",
-      "source_direction_hash": "b3088d3f7d7c344d797a863e4212fcc2f305e3749d93e85dd7baca554f9a1c58",
+      "source_bundle_hash": "b8d7e398c19d1f6b9ad8ea43b751597b9c7dd5467c3d4becac5a7a2ea983122a",
+      "source_direction_hash": "e107ebc6b3e677a31c1b2458bcdefa011e304a82dd57edbdb9d6d82da135e226",
       "source_test_mapping": [
         {
           "claim_id": "C-PRED",
@@ -3067,5 +3095,5 @@
       "terminal_state": "M1_COMPLETE"
     }
   },
-  "source_m2_bundle_hash": "b029f495c060aff312f48fc23b57910aa889f8635040f3565e473651ed930db7"
+  "source_m2_bundle_hash": "8a095f078dee0b7900b348311f5fd6710403484aa22cb2ef26c39f9d8b928457"
 }

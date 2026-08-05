@@ -258,6 +258,14 @@ def _derive_m2_context(source_m2_bundle: dict) -> dict:
         coverage["claim_id"]: frozenset(coverage["required_precondition_ids"])
         for coverage in selected_direction["minimum_decisive_test"]["claim_coverage"]
     }
+    bounded_condition_authority = {"stop": [], "pivot": []}
+    for coverage in selected_direction["minimum_decisive_test"]["claim_coverage"]:
+        for criterion in coverage["decision_criteria"]:
+            criterion_type = criterion["criterion_type"]
+            if criterion_type in bounded_condition_authority:
+                bounded_condition_authority[criterion_type].append(
+                    copy.deepcopy(criterion)
+                )
 
     return {
         "errors": [],
@@ -268,6 +276,7 @@ def _derive_m2_context(source_m2_bundle: dict) -> dict:
         "claims": claims,
         "claim_metrics": claim_metrics,
         "claim_preconditions": claim_preconditions,
+        "bounded_condition_authority": bounded_condition_authority,
         "claim_types": frozenset(
             claim["claim_type"] for claim in claims.values()
         ),
@@ -526,6 +535,8 @@ def _validate_conditions(
     context: dict,
     result: _Result,
     invalid_code: str,
+    authority: list[dict] | None,
+    authority_error: str,
 ) -> None:
     if not isinstance(value, list):
         return
@@ -543,6 +554,10 @@ def _validate_conditions(
             or condition.get("unit") != metric.get("unit")
         ):
             result.error(invalid_code)
+        if authority is not None and not any(
+            _strict_equal(condition, authoritative) for authoritative in authority
+        ):
+            result.error(authority_error)
 
 
 def _validate_applicability(card: dict, context: dict, result: _Result) -> None:
@@ -570,7 +585,12 @@ def _validate_applicability(card: dict, context: dict, result: _Result) -> None:
             result.error("duplicate_method_card_supported_claim_type")
 
 
-def _validate_method_card(value: Any, context: dict, result: _Result) -> dict:
+def _validate_method_card(
+    value: Any,
+    context: dict,
+    authority: dict[str, list[dict]] | None,
+    result: _Result,
+) -> dict:
     _validate_method_card_shape(value, result)
     if not isinstance(value, dict):
         return {}
@@ -621,6 +641,8 @@ def _validate_method_card(value: Any, context: dict, result: _Result) -> dict:
         context,
         result,
         "invalid_method_card_stop_condition",
+        None if authority is None else authority["stop"],
+        "method_card_stop_condition_not_authoritative",
     )
     _validate_conditions(
         card.get("pivot_conditions"),
@@ -628,6 +650,8 @@ def _validate_method_card(value: Any, context: dict, result: _Result) -> dict:
         context,
         result,
         "invalid_method_card_pivot_condition",
+        None if authority is None else authority["pivot"],
+        "method_card_pivot_condition_not_authoritative",
     )
     _validate_source_ledger(card.get("source_ledger"), context, result)
     return card
@@ -637,6 +661,7 @@ def _validate_domain_overlay(
     value: Any,
     context: dict,
     cards_by_id: dict[str, dict],
+    authority: dict[str, list[dict]] | None,
     result: _Result,
 ) -> None:
     _validate_domain_overlay_shape(value, result)
@@ -685,6 +710,8 @@ def _validate_domain_overlay(
         context,
         result,
         "invalid_nuclear_overlay_stop_condition",
+        None if authority is None else authority["stop"],
+        "nuclear_overlay_stop_condition_not_authoritative",
     )
     ledger = _validate_source_ledger(
         overlay.get("source_ledger"), context, result
@@ -707,7 +734,12 @@ def _validate_domain_overlay(
         result.error("nuclear_safety_requires_non_preprint_support")
 
 
-def _validate_closed_m3_shapes(root: dict, context: dict, result: _Result) -> None:
+def _validate_closed_m3_shapes(
+    root: dict,
+    context: dict,
+    authority: dict[str, list[dict]] | None,
+    result: _Result,
+) -> None:
     cards = root.get("method_cards")
     cards_by_id: dict[str, dict] = {}
     if not isinstance(cards, list):
@@ -716,7 +748,7 @@ def _validate_closed_m3_shapes(root: dict, context: dict, result: _Result) -> No
         if not cards:
             result.error("empty_method_cards")
         for card in cards:
-            validated = _validate_method_card(card, context, result)
+            validated = _validate_method_card(card, context, authority, result)
             card_id = validated.get("card_id")
             if _nonempty_text(card_id):
                 if card_id in cards_by_id:
@@ -730,7 +762,9 @@ def _validate_closed_m3_shapes(root: dict, context: dict, result: _Result) -> No
     else:
         seen_overlay_ids: set[str] = set()
         for overlay in overlays:
-            _validate_domain_overlay(overlay, context, cards_by_id, result)
+            _validate_domain_overlay(
+                overlay, context, cards_by_id, authority, result
+            )
             if isinstance(overlay, dict):
                 overlay_id = overlay.get("overlay_id")
                 if _nonempty_text(overlay_id):
@@ -773,6 +807,21 @@ def _validate_route_compatibility(route: dict, context: dict, result: _Result) -
         }
         if set(trace["route_condition_types"]) != derived_condition_types:
             result.error("route_condition_traceability_mismatch")
+
+
+def _derive_condition_authority(
+    coaching_mode: Any,
+    route: Any,
+    context: dict,
+) -> dict[str, list[dict]] | None:
+    if coaching_mode == "bounded" and route is None:
+        return copy.deepcopy(context["bounded_condition_authority"])
+    if coaching_mode == "route_specific" and isinstance(route, dict):
+        return {
+            "stop": copy.deepcopy(route["stop_conditions"]),
+            "pivot": copy.deepcopy(route["pivot_conditions"]),
+        }
+    return None
 
 
 def _validate_m3_bundle(bundle: Any) -> dict:
@@ -827,7 +876,8 @@ def _validate_m3_bundle(bundle: Any) -> dict:
         else:
             _validate_route_compatibility(route, context, result)
 
-    _validate_closed_m3_shapes(root, context, result)
+    authority = _derive_condition_authority(coaching_mode, route, context)
+    _validate_closed_m3_shapes(root, context, authority, result)
     return result.closed()
 
 

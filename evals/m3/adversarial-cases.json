@@ -57,11 +57,30 @@
     {
       "case_id": "nonnumeric-stop-condition",
       "expected_errors": [
-        "invalid_method_card_stop_condition"
+        "invalid_method_card_stop_condition",
+        "method_card_stop_condition_not_authoritative"
       ],
       "expected_evidence_gaps": [],
       "expected_status": "invalid",
       "fixture": "nonnumeric-stop-condition.json"
+    },
+    {
+      "case_id": "unbound-stop-condition",
+      "expected_errors": [
+        "method_card_stop_condition_not_authoritative"
+      ],
+      "expected_evidence_gaps": [],
+      "expected_status": "invalid",
+      "fixture": "unbound-stop-condition.json"
+    },
+    {
+      "case_id": "unbound-pivot-condition",
+      "expected_errors": [
+        "method_card_pivot_condition_not_authoritative"
+      ],
+      "expected_evidence_gaps": [],
+      "expected_status": "invalid",
+      "fixture": "unbound-pivot-condition.json"
     },
     {
       "case_id": "source-missing-does-not-support",
@@ -112,6 +131,7 @@
     {
       "case_id": "route-condition-mismatch",
       "expected_errors": [
+        "method_card_stop_condition_not_authoritative",
         "route_condition_traceability_mismatch"
       ],
       "expected_evidence_gaps": [],

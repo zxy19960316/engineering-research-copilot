@@ -25,6 +25,9 @@
       "controls": [
         "Frozen fixture control"
       ],
+      "failure_modes": [
+        "Trajectory leakage inflates predictive performance"
+      ],
       "inherited_constraints": [
         {
           "constraint_id": "R-CPU-HOURS",
@@ -49,7 +52,7 @@
           "metric_id": "M-UQ",
           "operator": ">",
           "unit": "ratio",
-          "value": 0.2
+          "value": 0.21
         }
       ],
       "primary_metrics": [

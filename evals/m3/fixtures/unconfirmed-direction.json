@@ -103,7 +103,7 @@
     }
   ],
   "schema_version": "m3.1",
-  "selected_direction_hash": "bcd962b7ab923c7d994e233a88df812addd1bf1110a9bb4a5010010e69fd7582",
+  "selected_direction_hash": "dc2cdc1a61a7e815c963e05d5d91faacf8796e2a943796fcd4d6e550403c1143",
   "selected_direction_id": "D1",
   "source_m2_bundle": {
     "direction_decision": {
@@ -247,6 +247,13 @@
                     "operator": ">=",
                     "unit": "ratio",
                     "value": 0.8
+                  },
+                  {
+                    "criterion_type": "stop",
+                    "metric_id": "M-PRED",
+                    "operator": "<",
+                    "unit": "ratio",
+                    "value": 0.6
                   }
                 ],
                 "metric_ids": [
@@ -263,6 +270,13 @@
                     "operator": ">=",
                     "unit": "ratio",
                     "value": 0.8
+                  },
+                  {
+                    "criterion_type": "pivot",
+                    "metric_id": "M-UQ",
+                    "operator": ">",
+                    "unit": "ratio",
+                    "value": 0.2
                   }
                 ],
                 "metric_ids": [
@@ -2898,5 +2912,5 @@
       "terminal_state": "M1_COMPLETE"
     }
   },
-  "source_m2_bundle_hash": "0c7a954be80e7ce29d9a3fd3a6e7a773f93f40a88c6141bcff0b780b25423fae"
+  "source_m2_bundle_hash": "edea63221fa29731d8a6ce5c164f8dad2886ef7029267f3656eb8298ed17c8ac"
 }

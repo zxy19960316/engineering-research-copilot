@@ -87,16 +87,46 @@
     },
     {
       "actual_errors": [
-        "invalid_method_card_stop_condition"
+        "invalid_method_card_stop_condition",
+        "method_card_stop_condition_not_authoritative"
       ],
       "actual_evidence_gaps": [],
       "actual_status": "invalid",
       "expected_errors": [
-        "invalid_method_card_stop_condition"
+        "invalid_method_card_stop_condition",
+        "method_card_stop_condition_not_authoritative"
       ],
       "expected_evidence_gaps": [],
       "expected_status": "invalid",
       "fixture": "nonnumeric-stop-condition.json",
+      "matched": true
+    },
+    {
+      "actual_errors": [
+        "method_card_stop_condition_not_authoritative"
+      ],
+      "actual_evidence_gaps": [],
+      "actual_status": "invalid",
+      "expected_errors": [
+        "method_card_stop_condition_not_authoritative"
+      ],
+      "expected_evidence_gaps": [],
+      "expected_status": "invalid",
+      "fixture": "unbound-stop-condition.json",
+      "matched": true
+    },
+    {
+      "actual_errors": [
+        "method_card_pivot_condition_not_authoritative"
+      ],
+      "actual_evidence_gaps": [],
+      "actual_status": "invalid",
+      "expected_errors": [
+        "method_card_pivot_condition_not_authoritative"
+      ],
+      "expected_evidence_gaps": [],
+      "expected_status": "invalid",
+      "fixture": "unbound-pivot-condition.json",
       "matched": true
     },
     {
@@ -173,11 +203,13 @@
     },
     {
       "actual_errors": [
+        "method_card_stop_condition_not_authoritative",
         "route_condition_traceability_mismatch"
       ],
       "actual_evidence_gaps": [],
       "actual_status": "invalid",
       "expected_errors": [
+        "method_card_stop_condition_not_authoritative",
         "route_condition_traceability_mismatch"
       ],
       "expected_evidence_gaps": [],
