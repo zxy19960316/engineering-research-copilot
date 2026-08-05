@@ -105,7 +105,7 @@ does_not_support: []
 limitations: []
 ```
 
-Resolve `candidate_id` against `source_m2_bundle.source_m1_bundle.round2.candidate_pool`. Require recommendation eligibility, an allowed verified status, exact basis-level equality, and non-empty `supports`, `does_not_support`, and `limitations` lists. Never let metadata-only evidence support a result-level, transfer-success, or safety conclusion.
+Resolve `candidate_id` against `source_m2_bundle.source_m1_bundle.round2.candidate_pool`. Map upstream basis levels only through the closed mapping `metadata_level -> metadata`, `abstract_level -> abstract`, and `fulltext_level -> full_text`; require exact equality after that mapping, recommendation eligibility, an allowed verified status, and non-empty `supports`, `does_not_support`, and `limitations` lists. Never let metadata-only evidence support a result-level, transfer-success, or safety conclusion.
 
 Use this exact domain-overlay object:
 
@@ -233,7 +233,7 @@ def test_route_condition_types_are_derived_from_actual_metric_conditions(self):
 - [ ] Require every card to contain non-empty applicability, assumptions, minimum resources, inherited constraints, baselines, controls, procedure outline, primary metrics, uncertainty handling, validation checks, failure modes, numeric stop/pivot conditions, safety boundaries, and source ledger.
 - [ ] Require every `supported_claim_type` and primary metric to resolve to the selected direction's closed claims and required decision metrics.
 - [ ] Copy-compare `inherited_constraints` with the selected direction's `resource_limits`; resolve every `source_constraint_id`; reject unknown resources, unit changes, non-finite values, and minimum values outside `<` or `<=` ceilings.
-- [ ] Resolve each ledger `candidate_id` against the embedded M1 candidate pool, copy-check basis level, require recommendation eligibility, reject blocked citation states, and require explicit support, non-support, and limitation lists.
+- [ ] Resolve each ledger `candidate_id` against the embedded M1 candidate pool, compare its basis level through the closed M1-to-M3 mapping, require recommendation eligibility, reject blocked citation states, and require explicit support, non-support, and limitation lists.
 - [ ] Require nuclear overlays to reference existing cards, add rather than replace safety boundaries, remain `hypothesis`, and use at least one eligible non-preprint source for safety-related support.
 - [ ] Run `python -X utf8 -m unittest tests.test_validate_m3_method_bundle -v` and expect all M3 unit tests to pass.
 - [ ] Run the validator CLI once with a valid temporary fixture and once with an invalid temporary fixture; expect exit `0` and exit `1`, respectively, with compact JSON only.
