@@ -45,6 +45,20 @@ REQUIRED_NONEMPTY_CARD_LISTS = (
     "safety_boundaries",
     "source_ledger",
 )
+METHOD_FAMILIES = (
+    "experiment_measurement_uq",
+    "modeling_simulation_vvuq",
+    "control_optimization_identification",
+    "signal_diagnostics",
+    "data_ml_hybrid",
+    "reliability_safety_risk",
+)
+NONFINITE_OR_BOOLEAN_VALUES = (True, math.nan, math.inf, -math.inf)
+VALID_RESULT = {"status": "valid", "errors": [], "evidence_gaps": []}
+
+
+def _assert_valid(test_case: unittest.TestCase, bundle: dict) -> None:
+    test_case.assertEqual(validate_m3_bundle(bundle), VALID_RESULT)
 
 
 def _candidate_by_id(source_m1_bundle: dict, round_name: str, candidate_id: str) -> dict:
@@ -277,16 +291,22 @@ def _nuclear_overlay(candidate_id: str = "fixture:P04") -> dict:
 
 class ValidateM3MethodBundleTests(unittest.TestCase):
     def test_valid_bounded_bundle_without_route_is_valid(self):
-        self.assertEqual(
-            validate_m3_bundle(make_valid_m3_bundle()),
-            {"status": "valid", "errors": [], "evidence_gaps": []},
-        )
+        _assert_valid(self, make_valid_m3_bundle())
 
     def test_valid_route_specific_bundle_is_valid(self):
-        self.assertEqual(
-            validate_m3_bundle(make_valid_m3_bundle("route_specific")),
-            {"status": "valid", "errors": [], "evidence_gaps": []},
-        )
+        _assert_valid(self, make_valid_m3_bundle("route_specific"))
+
+    def test_all_permitted_method_families_are_valid(self):
+        for method_family in METHOD_FAMILIES:
+            with self.subTest(method_family=method_family):
+                bundle = make_valid_m3_bundle()
+                bundle["method_cards"][0]["method_family"] = method_family
+                _assert_valid(self, bundle)
+
+    def test_valid_nuclear_overlay_is_valid(self):
+        bundle = make_valid_m3_bundle()
+        bundle["domain_overlays"] = [_nuclear_overlay()]
+        _assert_valid(self, bundle)
 
     def test_nonempty_approved_constraint_changes_fail_closed(self):
         bundle = make_valid_m3_bundle(coaching_mode="route_specific")
@@ -382,12 +402,22 @@ class ValidateM3MethodBundleTests(unittest.TestCase):
                 )
 
     def test_stop_condition_requires_finite_nonboolean_numeric_value(self):
-        for value in (True, math.nan, math.inf, -math.inf, "not-numeric"):
+        for value in NONFINITE_OR_BOOLEAN_VALUES + ("not-numeric",):
             with self.subTest(value=value):
                 bundle = make_valid_m3_bundle()
                 bundle["method_cards"][0]["stop_conditions"][0]["value"] = value
                 self.assertIn(
                     "invalid_method_card_stop_condition",
+                    validate_m3_bundle(bundle)["errors"],
+                )
+
+    def test_pivot_condition_requires_finite_nonboolean_numeric_value(self):
+        for value in NONFINITE_OR_BOOLEAN_VALUES:
+            with self.subTest(value=value):
+                bundle = make_valid_m3_bundle()
+                bundle["method_cards"][0]["pivot_conditions"][0]["value"] = value
+                self.assertIn(
+                    "invalid_method_card_pivot_condition",
                     validate_m3_bundle(bundle)["errors"],
                 )
 
@@ -398,6 +428,16 @@ class ValidateM3MethodBundleTests(unittest.TestCase):
             "missing_source_ledger_does_not_support",
             validate_m3_bundle(bundle)["errors"],
         )
+
+    def test_source_ledger_required_lists_cannot_be_empty(self):
+        for field in ("supports", "does_not_support", "limitations"):
+            with self.subTest(field=field):
+                bundle = make_valid_m3_bundle()
+                bundle["method_cards"][0]["source_ledger"][0][field] = []
+                self.assertIn(
+                    f"empty_source_ledger_{field}",
+                    validate_m3_bundle(bundle)["errors"],
+                )
 
     def test_source_ledger_basis_level_must_match_candidate(self):
         bundle = make_valid_m3_bundle()
@@ -477,6 +517,26 @@ class ValidateM3MethodBundleTests(unittest.TestCase):
         bundle["method_cards"][0]["minimum_resources"][0]["required_value"] = 3
         self.assertIn("minimum_resource_exceeds_ceiling", validate_m3_bundle(bundle)["errors"])
 
+    def test_minimum_resource_requires_finite_nonboolean_numeric_value(self):
+        for value in NONFINITE_OR_BOOLEAN_VALUES:
+            with self.subTest(value=value):
+                bundle = make_valid_m3_bundle()
+                bundle["method_cards"][0]["minimum_resources"][0][
+                    "required_value"
+                ] = value
+                self.assertIn(
+                    "invalid_minimum_resource_required_value",
+                    validate_m3_bundle(bundle)["errors"],
+                )
+
+    def test_minimum_resource_unit_must_match_inherited_constraint(self):
+        bundle = make_valid_m3_bundle()
+        bundle["method_cards"][0]["minimum_resources"][0]["unit"] = "GiB"
+        self.assertIn(
+            "minimum_resource_unit_mismatch",
+            validate_m3_bundle(bundle)["errors"],
+        )
+
     def test_inherited_constraints_must_exactly_copy_selected_direction(self):
         bundle = make_valid_m3_bundle()
         bundle["method_cards"][0]["inherited_constraints"][0]["value"] = 3
@@ -507,6 +567,27 @@ class ValidateM3MethodBundleTests(unittest.TestCase):
                     "method_card": bundle["method_cards"][0],
                     "source_ledger": bundle["method_cards"][0]["source_ledger"][0],
                     "domain_overlay": overlay,
+                }
+                targets[level]["unexpected_field"] = "must fail closed"
+                self.assertIn(
+                    expected_error,
+                    validate_m3_bundle(bundle)["errors"],
+                )
+
+    def test_nested_closed_objects_reject_unknown_fields(self):
+        cases = (
+            ("applicability", "unknown_applicability_fields"),
+            ("minimum_resource", "unknown_minimum_resource_fields"),
+            ("criterion", "unknown_criterion_fields"),
+        )
+        for level, expected_error in cases:
+            with self.subTest(level=level):
+                bundle = make_valid_m3_bundle()
+                card = bundle["method_cards"][0]
+                targets = {
+                    "applicability": card["applicability"],
+                    "minimum_resource": card["minimum_resources"][0],
+                    "criterion": card["stop_conditions"][0],
                 }
                 targets[level]["unexpected_field"] = "must fail closed"
                 self.assertIn(
