@@ -32,7 +32,7 @@ Treat the two searches as one calibration cycle, not a permanent limit. If the u
 | Confirm or compare research directions | [Direction decision](references/core-direction-decision.md) and, when papers are used, [Citation integrity](references/core-citation-integrity.md) |
 | React to dissatisfaction or changed constraints | [Feedback rollback](references/core-feedback-rollback.md) |
 | Plan an experiment, simulation, or minimum decisive test | [Direction decision](references/core-direction-decision.md); require `user_confirmed` direction status first |
-| Coach a research method | Identify the engineering method family, state assumptions and failure modes, and use verified sources under [Citation integrity](references/core-citation-integrity.md) |
+| Coach a research method | [Method coaching](references/core-method-coaching.md) |
 | Check data-result-claim consistency | Perform a read-only claim-evidence audit; distinguish observed data, analysis output, interpretation, and speculation |
 | Review writing, figures, or format | Perform a read-only red-team pass, then hand off execution to a dedicated writing, figure, document, or data Skill when available |
 
@@ -77,16 +77,7 @@ If the direction is rejected, use [Feedback rollback](references/core-feedback-r
 
 ## Coach methods with bounded claims
 
-Classify the task into one primary method family:
-
-- experiment, measurement, and uncertainty;
-- modeling, simulation, and VVUQ;
-- control, optimization, and system identification;
-- signals, condition monitoring, and fault diagnosis;
-- data, machine learning, and physics-informed or hybrid methods;
-- reliability, safety, and risk.
-
-State applicability, assumptions, minimum resources, standard workflow, baselines, common failure modes, uncertainty handling, and stopping conditions. Treat domain-specific standards and safety judgments as specialist review boundaries.
+Load and apply [Method coaching](references/core-method-coaching.md). Validate the confirmed M2 bundle before deriving claims, metrics, preconditions, conditions, resources, or sources. Keep coaching bounded when no route exists, and instantiate route-specific cards only from a compatible route. Treat domain-specific standards and safety judgments as specialist review boundaries.
 
 ## Audit evidence read-only
 
