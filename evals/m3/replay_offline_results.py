@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import json
 import os
+import stat
 import sys
 import tempfile
 from pathlib import Path
@@ -71,6 +72,13 @@ def _valid_string_list(value: object) -> bool:
     )
 
 
+def _fixture_root_is_linked(path: Path) -> bool:
+    metadata = os.lstat(path)
+    reparse_flag = getattr(stat, "FILE_ATTRIBUTE_REPARSE_POINT", 0x400)
+    file_attributes = getattr(metadata, "st_file_attributes", 0)
+    return stat.S_ISLNK(metadata.st_mode) or bool(file_attributes & reparse_flag)
+
+
 def _validated_cases(manifest: object, fixture_dir: Path) -> list[dict]:
     if not isinstance(manifest, dict) or set(manifest) != MANIFEST_FIELDS:
         _reject_contract()
@@ -113,8 +121,11 @@ def _validated_cases(manifest: object, fixture_dir: Path) -> list[dict]:
         fixture_names.add(fixture_name)
 
     try:
+        manifest_root = fixture_dir.parent.resolve(strict=True)
+        if _fixture_root_is_linked(fixture_dir):
+            _reject_contract()
         fixture_root = fixture_dir.resolve(strict=True)
-        if not fixture_root.is_dir():
+        if fixture_root.parent != manifest_root or not fixture_root.is_dir():
             _reject_contract()
         entries = list(fixture_root.iterdir())
     except ReplayContractError:
