@@ -1,0 +1,161 @@
+{
+  "schema_version": "m2.1-offline-results",
+  "evidence_class": "offline_contract_fixture",
+  "cases": [
+    {
+      "fixture": "valid-waiting.json",
+      "expected_status": "valid",
+      "expected_errors": [],
+      "actual_status": "valid",
+      "actual_errors": [],
+      "actual_evidence_gaps": [],
+      "matched": true
+    },
+    {
+      "fixture": "valid-confirmed.json",
+      "expected_status": "valid",
+      "expected_errors": [],
+      "actual_status": "valid",
+      "actual_errors": [],
+      "actual_evidence_gaps": [],
+      "matched": true
+    },
+    {
+      "fixture": "hard-gate-score-override.json",
+      "expected_status": "invalid",
+      "expected_errors": [
+        "failed_hard_gate_has_scorecard",
+        "failed_hard_gate_ranked",
+        "incomplete_portfolio_marked_provisional"
+      ],
+      "actual_status": "invalid",
+      "actual_errors": [
+        "failed_hard_gate_has_scorecard",
+        "failed_hard_gate_ranked",
+        "incomplete_portfolio_marked_provisional",
+        "incomplete_portfolio_entered_decision_gate"
+      ],
+      "actual_evidence_gaps": [
+        "target_problem_evidence"
+      ],
+      "matched": true
+    },
+    {
+      "fixture": "speculative-formal-main.json",
+      "expected_status": "invalid",
+      "expected_errors": [
+        "invalid_tier_for_formal_position"
+      ],
+      "actual_status": "invalid",
+      "actual_errors": [
+        "invalid_tier_for_formal_position"
+      ],
+      "actual_evidence_gaps": [],
+      "matched": true
+    },
+    {
+      "fixture": "blocked-m1-citation.json",
+      "expected_status": "invalid",
+      "expected_errors": [
+        "blocked_m1_candidate"
+      ],
+      "actual_status": "invalid",
+      "actual_errors": [
+        "invalid_source_m1_bundle",
+        "blocked_m1_candidate"
+      ],
+      "actual_evidence_gaps": [],
+      "matched": true
+    },
+    {
+      "fixture": "missing-supporting-id.json",
+      "expected_status": "invalid",
+      "expected_errors": [
+        "unknown_m1_candidate_id"
+      ],
+      "actual_status": "invalid",
+      "actual_errors": [
+        "unknown_m1_candidate_id"
+      ],
+      "actual_evidence_gaps": [],
+      "matched": true
+    },
+    {
+      "fixture": "route-before-confirmation.json",
+      "expected_status": "invalid",
+      "expected_errors": [
+        "route_output_before_user_confirmation"
+      ],
+      "actual_status": "invalid",
+      "actual_errors": [
+        "route_output_before_user_confirmation"
+      ],
+      "actual_evidence_gaps": [],
+      "matched": true
+    },
+    {
+      "fixture": "renamed-duplicate-direction.json",
+      "expected_status": "invalid",
+      "expected_errors": [
+        "adjacent_requires_one_axis_change"
+      ],
+      "actual_status": "invalid",
+      "actual_errors": [
+        "adjacent_requires_one_axis_change"
+      ],
+      "actual_evidence_gaps": [],
+      "matched": true
+    },
+    {
+      "fixture": "missing-anti-transfer-factors.json",
+      "expected_status": "invalid",
+      "expected_errors": [
+        "missing_anti_transfer_factors"
+      ],
+      "actual_status": "invalid",
+      "actual_errors": [
+        "missing_anti_transfer_factors"
+      ],
+      "actual_evidence_gaps": [],
+      "matched": true
+    },
+    {
+      "fixture": "vague-decisive-test.json",
+      "expected_status": "invalid",
+      "expected_errors": [
+        "invalid_success_threshold"
+      ],
+      "actual_status": "invalid",
+      "actual_errors": [
+        "invalid_success_threshold"
+      ],
+      "actual_evidence_gaps": [],
+      "matched": true
+    },
+    {
+      "fixture": "m1-evidence-incomplete-upgrade.json",
+      "expected_status": "invalid",
+      "expected_errors": [
+        "source_m1_not_complete"
+      ],
+      "actual_status": "invalid",
+      "actual_errors": [
+        "invalid_source_m1_bundle",
+        "source_m1_not_complete",
+        "source_m1_terminal_state_mismatch"
+      ],
+      "actual_evidence_gaps": [],
+      "matched": true
+    }
+  ],
+  "all_matched": true,
+  "proves": [
+    "M2 source lineage, hard-gate, evidence-tier, portfolio, decisive-test, and confirmation-gate contracts"
+  ],
+  "does_not_prove": [
+    "Real citation existence or metadata accuracy",
+    "Real research-direction merit",
+    "Target-domain transfer success",
+    "Execution of any experiment, simulation, training, download, deployment, or large-resource route"
+  ]
+}

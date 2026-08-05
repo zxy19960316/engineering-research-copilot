@@ -1,4 +1,4 @@
-name: M1 Validation
+name: M1 and M2 Validation
 
 on:
   push:
@@ -21,11 +21,16 @@ jobs:
             skills/engineering-research-copilot/scripts/validate_m1_bundle.py \
             skills/engineering-research-copilot/scripts/render_m1_map.py \
             skills/engineering-research-copilot/scripts/validate_citation_gate.py \
+            skills/engineering-research-copilot/scripts/validate_m2_direction_bundle.py \
             evals/m1/replay_offline_results.py \
-            evals/m1/replay_machine_artifacts.py
+            evals/m1/replay_machine_artifacts.py \
+            evals/m2/build_fixtures.py \
+            evals/m2/replay_offline_results.py
       - name: Unit tests
         run: python -m unittest discover -s tests -p "test_*.py" -v
       - name: Replay fixtures
         run: python evals/m1/replay_offline_results.py
       - name: Replay machine artifacts
         run: python evals/m1/replay_machine_artifacts.py
+      - name: Replay M2 fixtures
+        run: python evals/m2/replay_offline_results.py
