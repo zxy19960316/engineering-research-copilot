@@ -248,7 +248,7 @@ def test_route_condition_types_are_derived_from_actual_metric_conditions(self):
 
 **Interfaces:**
 - Consumes: the `m3.1` validator contract and all accepted M1/M2 evidence rules.
-- Produces: one M3 state flow and direct links from the root Skill to all eight M3 references.
+- Produces: one M3 state flow and the root-Skill link to `core-method-coaching.md`; Tasks 6 and 7 add each family/domain link atomically with the referenced file.
 
 - [ ] Add this state flow to `core-method-coaching.md`:
 
@@ -263,8 +263,8 @@ M2_BUNDLE_VALID
 
 - [ ] Specify the closed top-level, method-card, source-ledger, and domain-overlay objects exactly as defined in this plan.
 - [ ] State that bounded coaching may explain methods and checks but may not manufacture a complete route, execute a route, widen resources, or claim empirical success.
-- [ ] Replace the generic method-coaching row in `SKILL.md` with a route through `core-method-coaching.md` and add direct links to each family and domain reference.
-- [ ] Keep every M3 reference directly linked from `SKILL.md`; do not create nested reference directories.
+- [ ] Replace the generic method-coaching row in `SKILL.md` with a route through `core-method-coaching.md`.
+- [ ] Link every M3 reference directly from `SKILL.md` in the same task that creates that reference; never commit a dangling link and do not create nested reference directories.
 - [ ] Run the standard Skill validator:
 
 ```powershell
