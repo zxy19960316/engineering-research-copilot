@@ -174,6 +174,16 @@ ROUTE_LIST_FIELDS = ROUTE_FIELDS - ROUTE_TEXT_FIELDS - {"evidence_chain"}
 EVIDENCE_CHAIN_FIELDS = {"design", "data", "analysis", "result", "claim"}
 ELIGIBLE_M1_STATES = {"verified_primary", "verified_registry", "verified_preprint"}
 BLOCKED_M1_STATES = {"partial", "conflicted", "not_found", "manual_needed"}
+PROHIBITED_PRECONFIRMATION_KEYS = {
+    "experiment_steps",
+    "full_experiment_steps",
+    "simulation_route",
+    "full_simulation_route",
+    "training_plan",
+    "model_download",
+    "service_deployment",
+    "large_scale_resource_execution",
+}
 
 
 class _Result:
@@ -813,6 +823,19 @@ def _validate_route_output(
             result.error(f"empty_route_evidence_chain_{field}")
 
 
+def _contains_prohibited_preconfirmation_content(value: Any) -> bool:
+    if isinstance(value, dict):
+        if set(value) & PROHIBITED_PRECONFIRMATION_KEYS:
+            return True
+        return any(
+            _contains_prohibited_preconfirmation_content(item)
+            for item in value.values()
+        )
+    if isinstance(value, list):
+        return any(_contains_prohibited_preconfirmation_content(item) for item in value)
+    return False
+
+
 def _validate_decision(
     value: Any,
     route_output: Any,
@@ -901,6 +924,19 @@ def _validate_bundle(bundle: Any) -> dict:
         incomplete,
         result,
     )
+    decision = root.get("direction_decision")
+    if (
+        isinstance(decision, dict)
+        and decision.get("status") != "user_confirmed"
+        and _contains_prohibited_preconfirmation_content(
+            {
+                key: value
+                for key, value in root.items()
+                if key != "source_m1_bundle"
+            }
+        )
+    ):
+        result.error("prohibited_route_content_before_user_confirmation")
     return result.closed()
 
 

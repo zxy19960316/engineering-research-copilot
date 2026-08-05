@@ -19,7 +19,7 @@ M2 converts one hash-bound `M1_COMPLETE` evidence bundle into an auditable direc
 - [x] `m2.1` direction portfolio and source-evidence lineage contract frozen.
 - [x] Hard-gate, evidence-tier, formal-position, axis-separation, scorecard, and decisive-test behavior specified red-first.
 - [x] Offline M2 direction bundle validator implemented.
-- [ ] User confirmation gate enforced for detailed route content.
+- [x] User confirmation gate enforced for detailed route content.
 - [ ] Adversarial fixtures and deterministic replay pass.
 - [ ] Fresh-context direction-decision forward evaluation passes or preserves honest incomplete/blocked evidence.
 - [ ] Standard Skill validation, full unit suite, package audit, and final M2 scope audit pass.

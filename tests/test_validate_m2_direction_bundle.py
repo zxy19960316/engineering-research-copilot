@@ -419,6 +419,54 @@ class ValidateM2DirectionBundleTests(unittest.TestCase):
         bundle["route_output"] = _route_output()
         self.assertIn("route_output_before_user_confirmation", validate_bundle(bundle)["errors"])
 
+    def test_nonconfirmed_transition_table_keeps_route_closed(self):
+        cases = {
+            "waiting_for_user_confirmation": ["confirm", "modify", "reject"],
+            "modification_requested": ["modify", "reject"],
+            "rejected": ["modify"],
+        }
+        for status, actions in cases.items():
+            with self.subTest(status=status):
+                bundle = make_valid_m2_bundle()
+                bundle["direction_decision"] = {
+                    "selected_direction_id": None,
+                    "status": status,
+                    "permitted_next_actions": actions,
+                }
+                self.assertEqual(validate_bundle(bundle)["status"], "valid")
+
+    def test_selected_direction_before_confirmation_is_rejected(self):
+        bundle = make_valid_m2_bundle()
+        bundle["direction_decision"]["selected_direction_id"] = "D1"
+        self.assertIn(
+            "selected_direction_before_confirmation", validate_bundle(bundle)["errors"]
+        )
+
+    def test_confirmed_direction_can_open_gate_before_route_is_generated(self):
+        bundle = make_valid_m2_bundle()
+        bundle["direction_decision"] = {
+            "selected_direction_id": "D1",
+            "status": "user_confirmed",
+            "permitted_next_actions": ["modify", "reject", "generate_route"],
+        }
+        self.assertIsNone(bundle["route_output"])
+        self.assertEqual(validate_bundle(bundle)["status"], "valid")
+
+    def test_preconfirmation_prohibited_route_keys_are_rejected_at_any_depth(self):
+        for location in ("root", "direction"):
+            with self.subTest(location=location):
+                bundle = make_valid_m2_bundle()
+                if location == "root":
+                    bundle["training_plan"] = {"epochs": 100}
+                else:
+                    bundle["direction_portfolio"]["directions"][0][
+                        "service_deployment"
+                    ] = ["start service"]
+                self.assertIn(
+                    "prohibited_route_content_before_user_confirmation",
+                    validate_bundle(bundle)["errors"],
+                )
+
     def test_only_explicit_confirmed_formal_id_opens_route_gate(self):
         bundle = make_valid_m2_bundle()
         bundle["direction_decision"] = {
