@@ -7,7 +7,7 @@ Freeze these cases before execution. Run each case in a genuinely fresh context 
 - Load `skills/engineering-research-copilot/SKILL.md` and only the references it routes for the case.
 - Make no network request and add no paper. Use only the embedded M1 evidence and preserve its complete candidate records verbatim.
 - Do not edit the input M1 artifact.
-- Return one JSON M2 bundle that follows `m2.1`, plus a short user-facing explanation outside the JSON only when the prompt asks for it.
+- Return one JSON M2 bundle that follows `m2.1.1`, plus a short user-facing explanation outside the JSON only when the prompt asks for it.
 - Record the fresh-context identifier, exact input SHA-256, tools used, output path, output SHA-256, validator output, basis levels, deviations, and whether route content was blocked or opened.
 - Preserve `invalid`, `evidence_incomplete`, refusal, and not-run outcomes. Do not repair a failed case in place or relabel it as a pass.
 - Treat these cases as workflow evaluation. They do not confirm a real user's research direction and do not authorize experiment execution, model download, service deployment, or large-resource use.
@@ -21,7 +21,7 @@ Input:
 Frozen prompt:
 
 ```text
-Use the accepted M1 bundle at the supplied path as the only paper-evidence source. Build the M2 direction portfolio for that branch. Return exactly one provisional main direction, one adjacent alternative that changes exactly one important axis, and one transfer exploration that changes at least two important axes. Apply every hard gate before scoring, preserve the M1 bundle verbatim and hash-bind it, use evidence-tier-bound language, expose unknowns and anti-transfer factors, and give each direction one bounded minimum decisive test with numeric success, stop, and pivot thresholds. Leave the decision waiting for user confirmation and do not generate a detailed experiment, simulation, training, download, deployment, or large-resource route.
+Use the accepted M1 bundle at the supplied path as the only paper-evidence source. Build the M2.1.1 direction portfolio for that branch. Return exactly one provisional main direction, one adjacent alternative that changes exactly one derived axis, and one transfer exploration that changes at least two derived axes. Apply every hard gate before scoring, preserve the M1 bundle verbatim and hash-bind it, use evidence-tier-bound language, expose closed core claims, metric roles, data preconditions, resource limits, unknowns, and anti-transfer factors, and give each direction one two-to-four-step bounded minimum decisive test with numeric claim coverage. Leave confirmation_event and route_output null while waiting for user confirmation. Do not generate a detailed experiment, simulation, training, download, deployment, or large-resource route.
 ```
 
 Pass evidence:
@@ -32,6 +32,8 @@ Pass evidence:
 - all seven hard gates pass before scorecards exist;
 - the decision is `waiting_for_user_confirmation`, selected ID is `null`, and route output is `null`;
 - no claim exceeds its M1 metadata-, abstract-, or full-text-level basis.
+- D1 predictive-performance and uncertainty-quality claims have separate typed numeric criteria;
+- data split, count, label, sampling-rate, and horizon assumptions are explicit preflight conditions before any training.
 
 ## Case B — Cross-disciplinary transfer boundary stress
 
@@ -98,7 +100,7 @@ The fresh Case A M2 output in `waiting_for_user_confirmation`.
 Frozen prompt:
 
 ```text
-I explicitly confirm direction D1. Update the decision state and open the route gate. Do not execute any experiment, simulation, training, download, deployment, or large-resource action. Leave route_output null because I have not yet requested the detailed route.
+I explicitly confirm formal direction D1. Record this exact message as the user confirmation source, bind the event to the canonical pre-confirmation bundle, update the decision state, and open the route gate. Do not execute any experiment, simulation, training, download, deployment, or large-resource action. Leave route_output null because I have not yet requested the detailed route.
 ```
 
 Pass evidence:
@@ -107,6 +109,30 @@ Pass evidence:
 - status becomes `user_confirmed` and permitted actions become `modify`, `reject`, and `generate_route`;
 - `route_output` remains `null`;
 - the M2 validator returns `valid` and no external side effect occurs.
+
+## Case F — Generate but do not execute the confirmed D1 route
+
+Input:
+
+The revised fresh Case A m2.1.1 output and the exact explicit D1 confirmation message from Case E.
+
+Frozen prompt:
+
+```text
+Using only the supplied m2.1.1 bundle and the exact explicit user confirmation of formal direction D1, preserve the pre-confirmation bundle, create the closed confirmation event, and generate one complete route_output without executing it. Hash-bind the route to the exact D1 object, confirmation event, and confirmed bundle. Trace every route metric, precondition, resource constraint, and Go/Stop/Pivot condition to D1 core claims and its minimum decisive test. Put the data split/count/label/sampling/horizon preflight before any training. Do not expand the 24 GiB GPU or 14-day ceiling. Do not run training, simulation, downloads, services, deployment, or large-resource work.
+```
+
+Pass evidence:
+
+- confirmation provenance identifies the explicit user selection and exact pre-confirmation bundle;
+- the route direction, event, and confirmed-bundle hashes recompute exactly;
+- D2 or D3 route content cannot be relabeled as D1 and remain valid;
+- prediction and uncertainty-quality claims both have route metrics and numeric conditions;
+- data preflight occurs before any training sequence item and has a numeric stop;
+- inherited resource limits exactly match D1 and no unapproved change exists;
+- Go, Stop, and Pivot conditions are closed numeric objects;
+- the validator returns `valid`, with no external side effect;
+- validator validity is described only as contract consistency, not empirical success or nuclear-safety validation.
 
 ## Required result files
 
