@@ -2,7 +2,29 @@
 
 ## Active milestone
 
-`M1 — Two-round paper calibration and evidence map`
+`M2 — Direction decision and route gate`
+
+Status: `IN_PROGRESS`
+
+Target contract: `m2.1`
+
+Started from accepted M1.2 HEAD `f7d9009986527e72e5b60e22b43920886b0be179` on branch `codex/m2-direction-decision`.
+
+M2 converts one hash-bound `M1_COMPLETE` evidence bundle into an auditable direction portfolio. Detailed experiment, simulation, training, download, deployment, or large-resource route content remains blocked until the selected direction status is `user_confirmed`.
+
+## M2 checklist
+
+- [x] M1.2 baseline confirmed complete and the M2 work branch confirmed clean.
+- [x] M2 implementation plan created outside the installable Skill.
+- [ ] `m2.1` direction portfolio and source-evidence lineage contract frozen.
+- [ ] Hard-gate, evidence-tier, formal-position, axis-separation, scorecard, and decisive-test behavior specified red-first.
+- [ ] Offline M2 direction bundle validator implemented.
+- [ ] User confirmation gate enforced for detailed route content.
+- [ ] Adversarial fixtures and deterministic replay pass.
+- [ ] Fresh-context direction-decision forward evaluation passes or preserves honest incomplete/blocked evidence.
+- [ ] Standard Skill validation, full unit suite, package audit, and final M2 scope audit pass.
+
+## M1 acceptance baseline
 
 Status: `COMPLETE`
 
@@ -79,7 +101,7 @@ Evidence is recorded under `evals/m1/`, including preserved failed runs and inde
 
 ## Later milestones
 
-- M2: `NOT_STARTED`
+- M2: `IN_PROGRESS`
 - M3: `NOT_STARTED`
 - M4: `NOT_STARTED`
 - M5: `NOT_STARTED`
@@ -87,7 +109,7 @@ Evidence is recorded under `evals/m1/`, including preserved failed runs and inde
 ## External state
 
 - Git remote: `https://github.com/zxy19960316/engineering-research-copilot.git`
-- Active local branch: `codex/m1-acceptance-hardening`
+- Active local branch: `codex/m2-direction-decision`
 - External APIs/services configured: none
 - RRC integration: not started
 - Platform integration: not required for the local Skill competition track
