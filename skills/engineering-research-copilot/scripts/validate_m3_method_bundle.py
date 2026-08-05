@@ -162,8 +162,8 @@ class _Result:
             status = "valid"
         return {
             "status": status,
-            "errors": self.errors,
-            "evidence_gaps": self.evidence_gaps,
+            "errors": sorted(self.errors),
+            "evidence_gaps": sorted(self.evidence_gaps),
         }
 
 
@@ -373,6 +373,28 @@ def _nonempty_text_list(value: Any) -> bool:
     return _nonempty_list(value) and all(_nonempty_text(item) for item in value)
 
 
+def _strict_equal(left: Any, right: Any) -> bool:
+    if type(left) is not type(right):
+        return False
+    if isinstance(left, dict):
+        return left.keys() == right.keys() and all(
+            _strict_equal(left[key], right[key]) for key in left
+        )
+    if isinstance(left, list):
+        return len(left) == len(right) and all(
+            _strict_equal(left_item, right_item)
+            for left_item, right_item in zip(left, right)
+        )
+    return left == right
+
+
+def _has_duplicates(values: list[Any]) -> bool:
+    return any(
+        any(_strict_equal(value, previous) for previous in values[:index])
+        for index, value in enumerate(values)
+    )
+
+
 def _candidate_is_eligible(candidate: dict, fixture_mode: bool) -> bool:
     status = candidate.get("verification_status")
     if candidate.get("recommendation_eligible") is not True:
@@ -405,6 +427,7 @@ def _validate_source_ledger(
     )
     candidates = context["candidates"]
     fixture_mode = context["fixture_mode"]
+    seen_source_ids: set[str] = set()
     for row in rows:
         for field in LEDGER_REQUIRED_LISTS:
             if field not in row:
@@ -412,8 +435,13 @@ def _validate_source_ledger(
             elif not _nonempty_text_list(row[field]):
                 result.error(f"empty_source_ledger_{field}")
 
-        if not _nonempty_text(row.get("source_id")):
+        source_id = row.get("source_id")
+        if not _nonempty_text(source_id):
             result.error("invalid_source_ledger_source_id")
+        elif source_id in seen_source_ids:
+            result.error("duplicate_source_ledger_source_id")
+        else:
+            seen_source_ids.add(source_id)
 
         support_types = row.get("support_types")
         support_types_are_closed = False
@@ -423,15 +451,14 @@ def _validate_source_ledger(
             result.error("invalid_source_ledger_support_type")
         elif not support_types:
             result.error("empty_source_ledger_support_types")
-        elif (
-            any(
-                not isinstance(support_type, str)
-                or support_type not in SUPPORT_TYPES
-                for support_type in support_types
-            )
-            or len(set(support_types)) != len(support_types)
+        elif any(
+            not isinstance(support_type, str)
+            or support_type not in SUPPORT_TYPES
+            for support_type in support_types
         ):
             result.error("invalid_source_ledger_support_type")
+        elif _has_duplicates(support_types):
+            result.error("duplicate_source_ledger_support_type")
         else:
             support_types_are_closed = True
 
@@ -458,7 +485,7 @@ def _validate_source_ledger(
 
 def _validate_resource_bounds(card: dict, context: dict, result: _Result) -> None:
     inherited = card.get("inherited_constraints")
-    if inherited != context["resource_limits"]:
+    if not _strict_equal(inherited, context["resource_limits"]):
         result.error("method_card_inherited_constraints_mismatch")
 
     limits_by_id = {
@@ -532,10 +559,15 @@ def _validate_applicability(card: dict, context: dict, result: _Result) -> None:
             result.error(f"invalid_method_card_applicability_{field}")
 
     claim_types = applicability.get("supported_claim_types")
-    if isinstance(claim_types, list) and any(
-        claim_type not in context["claim_types"] for claim_type in claim_types
-    ):
-        result.error("unsupported_method_card_claim_type")
+    if isinstance(claim_types, list):
+        if any(
+            not isinstance(claim_type, str)
+            or claim_type not in context["claim_types"]
+            for claim_type in claim_types
+        ):
+            result.error("unsupported_method_card_claim_type")
+        if _has_duplicates(claim_types):
+            result.error("duplicate_method_card_supported_claim_type")
 
 
 def _validate_method_card(value: Any, context: dict, result: _Result) -> dict:
@@ -572,10 +604,15 @@ def _validate_method_card(value: Any, context: dict, result: _Result) -> dict:
             result.error(f"invalid_method_card_{field}")
 
     primary_metrics = card.get("primary_metrics")
-    if isinstance(primary_metrics, list) and any(
-        metric_id not in context["metrics"] for metric_id in primary_metrics
-    ):
-        result.error("unknown_method_card_primary_metric")
+    if isinstance(primary_metrics, list):
+        if any(
+            not isinstance(metric_id, str)
+            or metric_id not in context["metrics"]
+            for metric_id in primary_metrics
+        ):
+            result.error("unknown_method_card_primary_metric")
+        if _has_duplicates(primary_metrics):
+            result.error("duplicate_method_card_primary_metric")
 
     _validate_resource_bounds(card, context, result)
     _validate_conditions(
@@ -615,8 +652,14 @@ def _validate_domain_overlay(
     if not _nonempty_list(base_card_ids):
         result.error("nuclear_overlay_missing_base_card")
         base_card_ids = []
-    elif any(card_id not in cards_by_id for card_id in base_card_ids):
-        result.error("nuclear_overlay_unknown_base_card")
+    else:
+        if any(
+            not isinstance(card_id, str) or card_id not in cards_by_id
+            for card_id in base_card_ids
+        ):
+            result.error("nuclear_overlay_unknown_base_card")
+        if _has_duplicates(base_card_ids):
+            result.error("duplicate_nuclear_overlay_base_card_id")
 
     additive_text_fields = (
         "additional_assumptions",
@@ -685,8 +728,16 @@ def _validate_closed_m3_shapes(root: dict, context: dict, result: _Result) -> No
     if not isinstance(overlays, list):
         result.error("invalid_domain_overlays")
     else:
+        seen_overlay_ids: set[str] = set()
         for overlay in overlays:
             _validate_domain_overlay(overlay, context, cards_by_id, result)
+            if isinstance(overlay, dict):
+                overlay_id = overlay.get("overlay_id")
+                if _nonempty_text(overlay_id):
+                    if overlay_id in seen_overlay_ids:
+                        result.error("duplicate_domain_overlay_id")
+                    else:
+                        seen_overlay_ids.add(overlay_id)
 
 
 def _condition_metric_ids(route: dict) -> dict[str, frozenset[str]]:
