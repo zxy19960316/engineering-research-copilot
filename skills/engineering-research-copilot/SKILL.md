@@ -29,9 +29,9 @@ Treat the two searches as one calibration cycle, not a permanent limit. If the u
 | User need | Load and apply |
 |---|---|
 | Find, verify, compare, or re-search papers | [Paper calibration](references/core-paper-calibration.md), [Citation integrity](references/core-citation-integrity.md), [Paper evidence map](references/core-paper-map.md), and [Feedback rollback](references/core-feedback-rollback.md) |
-| Confirm or compare research directions | [Direction decision](references/core-direction-decision.md) and, when papers are used, [Citation integrity](references/core-citation-integrity.md) |
-| React to dissatisfaction or changed constraints | [Feedback rollback](references/core-feedback-rollback.md) |
-| Plan an experiment, simulation, or minimum decisive test | [Direction decision](references/core-direction-decision.md); require `user_confirmed` direction status first |
+| Confirm or compare research directions | [Direction decision](references/core-direction-decision.md) and, when papers are used, the citation-integrity rules above |
+| React to dissatisfaction or changed constraints | Use the feedback-rollback rules above |
+| Plan an experiment, simulation, or minimum decisive test | Use the direction-decision rules above; require `user_confirmed` direction status first |
 | Coach an engineering method | [Method coaching](references/core-method-coaching.md), then load only the applicable family: [Experiment, measurement, and UQ](references/method-experiment-measurement-uq.md), [Modeling, simulation, and VVUQ](references/method-modeling-simulation-vvuq.md), [Control, optimization, and identification](references/method-control-optimization-identification.md), [Signal processing and diagnostics](references/method-signal-diagnostics.md), [Data, machine learning, and hybrid methods](references/method-data-ml-hybrid.md), or [Reliability, safety, and risk](references/method-reliability-safety-risk.md); for nuclear engineering × ML, also apply the additive [Nuclear engineering × machine learning overlay](references/domain-nuclear-ml.md) |
 | Check data-result-claim consistency | Perform a read-only claim-evidence audit; distinguish observed data, analysis output, interpretation, and speculation |
 | Review writing, figures, or format | Perform a read-only red-team pass, then hand off execution to a dedicated writing, figure, document, or data Skill when available |
@@ -40,11 +40,11 @@ Load only the references required for the current route. Do not load every refer
 
 ## Calibrate papers in two rounds
 
-Load and apply [Paper calibration](references/core-paper-calibration.md) as the state contract. Apply [Citation integrity](references/core-citation-integrity.md) to candidate admission and recommendation eligibility, [Paper evidence map](references/core-paper-map.md) to each round view, and [Feedback rollback](references/core-feedback-rollback.md) to the round transition. Keep incomplete evidence visible and stop at the M1 boundary defined in the calibration reference.
+Load and apply Paper calibration as the state contract. Apply Citation integrity to candidate admission and recommendation eligibility, Paper evidence map to each round view, and Feedback rollback to the round transition. Keep incomplete evidence visible and stop at the M1 boundary defined in the calibration reference.
 
 ## Decide a direction without suppressing innovation
 
-Enter M2 only from an accepted `M1_COMPLETE` bundle. Preserve that bundle verbatim, bind it with its canonical SHA-256 hash, and apply the m2.1.1 state and data contract in [Direction decision](references/core-direction-decision.md).
+Enter M2 only from an accepted `M1_COMPLETE` bundle. Preserve that bundle verbatim, bind it with its canonical SHA-256 hash, and apply the m2.1.1 state and data contract in Direction decision.
 
 Return:
 
@@ -55,7 +55,7 @@ Return:
 
 Require direct evidence that the target problem exists. Do not require prior success of the exact method in the exact target domain. Permit similar-domain, mechanism, theory, or data-structure evidence to support a testable transfer hypothesis.
 
-Never turn principle compatibility or analogy into an established conclusion. Label it as `transfer-supported`, `mechanism-plausible`, or `speculative` according to [Direction decision](references/core-direction-decision.md).
+Never turn principle compatibility or analogy into an established conclusion. Label it as `transfer-supported`, `mechanism-plausible`, or `speculative` according to Direction decision.
 
 ## Enforce the direction gate
 
@@ -73,11 +73,11 @@ Do not generate a detailed route until the user explicitly confirms one formal d
 - Go, Stop, and Pivot conditions;
 - an evidence chain from design to data, analysis, result, and claim.
 
-If the direction is rejected, use [Feedback rollback](references/core-feedback-rollback.md) instead of silently adjusting the old plan.
+If the direction is rejected, use Feedback rollback instead of silently adjusting the old plan.
 
 ## Coach methods with bounded claims
 
-Load and apply [Method coaching](references/core-method-coaching.md). Validate the confirmed M2 bundle before deriving claims, metrics, preconditions, conditions, resources, or sources. Keep coaching bounded when no route exists, and instantiate route-specific cards only from a compatible route. Treat domain-specific standards and safety judgments as specialist review boundaries.
+Load and apply Method coaching. Validate the confirmed M2 bundle before deriving claims, metrics, preconditions, conditions, resources, or sources. Keep coaching bounded when no route exists, and instantiate route-specific cards only from a compatible route. Treat domain-specific standards and safety judgments as specialist review boundaries.
 
 ## Audit evidence read-only
 

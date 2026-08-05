@@ -29,7 +29,8 @@ jobs:
             evals/m2/replay_offline_results.py \
             skills/engineering-research-copilot/scripts/validate_m3_method_bundle.py \
             evals/m3/build_fixtures.py \
-            evals/m3/replay_offline_results.py
+            evals/m3/replay_offline_results.py \
+            evals/m3/audit_skill_package.py
       - name: Unit tests
         run: python -m unittest discover -s tests -p "test_*.py" -v
       - name: Replay fixtures
@@ -48,38 +49,5 @@ jobs:
         run: git diff --exit-code -- evals/m3/adversarial-cases.json evals/m3/fixtures
       - name: Replay M3.1 frozen fixtures
         run: python evals/m3/replay_offline_results.py
-      - name: Repository package audit (not the standard Skill validator)
-        shell: python
-        run: |
-          from pathlib import Path
-
-          root = Path("skills/engineering-research-copilot")
-          skill = root / "SKILL.md"
-          text = skill.read_text(encoding="utf-8")
-          lines = text.splitlines()
-          assert len(lines) < 500, len(lines)
-          assert lines[0] == "---"
-          assert any(line.startswith("name: engineering-research-copilot") for line in lines[:10])
-          assert any(line.startswith("description:") for line in lines[:10])
-          references = sorted((root / "references").glob("*.md"))
-          unlinked = [path.name for path in references if path.name not in text]
-          assert not unlinked, unlinked
-          forbidden_names = {"README.md", "CHANGELOG.md", "INSTALLATION_GUIDE.md"}
-          forbidden = [path.as_posix() for path in root.rglob("*") if path.name in forbidden_names]
-          assert not forbidden, forbidden
-          markers = []
-          for path in root.rglob("*"):
-              if path.is_file() and path.suffix in {".md", ".py", ".yaml", ".yml"}:
-                  body = path.read_text(encoding="utf-8")
-                  for marker in ("TODO", "TBD", "[TODO]", "PLACEHOLDER"):
-                      if marker in body:
-                          markers.append((path.as_posix(), marker))
-          assert not markers, markers
-          print({
-              "audit": "repository_equivalent_not_standard_skill_validator",
-              "skill_lines": len(lines),
-              "linked_references": len(references),
-              "unlinked_references": len(unlinked),
-              "placeholder_matches": len(markers),
-              "forbidden_files": len(forbidden),
-          })
+      - name: Tracked M3.1 package audit
+        run: python evals/m3/audit_skill_package.py
