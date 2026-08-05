@@ -1,0 +1,9 @@
+{
+  "case_id": "m3-f01",
+  "errors": [],
+  "evidence_gaps": [
+    "no independently accepted user_confirmed no-route M2.1.1 input with upstream numeric stop/pivot criteria"
+  ],
+  "invocation_count": 0,
+  "status": "NOT_RUN"
+}

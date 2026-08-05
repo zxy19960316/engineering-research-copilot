@@ -1,0 +1,9 @@
+{
+  "case_id": "m3-f02",
+  "errors": [],
+  "evidence_gaps": [],
+  "input_path": "evals/m3/forward-inputs/m3-f02-route-compatible.bundle.json",
+  "invocation_count": 1,
+  "status": "valid",
+  "validator": "skills/engineering-research-copilot/scripts/validate_m2_direction_bundle.py"
+}
