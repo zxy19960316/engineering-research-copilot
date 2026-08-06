@@ -41,6 +41,7 @@ jobs:
             evals/m3/consume_forward_r5_once.py \
             evals/m3/audit_forward_inputs.py \
             evals/m3/diagnose_forward_input_hashes.py \
+            evals/m3/audit_m3_r5_1_ci_state.py \
             evals/m3/audit_forward_acceptance.py \
             evals/m3/audit_forward_r4_preparation.py \
             evals/m3/audit_forward_r5_acceptance.py \
@@ -66,10 +67,8 @@ jobs:
         run: python evals/m3/replay_offline_results.py
       - name: Tracked M3.1 package audit
         run: python evals/m3/audit_skill_package.py
-      - name: Audit M3 forward input prerequisites
-        run: python evals/m3/audit_forward_inputs.py evals/m3/forward-inputs-r2/manifest.json
-      - name: Audit M3 fresh acceptance
-        run: python evals/m3/audit_forward_acceptance.py evals/m3/results/forward-r2/acceptance-manifest.json
+      - name: Audit historical prerequisites and current r5 blocked acceptance
+        run: python evals/m3/audit_m3_r5_1_ci_state.py
 
   historical-audit-cross-platform:
     strategy:
