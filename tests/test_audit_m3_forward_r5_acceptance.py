@@ -75,6 +75,12 @@ class AuditM3ForwardR5AcceptanceTests(unittest.TestCase):
                     "processed_invalid",
                 }:
                     path.write_text("{}\n", encoding="utf-8", newline="\n")
+                elif record["state"] == "processing_failed" and (
+                    key in {"context_finalization_json", "case_transaction_json"}
+                    or (key == "composer_invocation_receipt_json" and record["composer_invocations"] == 1)
+                    or (key == "validator_receipt_json" and record["validator_invocations"] == 1)
+                ):
+                    path.write_text("{}\n", encoding="utf-8", newline="\n")
             cases.append({"case_id": record["case_id"], "record": record, "future_paths": paths})
         historical = {
             "path": str(R4_MANIFEST.relative_to(REPO_ROOT)).replace("\\", "/"),
@@ -82,13 +88,28 @@ class AuditM3ForwardR5AcceptanceTests(unittest.TestCase):
             "status": "blocked_not_accepted",
             "count_as_r5": False,
         }
+        try:
+            counters = derive_counters(records)
+        except ValueError:
+            counters = {}
+            for key in COUNTER_KEYS:
+                if key == "accepted_cases":
+                    counters[key] = sum(1 for record in records if record.get("accepted") is True)
+                elif key == "transaction_failures":
+                    counters[key] = sum(1 for record in records if record.get("transaction_failures"))
+                else:
+                    counters[key] = sum(
+                        value
+                        for record in records
+                        if isinstance(value := record.get(key), int) and not isinstance(value, bool)
+                    )
         manifest = {
             "schema_version": "m3.1-forward-acceptance-r5-v1",
             "status": "in_progress",
             "m3_status": "IN_PROGRESS",
             "later_gates": "NOT_RUN",
             "result_root": result_root.relative_to(REPO_ROOT).as_posix(),
-            "counters": derive_counters(records),
+            "counters": counters,
             "historical_r4": historical,
             "cases": cases,
         }

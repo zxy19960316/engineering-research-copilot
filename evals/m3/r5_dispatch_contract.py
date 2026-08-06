@@ -112,6 +112,7 @@ def validate_future_paths(
     future_paths: object,
     result_root: Path,
     existing_paths: set[Path | str] | None = None,
+    check_existing: bool = True,
 ) -> list[str]:
     """Validate one exact path map without touching the filesystem."""
 
@@ -162,7 +163,7 @@ def validate_future_paths(
         except ValueError:
             _add_path_error(errors, f"future_path_outside_root:{key}")
             continue
-        if candidate.exists() or candidate in existing_resolved:
+        if check_existing and (candidate.exists() or candidate in existing_resolved):
             _add_path_error(errors, f"future_path_exists:{key}")
     return sorted(errors)
 
@@ -171,13 +172,22 @@ def validate_future_path_sets(
     paths_by_case: Mapping[str, object],
     result_root: Path,
     existing_paths: set[Path | str] | None = None,
+    check_existing: bool = True,
 ) -> list[str]:
     """Validate every case map and reject cross-case path collisions."""
 
     errors: list[str] = []
     normalized: dict[str, dict[str, str]] = {}
     for case_id, future_paths in paths_by_case.items():
-        errors.extend(validate_future_paths(case_id, future_paths, result_root, existing_paths))
+        errors.extend(
+            validate_future_paths(
+                case_id,
+                future_paths,
+                result_root,
+                existing_paths,
+                check_existing=check_existing,
+            )
+        )
         if isinstance(future_paths, dict):
             normalized[case_id] = {
                 key: value
@@ -335,4 +345,3 @@ def derive_counters(records: list[object]) -> dict[str, int]:
             1 for record in typed_records if record["transaction_failures"]
         ),
     }
-
