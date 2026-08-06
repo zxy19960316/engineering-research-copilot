@@ -16,9 +16,9 @@ from audit_immutable_forward_evidence import (  # noqa: E402
 
 
 class AuditImmutableForwardEvidenceTests(unittest.TestCase):
-    def test_untouched_r2_r3_git_blobs_are_preserved_and_checkout_drift_is_visible(self):
+    def test_untouched_r2_r3_git_blobs_are_preserved_in_a_fresh_lf_checkout(self):
         result = audit_repository(REPO_ROOT)
-        self.assertEqual(result["status"], "invalid")
+        self.assertEqual(result["status"], "valid")
         self.assertGreater(len(result["files"]), 0)
         self.assertTrue(
             all(
@@ -27,12 +27,8 @@ class AuditImmutableForwardEvidenceTests(unittest.TestCase):
                 for item in result["files"]
             )
         )
-        self.assertTrue(
-            any(
-                error.startswith("filesystem_git_blob_mismatch:")
-                for error in result["errors"]
-            )
-        )
+        self.assertTrue(all(item["bytes_equal"] for item in result["files"]))
+        self.assertEqual(result["errors"], [])
 
     def test_one_byte_mutation_is_detected_without_touching_repository(self):
         source = REPO_ROOT / "evals" / "m3" / "forward-inputs-r2" / "m3-f03-approved-change.bundle.json"
