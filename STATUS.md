@@ -26,9 +26,17 @@ r5.1 implementation exact-HEAD CI: `PASSED` on HEAD `18e48e38e44b0f0e18e32324649
 
 r5.1 first closure-evidence exact-HEAD CI: `FAILED` on HEAD `92517be9b936b299f1cd1fa04bee120ef4760323` (GitHub Actions run `31107751125`)
 
-r5.1 corrected closure-evidence exact-HEAD CI: `NOT_RUN`
+r5.1 corrected closure-evidence exact-HEAD CI: `PASSED` on HEAD `c5ca408beedf2c3f20160fb1d06293336eacd725` (GitHub Actions run `31108332769`)
 
-M3.1 implementation is complete, but M3.1.1 r5 acceptance is not. The consumed r5 evidence remains immutable at `evals/m3/results/forward-r5/`: F01, F03, F04, and F05 were accepted, while F02 failed after its single composer invocation. r5.1 completed only CI compatibility repair, read-only F02 offline diagnosis, acceptance-auditor hardening, and status/evidence cleanup. It does not close M3, accept r5, authorize a new fresh run, start r5.1-f02 preparation, merge, branch M4, or execute an experiment, route, training, download, service, deployment, upload, RRC integration, or platform integration.
+r5.1-f02 replacement preparation: `LOCAL_READY_AWAITING_FRESH_AUTHORIZATION`
+
+r5.1-f02 preparation implementation HEAD: `df327ec4a1faf5b0b5a5f10804ee33efab24accf`
+
+r5.1-f02 preparation exact-HEAD CI: `NOT_RUN`
+
+r5.1-f02 fresh-context authorization: `NOT_GRANTED`
+
+M3.1 implementation is complete, but M3.1.1 r5 acceptance is not. The consumed r5 evidence remains immutable at `evals/m3/results/forward-r5/`: F01, F03, F04, and F05 were accepted, while F02 failed after its single composer invocation. r5.1 completed only CI compatibility repair, read-only F02 offline diagnosis, acceptance-auditor hardening, and status/evidence cleanup. A separately authorized offline r5.1-f02 preparation is now locally ready, with a new input binding, prompt, contract, manifest, and zero-artifact result root. It does not close M3, accept r5, authorize or launch a new fresh run, retry F02, aggregate cross-revision acceptance, merge, branch M4, or execute an experiment, route, training, download, service, deployment, upload, RRC integration, or platform integration.
 
 Before route-specific method-card instantiation, M3.1.1 must validate the complete M2.1.1 bundle, require `user_confirmed`, recompute the selected-direction binding, reject every non-empty `approved_constraint_changes` list with `unsupported_approved_constraint_change_provenance`, and rederive claim metrics, claim-specific preconditions, resource ceilings, actual Go/Stop/Pivot coverage, safety-source eligibility, and method-card internal bindings from upstream structures.
 
@@ -51,7 +59,12 @@ Before route-specific method-card instantiation, M3.1.1 must validate the comple
 - [ ] Five genuinely fresh-context r4 forward evaluations completed with accepted validator results. The first coordinator consumption, F03, stopped with `consumed_with_callback_failure`; no remaining case was dispatched, composed, or validated after that failure.
 - [x] F03 one-shot evidence and the dispatcher callback failure are preserved at `evals/m3/results/forward-r4/m3-f03.outcome.json`, `m3-f03.validation.json`, and `m3-f03.dispatch-callback-failure.json`; no repair or retry was performed and all later r4 acceptance/closure gates remain `NOT_RUN`.
 - [x] r5.1 CI/acceptance hardening implementation HEAD `18e48e38e44b0f0e18e323246496e0919d36fcdc` passed exact-HEAD GitHub Actions run `31105995299`; validate, Ubuntu historical audit, and Windows historical audit all completed successfully with no skipped project gates. This closes only r5.1 hardening and leaves r5 blocked.
-- [ ] r5.1 closure-evidence exact-HEAD CI. First closure record HEAD `92517be9b936b299f1cd1fa04bee120ef4760323` failed run `31107751125` because its status text replaced the preserved r5 CI failure field; later validate steps were skipped. The corrected closure record requires a new exact-HEAD run.
+- [x] r5.1 closure-evidence exact-HEAD CI. First closure record HEAD `92517be9b936b299f1cd1fa04bee120ef4760323` failed run `31107751125`; corrected closure HEAD `c5ca408beedf2c3f20160fb1d06293336eacd725` passed run `31108332769` with validate and both cross-platform jobs successful.
+- [x] r5.1-f02 offline replacement preparation freezes a new F02 input binding, authority-explicit prompt and contract, one-case manifest, all-zero counters, and a zero-artifact result root without changing frozen r5 evidence.
+- [x] Generic route-specific method-card regression rejects drift in authoritative `metric_id`, `criterion_type`, `value`, or `unit`; the existing strict condition-object equality remains the enforcement mechanism.
+- [x] Local r5.1-f02 preparation gates pass at implementation HEAD `df327ec4a1faf5b0b5a5f10804ee33efab24accf`: 395 tests, unchanged replays, empty M2/M3 regeneration diffs, package and Skill audits, expected r5 blocked-state audit, and the new read-only preparation audit.
+- [ ] r5.1-f02 preparation exact-HEAD remote CI. No push or remote run has been authorized or performed for the preparation branch.
+- [ ] One new r5.1-f02 fresh-context task. Preparation does not grant this separate one-shot authorization.
 
 ## M3.1.1 r5 historical preparation and terminal result
 
@@ -72,6 +85,16 @@ Status: `IMPLEMENTATION_COMPLETE; FIRST_CLOSURE_RECORD_CI_FAILED; CORRECTED_CLOS
 Implementation HEAD `18e48e38e44b0f0e18e323246496e0919d36fcdc` passed exact-HEAD GitHub Actions run `31105995299`. The `validate` job and both Ubuntu and Windows historical-audit jobs concluded `success`; every project validation step executed successfully. The full local suite passed 388 tests, M1/M2/M3 replays matched their frozen expectations, both fixture-regeneration diffs were empty, the package and standard Skill audits passed, and the expected r5 blocked-state audit remained valid. The frozen r5 result tree has zero diff from evidence HEAD `1b696bce53ee0a11163bfe4f91a9a49ab3af6f49`.
 
 The first closure-evidence record HEAD `92517be9b936b299f1cd1fa04bee120ef4760323` failed exact-HEAD run `31107751125`: both cross-platform historical-audit jobs succeeded, but `test_status_top_reports_current_r5_blocked_state` rejected replacement of the preserved r5 `Exact-HEAD CI: FAILED` field, and all later validate steps were skipped. This correction restores that r5 field and records the successful r5.1 implementation CI separately. It does not relabel F02, accept r5, or close M3. The corrected closure-evidence commit cannot truthfully embed or pre-claim its own SHA or exact-HEAD CI; that successor gate remains `NOT_RUN` until push and is reported externally afterward. See `evals/m3/results/2026-08-06-m3.1.1-r5.1-ci-closure-validation.md`.
+
+## M3.1.1 r5.1-f02 replacement preparation
+
+Status: `LOCAL_READY_AWAITING_FRESH_AUTHORIZATION`
+
+The replacement preparation is isolated under `evals/m3/forward-inputs-r5.1-f02/` and reserves `evals/m3/results/forward-r5.1-f02/`. Its input binding pins the existing eligible route-compatible F02 input by raw, canonical, and Git-blob identity, and separately pins the canonical stop/pivot authority derived from `route_output`. The prompt and output contract require exact inheritance of `criterion_type`, `metric_id`, `operator`, `value`, and `unit`; they forbid synthesis, normalization, conversion, or rounding of authoritative conditions.
+
+The preparation manifest keeps every task, finalization, processing, composer, validator, acceptance, and failure counter at zero. `new_fresh_run_authorized` is false, `reserved_task_id` is null, and the new result root contains no result or receipt artifact. The auditor verifies the frozen `replace_f02_only` erratum, rejects reuse of the historical F02 task or result root, binds the four reusable r5 accepted cases to evidence HEAD `1b696bce53ee0a11163bfe4f91a9a49ab3af6f49`, and requires the entire historical `forward-r5` tree to remain unchanged.
+
+Local structural validation passed at implementation HEAD `df327ec4a1faf5b0b5a5f10804ee33efab24accf`; remote exact-HEAD CI, fresh-context launch, one-shot finalization, composition, consumption, cross-revision aggregation, M3 closure, and M4 remain `NOT_RUN`. See `evals/m3/results/2026-08-06-m3.1.1-r5.1-f02-preparation-validation.md`.
 
 ## M3 local result
 
@@ -213,7 +236,7 @@ Evidence is recorded under `evals/m1/`, including preserved failed runs and inde
 ## External state
 
 - Git remote: `https://github.com/zxy19960316/engineering-research-copilot.git`
-- Active local branch: `codex/m3.1.1-r5.1-ci-and-acceptance-hardening`
+- Active local branch: `codex/m3.1.1-r5.1-f02-preparation`
 - External APIs/services configured: none
 - RRC integration: not started
 - Platform integration: not required for the local Skill competition track
