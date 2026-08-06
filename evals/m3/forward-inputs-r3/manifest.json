@@ -1,6 +1,6 @@
 {
   "schema_version": "m3.1-forward-inputs-r3-preparation-v1",
-  "status": "frozen_ready_for_fresh_contexts",
+  "status": "fresh_contexts_consumed_not_accepted",
   "branch": "codex/m3.1.1-r3-acceptance-repair",
   "r2_frozen_head": "6ec576a47a804300e2a95e6bddfff1d00c5270a3",
   "r2_freeze_diagnostic": {
@@ -95,12 +95,14 @@
       "prompt_raw_sha256": "860ab750373b491b6d9e242173897dec417aa08ce5c0efbdd4d34fa09ebcf1f1"
     }
   ],
-  "fresh_contexts_consumed": 0,
+  "fresh_contexts_consumed": 5,
   "prompts_frozen": true,
   "notes": [
     "F01, F02, F03, F04, and revised route-specific F05 pass the r3 pre-prompt eligibility audit.",
     "The old route-free r2 F05 input remains M2-valid but is not eligible for revised r3 F05.",
     "F04-D01 has an independently reviewed, route-free, user-confirmed non-nuclear M1/M2 lineage. The initial raw-byte review remains preserved as invalid and the later LF-bound fresh-worktree review supersedes it for input acceptance only.",
-    "All five prompts and immutable inputs are frozen by raw SHA-256; no r3 fresh context has been consumed at this state."
+    "All five prompts and immutable inputs were frozen by raw SHA-256 before any r3 fresh context was consumed.",
+    "All five authorized r3 fresh contexts were consumed exactly once. F05 was accepted; F01, F02, F03, and F04 remain invalid and were not repaired or retried.",
+    "M3 remains IN_PROGRESS. M4 and M5 remain NOT_STARTED."
   ]
 }

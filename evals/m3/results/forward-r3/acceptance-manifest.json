@@ -1,13 +1,13 @@
 {
   "schema_version": "m3.1-forward-acceptance-r3-v1",
-  "status": "ready_for_authorized_fresh_contexts",
+  "status": "completed_not_accepted",
   "m3_status": "IN_PROGRESS",
   "m4_status": "NOT_STARTED",
   "branch": "codex/m3.1.1-r3-acceptance-repair",
   "input_manifest": {
     "path": "evals/m3/forward-inputs-r3/manifest.json",
-    "raw_sha256": "ad7a96ad9bc9c5e738e7f377a5885822975b7df92ff3ba64dcaaba3d91161b23",
-    "status": "frozen_ready_for_fresh_contexts"
+    "raw_sha256": "518f6f5eda0fe566ebfdb3b9d8929e50965958705a0127c3ff2507457531802b",
+    "status": "fresh_contexts_consumed_not_accepted"
   },
   "case_specification": {
     "path": "evals/m3/forward-cases-r3.md",
@@ -55,11 +55,14 @@
       "expected_outcome_kind": "bundle",
       "expected_coaching_mode": "bounded",
       "expected_status": "accepted",
-      "fresh_context_id": null,
-      "finalization_count": 0,
-      "composer_invocation_count": 0,
-      "validator_invocation_count": 0,
-      "observed_status": "NOT_RUN",
+      "fresh_context_id": "019fd576-bd71-7f40-ab82-4b59b450094f",
+      "model_final_raw_sha256": "0e1fa161ad8fb4939be5172a15e001034c9ad665c21e9c8860b70b9783f1ce63",
+      "validation_raw_sha256": "9a30a3bf3931e0dcdde5687afe2dda6d9b87be9a7bc33a892f41e40ada494380",
+      "finalization_count": 1,
+      "composer_invocation_count": 1,
+      "validator_invocation_count": 1,
+      "observed_status": "invalid",
+      "terminal_errors": ["malformed_m3_bundle", "unreadable_or_invalid_forward_outcome_input"],
       "accepted": false
     },
     {
@@ -89,11 +92,14 @@
       "expected_outcome_kind": "bundle",
       "expected_coaching_mode": "route_specific",
       "expected_status": "accepted",
-      "fresh_context_id": null,
-      "finalization_count": 0,
-      "composer_invocation_count": 0,
-      "validator_invocation_count": 0,
-      "observed_status": "NOT_RUN",
+      "fresh_context_id": "019fd576-cb45-7d51-ad50-39a23a7e388d",
+      "model_final_raw_sha256": "d36ac075071af89dcac6848068658c73ffbac7c723a83cf402c70df2fcd8ff65",
+      "validation_raw_sha256": "f7fa1addaaa64a37cc98c60a64d4c196f3f1d88cb50c5fc575453fc3851667f8",
+      "finalization_count": 1,
+      "composer_invocation_count": 1,
+      "validator_invocation_count": 1,
+      "observed_status": "invalid",
+      "terminal_errors": ["empty_method_cards", "invalid_coaching_mode", "unreadable_or_invalid_forward_outcome_input"],
       "accepted": false
     },
     {
@@ -121,11 +127,15 @@
       "expected_outcome_kind": "blocked",
       "expected_terminal_code": "unsupported_approved_constraint_change_provenance",
       "expected_status": "accepted_expected_block",
-      "fresh_context_id": null,
-      "finalization_count": 0,
+      "fresh_context_id": "019fd576-d9de-7032-8bf5-0756a5c360d6",
+      "model_final_raw_sha256": "b2004e7b0c66b59844b6462f9ede58649305ded52701cea866a58b4043ecab4f",
+      "validation_raw_sha256": "aa4d245b262c950768236ff9e80d6f19f5084e15220484f097d4cddc021cfa07",
+      "finalization_count": 1,
       "composer_invocation_count": 0,
-      "validator_invocation_count": 0,
-      "observed_status": "NOT_RUN",
+      "validator_invocation_count": 1,
+      "observed_status": "invalid",
+      "terminal_errors": ["unreadable_or_invalid_forward_outcome_input"],
+      "operator_deviation": "The single validator invocation used nonexistent source path evals/m3/forward-inputs-r3/m3-f03.bundle.json; the invalid receipt is preserved without retry.",
       "accepted": false
     },
     {
@@ -154,11 +164,14 @@
       "expected_outcome_kind": "bundle",
       "expected_coaching_mode": "bounded",
       "expected_status": "accepted",
-      "fresh_context_id": null,
-      "finalization_count": 0,
-      "composer_invocation_count": 0,
-      "validator_invocation_count": 0,
-      "observed_status": "NOT_RUN",
+      "fresh_context_id": "019fd57b-5ac9-7893-b22d-22a9f7bb58cb",
+      "model_final_raw_sha256": "3d87435a476bc006474c68ae6d7ec38764a41d7a1cc4d77657315521b2f61ee5",
+      "validation_raw_sha256": "3b3b943abcd892709ae416386386cbb55bb519372976ee84fc56d346ee432d9d",
+      "finalization_count": 1,
+      "composer_invocation_count": 1,
+      "validator_invocation_count": 1,
+      "observed_status": "invalid",
+      "terminal_errors": ["malformed_m3_bundle", "unreadable_or_invalid_forward_outcome_input"],
       "accepted": false
     },
     {
@@ -188,12 +201,16 @@
       "expected_outcome_kind": "bundle",
       "expected_coaching_mode": "route_specific",
       "expected_status": "accepted",
-      "fresh_context_id": null,
-      "finalization_count": 0,
-      "composer_invocation_count": 0,
-      "validator_invocation_count": 0,
-      "observed_status": "NOT_RUN",
-      "accepted": false,
+      "fresh_context_id": "019fd57b-584b-7860-80d9-ede998cd74da",
+      "model_final_raw_sha256": "120f25c925fd55d07445d38dd8c2c87ab04dd99f5db0eba8fd80662382a5ab81",
+      "bundle_raw_sha256": "d51ec5259d048d46d04462fa7729944e051a229f8d0261102acb6346ef5f7a7b",
+      "outcome_raw_sha256": "f567de45aea82e5e76781c7da919bcd8610507a508f988590f1d8affcfdc5f50",
+      "validation_raw_sha256": "c65a03c1a344412462ab0cc3fbfbd16dc631e89bf3d6bab14c2b847ca9553736",
+      "finalization_count": 1,
+      "composer_invocation_count": 1,
+      "validator_invocation_count": 1,
+      "observed_status": "accepted",
+      "accepted": true,
       "required_model_boundaries": [
         "non_preprint_safety_support_is_claim_limited",
         "specialist_review_required",
@@ -203,11 +220,13 @@
     }
   ],
   "prompts_frozen": true,
-  "fresh_contexts_consumed": 0,
-  "accepted_case_count": 0,
+  "fresh_contexts_consumed": 5,
+  "accepted_case_count": 1,
   "notes": [
     "All five input eligibility receipts are eligible and all prompts are frozen by LF-preserved raw SHA-256.",
-    "No fresh context has started at this manifest state.",
-    "Expected states are contract expectations only and do not authorize output repair or retry."
+    "All five authorized fresh contexts finalized exactly once. Each composer and validator was invoked at most once, and no failed case was repaired or retried.",
+    "Only F05 was accepted. F01, F02, F03, and F04 remain invalid; therefore r3 does not supersede r2 for acceptance.",
+    "F03's model final expressed the expected blocked terminal code, but the sole validator call used a nonexistent source path. The resulting invalid receipt remains consumable evidence and was not rerun.",
+    "M3 remains IN_PROGRESS. M4 and M5 remain NOT_STARTED."
   ]
 }
