@@ -6,6 +6,8 @@
 
 Status: `IN_PROGRESS`
 
+r5 preparation status: `READY_FOR_AUTHORIZED_R5_FRESH_CONTEXTS`
+
 Acceptance revision: `m3.1.1`
 
 Input HEAD: `058b93d944d67b9e5c862ab5e1e74bb86d652512`
@@ -36,6 +38,14 @@ Before route-specific method-card instantiation, M3.1.1 must validate the comple
 - [x] Complete local r4 preparation gates pass at HEAD `fca83eecf4737a00f37a129d31a1822344b2eac0`: focused 29/29, full 334/334, unchanged M1/M2/M3 replays, package audit, and Skill validation. This is local structural evidence only; no exact-HEAD remote CI or closure CI is claimed.
 - [ ] Five genuinely fresh-context r4 forward evaluations completed with accepted validator results. The first coordinator consumption, F03, stopped with `consumed_with_callback_failure`; no remaining case was dispatched, composed, or validated after that failure.
 - [x] F03 one-shot evidence and the dispatcher callback failure are preserved at `evals/m3/results/forward-r4/m3-f03.outcome.json`, `m3-f03.validation.json`, and `m3-f03.dispatch-callback-failure.json`; no repair or retry was performed and all later r4 acceptance/closure gates remain `NOT_RUN`.
+
+## M3.1.1 r5 local result
+
+Status: `READY_FOR_AUTHORIZED_R5_FRESH_CONTEXTS`
+
+The independent r5 dispatcher-receipt and five-task contract repair is structurally ready on branch `codex/m3.1.1-r5-dispatch-contract-repair`. The required starting HEAD is `66c1da40afe8e03ae9e3a6ab8ab3e9ad06423b14`; the readiness validation snapshot before this status update is `2d5c67780d711b5cbcb5dbac06e7f532cd9ca184`. All five r5 source cases are eligible, the closed future-path contract and batch preflight pass with zero side effects, prompts and contracts are hash-frozen, and every task, finalization, processing, invocation, acceptance, and transaction-failure counter is zero. No r5 task result or invocation artifact exists. See `evals/m3/results/2026-08-06-m3.1.1-r5-preparation-validation.md` and `evals/m3/results/forward-r5/acceptance-manifest.json`.
+
+This readiness status is preparation evidence only. M3 remains `IN_PROGRESS`; M4 and M5 remain `NOT_STARTED`. The following M3 local-result section preserves the historical r4 `BLOCKED_NOT_ACCEPTED` state and is not reinterpreted as r5 evidence.
 
 ## M3 local result
 
@@ -177,7 +187,7 @@ Evidence is recorded under `evals/m1/`, including preserved failed runs and inde
 ## External state
 
 - Git remote: `https://github.com/zxy19960316/engineering-research-copilot.git`
-- Active local branch: `codex/m3.1.1-r4-byte-gate-resume`
+- Active local branch: `codex/m3.1.1-r5-dispatch-contract-repair`
 - External APIs/services configured: none
 - RRC integration: not started
 - Platform integration: not required for the local Skill competition track
