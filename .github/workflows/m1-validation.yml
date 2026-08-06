@@ -47,6 +47,7 @@ jobs:
             evals/m3/audit_forward_acceptance.py \
             evals/m3/audit_forward_r4_preparation.py \
             evals/m3/audit_forward_r5_acceptance.py \
+            evals/m3/audit_forward_r5_1_f02_preparation.py \
             evals/m3/audit_immutable_forward_evidence.py \
             evals/m3/audit_skill_package.py
       - name: Unit tests
@@ -71,6 +72,8 @@ jobs:
         run: python evals/m3/audit_skill_package.py
       - name: Audit historical prerequisites and current r5 blocked acceptance
         run: python evals/m3/audit_m3_r5_1_ci_state.py
+      - name: Audit r5.1-f02 replacement preparation without consumption
+        run: python evals/m3/audit_forward_r5_1_f02_preparation.py
 
   historical-audit-cross-platform:
     strategy:

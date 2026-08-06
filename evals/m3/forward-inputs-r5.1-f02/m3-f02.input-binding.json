@@ -1,0 +1,52 @@
+{
+  "schema_version": "m3.1-forward-r5.1-f02-input-binding-v1",
+  "revision": "r5.1-f02",
+  "case_id": "m3-f02",
+  "historical_evidence_head": "1b696bce53ee0a11163bfe4f91a9a49ab3af6f49",
+  "source_input": {
+    "path": "evals/m3/forward-inputs-r2/m3-f02-route-compatible.bundle.json",
+    "git_blob_oid": "717e2820e9587fc2f9593d0aa0664497987260cf",
+    "raw_sha256": "8db4db7f9173a8d10598af49e8ffd83dca12e34692c2827ec47031a30ab49da1",
+    "canonical_sha256": "fc7301d37737d85bc1bd2f0a3c2d51d842d0fe3fbdf1ded142e2d62f04d40841"
+  },
+  "m2_validation": {
+    "path": "evals/m3/forward-inputs-r4/m3-f02.m2-validation.json",
+    "raw_sha256": "9d6f4acbbd04392feb9dd65a1eb067bc477fa8a1257349ba332eb7c70ab0fbb7",
+    "required_status": "valid"
+  },
+  "eligibility": {
+    "path": "evals/m3/forward-inputs-r4/m3-f02.eligibility.json",
+    "raw_sha256": "42c73b8d78b5084a3fc7c1b23e526e353fc65ef152cd705f15ee3c37346a3ef5",
+    "required_status": "eligible"
+  },
+  "route_condition_authority": {
+    "source_pointer": "route_output",
+    "condition_fields": [
+      "criterion_type",
+      "metric_id",
+      "operator",
+      "value",
+      "unit"
+    ],
+    "stop_condition_count": 3,
+    "pivot_condition_count": 3,
+    "canonical_sha256": "e5acfe7e96749a9fb8dd63a2d088c4efae907a6eb94d4a94d70cc3370352c2b5"
+  },
+  "historical_failed_task": {
+    "task_id": "019fd687-5575-7143-8cf3-1ab3069611f5",
+    "result_root": "evals/m3/results/forward-r5",
+    "transaction_path": "evals/m3/results/forward-r5/m3-f02.transaction.json",
+    "transaction_git_blob_oid": "3612e0749912e919f92321cfbf0cd4f4a34fb5af",
+    "retry_forbidden": true
+  },
+  "does_not_authorize": [
+    "fresh-context launch",
+    "composer invocation",
+    "validator invocation",
+    "consumption",
+    "retry",
+    "cross-revision aggregation",
+    "M3 closure",
+    "M4"
+  ]
+}
