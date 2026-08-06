@@ -4,19 +4,23 @@
 
 `M3 — Engineering method cards`
 
-Status: `IN_PROGRESS`
+Active revision: `M3.1.1 r5`
 
-r5 preparation status: `READY_FOR_AUTHORIZED_R5_FRESH_CONTEXTS`
+Evidence HEAD: `1b696bce53ee0a11163bfe4f91a9a49ab3af6f49`
 
-Acceptance revision: `m3.1.1`
+Status: `BLOCKED_NOT_ACCEPTED`
 
-Input HEAD: `058b93d944d67b9e5c862ab5e1e74bb86d652512`
+Accepted fresh cases: `F01, F03, F04, F05`
 
-Terminal evidence commit: `55cab63aa296be9c274e0ee0c012c52547a91459`
+Failed fresh case: `F02`
+
+Exact-HEAD CI: `FAILED` (GitHub Actions run `31096079186`)
+
+M3: `IN_PROGRESS`
 
 M4: `NOT_STARTED`
 
-M3.1 implementation is complete. M3.1.1 r4 preparation passed on branch `codex/m3.1.1-r4-byte-gate-resume`, starting from required HEAD `64706d9a1adb1289bb5d06b51d6fa8ce45066387` and descended from immutable r3 baseline `dbcbbb6b4fe501de87f655edf22099ad62363c57`. The authorized fresh-context acceptance stopped at the first dispatcher callback failure for F03; no repair or retry was performed. R2 and r3 remain failed historical evidence and are not being retried or edited in place. M3 remains limited to offline, evidence-grounded method coaching and deterministic validation artifacts. It does not authorize experiment or route execution, training, downloads, services, deployment, uploads, RRC integration, or platform integration.
+M3.1 implementation is complete, but M3.1.1 r5 acceptance is not. The consumed r5 evidence remains immutable at `evals/m3/results/forward-r5/`: F01, F03, F04, and F05 were accepted, while F02 failed after its single composer invocation. The r5.1 branch is limited to CI compatibility repair, read-only F02 offline diagnosis, acceptance-auditor hardening, and status/evidence cleanup. It does not authorize a new fresh run, M3 closure, merge, push, M4 branching, experiment or route execution, training, downloads, services, deployment, uploads, RRC integration, or platform integration.
 
 Before route-specific method-card instantiation, M3.1.1 must validate the complete M2.1.1 bundle, require `user_confirmed`, recompute the selected-direction binding, reject every non-empty `approved_constraint_changes` list with `unsupported_approved_constraint_change_provenance`, and rederive claim metrics, claim-specific preconditions, resource ceilings, actual Go/Stop/Pivot coverage, safety-source eligibility, and method-card internal bindings from upstream structures.
 
@@ -39,9 +43,11 @@ Before route-specific method-card instantiation, M3.1.1 must validate the comple
 - [ ] Five genuinely fresh-context r4 forward evaluations completed with accepted validator results. The first coordinator consumption, F03, stopped with `consumed_with_callback_failure`; no remaining case was dispatched, composed, or validated after that failure.
 - [x] F03 one-shot evidence and the dispatcher callback failure are preserved at `evals/m3/results/forward-r4/m3-f03.outcome.json`, `m3-f03.validation.json`, and `m3-f03.dispatch-callback-failure.json`; no repair or retry was performed and all later r4 acceptance/closure gates remain `NOT_RUN`.
 
-## M3.1.1 r5 local result
+## M3.1.1 r5 historical preparation and terminal result
 
-Status: `READY_FOR_AUTHORIZED_R5_FRESH_CONTEXTS`
+Historical preparation status: `READY_FOR_AUTHORIZED_R5_FRESH_CONTEXTS`
+
+Terminal status: `BLOCKED_NOT_ACCEPTED`
 
 The independent r5 dispatcher-receipt and five-task contract repair was structurally ready on branch `codex/m3.1.1-r5-dispatch-contract-repair`. The required starting HEAD was `66c1da40afe8e03ae9e3a6ab8ab3e9ad06423b14`; the readiness validation snapshot before authorization was `2d5c67780d711b5cbcb5dbac06e7f532cd9ca184`. Before authorization, all five r5 source cases were eligible, the closed future-path contract and batch preflight passed with zero side effects, prompts and contracts were hash-frozen, and every task, finalization, processing, invocation, acceptance, and transaction-failure counter was zero. The pre-authorization preparation manifest remains unchanged at `evals/m3/results/forward-r5/acceptance-manifest.json`. See `evals/m3/results/2026-08-06-m3.1.1-r5-preparation-validation.md`.
 
