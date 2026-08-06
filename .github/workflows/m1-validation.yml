@@ -35,8 +35,11 @@ jobs:
             evals/m3/audit_forward_case_input.py \
             evals/m3/validate_m3_forward_outcome.py \
             evals/m3/run_forward_outcome_validation_once.py \
+            evals/m3/dispatch_forward_r4.py \
             evals/m3/audit_forward_inputs.py \
             evals/m3/audit_forward_acceptance.py \
+            evals/m3/audit_forward_r4_preparation.py \
+            evals/m3/audit_immutable_forward_evidence.py \
             evals/m3/audit_skill_package.py
       - name: Unit tests
         run: python -m unittest discover -s tests -p "test_*.py" -v
