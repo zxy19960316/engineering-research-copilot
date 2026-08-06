@@ -29,6 +29,10 @@ class AuditImmutableForwardEvidenceTests(unittest.TestCase):
         )
         self.assertTrue(all(item["bytes_equal"] for item in result["files"]))
         self.assertEqual(result["errors"], [])
+        self.assertTrue(
+            any(item["path"].startswith("evals/m3/results/forward-r4/") for item in result["files"])
+        )
+        self.assertTrue(all(item["normalized_bytes_equal"] for item in result["historical_records"]))
 
     def test_one_byte_mutation_is_detected_without_touching_repository(self):
         source = REPO_ROOT / "evals" / "m3" / "forward-inputs-r2" / "m3-f03-approved-change.bundle.json"
