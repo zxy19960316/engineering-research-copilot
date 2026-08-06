@@ -50,6 +50,10 @@ jobs:
             evals/m3/audit_forward_r5_1_f02_preparation.py \
             evals/m3/audit_immutable_forward_evidence.py \
             evals/m3/audit_skill_package.py
+      - name: Require immutable r5 evidence commit
+        run: |
+          git cat-file -e 1b696bce53ee0a11163bfe4f91a9a49ab3af6f49^{commit}
+          git cat-file -e 1b696bce53ee0a11163bfe4f91a9a49ab3af6f49:evals/m3/results/forward-r5/acceptance-manifest-consumed.json
       - name: Unit tests
         run: python -m unittest discover -s tests -p "test_*.py" -v
       - name: Replay fixtures
