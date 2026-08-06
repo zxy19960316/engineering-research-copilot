@@ -12,7 +12,7 @@ Input HEAD: `b0a1b9e41e85a1b57c80a8b571bac9ca01c88778`
 
 M4: `NOT_STARTED`
 
-M3.1 implementation is complete. M3.1.1 acceptance hardening is in progress on branch `codex/m3.1.1-acceptance-hardening`, created directly from the recorded M3 HEAD above. M3 remains limited to offline, evidence-grounded method coaching and deterministic validation artifacts. It does not authorize experiment or route execution, training, downloads, services, deployment, uploads, RRC integration, or platform integration.
+M3.1 implementation is complete. M3.1.1 acceptance repair is in progress on branch `codex/m3.1.1-r3-acceptance-repair`, created directly from immutable r2 evidence HEAD `6ec576a47a804300e2a95e6bddfff1d00c5270a3`. R2 remains failed historical evidence and is not being retried or edited in place; r3 may supersede it for acceptance only after the revised contracts and all fresh cases pass. M3 remains limited to offline, evidence-grounded method coaching and deterministic validation artifacts. It does not authorize experiment or route execution, training, downloads, services, deployment, uploads, RRC integration, or platform integration.
 
 Before route-specific method-card instantiation, M3.1.1 must validate the complete M2.1.1 bundle, require `user_confirmed`, recompute the selected-direction binding, reject every non-empty `approved_constraint_changes` list with `unsupported_approved_constraint_change_provenance`, and rederive claim metrics, claim-specific preconditions, resource ceilings, actual Go/Stop/Pivot coverage, safety-source eligibility, and method-card internal bindings from upstream structures.
 
@@ -24,12 +24,14 @@ Before route-specific method-card instantiation, M3.1.1 must validate the comple
 - [x] Safety-source, non-negative-resource, and method-card claim/metric binding gates implemented; focused validator suite passes 62/62.
 - [x] Twenty deterministic M3 adversarial cases regenerated and replayed byte-stably.
 - [x] Independent M2 input preparation preserved in the r2 worktree: F01/F02/F03/F05 M2-valid artifacts; F04 explicit NOT_RUN with its non-nuclear prerequisite gap.
+- [x] R2 inputs, prompts, outputs, validation receipts, and context records frozen by raw SHA-256 and Git blob identity in `evals/m3/results/forward-r3/r2-freeze-diagnostic.json`; F01 JSON syntax coordinates and F05 missing-output evidence remain explicit.
+- [ ] R3 case-level eligibility, deterministic artifact composition, expected-blocked F03 outcome, route-specific F05, and independent non-nuclear F04 upstream lineage accepted before any new fresh-context run.
 - [ ] Five genuinely fresh-context forward evaluations completed with accepted validator results; r2 observed F01 invalid (`unreadable_or_invalid_json`), F02 valid, F03 invalid with extra structural errors, F04 NOT_RUN, and F05 invalid without a final output bundle.
 - [x] Complete local regression, package audit, Skill validation, and replay gates pass; the input HEAD `02d791275e6a8da16655a57aec5188d606c49357` passed GitHub Actions run `31006161680` on `2026-08-05`. This is historical implementation/replay CI; the r2 forward-input audit is `evidence_incomplete` for F04 and the fresh acceptance audit is invalid, so no closure CI is claimed.
 
 ## M3 local result
 
-Status: `M3.1.1 LOCAL_HARDENING_COMPLETE; ACCEPTANCE_BLOCKED`
+Status: `M3.1.1 R3_ACCEPTANCE_REPAIR_IN_PROGRESS; R2_ACCEPTANCE_BLOCKED`
 
 Historical M3.1 local implementation and validation passed on `2026-08-05`; the M3.1.1 local hardening and deterministic replay also pass. Input HEAD `02d791275e6a8da16655a57aec5188d606c49357` passed GitHub Actions run `31006161680`, which covered the then-current implementation, replay, and package gates. That run does not close the forward acceptance repair. The historical blocked acceptance record is `evals/m3/results/2026-08-05-m3.1.1-final-validation.md`; the r2 records are `evals/m3/results/2026-08-05-forward-evaluation-r2.md` and `evals/m3/results/forward-r2/acceptance-manifest.json`. R2 preserves the independently confirmed NEML-F01-D1 input lineage, but F01's one-shot validator returned `unreadable_or_invalid_json`, F02 alone returned valid, F03 returned extra structural errors instead of the exact single fail-closed code, F04 remains NOT_RUN because the non-nuclear M1/M2 prerequisite is absent, and F05 returned an invalid one-shot receipt without an output bundle. No fresh case was repaired or retried. No stale claim that M3 closure candidate HEAD `b0a1b9e` passed Actions run `31000758678` is accepted here. The baseline M2.1.1 Actions run `30977286846` is not M3 implementation CI. The forward-acceptance repair and its exact final closure CI remain pending.
 
@@ -165,7 +167,7 @@ Evidence is recorded under `evals/m1/`, including preserved failed runs and inde
 ## External state
 
 - Git remote: `https://github.com/zxy19960316/engineering-research-copilot.git`
-- Active local branch: `codex/m3.1.1-acceptance-hardening`
+- Active local branch: `codex/m3.1.1-r3-acceptance-repair`
 - External APIs/services configured: none
 - RRC integration: not started
 - Platform integration: not required for the local Skill competition track
