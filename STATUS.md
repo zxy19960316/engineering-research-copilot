@@ -8,7 +8,9 @@ Status: `IN_PROGRESS`
 
 Acceptance revision: `m3.1.1`
 
-Input HEAD: `55cab63`
+Input HEAD: `058b93d944d67b9e5c862ab5e1e74bb86d652512`
+
+Terminal evidence commit: `55cab63aa296be9c274e0ee0c012c52547a91459`
 
 M4: `NOT_STARTED`
 
