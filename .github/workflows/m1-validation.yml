@@ -33,6 +33,7 @@ jobs:
             evals/m3/replay_offline_results.py \
             evals/m3/run_forward_validation_once.py \
             evals/m3/audit_forward_case_input.py \
+            evals/m3/validate_m3_forward_outcome.py \
             evals/m3/audit_forward_inputs.py \
             evals/m3/audit_forward_acceptance.py \
             evals/m3/audit_skill_package.py
