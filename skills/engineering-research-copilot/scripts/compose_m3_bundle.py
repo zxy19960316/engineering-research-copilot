@@ -6,6 +6,7 @@ from __future__ import annotations
 import copy
 import hashlib
 import json
+import math
 import os
 import sys
 import tempfile
@@ -20,6 +21,75 @@ from validate_m3_method_bundle import validate_m3_bundle
 
 
 PAYLOAD_FIELDS = {"coaching_mode", "method_cards", "domain_overlays"}
+METHOD_CARD_FIELDS = {
+    "schema_version",
+    "card_id",
+    "method_family",
+    "applicability",
+    "assumptions",
+    "minimum_resources",
+    "inherited_constraints",
+    "baselines",
+    "controls",
+    "procedure_outline",
+    "primary_metrics",
+    "uncertainty_handling",
+    "validation_checks",
+    "failure_modes",
+    "stop_conditions",
+    "pivot_conditions",
+    "safety_boundaries",
+    "source_ledger",
+}
+APPLICABILITY_FIELDS = {
+    "supported_claim_types",
+    "required_inputs",
+    "incompatible_conditions",
+}
+RESOURCE_FIELDS = {"resource", "required_value", "unit", "source_constraint_id"}
+CONSTRAINT_FIELDS = {"constraint_id", "resource", "operator", "value", "unit"}
+CRITERION_FIELDS = {"criterion_type", "metric_id", "operator", "value", "unit"}
+SOURCE_LEDGER_FIELDS = {
+    "source_id",
+    "candidate_id",
+    "basis_level",
+    "support_types",
+    "supports",
+    "does_not_support",
+    "limitations",
+}
+OVERLAY_FIELDS = {
+    "schema_version",
+    "overlay_id",
+    "domain",
+    "base_card_ids",
+    "additional_assumptions",
+    "additional_failure_modes",
+    "additional_validation_checks",
+    "additional_stop_conditions",
+    "specialist_review_boundaries",
+    "transfer_status",
+    "source_ledger",
+}
+NONEMPTY_TEXT_FIELDS = {
+    "assumptions",
+    "baselines",
+    "controls",
+    "procedure_outline",
+    "uncertainty_handling",
+    "validation_checks",
+    "failure_modes",
+    "safety_boundaries",
+}
+METHOD_FAMILIES = {
+    "experiment_measurement_uq",
+    "modeling_simulation_vvuq",
+    "control_optimization_identification",
+    "signal_diagnostics",
+    "data_ml_hybrid",
+    "reliability_safety_risk",
+}
+CRITERION_OPERATORS = {"<", "<=", ">", ">="}
 SCHEMA_VERSION = "m3.1"
 
 
@@ -97,6 +167,403 @@ def _selected_direction(source_m2: dict[str, Any]) -> tuple[str, dict[str, Any]]
     return selected_id, matches[0]
 
 
+def _contract_error(
+    code: str, path: str, expected: Any
+) -> dict[str, Any]:
+    return {"code": code, "path": path, "expected": expected}
+
+
+def _nonempty_text(value: Any) -> bool:
+    return isinstance(value, str) and bool(value.strip())
+
+
+def _finite_number(value: Any) -> bool:
+    return (
+        isinstance(value, (int, float))
+        and not isinstance(value, bool)
+        and math.isfinite(value)
+    )
+
+
+def _check_closed_object(
+    value: Any,
+    fields: set[str],
+    path: str,
+    label: str,
+    errors: list[dict[str, Any]],
+) -> bool:
+    if not isinstance(value, dict):
+        errors.append(_contract_error(f"{label}_object", path, "object"))
+        return False
+    missing = sorted(fields - set(value))
+    unknown = sorted(set(value) - fields)
+    if missing or unknown:
+        expected: dict[str, Any] = {"fields": sorted(fields)}
+        if missing:
+            expected["missing"] = missing
+        if unknown:
+            expected["unknown"] = unknown
+        errors.append(_contract_error(f"{label}_fields", path, expected))
+        return False
+    return True
+
+
+def _check_text_list(
+    value: Any,
+    path: str,
+    errors: list[dict[str, Any]],
+    *,
+    min_items: int = 1,
+) -> None:
+    if not isinstance(value, list):
+        errors.append(_contract_error("list_type", path, "array"))
+        return
+    if len(value) < min_items:
+        errors.append(
+            _contract_error(
+                "list_min_items", path, f"at least {min_items} non-empty item(s)"
+            )
+        )
+    for index, item in enumerate(value):
+        if not _nonempty_text(item):
+            errors.append(
+                _contract_error(
+                    "text_item_type", f"{path}[{index}]", "non-empty string"
+                )
+            )
+
+
+def _check_criterion(
+    value: Any,
+    path: str,
+    expected_type: str,
+    errors: list[dict[str, Any]],
+) -> None:
+    if not _check_closed_object(
+        value, CRITERION_FIELDS, path, "criterion", errors
+    ):
+        return
+    if value.get("criterion_type") != expected_type:
+        errors.append(
+            _contract_error(
+                "criterion_type",
+                f"{path}.criterion_type",
+                expected_type,
+            )
+        )
+    if not _nonempty_text(value.get("metric_id")):
+        errors.append(
+            _contract_error("criterion_metric_id", f"{path}.metric_id", "string")
+        )
+    if value.get("operator") not in CRITERION_OPERATORS:
+        errors.append(
+            _contract_error(
+                "criterion_operator",
+                f"{path}.operator",
+                sorted(CRITERION_OPERATORS),
+            )
+        )
+    if not _finite_number(value.get("value")):
+        errors.append(
+            _contract_error("criterion_value", f"{path}.value", "finite number")
+        )
+    if not _nonempty_text(value.get("unit")):
+        errors.append(
+            _contract_error("criterion_unit", f"{path}.unit", "string")
+        )
+
+
+def _check_rows(
+    value: Any,
+    path: str,
+    fields: set[str],
+    label: str,
+    errors: list[dict[str, Any]],
+    *,
+    min_items: int = 1,
+) -> list[dict[str, Any]]:
+    if not isinstance(value, list):
+        errors.append(_contract_error("list_type", path, "array"))
+        return []
+    if len(value) < min_items:
+        errors.append(
+            _contract_error(
+                f"{label}_min_items", path, f"at least {min_items} item(s)"
+            )
+        )
+    rows: list[dict[str, Any]] = []
+    for index, row in enumerate(value):
+        row_path = f"{path}[{index}]"
+        if _check_closed_object(row, fields, row_path, label, errors):
+            rows.append(row)
+    return rows
+
+
+def _check_card(card: Any, index: int, errors: list[dict[str, Any]]) -> None:
+    path = f"method_cards[{index}]"
+    if not _check_closed_object(
+        card, METHOD_CARD_FIELDS, path, "method_card", errors
+    ):
+        return
+    if card.get("schema_version") != SCHEMA_VERSION:
+        errors.append(
+            _contract_error("schema_version", f"{path}.schema_version", SCHEMA_VERSION)
+        )
+    if not _nonempty_text(card.get("card_id")):
+        errors.append(_contract_error("card_id_type", f"{path}.card_id", "string"))
+    if card.get("method_family") not in METHOD_FAMILIES:
+        errors.append(
+            _contract_error(
+                "method_family_enum", f"{path}.method_family", sorted(METHOD_FAMILIES)
+            )
+        )
+    if _check_closed_object(
+        card.get("applicability"),
+        APPLICABILITY_FIELDS,
+        f"{path}.applicability",
+        "applicability",
+        errors,
+    ):
+        for field in sorted(APPLICABILITY_FIELDS):
+            _check_text_list(
+                card["applicability"][field],
+                f"{path}.applicability.{field}",
+                errors,
+            )
+    for field in sorted(NONEMPTY_TEXT_FIELDS):
+        _check_text_list(card[field], f"{path}.{field}", errors)
+    _check_rows(
+        card["minimum_resources"],
+        f"{path}.minimum_resources",
+        RESOURCE_FIELDS,
+        "minimum_resource",
+        errors,
+    )
+    for resource_index, resource in enumerate(card["minimum_resources"]):
+        resource_path = f"{path}.minimum_resources[{resource_index}]"
+        if not isinstance(resource, dict) or set(resource) != RESOURCE_FIELDS:
+            continue
+        for field in ("resource", "unit", "source_constraint_id"):
+            if not _nonempty_text(resource[field]):
+                errors.append(
+                    _contract_error(
+                        "resource_text_type", f"{resource_path}.{field}", "string"
+                    )
+                )
+        if not _finite_number(resource["required_value"]) or resource["required_value"] < 0:
+            errors.append(
+                _contract_error(
+                    "resource_required_value", f"{resource_path}.required_value", "finite nonnegative number"
+                )
+            )
+    _check_rows(
+        card["inherited_constraints"],
+        f"{path}.inherited_constraints",
+        CONSTRAINT_FIELDS,
+        "constraint",
+        errors,
+    )
+    for constraint_index, constraint in enumerate(card["inherited_constraints"]):
+        constraint_path = f"{path}.inherited_constraints[{constraint_index}]"
+        if not isinstance(constraint, dict) or set(constraint) != CONSTRAINT_FIELDS:
+            continue
+        for field in ("constraint_id", "resource", "unit"):
+            if not _nonempty_text(constraint[field]):
+                errors.append(
+                    _contract_error(
+                        "constraint_text_type", f"{constraint_path}.{field}", "string"
+                    )
+                )
+        if constraint["operator"] not in CRITERION_OPERATORS:
+            errors.append(
+                _contract_error(
+                    "constraint_operator", f"{constraint_path}.operator", sorted(CRITERION_OPERATORS)
+                )
+            )
+        if not _finite_number(constraint["value"]):
+            errors.append(
+                _contract_error(
+                    "constraint_value", f"{constraint_path}.value", "finite number"
+                )
+            )
+    primary_metrics = card["primary_metrics"]
+    if not isinstance(primary_metrics, list):
+        errors.append(_contract_error("primary_metrics_type", f"{path}.primary_metrics", "array"))
+    else:
+        if not primary_metrics:
+            errors.append(
+                _contract_error(
+                    "primary_metrics_min_items", f"{path}.primary_metrics", "at least one metric ID"
+                )
+            )
+        for metric_index, metric_id in enumerate(primary_metrics):
+            if not _nonempty_text(metric_id):
+                errors.append(
+                    _contract_error(
+                        "primary_metrics_item_type",
+                        f"{path}.primary_metrics[{metric_index}]",
+                        "string metric_id",
+                    )
+                )
+    for field, criterion_type in (("stop_conditions", "stop"), ("pivot_conditions", "pivot")):
+        criteria = card[field]
+        if not isinstance(criteria, list):
+            errors.append(_contract_error("list_type", f"{path}.{field}", "array"))
+            continue
+        if not criteria:
+            errors.append(
+                _contract_error(
+                    f"{field}_min_items", f"{path}.{field}", "at least one criterion"
+                )
+            )
+        for criterion_index, criterion in enumerate(criteria):
+            _check_criterion(
+                criterion,
+                f"{path}.{field}[{criterion_index}]",
+                criterion_type,
+                errors,
+            )
+    _check_rows(
+        card["source_ledger"],
+        f"{path}.source_ledger",
+        SOURCE_LEDGER_FIELDS,
+        "source_ledger",
+        errors,
+    )
+    for row_index, row in enumerate(card["source_ledger"]):
+        row_path = f"{path}.source_ledger[{row_index}]"
+        if not isinstance(row, dict) or set(row) != SOURCE_LEDGER_FIELDS:
+            continue
+        for field in ("source_id", "candidate_id", "basis_level"):
+            if not _nonempty_text(row[field]):
+                errors.append(
+                    _contract_error("source_ledger_text_type", f"{row_path}.{field}", "string")
+                )
+        for field in ("support_types", "supports", "does_not_support", "limitations"):
+            _check_text_list(row[field], f"{row_path}.{field}", errors)
+
+
+def _check_overlay(overlay: Any, index: int, errors: list[dict[str, Any]]) -> None:
+    path = f"domain_overlays[{index}]"
+    if not _check_closed_object(overlay, OVERLAY_FIELDS, path, "domain_overlay", errors):
+        return
+    if overlay.get("schema_version") != SCHEMA_VERSION:
+        errors.append(
+            _contract_error("schema_version", f"{path}.schema_version", SCHEMA_VERSION)
+        )
+    if not _nonempty_text(overlay.get("overlay_id")):
+        errors.append(_contract_error("overlay_id_type", f"{path}.overlay_id", "string"))
+    if overlay.get("domain") != "nuclear_engineering_ml":
+        errors.append(
+            _contract_error(
+                "domain_enum", f"{path}.domain", "nuclear_engineering_ml"
+            )
+        )
+    _check_text_list(overlay["base_card_ids"], f"{path}.base_card_ids", errors)
+    for field in (
+        "additional_assumptions",
+        "additional_failure_modes",
+        "additional_validation_checks",
+        "specialist_review_boundaries",
+    ):
+        _check_text_list(overlay[field], f"{path}.{field}", errors)
+    additional_stop = overlay["additional_stop_conditions"]
+    if not isinstance(additional_stop, list):
+        errors.append(_contract_error("list_type", f"{path}.additional_stop_conditions", "array"))
+    else:
+        if not additional_stop:
+            errors.append(
+                _contract_error(
+                    "additional_stop_conditions_min_items",
+                    f"{path}.additional_stop_conditions",
+                    "at least one criterion",
+                )
+            )
+        for criterion_index, criterion in enumerate(additional_stop):
+            _check_criterion(
+                criterion,
+                f"{path}.additional_stop_conditions[{criterion_index}]",
+                "stop",
+                errors,
+            )
+    if overlay.get("transfer_status") != "hypothesis":
+        errors.append(
+            _contract_error("transfer_status", f"{path}.transfer_status", "hypothesis")
+        )
+    _check_rows(
+        overlay["source_ledger"],
+        f"{path}.source_ledger",
+        SOURCE_LEDGER_FIELDS,
+        "source_ledger",
+        errors,
+    )
+    for row_index, row in enumerate(overlay["source_ledger"]):
+        row_path = f"{path}.source_ledger[{row_index}]"
+        if not isinstance(row, dict) or set(row) != SOURCE_LEDGER_FIELDS:
+            continue
+        for field in ("source_id", "candidate_id", "basis_level"):
+            if not _nonempty_text(row[field]):
+                errors.append(
+                    _contract_error("source_ledger_text_type", f"{row_path}.{field}", "string")
+                )
+        for field in ("support_types", "supports", "does_not_support", "limitations"):
+            _check_text_list(row[field], f"{row_path}.{field}", errors)
+
+
+def validate_model_payload_contract(payload: Any) -> list[dict[str, Any]]:
+    """Return sorted closed field diagnostics without mutation or I/O."""
+
+    errors: list[dict[str, Any]] = []
+    if not isinstance(payload, dict):
+        return [_contract_error("payload_object", "payload", "object")]
+    if set(payload) != PAYLOAD_FIELDS:
+        missing = sorted(PAYLOAD_FIELDS - set(payload))
+        unknown = sorted(set(payload) - PAYLOAD_FIELDS)
+        expected: dict[str, Any] = {"fields": sorted(PAYLOAD_FIELDS)}
+        if missing:
+            expected["missing"] = missing
+        if unknown:
+            expected["unknown"] = unknown
+        errors.append(_contract_error("payload_fields", "payload", expected))
+        return errors
+    if payload.get("coaching_mode") not in {"bounded", "route_specific"}:
+        errors.append(
+            _contract_error(
+                "coaching_mode_enum",
+                "coaching_mode",
+                ["bounded", "route_specific"],
+            )
+        )
+    cards = payload.get("method_cards")
+    if not isinstance(cards, list):
+        errors.append(_contract_error("method_cards_type", "method_cards", "array"))
+    else:
+        if not cards:
+            errors.append(
+                _contract_error(
+                    "method_cards_min_items",
+                    "method_cards",
+                    "at least one closed method card",
+                )
+            )
+        for index, card in enumerate(cards):
+            _check_card(card, index, errors)
+    overlays = payload.get("domain_overlays")
+    if not isinstance(overlays, list):
+        errors.append(_contract_error("domain_overlays_type", "domain_overlays", "array"))
+    else:
+        for index, overlay in enumerate(overlays):
+            _check_overlay(overlay, index, errors)
+    return sorted(
+        errors,
+        key=lambda error: (
+            str(error.get("path", "")),
+            str(error.get("code", "")),
+            json.dumps(error.get("expected"), ensure_ascii=False, sort_keys=True),
+        ),
+    )
+
+
 def compose_bundle(
     source_m2: dict[str, Any], model_payload: dict[str, Any]
 ) -> dict[str, Any]:
@@ -110,18 +577,9 @@ def compose_bundle(
             validator_evidence_gaps=m2_result.get("evidence_gaps", []),
         )
 
-    unknown = sorted(set(model_payload) - PAYLOAD_FIELDS)
-    if unknown:
-        raise _ComposeFailure("unknown_payload_fields", fields=unknown)
-    missing = sorted(PAYLOAD_FIELDS - set(model_payload))
-    if missing:
-        raise _ComposeFailure("missing_payload_fields", fields=missing)
-    if not isinstance(model_payload.get("coaching_mode"), str):
-        raise _ComposeFailure("invalid_payload_coaching_mode")
-    if not isinstance(model_payload.get("method_cards"), list):
-        raise _ComposeFailure("invalid_payload_method_cards")
-    if not isinstance(model_payload.get("domain_overlays"), list):
-        raise _ComposeFailure("invalid_payload_domain_overlays")
+    contract_errors = validate_model_payload_contract(model_payload)
+    if contract_errors:
+        raise _ComposeFailure("payload_contract_invalid", contract_errors=contract_errors)
 
     selected_id, selected_direction = _selected_direction(source_m2)
     bundle = {

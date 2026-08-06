@@ -200,7 +200,9 @@ class ComposeM3BundleTests(unittest.TestCase):
 
             self.assertNotEqual(completed.returncode, 0)
             self.assertFalse(output_path.exists())
-            self.assertEqual(json.loads(completed.stdout)["error"], "unknown_payload_fields")
+            receipt = json.loads(completed.stdout)
+            self.assertEqual(receipt["error"], "payload_contract_invalid")
+            self.assertEqual(receipt["contract_errors"][0]["path"], "payload")
 
     def test_does_not_fill_missing_method_card_fields(self):
         with tempfile.TemporaryDirectory() as temp_dir:
