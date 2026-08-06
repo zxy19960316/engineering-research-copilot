@@ -1,0 +1,27 @@
+{
+  "schema_version": "f04-m2.1.1-confirmed-manifest-v1",
+  "status": "user_confirmed",
+  "selected_direction_id": "F04-D01",
+  "selected_direction_canonical_sha256": "1f81072903df3afa27d49bd06c17209141014ac8ea5026973a8bc7bd8e69b310",
+  "preconfirmation_bundle_path": "evals/f04-upstream/m2/f04-m2-direction-bundle.json",
+  "preconfirmation_bundle_canonical_sha256": "884e80387776ecdf3963a3db79c1bec3eb8fe48f65f17c0fc8852d61b54f8678",
+  "confirmed_bundle_path": "evals/f04-upstream/m2/f04-m2-confirmed.bundle.json",
+  "confirmed_bundle_raw_sha256": "dbc1e778e0b53ea5c8724bcaea39803d13d524a67f8e72a24a046a380ff574e4",
+  "confirmed_bundle_canonical_sha256": "9601cfc01609dd8aae6b76073caf66928e4aa67d9dac3fd7fe52e922cdb66526",
+  "confirmation_event": {
+    "actor_role": "user",
+    "selected_direction_id": "F04-D01",
+    "source_message_id": "codex-task:019fd4f7-e1c4-7fd1-9799-786f62fda8e6:item-46",
+    "source_message_excerpt": "Confirm F04 direction F04-D01",
+    "source_message_sha256": "449d273dd5a49d821bd2785f5361deaafdd3e5bfd3442f6f3b0b01251f7b5bd0",
+    "previous_bundle_hash": "884e80387776ecdf3963a3db79c1bec3eb8fe48f65f17c0fc8852d61b54f8678"
+  },
+  "route_output": null,
+  "validation_receipt_path": "evals/f04-upstream/m2/f04-m2-confirmed.validation.json",
+  "construction_context": "codex-task:019fd467-790b-7551-9157-ddd3b2222ca1",
+  "limitations": [
+    "Confirmation selects a formal direction but does not generate a route.",
+    "The evidence remains public-record and literature based; no dataset or equipment run occurred.",
+    "Target-domain transfer remains a hypothesis until a decisive test is separately authorized."
+  ]
+}

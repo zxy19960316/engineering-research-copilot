@@ -1,0 +1,4102 @@
+{
+  "source_m1_bundle": {
+    "schema_version": "m1.2",
+    "terminal_state": "M1_COMPLETE",
+    "stopped_after_round": 2,
+    "outcome": "complete",
+    "round1": {
+      "schema_version": "m1.2",
+      "round": 1,
+      "research_brief": {
+        "brief_version": 1,
+        "branch_id": "f04-public-bearing-measurement-uq-2026-08-06",
+        "engineering_object": "公开滚动轴承振动数据及其测量链",
+        "target_problem": "判断公开滚动轴承振动数据是否具备可追溯的测量单位、传感器/采集信息、校准线索、重复性/再现性证据和 measurement uncertainty / UQ 准备度",
+        "target_metric": "measurement traceability, repeatability, reproducibility, and uncertainty-readiness of public rolling-bearing vibration data",
+        "available_data": [
+          "public raw or semi-raw rolling-bearing vibration records",
+          "official dataset metadata and open article records"
+        ],
+        "resources": [
+          "Crossref and DataCite bibliographic records",
+          "publisher or official repository pages",
+          "offline JSON contract validation",
+          "no equipment control and no dataset download"
+        ],
+        "time_budget": "Two bounded literature rounds on 2026-08-06; no route execution",
+        "preferred_routes": [
+          "measurement-traceability audit",
+          "Gage R&R and calibration review",
+          "uncertainty-aware cross-dataset comparison"
+        ],
+        "excluded_routes": [
+          "nuclear applications",
+          "proprietary-only data",
+          "new experiments",
+          "model training or model downloads",
+          "services, uploads, deployment, or equipment control"
+        ],
+        "hard_constraints": [
+          "Use a new independent F04 search lineage",
+          "Use current authoritative citation checks",
+          "Never infer DOI, title, author list, venue, or publication status",
+          "Keep metadata-, abstract-, and full-text-level reasoning separate",
+          "Require explicit units, calibration provenance, repeatability, reproducibility, and UQ prerequisites where claimed",
+          "Stop before route generation and user confirmation"
+        ],
+        "soft_preferences": [
+          "raw waveforms",
+          "sensor and DAQ metadata",
+          "known speed/load/fault conditions",
+          "cross-rig or cross-dataset evidence",
+          "open records with reproducible file descriptions"
+        ],
+        "open_questions": [
+          "Which public records expose enough acquisition metadata to reconstruct units, sensor provenance, and operating conditions?",
+          "Which calibration, repeatability, and reproducibility evidence is available for interpreting public bearing-vibration measurements?",
+          "Which uncertainty-aware or cross-dataset evaluations can expose measurement and domain-shift limits before a direction is confirmed?"
+        ],
+        "evidence_needs": [
+          "15–20 current verified and deduplicated candidates",
+          "round-one role coverage of 3 direct-problem, 2 method, 2 transfer-bridge, and 1 counter/limitation",
+          "round-two evidence focused on calibration, R&R, units, and UQ prerequisites",
+          "numeric bounded criteria only when supported by the verified lineage"
+        ]
+      },
+      "search_plan": {
+        "round": 1,
+        "brief_version": 1,
+        "branch_id": "f04-public-bearing-measurement-uq-2026-08-06",
+        "time_boundary": [
+          "Search executed 2026-08-06 Asia/Shanghai",
+          "No novelty or exhaustiveness claim"
+        ],
+        "language_boundary": [
+          "English-language journal, proceedings, and official repository records returned by the public sources"
+        ],
+        "source_boundary": [
+          "Crossref DOI registry",
+          "DataCite DOI registry",
+          "publisher landing pages",
+          "official repository records",
+          "SciSpace and ordinary web search for discovery only"
+        ],
+        "queries": [
+          {
+            "query_id": "Q1",
+            "purpose": "direct_problem",
+            "query_text": "public rolling bearing vibration datasets measurement metadata calibration sampling rate units",
+            "expected_evidence_role": "direct_problem",
+            "inclusion_terms": [
+              "rolling bearing",
+              "vibration",
+              "public dataset",
+              "sampling rate",
+              "sensor"
+            ],
+            "exclusion_terms": [
+              "nuclear",
+              "proprietary-only"
+            ]
+          },
+          {
+            "query_id": "Q2",
+            "purpose": "direct_problem",
+            "query_text": "open rolling-element bearing vibration data operating condition load speed sensor acquisition",
+            "expected_evidence_role": "direct_problem",
+            "inclusion_terms": [
+              "open access",
+              "raw vibration",
+              "bearing",
+              "load",
+              "speed"
+            ],
+            "exclusion_terms": [
+              "simulation-only",
+              "no data record"
+            ]
+          },
+          {
+            "query_id": "Q3",
+            "purpose": "direct_problem",
+            "query_text": "public bearing fault dataset accelerometer units calibration provenance repeatability",
+            "expected_evidence_role": "direct_problem",
+            "inclusion_terms": [
+              "bearing fault",
+              "accelerometer",
+              "unit",
+              "measurement"
+            ],
+            "exclusion_terms": [
+              "classifier accuracy only"
+            ]
+          },
+          {
+            "query_id": "Q4",
+            "purpose": "method",
+            "query_text": "rolling bearing vibration calibration measurement uncertainty traceability accelerometer",
+            "expected_evidence_role": "method",
+            "inclusion_terms": [
+              "calibration",
+              "measurement uncertainty",
+              "traceability",
+              "accelerometer"
+            ],
+            "exclusion_terms": [
+              "non-vibration-only"
+            ]
+          },
+          {
+            "query_id": "Q5",
+            "purpose": "method",
+            "query_text": "rolling bearing vibration repeatability reproducibility Gage R&R measurement system",
+            "expected_evidence_role": "method",
+            "inclusion_terms": [
+              "repeatability",
+              "reproducibility",
+              "Gage R&R",
+              "rolling bearing"
+            ],
+            "exclusion_terms": [
+              "purely theoretical analogy"
+            ]
+          },
+          {
+            "query_id": "Q6",
+            "purpose": "transfer_bridge",
+            "query_text": "public rotating machinery bearing dataset cross-condition domain shift sensor metadata",
+            "expected_evidence_role": "transfer_bridge",
+            "inclusion_terms": [
+              "public dataset",
+              "bearing",
+              "domain shift",
+              "sensor"
+            ],
+            "exclusion_terms": [
+              "target-domain claim without test"
+            ]
+          },
+          {
+            "query_id": "Q7",
+            "purpose": "transfer_bridge",
+            "query_text": "uncertainty-aware domain generalization rolling bearing unseen operating conditions",
+            "expected_evidence_role": "transfer_bridge",
+            "inclusion_terms": [
+              "uncertainty",
+              "domain generalization",
+              "rolling bearing"
+            ],
+            "exclusion_terms": [
+              "preprint-only main support"
+            ]
+          },
+          {
+            "query_id": "Q8",
+            "purpose": "counter_limitation",
+            "query_text": "limitations variability repeatability reproducibility public bearing vibration measurement",
+            "expected_evidence_role": "counter_limitation",
+            "inclusion_terms": [
+              "measurement variability",
+              "repeatability",
+              "reproducibility",
+              "bearing vibration"
+            ],
+            "exclusion_terms": [
+              "citation count ranking"
+            ]
+          }
+        ],
+        "limitations": [
+          "Dedicated academic-search MCP endpoints were unavailable; the skill's no-MCP/public-web fallback was used.",
+          "SciSpace and web search were discovery sources only.",
+          "Crossref/DataCite records were current checks; publisher pages were cross-checked where accessible and otherwise marked unavailable in provenance.",
+          "No public dataset files or model weights were downloaded."
+        ]
+      },
+      "candidate_pool": [
+        {
+          "candidate_id": "F04-P01",
+          "verification_status": "verified_registry",
+          "recommendation_eligible": true,
+          "evidence_roles": [
+            "direct_problem",
+            "transfer_bridge"
+          ],
+          "selection_role": "direct_problem",
+          "basis_level": "abstract_level",
+          "verified_record": {
+            "paper_id": "F04-P01",
+            "title": "The Politecnico di Torino rolling bearing test rig: Description and analysis of open access data",
+            "authors": [
+              "Alessandro Paolo Daga",
+              "Alessandro Fasana",
+              "Stefano Marchesiello",
+              "Luigi Garibaldi"
+            ],
+            "year_online": null,
+            "year_issue": 2019,
+            "venue": "Mechanical Systems and Signal Processing",
+            "publication_type": "journal_article",
+            "doi": "10.1016/j.ymssp.2018.10.010",
+            "canonical_url": "https://doi.org/10.1016/j.ymssp.2018.10.010",
+            "alternate_id": null,
+            "verification": {
+              "status": "verified_registry",
+              "checked_sources": [
+                {
+                  "source_type": "doi_registry",
+                  "canonical_record": "https://api.crossref.org/works/10.1016%2Fj.ymssp.2018.10.010",
+                  "checked_at": "2026-08-06T11:03:43+08:00",
+                  "result": "match"
+                },
+                {
+                  "source_type": "official_repository",
+                  "canonical_record": "https://iris.polito.it/handle/11583/2716028",
+                  "checked_at": "2026-08-06T11:03:43+08:00",
+                  "result": "match"
+                }
+              ],
+              "title_match": "exact",
+              "author_match": "exact",
+              "version_relation": "same_work",
+              "recommendation_eligible": true,
+              "blocking_reasons": []
+            },
+            "evidence_role": "direct_problem",
+            "supports": "Open PoliTO bearing-rig data expose speed/load/damage regimes and an endurance acquisition.",
+            "does_not_support": "It does not by itself establish cross-laboratory calibration uncertainty or reproducibility.",
+            "basis_level": "abstract_level"
+          }
+        },
+        {
+          "candidate_id": "F04-P02",
+          "verification_status": "verified_primary",
+          "recommendation_eligible": true,
+          "evidence_roles": [
+            "direct_problem"
+          ],
+          "selection_role": "direct_problem",
+          "basis_level": "fulltext_level",
+          "verified_record": {
+            "paper_id": "F04-P02",
+            "title": "University of Ottawa constant load and speed rolling-element bearing vibration and acoustic fault signature datasets",
+            "authors": [
+              "Mert Sehri",
+              "Patrick Dumond",
+              "Michel Bouchard"
+            ],
+            "year_online": null,
+            "year_issue": 2023,
+            "venue": "Data in Brief",
+            "publication_type": "journal_article",
+            "doi": "10.1016/j.dib.2023.109327",
+            "canonical_url": "https://doi.org/10.1016/j.dib.2023.109327",
+            "alternate_id": null,
+            "verification": {
+              "status": "verified_primary",
+              "checked_sources": [
+                {
+                  "source_type": "doi_registry",
+                  "canonical_record": "https://api.crossref.org/works/10.1016%2Fj.dib.2023.109327",
+                  "checked_at": "2026-08-06T11:03:43+08:00",
+                  "result": "match"
+                },
+                {
+                  "source_type": "official_repository",
+                  "canonical_record": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10331275/",
+                  "checked_at": "2026-08-06T11:03:43+08:00",
+                  "result": "match"
+                }
+              ],
+              "title_match": "exact",
+              "author_match": "exact",
+              "version_relation": "same_work",
+              "recommendation_eligible": true,
+              "blocking_reasons": []
+            },
+            "evidence_role": "direct_problem",
+            "supports": "Open raw/processed data link accelerometer, load, speed, and temperature measurements with stated sampling and units.",
+            "does_not_support": "The constant-load/speed design does not establish cross-laboratory reproducibility.",
+            "basis_level": "fulltext_level"
+          }
+        },
+        {
+          "candidate_id": "F04-P03",
+          "verification_status": "verified_primary",
+          "recommendation_eligible": true,
+          "evidence_roles": [
+            "direct_problem"
+          ],
+          "selection_role": "direct_problem",
+          "basis_level": "abstract_level",
+          "verified_record": {
+            "paper_id": "F04-P03",
+            "title": "Vibration, acoustic, temperature, and motor current dataset of rotating machine under varying operating conditions for fault diagnosis",
+            "authors": [
+              "Wonho Jung",
+              "Seong-Hu Kim",
+              "Sung-Hyun Yun",
+              "Jaewoong Bae",
+              "Yong-Hwa Park"
+            ],
+            "year_online": null,
+            "year_issue": 2023,
+            "venue": "Data in Brief",
+            "publication_type": "journal_article",
+            "doi": "10.1016/j.dib.2023.109049",
+            "canonical_url": "https://doi.org/10.1016/j.dib.2023.109049",
+            "alternate_id": null,
+            "verification": {
+              "status": "verified_primary",
+              "checked_sources": [
+                {
+                  "source_type": "doi_registry",
+                  "canonical_record": "https://api.crossref.org/works/10.1016%2Fj.dib.2023.109049",
+                  "checked_at": "2026-08-06T11:03:43+08:00",
+                  "result": "match"
+                },
+                {
+                  "source_type": "publisher_landing",
+                  "canonical_record": "https://linkinghub.elsevier.com/retrieve/pii/S2352340923001671",
+                  "checked_at": "2026-08-06T11:03:43+08:00",
+                  "result": "match"
+                }
+              ],
+              "title_match": "exact",
+              "author_match": "exact",
+              "version_relation": "same_work",
+              "recommendation_eligible": true,
+              "blocking_reasons": []
+            },
+            "evidence_role": "direct_problem",
+            "supports": "Public multi-sensor data expose bearing fault conditions, load variation, channel units, and sampling rates.",
+            "does_not_support": "The public record does not close calibration uncertainty for every channel.",
+            "basis_level": "abstract_level"
+          }
+        },
+        {
+          "candidate_id": "F04-P04",
+          "verification_status": "verified_primary",
+          "recommendation_eligible": true,
+          "evidence_roles": [
+            "direct_problem"
+          ],
+          "selection_role": "direct_problem",
+          "basis_level": "abstract_level",
+          "verified_record": {
+            "paper_id": "F04-P04",
+            "title": "HUST bearing: a practical dataset for ball bearing fault diagnosis",
+            "authors": [
+              "Nguyen Duc Thuan",
+              "Hoang Si Hong"
+            ],
+            "year_online": 2023,
+            "year_issue": null,
+            "venue": "BMC Research Notes",
+            "publication_type": "journal_article",
+            "doi": "10.1186/s13104-023-06400-4",
+            "canonical_url": "https://doi.org/10.1186/s13104-023-06400-4",
+            "alternate_id": null,
+            "verification": {
+              "status": "verified_primary",
+              "checked_sources": [
+                {
+                  "source_type": "doi_registry",
+                  "canonical_record": "https://api.crossref.org/works/10.1186%2Fs13104-023-06400-4",
+                  "checked_at": "2026-08-06T11:03:43+08:00",
+                  "result": "match"
+                },
+                {
+                  "source_type": "publisher_landing",
+                  "canonical_record": "https://bmcresnotes.biomedcentral.com/articles/10.1186/s13104-023-06400-4",
+                  "checked_at": "2026-08-06T11:03:43+08:00",
+                  "result": "match"
+                }
+              ],
+              "title_match": "exact",
+              "author_match": "exact",
+              "version_relation": "same_work",
+              "recommendation_eligible": true,
+              "blocking_reasons": []
+            },
+            "evidence_role": "direct_problem",
+            "supports": "Public raw vibration signals span bearing types, defect combinations, loads, duration, and sampling rate.",
+            "does_not_support": "Dataset construction alone does not prove sensor calibration or repeated mounting stability.",
+            "basis_level": "abstract_level"
+          }
+        },
+        {
+          "candidate_id": "F04-P05",
+          "verification_status": "verified_primary",
+          "recommendation_eligible": true,
+          "evidence_roles": [
+            "direct_problem",
+            "transfer_bridge"
+          ],
+          "selection_role": "direct_problem",
+          "basis_level": "abstract_level",
+          "verified_record": {
+            "paper_id": "F04-P05",
+            "title": "MOIRA-UNIMORE Bearing Data Set for Independent Cart Systems",
+            "authors": [
+              "Abdul Jabbar",
+              "Marco Cocconcelli",
+              "Gianluca D’Elia",
+              "Davide Borghi",
+              "Luca Capelli",
+              "Jacopo Cavalaglio Camargo Molano",
+              "Matteo Strozzi",
+              "Riccardo Rubini"
+            ],
+            "year_online": 2025,
+            "year_issue": null,
+            "venue": "Applied Sciences",
+            "publication_type": "journal_article",
+            "doi": "10.3390/app15073691",
+            "canonical_url": "https://doi.org/10.3390/app15073691",
+            "alternate_id": null,
+            "verification": {
+              "status": "verified_primary",
+              "checked_sources": [
+                {
+                  "source_type": "doi_registry",
+                  "canonical_record": "https://api.crossref.org/works/10.3390%2Fapp15073691",
+                  "checked_at": "2026-08-06T11:03:43+08:00",
+                  "result": "match"
+                },
+                {
+                  "source_type": "publisher_landing",
+                  "canonical_record": "https://www.mdpi.com/2076-3417/15/7/3691",
+                  "checked_at": "2026-08-06T11:03:43+08:00",
+                  "result": "match"
+                }
+              ],
+              "title_match": "exact",
+              "author_match": "exact",
+              "version_relation": "same_work",
+              "recommendation_eligible": true,
+              "blocking_reasons": []
+            },
+            "evidence_role": "direct_problem",
+            "supports": "Public bearing data for independent cart systems provide a non-identical target context for cross-platform checks.",
+            "does_not_support": "Transfer to another rig remains a hypothesis until a decisive cross-platform measurement test.",
+            "basis_level": "abstract_level"
+          }
+        },
+        {
+          "candidate_id": "F04-P06",
+          "verification_status": "verified_primary",
+          "recommendation_eligible": true,
+          "evidence_roles": [
+            "transfer_bridge",
+            "direct_problem"
+          ],
+          "selection_role": "transfer_bridge",
+          "basis_level": "abstract_level",
+          "verified_record": {
+            "paper_id": "F04-P06",
+            "title": "Wind turbine condition monitoring dataset of Fraunhofer LBF",
+            "authors": [
+              "Atabak Mostafavi",
+              "Andreas Friedmann"
+            ],
+            "year_online": 2024,
+            "year_issue": null,
+            "venue": "Scientific Data",
+            "publication_type": "journal_article",
+            "doi": "10.1038/s41597-024-03934-5",
+            "canonical_url": "https://doi.org/10.1038/s41597-024-03934-5",
+            "alternate_id": null,
+            "verification": {
+              "status": "verified_primary",
+              "checked_sources": [
+                {
+                  "source_type": "doi_registry",
+                  "canonical_record": "https://api.crossref.org/works/10.1038%2Fs41597-024-03934-5",
+                  "checked_at": "2026-08-06T11:03:43+08:00",
+                  "result": "match"
+                },
+                {
+                  "source_type": "publisher_landing",
+                  "canonical_record": "https://www.nature.com/articles/s41597-024-03934-5",
+                  "checked_at": "2026-08-06T11:03:43+08:00",
+                  "result": "match"
+                }
+              ],
+              "title_match": "exact",
+              "author_match": "exact",
+              "version_relation": "same_work",
+              "recommendation_eligible": true,
+              "blocking_reasons": []
+            },
+            "evidence_role": "transfer_bridge",
+            "supports": "A public real-world monitoring dataset combines accelerometers, tachometer, temperature, and environmental variables around bearing damage scenarios.",
+            "does_not_support": "Wind-turbine structure and environmental variation are not equivalent to a laboratory bearing rig.",
+            "basis_level": "abstract_level"
+          }
+        },
+        {
+          "candidate_id": "F04-P07",
+          "verification_status": "verified_primary",
+          "recommendation_eligible": true,
+          "evidence_roles": [
+            "direct_problem",
+            "transfer_bridge"
+          ],
+          "selection_role": "direct_problem",
+          "basis_level": "abstract_level",
+          "verified_record": {
+            "paper_id": "F04-P07",
+            "title": "Rotating Electromechanical System Dataset for Condition Monitoring",
+            "authors": [
+              "Juan José Saucedo-Dorantes",
+              "Miguel Delgado-Prieto",
+              "Joan Valls Pérez",
+              "David Alejandro Elvira-Ortiz"
+            ],
+            "year_online": 2026,
+            "year_issue": null,
+            "venue": "Scientific Data",
+            "publication_type": "journal_article",
+            "doi": "10.1038/s41597-026-07224-0",
+            "canonical_url": "https://doi.org/10.1038/s41597-026-07224-0",
+            "alternate_id": null,
+            "verification": {
+              "status": "verified_primary",
+              "checked_sources": [
+                {
+                  "source_type": "doi_registry",
+                  "canonical_record": "https://api.crossref.org/works/10.1038%2Fs41597-026-07224-0",
+                  "checked_at": "2026-08-06T11:03:43+08:00",
+                  "result": "match"
+                },
+                {
+                  "source_type": "publisher_landing",
+                  "canonical_record": "https://www.nature.com/articles/s41597-026-07224-0",
+                  "checked_at": "2026-08-06T11:03:43+08:00",
+                  "result": "match"
+                }
+              ],
+              "title_match": "exact",
+              "author_match": "exact",
+              "version_relation": "same_work",
+              "recommendation_eligible": true,
+              "blocking_reasons": []
+            },
+            "evidence_role": "direct_problem",
+            "supports": "An open rotating-system dataset records synchronized vibration, current, temperature, and speed under repeated operating scenarios including bearing degradation.",
+            "does_not_support": "The broader electromechanical target does not isolate bearing-specific traceability by itself.",
+            "basis_level": "abstract_level"
+          }
+        },
+        {
+          "candidate_id": "F04-P08",
+          "verification_status": "verified_primary",
+          "recommendation_eligible": true,
+          "evidence_roles": [
+            "direct_problem",
+            "transfer_bridge"
+          ],
+          "selection_role": "direct_problem",
+          "basis_level": "metadata_level",
+          "verified_record": {
+            "paper_id": "F04-P08",
+            "title": "Paderborn Bearing Dataset",
+            "authors": [
+              "van den Hoogen, Jurgen"
+            ],
+            "year_online": 2025,
+            "year_issue": null,
+            "venue": "Zenodo",
+            "publication_type": "official_repository_dataset",
+            "doi": "10.5281/zenodo.15845309",
+            "canonical_url": "https://zenodo.org/doi/10.5281/zenodo.15845309",
+            "alternate_id": null,
+            "verification": {
+              "status": "verified_primary",
+              "checked_sources": [
+                {
+                  "source_type": "doi_registry",
+                  "canonical_record": "https://api.datacite.org/dois/10.5281%2Fzenodo.15845309",
+                  "checked_at": "2026-08-06T11:03:43+08:00",
+                  "result": "match"
+                },
+                {
+                  "source_type": "official_repository",
+                  "canonical_record": "https://zenodo.org/doi/10.5281/zenodo.15845309",
+                  "checked_at": "2026-08-06T11:03:43+08:00",
+                  "result": "match"
+                }
+              ],
+              "title_match": "exact",
+              "author_match": "exact",
+              "version_relation": "same_work",
+              "recommendation_eligible": true,
+              "blocking_reasons": []
+            },
+            "evidence_role": "direct_problem",
+            "supports": "A current official repository record establishes a public Paderborn Bearing Dataset identifier and dataset work type.",
+            "does_not_support": "The record retrieved here did not expose a complete measurement description; use only for availability and provenance.",
+            "basis_level": "metadata_level"
+          }
+        },
+        {
+          "candidate_id": "F04-P09",
+          "verification_status": "verified_primary",
+          "recommendation_eligible": true,
+          "evidence_roles": [
+            "direct_problem",
+            "method"
+          ],
+          "selection_role": "direct_problem",
+          "basis_level": "abstract_level",
+          "verified_record": {
+            "paper_id": "F04-P09",
+            "title": "The Politecnico di Torino rolling bearing test rig: description of the open-access data for vibration monitoring and diagnostics",
+            "authors": [
+              "Garibaldi, Luigi",
+              "Fasana, Alessandro",
+              "Marchesiello, Stefano",
+              "Daga, Alessandro Paolo"
+            ],
+            "year_online": 2019,
+            "year_issue": null,
+            "venue": "Zenodo",
+            "publication_type": "official_repository_dataset",
+            "doi": "10.5281/zenodo.3559553",
+            "canonical_url": "https://zenodo.org/record/3559553",
+            "alternate_id": null,
+            "verification": {
+              "status": "verified_primary",
+              "checked_sources": [
+                {
+                  "source_type": "doi_registry",
+                  "canonical_record": "https://api.datacite.org/dois/10.5281%2Fzenodo.3559553",
+                  "checked_at": "2026-08-06T11:03:43+08:00",
+                  "result": "match"
+                },
+                {
+                  "source_type": "official_repository",
+                  "canonical_record": "https://zenodo.org/record/3559553",
+                  "checked_at": "2026-08-06T11:03:43+08:00",
+                  "result": "match"
+                }
+              ],
+              "title_match": "normalized",
+              "author_match": "exact",
+              "version_relation": "same_work",
+              "recommendation_eligible": true,
+              "blocking_reasons": []
+            },
+            "evidence_role": "direct_problem",
+            "supports": "The official record documents accelerometers, speed/load combinations, damage severities, temperature, and endurance acquisition.",
+            "does_not_support": "The large repository was not downloaded and does not establish inter-laboratory repeatability.",
+            "basis_level": "abstract_level"
+          }
+        },
+        {
+          "candidate_id": "F04-P10",
+          "verification_status": "verified_primary",
+          "recommendation_eligible": true,
+          "evidence_roles": [
+            "transfer_bridge",
+            "method"
+          ],
+          "selection_role": "transfer_bridge",
+          "basis_level": "abstract_level",
+          "verified_record": {
+            "paper_id": "F04-P10",
+            "title": "Condition Monitoring of Drive Trains by Data Fusion of Acoustic Emission and Vibration Sensors Measurements of Vibrations and Acoustic Emissions on a Rotating Shaft",
+            "authors": [
+              "Mey, Oliver",
+              "Schneider, André",
+              "Enge-Rosenblatt, Olaf",
+              "Mayer, Dirk",
+              "Schmidt, Christian",
+              "Klein, Samuel",
+              "Herrmann, Hans-Georg"
+            ],
+            "year_online": 2021,
+            "year_issue": null,
+            "venue": "Fordatis",
+            "publication_type": "official_repository_dataset",
+            "doi": "10.24406/fordatis/132",
+            "canonical_url": "https://fordatis.fraunhofer.de/handle/fordatis/205",
+            "alternate_id": null,
+            "verification": {
+              "status": "verified_primary",
+              "checked_sources": [
+                {
+                  "source_type": "doi_registry",
+                  "canonical_record": "https://api.datacite.org/dois/10.24406%2Ffordatis%2F132",
+                  "checked_at": "2026-08-06T11:03:43+08:00",
+                  "result": "match"
+                },
+                {
+                  "source_type": "official_repository",
+                  "canonical_record": "https://fordatis.fraunhofer.de/handle/fordatis/205",
+                  "checked_at": "2026-08-06T11:03:43+08:00",
+                  "result": "match"
+                }
+              ],
+              "title_match": "exact",
+              "author_match": "exact",
+              "version_relation": "same_work",
+              "recommendation_eligible": true,
+              "blocking_reasons": []
+            },
+            "evidence_role": "transfer_bridge",
+            "supports": "The official record names ICP accelerometers, sensitivity, DAQ context, and synchronized vibration/acoustic measurements.",
+            "does_not_support": "Drive-train sensor data are a bridge for provenance, not direct evidence of bearing UQ on the target rig.",
+            "basis_level": "abstract_level"
+          }
+        },
+        {
+          "candidate_id": "F04-P11",
+          "verification_status": "verified_primary",
+          "recommendation_eligible": true,
+          "evidence_roles": [
+            "method"
+          ],
+          "selection_role": "method",
+          "basis_level": "abstract_level",
+          "verified_record": {
+            "paper_id": "F04-P11",
+            "title": "Measurement Uncertainty in Vibration Calibration in Frequency Range of 5 Hz to 10 kHz",
+            "authors": [
+              "Naveen Garg",
+              "B. S. Chauhan"
+            ],
+            "year_online": 2020,
+            "year_issue": 2020,
+            "venue": "MAPAN",
+            "publication_type": "journal_article",
+            "doi": "10.1007/s12647-020-00385-2",
+            "canonical_url": "https://doi.org/10.1007/s12647-020-00385-2",
+            "alternate_id": null,
+            "verification": {
+              "status": "verified_primary",
+              "checked_sources": [
+                {
+                  "source_type": "doi_registry",
+                  "canonical_record": "https://api.crossref.org/works/10.1007%2Fs12647-020-00385-2",
+                  "checked_at": "2026-08-06T11:03:43+08:00",
+                  "result": "match"
+                },
+                {
+                  "source_type": "official_repository",
+                  "canonical_record": "https://npl.csircentral.net/4803/",
+                  "checked_at": "2026-08-06T11:03:43+08:00",
+                  "result": "match"
+                }
+              ],
+              "title_match": "normalized",
+              "author_match": "exact",
+              "version_relation": "same_work",
+              "recommendation_eligible": true,
+              "blocking_reasons": []
+            },
+            "evidence_role": "method",
+            "supports": "The calibration study reports traceability and expanded uncertainty across 5 Hz–10 kHz with comparison to primary standards.",
+            "does_not_support": "A calibration-laboratory uncertainty budget is not a direct public bearing-dataset validation.",
+            "basis_level": "abstract_level"
+          }
+        },
+        {
+          "candidate_id": "F04-P12",
+          "verification_status": "verified_primary",
+          "recommendation_eligible": true,
+          "evidence_roles": [
+            "method",
+            "counter_limitation"
+          ],
+          "selection_role": "method",
+          "basis_level": "fulltext_level",
+          "verified_record": {
+            "paper_id": "F04-P12",
+            "title": "Evaluation of the Variability of Vibration Measurement Results in Rolling Bearing Quality Control",
+            "authors": [
+              "Paweł Zmarzły",
+              "Mateusz Wrzochal",
+              "Stanisław Adamczak"
+            ],
+            "year_online": 2025,
+            "year_issue": null,
+            "venue": "Applied Sciences",
+            "publication_type": "journal_article",
+            "doi": "10.3390/app15020904",
+            "canonical_url": "https://doi.org/10.3390/app15020904",
+            "alternate_id": null,
+            "verification": {
+              "status": "verified_primary",
+              "checked_sources": [
+                {
+                  "source_type": "doi_registry",
+                  "canonical_record": "https://api.crossref.org/works/10.3390%2Fapp15020904",
+                  "checked_at": "2026-08-06T11:03:43+08:00",
+                  "result": "match"
+                },
+                {
+                  "source_type": "publisher_landing",
+                  "canonical_record": "https://www.mdpi.com/2076-3417/15/2/904",
+                  "checked_at": "2026-08-06T11:03:43+08:00",
+                  "result": "match"
+                }
+              ],
+              "title_match": "exact",
+              "author_match": "exact",
+              "version_relation": "same_work",
+              "recommendation_eligible": true,
+              "blocking_reasons": []
+            },
+            "evidence_role": "method",
+            "supports": "The study separates repeatability, refit reproducibility, sensor position, frequency bands, and Gage R&R limits for rolling-bearing vibration quality control.",
+            "does_not_support": "Its numeric limits are study-specific and are not universal acceptance thresholds.",
+            "basis_level": "fulltext_level"
+          }
+        },
+        {
+          "candidate_id": "F04-P13",
+          "verification_status": "verified_registry",
+          "recommendation_eligible": true,
+          "evidence_roles": [
+            "counter_limitation",
+            "method"
+          ],
+          "selection_role": "counter_limitation",
+          "basis_level": "abstract_level",
+          "verified_record": {
+            "paper_id": "F04-P13",
+            "title": "Application of a Gage R&R study in evaluation of rolling bearing measurement system accuracy",
+            "authors": [
+              "Mateusz Wrzochal",
+              "Stanisław Adamczak"
+            ],
+            "year_online": null,
+            "year_issue": 2019,
+            "venue": "Transportation Research Procedia",
+            "publication_type": "journal_article",
+            "doi": "10.1016/j.trpro.2019.07.131",
+            "canonical_url": "https://doi.org/10.1016/j.trpro.2019.07.131",
+            "alternate_id": null,
+            "verification": {
+              "status": "verified_registry",
+              "checked_sources": [
+                {
+                  "source_type": "doi_registry",
+                  "canonical_record": "https://api.crossref.org/works/10.1016%2Fj.trpro.2019.07.131",
+                  "checked_at": "2026-08-06T11:03:43+08:00",
+                  "result": "match"
+                },
+                {
+                  "source_type": "publisher_landing",
+                  "canonical_record": "https://www.sciencedirect.com/science/article/pii/S2352146519302984",
+                  "checked_at": "2026-08-06T11:03:43+08:00",
+                  "result": "unavailable"
+                }
+              ],
+              "title_match": "normalized",
+              "author_match": "exact",
+              "version_relation": "same_work",
+              "recommendation_eligible": true,
+              "blocking_reasons": []
+            },
+            "evidence_role": "counter_limitation",
+            "supports": "The Gage R&R study makes low repeatability/reproducibility and lack of reference bearings an explicit measurement-system limitation.",
+            "does_not_support": "It does not quantify uncertainty for any one public dataset or justify universal limits.",
+            "basis_level": "abstract_level"
+          }
+        },
+        {
+          "candidate_id": "F04-P14",
+          "verification_status": "verified_registry",
+          "recommendation_eligible": true,
+          "evidence_roles": [
+            "method"
+          ],
+          "selection_role": "method",
+          "basis_level": "abstract_level",
+          "verified_record": {
+            "paper_id": "F04-P14",
+            "title": "Standard Uncertainty of Rolling Bearing Vibration as Time Series",
+            "authors": [
+              "Xin Tao Xia",
+              "Lei Lei Gao",
+              "Xiao Chao Sun"
+            ],
+            "year_online": 2011,
+            "year_issue": null,
+            "venue": "Advanced Materials Research",
+            "publication_type": "journal_article",
+            "doi": "10.4028/www.scientific.net/amr.382.133",
+            "canonical_url": "https://doi.org/10.4028/www.scientific.net/amr.382.133",
+            "alternate_id": null,
+            "verification": {
+              "status": "verified_registry",
+              "checked_sources": [
+                {
+                  "source_type": "doi_registry",
+                  "canonical_record": "https://api.crossref.org/works/10.4028%2Fwww.scientific.net%2Famr.382.133",
+                  "checked_at": "2026-08-06T11:03:43+08:00",
+                  "result": "match"
+                },
+                {
+                  "source_type": "publisher_landing",
+                  "canonical_record": "https://www.scientific.net/AMR.382.133",
+                  "checked_at": "2026-08-06T11:03:43+08:00",
+                  "result": "unavailable"
+                }
+              ],
+              "title_match": "exact",
+              "author_match": "exact",
+              "version_relation": "same_work",
+              "recommendation_eligible": true,
+              "blocking_reasons": []
+            },
+            "evidence_role": "method",
+            "supports": "The paper applies standard uncertainty to rolling-bearing vibration time series and relates uncertainty variation to failure diameter.",
+            "does_not_support": "Its narrower venue and scope do not establish a general public-data calibration protocol.",
+            "basis_level": "abstract_level"
+          }
+        },
+        {
+          "candidate_id": "F04-P15",
+          "verification_status": "verified_primary",
+          "recommendation_eligible": true,
+          "evidence_roles": [
+            "method",
+            "transfer_bridge"
+          ],
+          "selection_role": "method",
+          "basis_level": "abstract_level",
+          "verified_record": {
+            "paper_id": "F04-P15",
+            "title": "Evaluation of Dynamic Uncertainty of Rolling Bearing Vibration Performance",
+            "authors": [
+              "Liang Ye",
+              "Xintao Xia",
+              "Zhen Chang"
+            ],
+            "year_online": 2019,
+            "year_issue": 2019,
+            "venue": "Mathematical Problems in Engineering",
+            "publication_type": "journal_article",
+            "doi": "10.1155/2019/2896046",
+            "canonical_url": "https://doi.org/10.1155/2019/2896046",
+            "alternate_id": null,
+            "verification": {
+              "status": "verified_primary",
+              "checked_sources": [
+                {
+                  "source_type": "doi_registry",
+                  "canonical_record": "https://api.crossref.org/works/10.1155%2F2019%2F2896046",
+                  "checked_at": "2026-08-06T11:03:43+08:00",
+                  "result": "match"
+                },
+                {
+                  "source_type": "publisher_landing",
+                  "canonical_record": "https://onlinelibrary.wiley.com/doi/10.1155/2019/2896046",
+                  "checked_at": "2026-08-06T11:03:43+08:00",
+                  "result": "match"
+                }
+              ],
+              "title_match": "exact",
+              "author_match": "exact",
+              "version_relation": "same_work",
+              "recommendation_eligible": true,
+              "blocking_reasons": []
+            },
+            "evidence_role": "method",
+            "supports": "The study estimates time-varying intervals for rolling-bearing vibration performance and checks interval coverage against a confidence level.",
+            "does_not_support": "Model-based uncertainty is not a substitute for sensor calibration or repeatability evidence.",
+            "basis_level": "abstract_level"
+          }
+        },
+        {
+          "candidate_id": "F04-P16",
+          "verification_status": "verified_registry",
+          "recommendation_eligible": true,
+          "evidence_roles": [
+            "method",
+            "transfer_bridge"
+          ],
+          "selection_role": "method",
+          "basis_level": "abstract_level",
+          "verified_record": {
+            "paper_id": "F04-P16",
+            "title": "Repeatability and reproducibility of characteristic features measured by laser Doppler vibrometry for on-line diagnostics",
+            "authors": [
+              "G. Agostinelli",
+              "N. Paone"
+            ],
+            "year_online": null,
+            "year_issue": 2008,
+            "venue": "SPIE Proceedings Eighth International Conference on Vibration Measurements by Laser Techniques: Advances and Applications",
+            "publication_type": "proceedings_article",
+            "doi": "10.1117/12.803182",
+            "canonical_url": "https://doi.org/10.1117/12.803182",
+            "alternate_id": null,
+            "verification": {
+              "status": "verified_registry",
+              "checked_sources": [
+                {
+                  "source_type": "doi_registry",
+                  "canonical_record": "https://api.crossref.org/works/10.1117%2F12.803182",
+                  "checked_at": "2026-08-06T11:03:43+08:00",
+                  "result": "match"
+                },
+                {
+                  "source_type": "publisher_landing",
+                  "canonical_record": "https://doi.org/10.1117/12.803182",
+                  "checked_at": "2026-08-06T11:03:43+08:00",
+                  "result": "unavailable"
+                }
+              ],
+              "title_match": "exact",
+              "author_match": "exact",
+              "version_relation": "same_work",
+              "recommendation_eligible": true,
+              "blocking_reasons": []
+            },
+            "evidence_role": "method",
+            "supports": "The proceedings paper evaluates feature repeatability/reproducibility and propagates uncertainty across sensor, DAQ, and processing stages.",
+            "does_not_support": "The application is laser Doppler vibrometry and washing-machine diagnostics rather than rolling-bearing accelerometry.",
+            "basis_level": "abstract_level"
+          }
+        },
+        {
+          "candidate_id": "F04-P17",
+          "verification_status": "verified_registry",
+          "recommendation_eligible": true,
+          "evidence_roles": [
+            "transfer_bridge"
+          ],
+          "selection_role": "transfer_bridge",
+          "basis_level": "abstract_level",
+          "verified_record": {
+            "paper_id": "F04-P17",
+            "title": "Cross-Domain Fault Diagnosis of Rolling Element Bearings Using Deep Generative Neural Networks",
+            "authors": [
+              "Xiang Li",
+              "Wei Zhang",
+              "Qian Ding"
+            ],
+            "year_online": null,
+            "year_issue": 2019,
+            "venue": "IEEE Transactions on Industrial Electronics",
+            "publication_type": "journal_article",
+            "doi": "10.1109/tie.2018.2868023",
+            "canonical_url": "https://doi.org/10.1109/tie.2018.2868023",
+            "alternate_id": null,
+            "verification": {
+              "status": "verified_registry",
+              "checked_sources": [
+                {
+                  "source_type": "doi_registry",
+                  "canonical_record": "https://api.crossref.org/works/10.1109%2FTIE.2018.2868023",
+                  "checked_at": "2026-08-06T11:03:43+08:00",
+                  "result": "match"
+                },
+                {
+                  "source_type": "publisher_landing",
+                  "canonical_record": "https://ieeexplore.ieee.org/document/8456850/",
+                  "checked_at": "2026-08-06T11:03:43+08:00",
+                  "result": "unavailable"
+                }
+              ],
+              "title_match": "exact",
+              "author_match": "exact",
+              "version_relation": "same_work",
+              "recommendation_eligible": true,
+              "blocking_reasons": []
+            },
+            "evidence_role": "transfer_bridge",
+            "supports": "Cross-domain bearing diagnosis establishes operating-condition distribution shift as a practical validation boundary.",
+            "does_not_support": "Source-domain diagnostic performance does not prove measurement traceability or target-domain transfer.",
+            "basis_level": "abstract_level"
+          }
+        },
+        {
+          "candidate_id": "F04-P18",
+          "verification_status": "verified_registry",
+          "recommendation_eligible": true,
+          "evidence_roles": [
+            "transfer_bridge",
+            "method"
+          ],
+          "selection_role": "transfer_bridge",
+          "basis_level": "abstract_level",
+          "verified_record": {
+            "paper_id": "F04-P18",
+            "title": "Uncertainty-Weighted Domain Generalization for Remaining Useful Life Prediction of Rolling Bearings Under Unseen Conditions",
+            "authors": [
+              "Shiyan Tong",
+              "Yan Han",
+              "Xiaolong Zhang",
+              "Hao Tian",
+              "Xin Li",
+              "Qingqing Huang"
+            ],
+            "year_online": null,
+            "year_issue": 2024,
+            "venue": "IEEE Sensors Journal",
+            "publication_type": "journal_article",
+            "doi": "10.1109/jsen.2024.3366689",
+            "canonical_url": "https://doi.org/10.1109/jsen.2024.3366689",
+            "alternate_id": null,
+            "verification": {
+              "status": "verified_registry",
+              "checked_sources": [
+                {
+                  "source_type": "doi_registry",
+                  "canonical_record": "https://api.crossref.org/works/10.1109%2FJSEN.2024.3366689",
+                  "checked_at": "2026-08-06T11:03:43+08:00",
+                  "result": "match"
+                },
+                {
+                  "source_type": "publisher_landing",
+                  "canonical_record": "https://ieeexplore.ieee.org/document/10444662/",
+                  "checked_at": "2026-08-06T11:03:43+08:00",
+                  "result": "unavailable"
+                }
+              ],
+              "title_match": "exact",
+              "author_match": "exact",
+              "version_relation": "same_work",
+              "recommendation_eligible": true,
+              "blocking_reasons": []
+            },
+            "evidence_role": "transfer_bridge",
+            "supports": "Uncertainty-weighted domain generalization is a method bridge for unseen bearing conditions and explicit predictive uncertainty.",
+            "does_not_support": "Model uncertainty does not close physical measurement UQ prerequisites.",
+            "basis_level": "abstract_level"
+          }
+        }
+      ],
+      "selected_ids": [
+        "F04-P01",
+        "F04-P02",
+        "F04-P03",
+        "F04-P11",
+        "F04-P12",
+        "F04-P06",
+        "F04-P17",
+        "F04-P13"
+      ],
+      "paper_map": {
+        "round": 1,
+        "node_size_basis": "user_fit",
+        "legend": {
+          "evidence_roles": [
+            "direct_problem",
+            "method",
+            "transfer_bridge",
+            "counter_limitation"
+          ],
+          "basis_levels": [
+            "metadata_level",
+            "abstract_level",
+            "fulltext_level"
+          ]
+        },
+        "nodes": [
+          {
+            "id": "F04-P01",
+            "node_type": "paper",
+            "fit_score": 0.98,
+            "evidence_role": "direct_problem",
+            "verification_status": "verified_registry",
+            "basis_level": "abstract_level",
+            "short_note": "Open PoliTO bearing-rig data expose speed/load/damage regimes and an endurance acquisition"
+          },
+          {
+            "id": "F04-P02",
+            "node_type": "paper",
+            "fit_score": 0.96,
+            "evidence_role": "direct_problem",
+            "verification_status": "verified_primary",
+            "basis_level": "fulltext_level",
+            "short_note": "Ottawa open data link raw vibration to load, speed, temperature, sensor placement, and repeated bearing runs"
+          },
+          {
+            "id": "F04-P03",
+            "node_type": "paper",
+            "fit_score": 0.93,
+            "evidence_role": "direct_problem",
+            "verification_status": "verified_primary",
+            "basis_level": "abstract_level",
+            "short_note": "Rotating-machine data cover bearing faults, loads, sensor channels, units, and acquisition sampling"
+          },
+          {
+            "id": "F04-P11",
+            "node_type": "paper",
+            "fit_score": 0.9,
+            "evidence_role": "method",
+            "verification_status": "verified_primary",
+            "basis_level": "abstract_level",
+            "short_note": "Calibration study quantifies vibration uncertainty over 5 Hz to 10 kHz and links it to traceability"
+          },
+          {
+            "id": "F04-P12",
+            "node_type": "paper",
+            "fit_score": 0.92,
+            "evidence_role": "method",
+            "verification_status": "verified_primary",
+            "basis_level": "fulltext_level",
+            "short_note": "Bearing quality-control study separates clamp repeatability, refit reproducibility, sensor position, and band limits"
+          },
+          {
+            "id": "F04-P06",
+            "node_type": "paper",
+            "fit_score": 0.84,
+            "evidence_role": "transfer_bridge",
+            "verification_status": "verified_primary",
+            "basis_level": "abstract_level",
+            "short_note": "Wind-turbine bearing data combine accelerometers, tachometer, temperature, and environmental variation"
+          },
+          {
+            "id": "F04-P17",
+            "node_type": "paper",
+            "fit_score": 0.78,
+            "evidence_role": "transfer_bridge",
+            "verification_status": "verified_registry",
+            "basis_level": "abstract_level",
+            "short_note": "Cross-domain bearing diagnosis makes operating-condition distribution shift an explicit generalization boundary"
+          },
+          {
+            "id": "F04-P13",
+            "node_type": "paper",
+            "fit_score": 0.88,
+            "evidence_role": "counter_limitation",
+            "verification_status": "verified_registry",
+            "basis_level": "abstract_level",
+            "short_note": "Gage R&R study shows dynamic bearing measurements can have low repeatability and reproducibility"
+          },
+          {
+            "id": "C-data-traceability",
+            "node_type": "cluster",
+            "basis_level": "abstract_level",
+            "short_note": "Public-data traceability and acquisition context"
+          },
+          {
+            "id": "C-metrology",
+            "node_type": "cluster",
+            "basis_level": "fulltext_level",
+            "short_note": "Calibration, repeatability, reproducibility, and uncertainty"
+          },
+          {
+            "id": "C-transfer",
+            "node_type": "cluster",
+            "basis_level": "abstract_level",
+            "short_note": "Cross-condition and cross-domain transfer"
+          },
+          {
+            "id": "C-limits",
+            "node_type": "cluster",
+            "basis_level": "abstract_level",
+            "short_note": "Measurement variation and decision limits"
+          }
+        ],
+        "edges": [
+          {
+            "source": "F04-P01",
+            "target": "C-data-traceability",
+            "relation": "same_problem",
+            "strength": "medium",
+            "confidence": "high",
+            "basis_level": "abstract_level",
+            "note": "Open public rig data make speed, load, damage, and endurance context auditable"
+          },
+          {
+            "source": "F04-P02",
+            "target": "C-data-traceability",
+            "relation": "same_problem",
+            "strength": "high",
+            "confidence": "high",
+            "basis_level": "fulltext_level",
+            "note": "Raw and processed records expose sensors, units, sampling, and replicated bearing runs"
+          },
+          {
+            "source": "F04-P03",
+            "target": "C-data-traceability",
+            "relation": "same_problem",
+            "strength": "medium",
+            "confidence": "high",
+            "basis_level": "abstract_level",
+            "note": "Multi-sensor rotating-machine data expose load-dependent acquisition context"
+          },
+          {
+            "source": "F04-P11",
+            "target": "C-metrology",
+            "relation": "shared_method",
+            "strength": "high",
+            "confidence": "high",
+            "basis_level": "abstract_level",
+            "note": "Calibration and uncertainty budgeting supply a traceability method bridge"
+          },
+          {
+            "source": "F04-P12",
+            "target": "C-metrology",
+            "relation": "shared_method",
+            "strength": "high",
+            "confidence": "high",
+            "basis_level": "fulltext_level",
+            "note": "R&R decomposes clamp, refit, sensor position, and frequency-band variation"
+          },
+          {
+            "source": "F04-P06",
+            "target": "C-transfer",
+            "relation": "transfer_bridge",
+            "strength": "medium",
+            "confidence": "medium",
+            "basis_level": "abstract_level",
+            "note": "Heterogeneous sensors and environmental variation form a non-identical transfer context"
+          },
+          {
+            "source": "F04-P17",
+            "target": "C-transfer",
+            "relation": "transfer_bridge",
+            "strength": "medium",
+            "confidence": "medium",
+            "basis_level": "abstract_level",
+            "note": "Cross-domain studies expose operating-condition distribution shift"
+          },
+          {
+            "source": "F04-P13",
+            "target": "C-limits",
+            "relation": "claim_tension",
+            "strength": "high",
+            "confidence": "high",
+            "basis_level": "abstract_level",
+            "note": "Gage R&R identifies low repeatability and reproducibility as a decision limit"
+          }
+        ],
+        "text_fallback": [
+          {
+            "id": "F04-P01",
+            "node_type": "paper",
+            "basis_level": "abstract_level",
+            "entry_type": "node",
+            "evidence_role": "direct_problem",
+            "verification_status": "verified_registry",
+            "text": "F04-P01: Open PoliTO bearing-rig data expose speed/load/damage regimes and an endurance acquisition"
+          },
+          {
+            "id": "F04-P02",
+            "node_type": "paper",
+            "basis_level": "fulltext_level",
+            "entry_type": "node",
+            "evidence_role": "direct_problem",
+            "verification_status": "verified_primary",
+            "text": "F04-P02: Ottawa open data link raw vibration to load, speed, temperature, sensor placement, and repeated bearing runs"
+          },
+          {
+            "id": "F04-P03",
+            "node_type": "paper",
+            "basis_level": "abstract_level",
+            "entry_type": "node",
+            "evidence_role": "direct_problem",
+            "verification_status": "verified_primary",
+            "text": "F04-P03: Rotating-machine data cover bearing faults, loads, sensor channels, units, and acquisition sampling"
+          },
+          {
+            "id": "F04-P11",
+            "node_type": "paper",
+            "basis_level": "abstract_level",
+            "entry_type": "node",
+            "evidence_role": "method",
+            "verification_status": "verified_primary",
+            "text": "F04-P11: Calibration study quantifies vibration uncertainty over 5 Hz to 10 kHz and links it to traceability"
+          },
+          {
+            "id": "F04-P12",
+            "node_type": "paper",
+            "basis_level": "fulltext_level",
+            "entry_type": "node",
+            "evidence_role": "method",
+            "verification_status": "verified_primary",
+            "text": "F04-P12: Bearing quality-control study separates clamp repeatability, refit reproducibility, sensor position, and band limits"
+          },
+          {
+            "id": "F04-P06",
+            "node_type": "paper",
+            "basis_level": "abstract_level",
+            "entry_type": "node",
+            "evidence_role": "transfer_bridge",
+            "verification_status": "verified_primary",
+            "text": "F04-P06: Wind-turbine bearing data combine accelerometers, tachometer, temperature, and environmental variation"
+          },
+          {
+            "id": "F04-P17",
+            "node_type": "paper",
+            "basis_level": "abstract_level",
+            "entry_type": "node",
+            "evidence_role": "transfer_bridge",
+            "verification_status": "verified_registry",
+            "text": "F04-P17: Cross-domain bearing diagnosis makes operating-condition distribution shift an explicit generalization boundary"
+          },
+          {
+            "id": "F04-P13",
+            "node_type": "paper",
+            "basis_level": "abstract_level",
+            "entry_type": "node",
+            "evidence_role": "counter_limitation",
+            "verification_status": "verified_registry",
+            "text": "F04-P13: Gage R&R study shows dynamic bearing measurements can have low repeatability and reproducibility"
+          },
+          {
+            "id": "C-data-traceability",
+            "node_type": "cluster",
+            "basis_level": "abstract_level",
+            "entry_type": "node",
+            "text": "C-data-traceability: Public-data traceability and acquisition context"
+          },
+          {
+            "id": "C-metrology",
+            "node_type": "cluster",
+            "basis_level": "fulltext_level",
+            "entry_type": "node",
+            "text": "C-metrology: Calibration, repeatability, reproducibility, and uncertainty"
+          },
+          {
+            "id": "C-transfer",
+            "node_type": "cluster",
+            "basis_level": "abstract_level",
+            "entry_type": "node",
+            "text": "C-transfer: Cross-condition and cross-domain transfer"
+          },
+          {
+            "id": "C-limits",
+            "node_type": "cluster",
+            "basis_level": "abstract_level",
+            "entry_type": "node",
+            "text": "C-limits: Measurement variation and decision limits"
+          },
+          {
+            "entry_type": "edge",
+            "source": "F04-P01",
+            "target": "C-data-traceability",
+            "relation": "same_problem",
+            "basis_level": "abstract_level",
+            "text": "F04-P01 --same_problem--> C-data-traceability: Open public rig data make speed, load, damage, and endurance context auditable"
+          },
+          {
+            "entry_type": "edge",
+            "source": "F04-P02",
+            "target": "C-data-traceability",
+            "relation": "same_problem",
+            "basis_level": "fulltext_level",
+            "text": "F04-P02 --same_problem--> C-data-traceability: Raw and processed records expose sensors, units, sampling, and replicated bearing runs"
+          },
+          {
+            "entry_type": "edge",
+            "source": "F04-P03",
+            "target": "C-data-traceability",
+            "relation": "same_problem",
+            "basis_level": "abstract_level",
+            "text": "F04-P03 --same_problem--> C-data-traceability: Multi-sensor rotating-machine data expose load-dependent acquisition context"
+          },
+          {
+            "entry_type": "edge",
+            "source": "F04-P11",
+            "target": "C-metrology",
+            "relation": "shared_method",
+            "basis_level": "abstract_level",
+            "text": "F04-P11 --shared_method--> C-metrology: Calibration and uncertainty budgeting supply a traceability method bridge"
+          },
+          {
+            "entry_type": "edge",
+            "source": "F04-P12",
+            "target": "C-metrology",
+            "relation": "shared_method",
+            "basis_level": "fulltext_level",
+            "text": "F04-P12 --shared_method--> C-metrology: R&R decomposes clamp, refit, sensor position, and frequency-band variation"
+          },
+          {
+            "entry_type": "edge",
+            "source": "F04-P06",
+            "target": "C-transfer",
+            "relation": "transfer_bridge",
+            "basis_level": "abstract_level",
+            "text": "F04-P06 --transfer_bridge--> C-transfer: Heterogeneous sensors and environmental variation form a non-identical transfer context"
+          },
+          {
+            "entry_type": "edge",
+            "source": "F04-P17",
+            "target": "C-transfer",
+            "relation": "transfer_bridge",
+            "basis_level": "abstract_level",
+            "text": "F04-P17 --transfer_bridge--> C-transfer: Cross-domain studies expose operating-condition distribution shift"
+          },
+          {
+            "entry_type": "edge",
+            "source": "F04-P13",
+            "target": "C-limits",
+            "relation": "claim_tension",
+            "basis_level": "abstract_level",
+            "text": "F04-P13 --claim_tension--> C-limits: Gage R&R identifies low repeatability and reproducibility as a decision limit"
+          }
+        ],
+        "mermaid": "flowchart TD\n  n0[\"id=F04-P01; type=paper; basis=abstract_level; role=direct_problem; status=verified_registry; fit=0.98; note=Open PoliTO bearing-rig data expose speed/load/damage regimes and an endurance acquisition\"]\n  n1[\"id=F04-P02; type=paper; basis=fulltext_level; role=direct_problem; status=verified_primary; fit=0.96; note=Ottawa open data link raw vibration to load, speed, temperature, sensor placement, and repeated bearing runs\"]\n  n2[\"id=F04-P03; type=paper; basis=abstract_level; role=direct_problem; status=verified_primary; fit=0.93; note=Rotating-machine data cover bearing faults, loads, sensor channels, units, and acquisition sampling\"]\n  n3[\"id=F04-P11; type=paper; basis=abstract_level; role=method; status=verified_primary; fit=0.9; note=Calibration study quantifies vibration uncertainty over 5 Hz to 10 kHz and links it to traceability\"]\n  n4[\"id=F04-P12; type=paper; basis=fulltext_level; role=method; status=verified_primary; fit=0.92; note=Bearing quality-control study separates clamp repeatability, refit reproducibility, sensor position, and band limits\"]\n  n5[\"id=F04-P06; type=paper; basis=abstract_level; role=transfer_bridge; status=verified_primary; fit=0.84; note=Wind-turbine bearing data combine accelerometers, tachometer, temperature, and environmental variation\"]\n  n6[\"id=F04-P17; type=paper; basis=abstract_level; role=transfer_bridge; status=verified_registry; fit=0.78; note=Cross-domain bearing diagnosis makes operating-condition distribution shift an explicit generalization boundary\"]\n  n7[\"id=F04-P13; type=paper; basis=abstract_level; role=counter_limitation; status=verified_registry; fit=0.88; note=Gage R&amp;R study shows dynamic bearing measurements can have low repeatability and reproducibility\"]\n  n8[\"id=C-data-traceability; type=cluster; basis=abstract_level; note=Public-data traceability and acquisition context\"]\n  n9[\"id=C-metrology; type=cluster; basis=fulltext_level; note=Calibration, repeatability, reproducibility, and uncertainty\"]\n  n10[\"id=C-transfer; type=cluster; basis=abstract_level; note=Cross-condition and cross-domain transfer\"]\n  n11[\"id=C-limits; type=cluster; basis=abstract_level; note=Measurement variation and decision limits\"]\n  n0 -- \"relation=same_problem; basis=abstract_level; strength=medium; confidence=high; note=Open public rig data make speed, load, damage, and endurance context auditable\" --> n8\n  n1 -- \"relation=same_problem; basis=fulltext_level; strength=high; confidence=high; note=Raw and processed records expose sensors, units, sampling, and replicated bearing runs\" --> n8\n  n2 -- \"relation=same_problem; basis=abstract_level; strength=medium; confidence=high; note=Multi-sensor rotating-machine data expose load-dependent acquisition context\" --> n8\n  n3 -- \"relation=shared_method; basis=abstract_level; strength=high; confidence=high; note=Calibration and uncertainty budgeting supply a traceability method bridge\" --> n9\n  n4 -- \"relation=shared_method; basis=fulltext_level; strength=high; confidence=high; note=R&amp;R decomposes clamp, refit, sensor position, and frequency-band variation\" --> n9\n  n5 -- \"relation=transfer_bridge; basis=abstract_level; strength=medium; confidence=medium; note=Heterogeneous sensors and environmental variation form a non-identical transfer context\" --> n10\n  n6 -- \"relation=transfer_bridge; basis=abstract_level; strength=medium; confidence=medium; note=Cross-domain studies expose operating-condition distribution shift\" --> n10\n  n7 -- \"relation=claim_tension; basis=abstract_level; strength=high; confidence=high; note=Gage R&amp;R identifies low repeatability and reproducibility as a decision limit\" --> n11"
+      },
+      "evidence_gaps": [],
+      "search_limitations": [
+        "Round-one pool is bounded, not exhaustive.",
+        "Some publisher landing pages were unavailable to direct probes; those records retain registry provenance and are not treated as full-text evidence.",
+        "No dataset files were downloaded; measurement claims stay at the declared evidence level."
+      ]
+    },
+    "feedback_delta": {
+      "from_brief_version": 1,
+      "to_brief_version": 2,
+      "inherited": [
+        {
+          "object_id": "public-data-only",
+          "value": "Use public rolling-bearing vibration records and official metadata only"
+        },
+        {
+          "object_id": "no-side-effects",
+          "value": "Do not download datasets, train models, start services, upload materials, or control equipment"
+        }
+      ],
+      "rejected": [
+        {
+          "object_id": "classification-only-evidence",
+          "value": "Papers whose contribution is only classifier accuracy without measurement metadata",
+          "reason": "They cannot establish units, calibration provenance, repeatability, reproducibility, or UQ readiness."
+        }
+      ],
+      "reset": [
+        {
+          "object_id": "title-level-fit",
+          "previous_value": "Title relevance was sufficient to treat a public bearing dataset as measurement evidence",
+          "reason": "Title-level relevance cannot establish acquisition units, calibration, or repeatability."
+        }
+      ],
+      "added": [
+        {
+          "object_id": "uqr-repeatability-filter",
+          "value": "Prioritize explicit calibration, R&R, uncertainty intervals, units, and preconditions for public-data reuse",
+          "reason": "The second round must distinguish data availability from measurement validity and uncertainty quality."
+        }
+      ],
+      "allocation": {
+        "exploit": 30,
+        "explore": 70
+      },
+      "query_changes": [
+        {
+          "query_id": "Q1",
+          "reason": "Add traceability and repeatability fields to direct public-data discovery",
+          "cause_refs": [
+            "feedback_delta.rejected[0]",
+            "feedback_delta.reset[0]",
+            "feedback_delta.added[0]"
+          ],
+          "before": "public rolling bearing vibration datasets measurement metadata calibration sampling rate units",
+          "after": "public rolling bearing vibration datasets measurement metadata calibration sampling rate units repeatability reproducibility"
+        },
+        {
+          "query_id": "Q2",
+          "reason": "Require sensor acquisition and operating-condition metadata rather than dataset names alone",
+          "cause_refs": [
+            "feedback_delta.rejected[0]",
+            "feedback_delta.reset[0]"
+          ],
+          "before": "open rolling-element bearing vibration data operating condition load speed sensor acquisition",
+          "after": "open rolling-element bearing vibration data operating condition load speed sensor acquisition calibration provenance units"
+        },
+        {
+          "query_id": "Q3",
+          "reason": "Reframe direct evidence around raw records and measurement-chain fields",
+          "cause_refs": [
+            "feedback_delta.rejected[0]",
+            "feedback_delta.added[0]"
+          ],
+          "before": "public bearing fault dataset accelerometer units calibration provenance repeatability",
+          "after": "public bearing fault dataset raw vibration accelerometer units calibration provenance repeatability reproducibility"
+        },
+        {
+          "query_id": "Q4",
+          "reason": "Expand method search from calibration to explicit UQ prerequisites and traceability",
+          "cause_refs": [
+            "feedback_delta.added[0]"
+          ],
+          "before": "rolling bearing vibration calibration measurement uncertainty traceability accelerometer",
+          "after": "rolling bearing vibration calibration measurement uncertainty traceability accelerometer uncertainty budget units"
+        },
+        {
+          "query_id": "Q5",
+          "reason": "Make Gage R&R and mounting/refit effects central to method selection",
+          "cause_refs": [
+            "feedback_delta.reset[0]",
+            "feedback_delta.added[0]"
+          ],
+          "before": "rolling bearing vibration repeatability reproducibility Gage R&R measurement system",
+          "after": "rolling bearing vibration repeatability reproducibility Gage R&R sensor mounting refit frequency bands"
+        },
+        {
+          "query_id": "Q6",
+          "reason": "Replace the broad transfer query with an explicit limitation query for missing calibration, units, and reproducibility metadata",
+          "cause_refs": [
+            "feedback_delta.rejected[0]",
+            "feedback_delta.reset[0]",
+            "feedback_delta.added[0]"
+          ],
+          "before": "public rotating machinery bearing dataset cross-condition domain shift sensor metadata",
+          "after": "limitations of public bearing vibration datasets missing calibration metadata unit ambiguity leakage reproducibility"
+        },
+        {
+          "query_id": "Q7",
+          "reason": "Keep transfer evidence but require uncertainty-aware unseen-condition validation",
+          "cause_refs": [
+            "feedback_delta.added[0]"
+          ],
+          "before": "uncertainty-aware domain generalization rolling bearing unseen operating conditions",
+          "after": "uncertainty-aware domain generalization rolling bearing unseen operating conditions measurement provenance"
+        }
+      ]
+    },
+    "round2": {
+      "schema_version": "m1.2",
+      "round": 2,
+      "research_brief": {
+        "brief_version": 2,
+        "branch_id": "f04-public-bearing-measurement-uq-2026-08-06",
+        "engineering_object": "公开滚动轴承振动数据及其测量链",
+        "target_problem": "区分公开滚动轴承振动数据的可用性、测量可追溯性、重复性/再现性和 uncertainty/UQ 质量，避免把分类性能当作测量有效性",
+        "target_metric": "coverage of measurement units, calibration provenance, R&R factors, and uncertainty-aware validation prerequisites",
+        "available_data": [
+          "public raw or semi-raw rolling-bearing vibration records",
+          "official dataset metadata and open article records"
+        ],
+        "resources": [
+          "Crossref and DataCite bibliographic records",
+          "publisher or official repository pages",
+          "offline JSON contract validation",
+          "no equipment control and no dataset download"
+        ],
+        "time_budget": "Second bounded literature round on 2026-08-06; no route execution",
+        "preferred_routes": [
+          "measurement-traceability audit",
+          "Gage R&R and calibration review",
+          "uncertainty-aware cross-dataset comparison"
+        ],
+        "excluded_routes": [
+          "nuclear applications",
+          "proprietary-only data",
+          "new experiments",
+          "model training or model downloads",
+          "services, uploads, deployment, or equipment control"
+        ],
+        "hard_constraints": [
+          "Use a new independent F04 search lineage",
+          "Use current authoritative citation checks",
+          "Never infer DOI, title, author list, venue, or publication status",
+          "Keep metadata-, abstract-, and full-text-level reasoning separate",
+          "Require explicit units, calibration provenance, repeatability, reproducibility, and UQ prerequisites where claimed",
+          "Do not rank classifier-only evidence as measurement validation",
+          "Stop before route generation and user confirmation"
+        ],
+        "soft_preferences": [
+          "raw waveforms",
+          "sensor and DAQ metadata",
+          "known speed/load/fault conditions",
+          "cross-rig or cross-dataset evidence",
+          "open records with reproducible file descriptions"
+        ],
+        "open_questions": [
+          "Which public records expose enough acquisition metadata to reconstruct units, sensor provenance, and operating conditions?",
+          "Which calibration, repeatability, and reproducibility evidence is available for interpreting public bearing-vibration measurements?",
+          "Which uncertainty-aware or cross-dataset evaluations can expose measurement and domain-shift limits before a direction is confirmed?"
+        ],
+        "evidence_needs": [
+          "At least five to six eligible second-round records",
+          "explicit calibration/R&R/UQ method evidence",
+          "counter-evidence against unqualified reuse of public signals",
+          "numeric bounded criteria only when supported by the verified lineage"
+        ]
+      },
+      "search_plan": {
+        "round": 2,
+        "brief_version": 2,
+        "branch_id": "f04-public-bearing-measurement-uq-2026-08-06",
+        "time_boundary": [
+          "Search executed 2026-08-06 Asia/Shanghai",
+          "No novelty or exhaustiveness claim"
+        ],
+        "language_boundary": [
+          "English-language journal, proceedings, and official repository records returned by the public sources"
+        ],
+        "source_boundary": [
+          "Crossref DOI registry",
+          "DataCite DOI registry",
+          "publisher landing pages",
+          "official repository records",
+          "SciSpace and ordinary web search for discovery only"
+        ],
+        "queries": [
+          {
+            "query_id": "Q1",
+            "purpose": "direct_problem",
+            "query_text": "public rolling bearing vibration datasets measurement metadata calibration sampling rate units repeatability reproducibility",
+            "expected_evidence_role": "direct_problem",
+            "inclusion_terms": [
+              "rolling bearing",
+              "vibration",
+              "public dataset",
+              "sampling rate",
+              "sensor",
+              "repeatability"
+            ],
+            "exclusion_terms": [
+              "nuclear",
+              "proprietary-only"
+            ]
+          },
+          {
+            "query_id": "Q2",
+            "purpose": "direct_problem",
+            "query_text": "open rolling-element bearing vibration data operating condition load speed sensor acquisition calibration provenance units",
+            "expected_evidence_role": "direct_problem",
+            "inclusion_terms": [
+              "open access",
+              "raw vibration",
+              "bearing",
+              "load",
+              "speed",
+              "calibration"
+            ],
+            "exclusion_terms": [
+              "simulation-only",
+              "no data record"
+            ]
+          },
+          {
+            "query_id": "Q3",
+            "purpose": "direct_problem",
+            "query_text": "public bearing fault dataset raw vibration accelerometer units calibration provenance repeatability reproducibility",
+            "expected_evidence_role": "direct_problem",
+            "inclusion_terms": [
+              "bearing fault",
+              "raw vibration",
+              "accelerometer",
+              "unit",
+              "measurement"
+            ],
+            "exclusion_terms": [
+              "classifier accuracy only"
+            ]
+          },
+          {
+            "query_id": "Q4",
+            "purpose": "method",
+            "query_text": "rolling bearing vibration calibration measurement uncertainty traceability accelerometer uncertainty budget units",
+            "expected_evidence_role": "method",
+            "inclusion_terms": [
+              "calibration",
+              "measurement uncertainty",
+              "traceability",
+              "accelerometer",
+              "uncertainty budget"
+            ],
+            "exclusion_terms": [
+              "non-vibration-only"
+            ]
+          },
+          {
+            "query_id": "Q5",
+            "purpose": "method",
+            "query_text": "rolling bearing vibration repeatability reproducibility Gage R&R sensor mounting refit frequency bands",
+            "expected_evidence_role": "method",
+            "inclusion_terms": [
+              "repeatability",
+              "reproducibility",
+              "Gage R&R",
+              "sensor mounting",
+              "rolling bearing"
+            ],
+            "exclusion_terms": [
+              "purely theoretical analogy"
+            ]
+          },
+          {
+            "query_id": "Q6",
+            "purpose": "counter_limitation",
+            "query_text": "limitations of public bearing vibration datasets missing calibration metadata unit ambiguity leakage reproducibility",
+            "expected_evidence_role": "counter_limitation",
+            "inclusion_terms": [
+              "measurement limitation",
+              "missing metadata",
+              "reproducibility",
+              "bearing vibration"
+            ],
+            "exclusion_terms": [
+              "citation count ranking"
+            ]
+          },
+          {
+            "query_id": "Q7",
+            "purpose": "transfer_bridge",
+            "query_text": "uncertainty-aware domain generalization rolling bearing unseen operating conditions measurement provenance",
+            "expected_evidence_role": "transfer_bridge",
+            "inclusion_terms": [
+              "uncertainty",
+              "domain generalization",
+              "rolling bearing",
+              "provenance"
+            ],
+            "exclusion_terms": [
+              "preprint-only main support"
+            ]
+          }
+        ],
+        "limitations": [
+          "The second round remains bounded by public registry and publisher access.",
+          "Some relevant records report model uncertainty rather than physical measurement uncertainty; the distinction is retained.",
+          "No dataset files or equipment were accessed, so repeated-run criteria remain preconditions for later validation."
+        ]
+      },
+      "candidate_pool": [
+        {
+          "candidate_id": "F04-P04",
+          "verification_status": "verified_primary",
+          "recommendation_eligible": true,
+          "evidence_roles": [
+            "direct_problem"
+          ],
+          "selection_role": "direct_problem",
+          "basis_level": "abstract_level",
+          "verified_record": {
+            "paper_id": "F04-P04",
+            "title": "HUST bearing: a practical dataset for ball bearing fault diagnosis",
+            "authors": [
+              "Nguyen Duc Thuan",
+              "Hoang Si Hong"
+            ],
+            "year_online": 2023,
+            "year_issue": null,
+            "venue": "BMC Research Notes",
+            "publication_type": "journal_article",
+            "doi": "10.1186/s13104-023-06400-4",
+            "canonical_url": "https://doi.org/10.1186/s13104-023-06400-4",
+            "alternate_id": null,
+            "verification": {
+              "status": "verified_primary",
+              "checked_sources": [
+                {
+                  "source_type": "doi_registry",
+                  "canonical_record": "https://api.crossref.org/works/10.1186%2Fs13104-023-06400-4",
+                  "checked_at": "2026-08-06T11:03:43+08:00",
+                  "result": "match"
+                },
+                {
+                  "source_type": "publisher_landing",
+                  "canonical_record": "https://bmcresnotes.biomedcentral.com/articles/10.1186/s13104-023-06400-4",
+                  "checked_at": "2026-08-06T11:03:43+08:00",
+                  "result": "match"
+                }
+              ],
+              "title_match": "exact",
+              "author_match": "exact",
+              "version_relation": "same_work",
+              "recommendation_eligible": true,
+              "blocking_reasons": []
+            },
+            "evidence_role": "direct_problem",
+            "supports": "Public raw vibration signals span bearing types, defect combinations, loads, duration, and sampling rate.",
+            "does_not_support": "Dataset construction alone does not prove sensor calibration or repeated mounting stability.",
+            "basis_level": "abstract_level"
+          }
+        },
+        {
+          "candidate_id": "F04-P05",
+          "verification_status": "verified_primary",
+          "recommendation_eligible": true,
+          "evidence_roles": [
+            "direct_problem",
+            "transfer_bridge"
+          ],
+          "selection_role": "direct_problem",
+          "basis_level": "abstract_level",
+          "verified_record": {
+            "paper_id": "F04-P05",
+            "title": "MOIRA-UNIMORE Bearing Data Set for Independent Cart Systems",
+            "authors": [
+              "Abdul Jabbar",
+              "Marco Cocconcelli",
+              "Gianluca D’Elia",
+              "Davide Borghi",
+              "Luca Capelli",
+              "Jacopo Cavalaglio Camargo Molano",
+              "Matteo Strozzi",
+              "Riccardo Rubini"
+            ],
+            "year_online": 2025,
+            "year_issue": null,
+            "venue": "Applied Sciences",
+            "publication_type": "journal_article",
+            "doi": "10.3390/app15073691",
+            "canonical_url": "https://doi.org/10.3390/app15073691",
+            "alternate_id": null,
+            "verification": {
+              "status": "verified_primary",
+              "checked_sources": [
+                {
+                  "source_type": "doi_registry",
+                  "canonical_record": "https://api.crossref.org/works/10.3390%2Fapp15073691",
+                  "checked_at": "2026-08-06T11:03:43+08:00",
+                  "result": "match"
+                },
+                {
+                  "source_type": "publisher_landing",
+                  "canonical_record": "https://www.mdpi.com/2076-3417/15/7/3691",
+                  "checked_at": "2026-08-06T11:03:43+08:00",
+                  "result": "match"
+                }
+              ],
+              "title_match": "exact",
+              "author_match": "exact",
+              "version_relation": "same_work",
+              "recommendation_eligible": true,
+              "blocking_reasons": []
+            },
+            "evidence_role": "direct_problem",
+            "supports": "Public bearing data for independent cart systems provide a non-identical target context for cross-platform checks.",
+            "does_not_support": "Transfer to another rig remains a hypothesis until a decisive cross-platform measurement test.",
+            "basis_level": "abstract_level"
+          }
+        },
+        {
+          "candidate_id": "F04-P14",
+          "verification_status": "verified_registry",
+          "recommendation_eligible": true,
+          "evidence_roles": [
+            "method"
+          ],
+          "selection_role": "method",
+          "basis_level": "abstract_level",
+          "verified_record": {
+            "paper_id": "F04-P14",
+            "title": "Standard Uncertainty of Rolling Bearing Vibration as Time Series",
+            "authors": [
+              "Xin Tao Xia",
+              "Lei Lei Gao",
+              "Xiao Chao Sun"
+            ],
+            "year_online": 2011,
+            "year_issue": null,
+            "venue": "Advanced Materials Research",
+            "publication_type": "journal_article",
+            "doi": "10.4028/www.scientific.net/amr.382.133",
+            "canonical_url": "https://doi.org/10.4028/www.scientific.net/amr.382.133",
+            "alternate_id": null,
+            "verification": {
+              "status": "verified_registry",
+              "checked_sources": [
+                {
+                  "source_type": "doi_registry",
+                  "canonical_record": "https://api.crossref.org/works/10.4028%2Fwww.scientific.net%2Famr.382.133",
+                  "checked_at": "2026-08-06T11:03:43+08:00",
+                  "result": "match"
+                },
+                {
+                  "source_type": "publisher_landing",
+                  "canonical_record": "https://www.scientific.net/AMR.382.133",
+                  "checked_at": "2026-08-06T11:03:43+08:00",
+                  "result": "unavailable"
+                }
+              ],
+              "title_match": "exact",
+              "author_match": "exact",
+              "version_relation": "same_work",
+              "recommendation_eligible": true,
+              "blocking_reasons": []
+            },
+            "evidence_role": "method",
+            "supports": "The paper applies standard uncertainty to rolling-bearing vibration time series and relates uncertainty variation to failure diameter.",
+            "does_not_support": "Its narrower venue and scope do not establish a general public-data calibration protocol.",
+            "basis_level": "abstract_level"
+          }
+        },
+        {
+          "candidate_id": "F04-P15",
+          "verification_status": "verified_primary",
+          "recommendation_eligible": true,
+          "evidence_roles": [
+            "method",
+            "transfer_bridge"
+          ],
+          "selection_role": "method",
+          "basis_level": "abstract_level",
+          "verified_record": {
+            "paper_id": "F04-P15",
+            "title": "Evaluation of Dynamic Uncertainty of Rolling Bearing Vibration Performance",
+            "authors": [
+              "Liang Ye",
+              "Xintao Xia",
+              "Zhen Chang"
+            ],
+            "year_online": 2019,
+            "year_issue": 2019,
+            "venue": "Mathematical Problems in Engineering",
+            "publication_type": "journal_article",
+            "doi": "10.1155/2019/2896046",
+            "canonical_url": "https://doi.org/10.1155/2019/2896046",
+            "alternate_id": null,
+            "verification": {
+              "status": "verified_primary",
+              "checked_sources": [
+                {
+                  "source_type": "doi_registry",
+                  "canonical_record": "https://api.crossref.org/works/10.1155%2F2019%2F2896046",
+                  "checked_at": "2026-08-06T11:03:43+08:00",
+                  "result": "match"
+                },
+                {
+                  "source_type": "publisher_landing",
+                  "canonical_record": "https://onlinelibrary.wiley.com/doi/10.1155/2019/2896046",
+                  "checked_at": "2026-08-06T11:03:43+08:00",
+                  "result": "match"
+                }
+              ],
+              "title_match": "exact",
+              "author_match": "exact",
+              "version_relation": "same_work",
+              "recommendation_eligible": true,
+              "blocking_reasons": []
+            },
+            "evidence_role": "method",
+            "supports": "The study estimates time-varying intervals for rolling-bearing vibration performance and checks interval coverage against a confidence level.",
+            "does_not_support": "Model-based uncertainty is not a substitute for sensor calibration or repeatability evidence.",
+            "basis_level": "abstract_level"
+          }
+        },
+        {
+          "candidate_id": "F04-P18",
+          "verification_status": "verified_registry",
+          "recommendation_eligible": true,
+          "evidence_roles": [
+            "transfer_bridge",
+            "method"
+          ],
+          "selection_role": "transfer_bridge",
+          "basis_level": "abstract_level",
+          "verified_record": {
+            "paper_id": "F04-P18",
+            "title": "Uncertainty-Weighted Domain Generalization for Remaining Useful Life Prediction of Rolling Bearings Under Unseen Conditions",
+            "authors": [
+              "Shiyan Tong",
+              "Yan Han",
+              "Xiaolong Zhang",
+              "Hao Tian",
+              "Xin Li",
+              "Qingqing Huang"
+            ],
+            "year_online": null,
+            "year_issue": 2024,
+            "venue": "IEEE Sensors Journal",
+            "publication_type": "journal_article",
+            "doi": "10.1109/jsen.2024.3366689",
+            "canonical_url": "https://doi.org/10.1109/jsen.2024.3366689",
+            "alternate_id": null,
+            "verification": {
+              "status": "verified_registry",
+              "checked_sources": [
+                {
+                  "source_type": "doi_registry",
+                  "canonical_record": "https://api.crossref.org/works/10.1109%2FJSEN.2024.3366689",
+                  "checked_at": "2026-08-06T11:03:43+08:00",
+                  "result": "match"
+                },
+                {
+                  "source_type": "publisher_landing",
+                  "canonical_record": "https://ieeexplore.ieee.org/document/10444662/",
+                  "checked_at": "2026-08-06T11:03:43+08:00",
+                  "result": "unavailable"
+                }
+              ],
+              "title_match": "exact",
+              "author_match": "exact",
+              "version_relation": "same_work",
+              "recommendation_eligible": true,
+              "blocking_reasons": []
+            },
+            "evidence_role": "transfer_bridge",
+            "supports": "Uncertainty-weighted domain generalization is a method bridge for unseen bearing conditions and explicit predictive uncertainty.",
+            "does_not_support": "Model uncertainty does not close physical measurement UQ prerequisites.",
+            "basis_level": "abstract_level"
+          }
+        },
+        {
+          "candidate_id": "F04-P13",
+          "verification_status": "verified_registry",
+          "recommendation_eligible": true,
+          "evidence_roles": [
+            "counter_limitation",
+            "method"
+          ],
+          "selection_role": "counter_limitation",
+          "basis_level": "abstract_level",
+          "verified_record": {
+            "paper_id": "F04-P13",
+            "title": "Application of a Gage R&R study in evaluation of rolling bearing measurement system accuracy",
+            "authors": [
+              "Mateusz Wrzochal",
+              "Stanisław Adamczak"
+            ],
+            "year_online": null,
+            "year_issue": 2019,
+            "venue": "Transportation Research Procedia",
+            "publication_type": "journal_article",
+            "doi": "10.1016/j.trpro.2019.07.131",
+            "canonical_url": "https://doi.org/10.1016/j.trpro.2019.07.131",
+            "alternate_id": null,
+            "verification": {
+              "status": "verified_registry",
+              "checked_sources": [
+                {
+                  "source_type": "doi_registry",
+                  "canonical_record": "https://api.crossref.org/works/10.1016%2Fj.trpro.2019.07.131",
+                  "checked_at": "2026-08-06T11:03:43+08:00",
+                  "result": "match"
+                },
+                {
+                  "source_type": "publisher_landing",
+                  "canonical_record": "https://www.sciencedirect.com/science/article/pii/S2352146519302984",
+                  "checked_at": "2026-08-06T11:03:43+08:00",
+                  "result": "unavailable"
+                }
+              ],
+              "title_match": "normalized",
+              "author_match": "exact",
+              "version_relation": "same_work",
+              "recommendation_eligible": true,
+              "blocking_reasons": []
+            },
+            "evidence_role": "counter_limitation",
+            "supports": "The Gage R&R study makes low repeatability/reproducibility and lack of reference bearings an explicit measurement-system limitation.",
+            "does_not_support": "It does not quantify uncertainty for any one public dataset or justify universal limits.",
+            "basis_level": "abstract_level"
+          }
+        }
+      ],
+      "selected_ids": [
+        "F04-P04",
+        "F04-P05",
+        "F04-P14",
+        "F04-P15",
+        "F04-P18",
+        "F04-P13"
+      ],
+      "paper_map": {
+        "round": 2,
+        "node_size_basis": "user_fit",
+        "legend": {
+          "evidence_roles": [
+            "direct_problem",
+            "method",
+            "transfer_bridge",
+            "counter_limitation"
+          ],
+          "basis_levels": [
+            "metadata_level",
+            "abstract_level",
+            "fulltext_level"
+          ]
+        },
+        "nodes": [
+          {
+            "id": "F04-P04",
+            "node_type": "paper",
+            "fit_score": 0.95,
+            "evidence_role": "direct_problem",
+            "verification_status": "verified_primary",
+            "basis_level": "abstract_level",
+            "short_note": "HUST bearing supplies 99 raw signals across five bearing types, six defects, and three load conditions"
+          },
+          {
+            "id": "F04-P05",
+            "node_type": "paper",
+            "fit_score": 0.9,
+            "evidence_role": "direct_problem",
+            "verification_status": "verified_primary",
+            "basis_level": "abstract_level",
+            "short_note": "MOIRA-UNIMORE provides an open bearing dataset for independent cart systems and cross-platform validation"
+          },
+          {
+            "id": "F04-P14",
+            "node_type": "paper",
+            "fit_score": 0.85,
+            "evidence_role": "method",
+            "verification_status": "verified_registry",
+            "basis_level": "abstract_level",
+            "short_note": "Rolling-bearing vibration uncertainty is modeled as a time-series standard uncertainty tied to failure diameter"
+          },
+          {
+            "id": "F04-P15",
+            "node_type": "paper",
+            "fit_score": 0.87,
+            "evidence_role": "method",
+            "verification_status": "verified_primary",
+            "basis_level": "abstract_level",
+            "short_note": "Dynamic uncertainty work estimates intervals and validates coverage for rolling-bearing vibration evolution"
+          },
+          {
+            "id": "F04-P18",
+            "node_type": "paper",
+            "fit_score": 0.82,
+            "evidence_role": "transfer_bridge",
+            "verification_status": "verified_registry",
+            "basis_level": "abstract_level",
+            "short_note": "Uncertainty-weighted domain generalization targets unseen bearing conditions without assuming target data are available"
+          },
+          {
+            "id": "F04-P13",
+            "node_type": "paper",
+            "fit_score": 0.88,
+            "evidence_role": "counter_limitation",
+            "verification_status": "verified_registry",
+            "basis_level": "abstract_level",
+            "short_note": "Gage R&R study shows dynamic bearing measurements can have low repeatability and reproducibility"
+          },
+          {
+            "id": "C-data-traceability",
+            "node_type": "cluster",
+            "basis_level": "abstract_level",
+            "short_note": "Public-data traceability and acquisition context"
+          },
+          {
+            "id": "C-metrology",
+            "node_type": "cluster",
+            "basis_level": "fulltext_level",
+            "short_note": "Calibration, repeatability, reproducibility, and uncertainty"
+          },
+          {
+            "id": "C-transfer",
+            "node_type": "cluster",
+            "basis_level": "abstract_level",
+            "short_note": "Cross-condition and cross-domain transfer"
+          },
+          {
+            "id": "C-limits",
+            "node_type": "cluster",
+            "basis_level": "abstract_level",
+            "short_note": "Measurement variation and decision limits"
+          }
+        ],
+        "edges": [
+          {
+            "source": "F04-P04",
+            "target": "C-data-traceability",
+            "relation": "claim_support",
+            "strength": "high",
+            "confidence": "high",
+            "basis_level": "abstract_level",
+            "note": "HUST records raw signals across bearing types, faults, loads, duration, and sampling"
+          },
+          {
+            "source": "F04-P05",
+            "target": "C-data-traceability",
+            "relation": "same_problem",
+            "strength": "medium",
+            "confidence": "medium",
+            "basis_level": "abstract_level",
+            "note": "MOIRA extends public bearing evidence to an independent cart-system context"
+          },
+          {
+            "source": "F04-P14",
+            "target": "C-metrology",
+            "relation": "shared_method",
+            "strength": "medium",
+            "confidence": "medium",
+            "basis_level": "abstract_level",
+            "note": "Time-series standard uncertainty links vibration variation to fault progression"
+          },
+          {
+            "source": "F04-P15",
+            "target": "C-metrology",
+            "relation": "shared_method",
+            "strength": "high",
+            "confidence": "medium",
+            "basis_level": "abstract_level",
+            "note": "Dynamic interval estimation and coverage checks formalize model-based UQ"
+          },
+          {
+            "source": "F04-P18",
+            "target": "C-transfer",
+            "relation": "transfer_bridge",
+            "strength": "medium",
+            "confidence": "medium",
+            "basis_level": "abstract_level",
+            "note": "Uncertainty-weighted generalization tests unseen operating conditions"
+          },
+          {
+            "source": "F04-P13",
+            "target": "C-limits",
+            "relation": "claim_tension",
+            "strength": "high",
+            "confidence": "high",
+            "basis_level": "abstract_level",
+            "note": "Gage R&R remains a counterweight against unqualified reuse of public measurements"
+          }
+        ],
+        "text_fallback": [
+          {
+            "id": "F04-P04",
+            "node_type": "paper",
+            "basis_level": "abstract_level",
+            "entry_type": "node",
+            "evidence_role": "direct_problem",
+            "verification_status": "verified_primary",
+            "text": "F04-P04: HUST bearing supplies 99 raw signals across five bearing types, six defects, and three load conditions"
+          },
+          {
+            "id": "F04-P05",
+            "node_type": "paper",
+            "basis_level": "abstract_level",
+            "entry_type": "node",
+            "evidence_role": "direct_problem",
+            "verification_status": "verified_primary",
+            "text": "F04-P05: MOIRA-UNIMORE provides an open bearing dataset for independent cart systems and cross-platform validation"
+          },
+          {
+            "id": "F04-P14",
+            "node_type": "paper",
+            "basis_level": "abstract_level",
+            "entry_type": "node",
+            "evidence_role": "method",
+            "verification_status": "verified_registry",
+            "text": "F04-P14: Rolling-bearing vibration uncertainty is modeled as a time-series standard uncertainty tied to failure diameter"
+          },
+          {
+            "id": "F04-P15",
+            "node_type": "paper",
+            "basis_level": "abstract_level",
+            "entry_type": "node",
+            "evidence_role": "method",
+            "verification_status": "verified_primary",
+            "text": "F04-P15: Dynamic uncertainty work estimates intervals and validates coverage for rolling-bearing vibration evolution"
+          },
+          {
+            "id": "F04-P18",
+            "node_type": "paper",
+            "basis_level": "abstract_level",
+            "entry_type": "node",
+            "evidence_role": "transfer_bridge",
+            "verification_status": "verified_registry",
+            "text": "F04-P18: Uncertainty-weighted domain generalization targets unseen bearing conditions without assuming target data are available"
+          },
+          {
+            "id": "F04-P13",
+            "node_type": "paper",
+            "basis_level": "abstract_level",
+            "entry_type": "node",
+            "evidence_role": "counter_limitation",
+            "verification_status": "verified_registry",
+            "text": "F04-P13: Gage R&R study shows dynamic bearing measurements can have low repeatability and reproducibility"
+          },
+          {
+            "id": "C-data-traceability",
+            "node_type": "cluster",
+            "basis_level": "abstract_level",
+            "entry_type": "node",
+            "text": "C-data-traceability: Public-data traceability and acquisition context"
+          },
+          {
+            "id": "C-metrology",
+            "node_type": "cluster",
+            "basis_level": "fulltext_level",
+            "entry_type": "node",
+            "text": "C-metrology: Calibration, repeatability, reproducibility, and uncertainty"
+          },
+          {
+            "id": "C-transfer",
+            "node_type": "cluster",
+            "basis_level": "abstract_level",
+            "entry_type": "node",
+            "text": "C-transfer: Cross-condition and cross-domain transfer"
+          },
+          {
+            "id": "C-limits",
+            "node_type": "cluster",
+            "basis_level": "abstract_level",
+            "entry_type": "node",
+            "text": "C-limits: Measurement variation and decision limits"
+          },
+          {
+            "entry_type": "edge",
+            "source": "F04-P04",
+            "target": "C-data-traceability",
+            "relation": "claim_support",
+            "basis_level": "abstract_level",
+            "text": "F04-P04 --claim_support--> C-data-traceability: HUST records raw signals across bearing types, faults, loads, duration, and sampling"
+          },
+          {
+            "entry_type": "edge",
+            "source": "F04-P05",
+            "target": "C-data-traceability",
+            "relation": "same_problem",
+            "basis_level": "abstract_level",
+            "text": "F04-P05 --same_problem--> C-data-traceability: MOIRA extends public bearing evidence to an independent cart-system context"
+          },
+          {
+            "entry_type": "edge",
+            "source": "F04-P14",
+            "target": "C-metrology",
+            "relation": "shared_method",
+            "basis_level": "abstract_level",
+            "text": "F04-P14 --shared_method--> C-metrology: Time-series standard uncertainty links vibration variation to fault progression"
+          },
+          {
+            "entry_type": "edge",
+            "source": "F04-P15",
+            "target": "C-metrology",
+            "relation": "shared_method",
+            "basis_level": "abstract_level",
+            "text": "F04-P15 --shared_method--> C-metrology: Dynamic interval estimation and coverage checks formalize model-based UQ"
+          },
+          {
+            "entry_type": "edge",
+            "source": "F04-P18",
+            "target": "C-transfer",
+            "relation": "transfer_bridge",
+            "basis_level": "abstract_level",
+            "text": "F04-P18 --transfer_bridge--> C-transfer: Uncertainty-weighted generalization tests unseen operating conditions"
+          },
+          {
+            "entry_type": "edge",
+            "source": "F04-P13",
+            "target": "C-limits",
+            "relation": "claim_tension",
+            "basis_level": "abstract_level",
+            "text": "F04-P13 --claim_tension--> C-limits: Gage R&R remains a counterweight against unqualified reuse of public measurements"
+          }
+        ],
+        "mermaid": "flowchart TD\n  n0[\"id=F04-P04; type=paper; basis=abstract_level; role=direct_problem; status=verified_primary; fit=0.95; note=HUST bearing supplies 99 raw signals across five bearing types, six defects, and three load conditions\"]\n  n1[\"id=F04-P05; type=paper; basis=abstract_level; role=direct_problem; status=verified_primary; fit=0.9; note=MOIRA-UNIMORE provides an open bearing dataset for independent cart systems and cross-platform validation\"]\n  n2[\"id=F04-P14; type=paper; basis=abstract_level; role=method; status=verified_registry; fit=0.85; note=Rolling-bearing vibration uncertainty is modeled as a time-series standard uncertainty tied to failure diameter\"]\n  n3[\"id=F04-P15; type=paper; basis=abstract_level; role=method; status=verified_primary; fit=0.87; note=Dynamic uncertainty work estimates intervals and validates coverage for rolling-bearing vibration evolution\"]\n  n4[\"id=F04-P18; type=paper; basis=abstract_level; role=transfer_bridge; status=verified_registry; fit=0.82; note=Uncertainty-weighted domain generalization targets unseen bearing conditions without assuming target data are available\"]\n  n5[\"id=F04-P13; type=paper; basis=abstract_level; role=counter_limitation; status=verified_registry; fit=0.88; note=Gage R&amp;R study shows dynamic bearing measurements can have low repeatability and reproducibility\"]\n  n6[\"id=C-data-traceability; type=cluster; basis=abstract_level; note=Public-data traceability and acquisition context\"]\n  n7[\"id=C-metrology; type=cluster; basis=fulltext_level; note=Calibration, repeatability, reproducibility, and uncertainty\"]\n  n8[\"id=C-transfer; type=cluster; basis=abstract_level; note=Cross-condition and cross-domain transfer\"]\n  n9[\"id=C-limits; type=cluster; basis=abstract_level; note=Measurement variation and decision limits\"]\n  n0 -- \"relation=claim_support; basis=abstract_level; strength=high; confidence=high; note=HUST records raw signals across bearing types, faults, loads, duration, and sampling\" --> n6\n  n1 -- \"relation=same_problem; basis=abstract_level; strength=medium; confidence=medium; note=MOIRA extends public bearing evidence to an independent cart-system context\" --> n6\n  n2 -- \"relation=shared_method; basis=abstract_level; strength=medium; confidence=medium; note=Time-series standard uncertainty links vibration variation to fault progression\" --> n7\n  n3 -- \"relation=shared_method; basis=abstract_level; strength=high; confidence=medium; note=Dynamic interval estimation and coverage checks formalize model-based UQ\" --> n7\n  n4 -- \"relation=transfer_bridge; basis=abstract_level; strength=medium; confidence=medium; note=Uncertainty-weighted generalization tests unseen operating conditions\" --> n8\n  n5 -- \"relation=claim_tension; basis=abstract_level; strength=high; confidence=high; note=Gage R&amp;R remains a counterweight against unqualified reuse of public measurements\" --> n9"
+      },
+      "round_one_dispositions": [
+        {
+          "round_one_id": "F04-P01",
+          "disposition": "removed",
+          "round_two_id": null,
+          "reason": "Retained as foundational direct evidence but not selected in the tighter R&R/UQ-focused second-round view.",
+          "cause_type": "feedback_delta",
+          "cause_ref": "feedback_delta.reset[0]"
+        },
+        {
+          "round_one_id": "F04-P02",
+          "disposition": "replaced",
+          "round_two_id": "F04-P04",
+          "reason": "The second-round direct-data slot prioritizes a newer multi-bearing raw-signal record after the measurement-metadata filter.",
+          "cause_type": "feedback_delta",
+          "cause_ref": "feedback_delta.added[0]"
+        },
+        {
+          "round_one_id": "F04-P03",
+          "disposition": "replaced",
+          "round_two_id": "F04-P05",
+          "reason": "The second-round direct-data slot adds an independent-cart-system context for cross-platform comparison.",
+          "cause_type": "feedback_delta",
+          "cause_ref": "feedback_delta.added[0]"
+        },
+        {
+          "round_one_id": "F04-P11",
+          "disposition": "replaced",
+          "round_two_id": "F04-P14",
+          "reason": "The second-round method set adds a bearing-specific standard-uncertainty record alongside the calibration traceability paper.",
+          "cause_type": "feedback_delta",
+          "cause_ref": "feedback_delta.added[0]"
+        },
+        {
+          "round_one_id": "F04-P12",
+          "disposition": "replaced",
+          "round_two_id": "F04-P15",
+          "reason": "The second-round method set adds dynamic interval and coverage evidence while retaining the R&R limitation as a counter.",
+          "cause_type": "feedback_delta",
+          "cause_ref": "feedback_delta.added[0]"
+        },
+        {
+          "round_one_id": "F04-P06",
+          "disposition": "replaced",
+          "round_two_id": "F04-P18",
+          "reason": "The second-round transfer slot shifts from a heterogeneous turbine dataset to an uncertainty-weighted unseen-condition method bridge.",
+          "cause_type": "feedback_delta",
+          "cause_ref": "feedback_delta.added[0]"
+        },
+        {
+          "round_one_id": "F04-P17",
+          "disposition": "removed",
+          "round_two_id": null,
+          "reason": "Cross-domain shift remains a limitation context, but the compact second-round view keeps the direct R&R counter and UQ transfer bridge.",
+          "cause_type": "feedback_delta",
+          "cause_ref": "feedback_delta.rejected[0]"
+        },
+        {
+          "round_one_id": "F04-P13",
+          "disposition": "retained",
+          "round_two_id": "F04-P13",
+          "reason": "The counter/limitation evidence directly tests whether public vibration measurements can be treated as repeatable and reproducible.",
+          "cause_type": "feedback_delta",
+          "cause_ref": "feedback_delta.added[0]"
+        }
+      ],
+      "evidence_gaps": [],
+      "search_limitations": [
+        "Round two is bounded, not exhaustive.",
+        "Physical calibration certificates and raw repeat-run files were not downloaded.",
+        "Model uncertainty and physical measurement uncertainty remain separate evidence classes."
+      ]
+    }
+  },
+  "direction_portfolio": {
+    "schema_version": "m2.1.1",
+    "source_m1_terminal_state": "M1_COMPLETE",
+    "source_m1_bundle_hash": "53f7ff7baad4f9b13b5f27ae1a52010dc640fe45cb7a2fdd05225019882c3924",
+    "brief_version": 2,
+    "branch_id": "f04-public-bearing-measurement-uq-2026-08-06",
+    "directions": [
+      {
+        "direction_id": "F04-D01",
+        "position": "provisional_main",
+        "title": "Traceability-first public bearing-vibration data audit",
+        "evidence_tier": "transfer-supported",
+        "claim_language": "Recommended for priority validation",
+        "axis_profile": {
+          "problem": "Public rolling-bearing vibration data must be measured and traceable before model claims are compared.",
+          "method": "Structured measurement-chain audit with calibration, repeatability, reproducibility, and uncertainty checks.",
+          "data": "One public dataset at a time with raw or semi-raw vibration and declared acquisition metadata."
+        },
+        "axis_changes": [],
+        "core_claims": [
+          {
+            "claim_id": "C1",
+            "claim": "Public records can be screened for minimum measurement metadata before any cross-dataset comparison.",
+            "claim_type": "data_availability",
+            "evidence_candidate_ids": [
+              "F04-P04"
+            ],
+            "required_decision_metrics": [
+              {
+                "metric_id": "M1",
+                "metric": "measurement-metadata completeness fraction",
+                "metric_role": "data_availability",
+                "unit": "fraction [0,1]"
+              }
+            ]
+          },
+          {
+            "claim_id": "C2",
+            "claim": "Calibration, R&R, and dynamic-UQ evidence can bound uncertainty readiness without equating classifier accuracy with measurement validity.",
+            "claim_type": "uncertainty_quality",
+            "evidence_candidate_ids": [
+              "F04-P14",
+              "F04-P13",
+              "F04-P15"
+            ],
+            "required_decision_metrics": [
+              {
+                "metric_id": "M2",
+                "metric": "95% interval coverage for repeated-condition summaries",
+                "metric_role": "uncertainty_quality",
+                "unit": "fraction [0,1]"
+              }
+            ]
+          }
+        ],
+        "resource_limits": [
+          {
+            "constraint_id": "RL-hours",
+            "resource": "offline_analysis_wall_clock",
+            "operator": "<=",
+            "value": 16,
+            "unit": "h"
+          },
+          {
+            "constraint_id": "RL-datasets",
+            "resource": "public_dataset_records_considered",
+            "operator": "<=",
+            "value": 6,
+            "unit": "datasets"
+          },
+          {
+            "constraint_id": "RL-download",
+            "resource": "dataset_or_model_download_volume",
+            "operator": "<=",
+            "value": 0,
+            "unit": "GB"
+          },
+          {
+            "constraint_id": "RL-equipment",
+            "resource": "equipment_control_sessions",
+            "operator": "<=",
+            "value": 0,
+            "unit": "sessions"
+          }
+        ],
+        "hard_gates": [
+          {
+            "gate_id": "target_problem_evidence",
+            "status": "pass",
+            "evidence_candidate_ids": [
+              "F04-P04"
+            ],
+            "required_precondition_ids": [
+              "P1"
+            ],
+            "rationale": "F04-D01: eligible public bearing records expose the target measurement-context problem.",
+            "blockers": []
+          },
+          {
+            "gate_id": "data_availability",
+            "status": "pass",
+            "evidence_candidate_ids": [
+              "F04-P04"
+            ],
+            "required_precondition_ids": [
+              "P1"
+            ],
+            "rationale": "F04-D01: the cited public records are bounded inputs for an offline metadata and signal audit.",
+            "blockers": []
+          },
+          {
+            "gate_id": "falsifiability",
+            "status": "pass",
+            "evidence_candidate_ids": [
+              "F04-P14",
+              "F04-P13",
+              "F04-P15"
+            ],
+            "required_precondition_ids": [
+              "P2"
+            ],
+            "rationale": "F04-D01: calibration, R&R, or UQ records define observable decision metrics and failure conditions.",
+            "blockers": []
+          },
+          {
+            "gate_id": "resource_feasibility",
+            "status": "pass",
+            "evidence_candidate_ids": [],
+            "required_precondition_ids": [],
+            "rationale": "F04-D01: the decisive test uses only public records and offline analysis within the finite ceilings.",
+            "blockers": []
+          },
+          {
+            "gate_id": "time_feasibility",
+            "status": "pass",
+            "evidence_candidate_ids": [],
+            "required_precondition_ids": [],
+            "rationale": "F04-D01: the staged test is bounded to the declared wall-clock limit and stops on missing prerequisites.",
+            "blockers": []
+          },
+          {
+            "gate_id": "safety_ethics_compliance",
+            "status": "pass",
+            "evidence_candidate_ids": [],
+            "required_precondition_ids": [],
+            "rationale": "F04-D01: no equipment control, human data, safety claim, upload, or service is required before confirmation.",
+            "blockers": []
+          },
+          {
+            "gate_id": "m1_citation_integrity",
+            "status": "pass",
+            "evidence_candidate_ids": [
+              "F04-P14",
+              "F04-P13",
+              "F04-P15"
+            ],
+            "required_precondition_ids": [],
+            "rationale": "F04-D01: candidate IDs resolve to eligible M1 records with preserved verification status and provenance.",
+            "blockers": []
+          }
+        ],
+        "transfer_case": {
+          "target_problem_evidence": [
+            "F04-P04"
+          ],
+          "source_success_evidence": [
+            "F04-P14",
+            "F04-P13",
+            "F04-P15"
+          ],
+          "transfer_compatibility": {
+            "concepts": [
+              "vibration amplitude, acquisition context, and uncertainty are explicit comparison concepts"
+            ],
+            "units": [
+              "acceleration units and frequency bands must be declared; no implicit conversion is allowed"
+            ],
+            "scales": [
+              "sampling rate, record duration, and frequency band define non-equivalent measurement scales"
+            ],
+            "boundary_conditions": [
+              "speed, load, sensor position, mounting, fault severity, and rig geometry bound comparisons"
+            ],
+            "assumptions": [
+              "public metadata are sufficient only when the stated fields or a bounded missing-evidence result are available"
+            ]
+          },
+          "anti_transfer_factors": [
+            "sensor mounting and DAQ sensitivities differ across rigs",
+            "calibration certificates or repeat-run pairs may be absent",
+            "bearing and rig designs create non-identical frequency and load regimes"
+          ]
+        },
+        "scorecard": {
+          "dimensions": [
+            {
+              "dimension": "engineering_value",
+              "weight": 15,
+              "score": 5,
+              "evidence_candidate_ids": [
+                "F04-P04",
+                "F04-P14",
+                "F04-P13",
+                "F04-P15"
+              ],
+              "evidence": "engineering_value is bounded by the independent F04 M1 evidence and the stated measurement/UQ gate.",
+              "confidence": "medium",
+              "unknowns": [
+                "engineering_value: missing cross-dataset comparability remains unresolved"
+              ],
+              "change_triggers": [
+                "engineering_value: change if a decisive test violates its numeric criterion"
+              ]
+            },
+            {
+              "dimension": "gap_and_evidence_quality",
+              "weight": 15,
+              "score": 5,
+              "evidence_candidate_ids": [
+                "F04-P04",
+                "F04-P14",
+                "F04-P13",
+                "F04-P15"
+              ],
+              "evidence": "gap_and_evidence_quality is bounded by the independent F04 M1 evidence and the stated measurement/UQ gate.",
+              "confidence": "medium",
+              "unknowns": [
+                "gap_and_evidence_quality: missing cross-dataset comparability remains unresolved"
+              ],
+              "change_triggers": [
+                "gap_and_evidence_quality: change if a decisive test violates its numeric criterion"
+              ]
+            },
+            {
+              "dimension": "data_and_resource_fit",
+              "weight": 20,
+              "score": 4,
+              "evidence_candidate_ids": [
+                "F04-P04",
+                "F04-P14",
+                "F04-P13",
+                "F04-P15"
+              ],
+              "evidence": "data_and_resource_fit is bounded by the independent F04 M1 evidence and the stated measurement/UQ gate.",
+              "confidence": "medium",
+              "unknowns": [
+                "data_and_resource_fit: missing cross-dataset comparability remains unresolved"
+              ],
+              "change_triggers": [
+                "data_and_resource_fit: change if a decisive test violates its numeric criterion"
+              ]
+            },
+            {
+              "dimension": "validation_and_falsifiability",
+              "weight": 15,
+              "score": 5,
+              "evidence_candidate_ids": [
+                "F04-P04",
+                "F04-P14",
+                "F04-P13",
+                "F04-P15"
+              ],
+              "evidence": "validation_and_falsifiability is bounded by the independent F04 M1 evidence and the stated measurement/UQ gate.",
+              "confidence": "medium",
+              "unknowns": [
+                "validation_and_falsifiability: missing cross-dataset comparability remains unresolved"
+              ],
+              "change_triggers": [
+                "validation_and_falsifiability: change if a decisive test violates its numeric criterion"
+              ]
+            },
+            {
+              "dimension": "method_maturity",
+              "weight": 10,
+              "score": 4,
+              "evidence_candidate_ids": [
+                "F04-P04",
+                "F04-P14",
+                "F04-P13",
+                "F04-P15"
+              ],
+              "evidence": "method_maturity is bounded by the independent F04 M1 evidence and the stated measurement/UQ gate.",
+              "confidence": "medium",
+              "unknowns": [
+                "method_maturity: missing cross-dataset comparability remains unresolved"
+              ],
+              "change_triggers": [
+                "method_maturity: change if a decisive test violates its numeric criterion"
+              ]
+            },
+            {
+              "dimension": "time_to_decisive_signal",
+              "weight": 10,
+              "score": 4,
+              "evidence_candidate_ids": [
+                "F04-P04",
+                "F04-P14",
+                "F04-P13",
+                "F04-P15"
+              ],
+              "evidence": "time_to_decisive_signal is bounded by the independent F04 M1 evidence and the stated measurement/UQ gate.",
+              "confidence": "medium",
+              "unknowns": [
+                "time_to_decisive_signal: missing cross-dataset comparability remains unresolved"
+              ],
+              "change_triggers": [
+                "time_to_decisive_signal: change if a decisive test violates its numeric criterion"
+              ]
+            },
+            {
+              "dimension": "interdisciplinary_interface_quality",
+              "weight": 10,
+              "score": 4,
+              "evidence_candidate_ids": [
+                "F04-P04",
+                "F04-P14",
+                "F04-P13",
+                "F04-P15"
+              ],
+              "evidence": "interdisciplinary_interface_quality is bounded by the independent F04 M1 evidence and the stated measurement/UQ gate.",
+              "confidence": "medium",
+              "unknowns": [
+                "interdisciplinary_interface_quality: missing cross-dataset comparability remains unresolved"
+              ],
+              "change_triggers": [
+                "interdisciplinary_interface_quality: change if a decisive test violates its numeric criterion"
+              ]
+            },
+            {
+              "dimension": "safety_ethics_compliance",
+              "weight": 5,
+              "score": 4,
+              "evidence_candidate_ids": [
+                "F04-P04",
+                "F04-P14",
+                "F04-P13",
+                "F04-P15"
+              ],
+              "evidence": "safety_ethics_compliance is bounded by the independent F04 M1 evidence and the stated measurement/UQ gate.",
+              "confidence": "medium",
+              "unknowns": [
+                "safety_ethics_compliance: missing cross-dataset comparability remains unresolved"
+              ],
+              "change_triggers": [
+                "safety_ethics_compliance: change if a decisive test violates its numeric criterion"
+              ]
+            }
+          ],
+          "weighted_total": 89.0
+        },
+        "minimum_decisive_test": {
+          "scope": "minimum_decisive_test",
+          "hypothesis": "A public dataset with complete measurement metadata and bounded repeatability/UQ prerequisites can support a traceable comparison without treating classifier accuracy as measurement validity.",
+          "inputs": [
+            "raw or semi-raw public vibration files",
+            "sensor and DAQ metadata",
+            "speed/load/fault labels",
+            "calibration and R&R evidence where declared"
+          ],
+          "baseline": "Metadata-only reuse without an explicit calibration, R&R, and UQ screening step.",
+          "steps": [
+            {
+              "step_id": "S1",
+              "action": "Extract declared units, sensor identity, sampling rate, speed/load, mounting, and calibration fields.",
+              "bounded_output": "M1 and a missing-field list."
+            },
+            {
+              "step_id": "S2",
+              "action": "Separate within-run, refit/mounting, and cross-record variability when repeated evidence is available.",
+              "bounded_output": "Repeatability/reproducibility components or a bounded missing-evidence report."
+            },
+            {
+              "step_id": "S3",
+              "action": "Construct a 95% uncertainty interval only from supported components and test coverage.",
+              "bounded_output": "M2, coverage result, and a decision log."
+            }
+          ],
+          "primary_metric_id": "M2",
+          "claim_coverage": [
+            {
+              "claim_id": "C1",
+              "metric_ids": [
+                "M1"
+              ],
+              "decision_criteria": [
+                {
+                  "criterion_type": "success",
+                  "metric_id": "M1",
+                  "operator": ">=",
+                  "value": 0.8,
+                  "unit": "fraction [0,1]"
+                },
+                {
+                  "criterion_type": "stop",
+                  "metric_id": "M1",
+                  "operator": "<",
+                  "value": 0.6,
+                  "unit": "fraction [0,1]"
+                },
+                {
+                  "criterion_type": "pivot",
+                  "metric_id": "M1",
+                  "operator": ">=",
+                  "value": 0.6,
+                  "unit": "fraction [0,1]"
+                }
+              ],
+              "required_precondition_ids": [
+                "P1"
+              ]
+            },
+            {
+              "claim_id": "C2",
+              "metric_ids": [
+                "M2"
+              ],
+              "decision_criteria": [
+                {
+                  "criterion_type": "success",
+                  "metric_id": "M2",
+                  "operator": ">=",
+                  "value": 0.9,
+                  "unit": "fraction [0,1]"
+                },
+                {
+                  "criterion_type": "stop",
+                  "metric_id": "M2",
+                  "operator": "<",
+                  "value": 0.8,
+                  "unit": "fraction [0,1]"
+                },
+                {
+                  "criterion_type": "pivot",
+                  "metric_id": "M2",
+                  "operator": ">=",
+                  "value": 0.8,
+                  "unit": "fraction [0,1]"
+                }
+              ],
+              "required_precondition_ids": [
+                "P2"
+              ]
+            }
+          ],
+          "required_preconditions": [
+            {
+              "precondition_id": "P1",
+              "description": "Raw or semi-raw records and declared units, sensor identity, sampling rate, and operating conditions are available for the selected public record.",
+              "gate_id": "data_availability",
+              "status": "verified",
+              "evidence_candidate_ids": [
+                "F04-P04"
+              ],
+              "blocking_if_unresolved": true,
+              "preflight_check": "Confirm raw signal or a bounded raw-signal description, units, sensor/DAQ identity, sampling rate, speed/load, mounting, and calibration fields.",
+              "stop_condition": {
+                "metric": "measurement-metadata completeness fraction",
+                "operator": "<",
+                "value": 0.6,
+                "unit": "fraction [0,1]"
+              }
+            },
+            {
+              "precondition_id": "P2",
+              "description": "A repeatability, reproducibility, calibration, or UQ component can be observed or explicitly marked missing without inventing values.",
+              "gate_id": "falsifiability",
+              "status": "bounded_testable",
+              "evidence_candidate_ids": [
+                "F04-P14",
+                "F04-P13",
+                "F04-P15"
+              ],
+              "blocking_if_unresolved": false,
+              "preflight_check": "Check whether repeated conditions, refit/mounting factors, calibration traceability, or uncertainty components are stated and reconstructible.",
+              "stop_condition": {
+                "metric": "95% interval coverage for repeated-condition summaries",
+                "operator": "<",
+                "value": 0.8,
+                "unit": "fraction [0,1]"
+              }
+            }
+          ],
+          "expected_time": "<= 16 h offline analysis",
+          "required_resources": [
+            "Python 3.12 offline parser",
+            "public metadata and records only",
+            "no equipment, service, upload, or model download"
+          ]
+        },
+        "supporting_candidate_ids": [
+          "F04-P04",
+          "F04-P14",
+          "F04-P13",
+          "F04-P15"
+        ],
+        "counter_candidate_ids": [
+          "F04-P13"
+        ],
+        "unknowns": [
+          "Common traceability across public datasets is not established.",
+          "Many public records may not expose calibration certificates or matched repeat runs.",
+          "Unit and frequency-band compatibility must be checked record by record."
+        ],
+        "confidence": "medium",
+        "recommendation_status": "provisional"
+      },
+      {
+        "direction_id": "F04-D02",
+        "position": "adjacent_alternative",
+        "title": "R&R-aware cross-dataset bearing measurement comparison",
+        "evidence_tier": "transfer-supported",
+        "claim_language": "Recommended for priority validation",
+        "axis_profile": {
+          "problem": "Public rolling-bearing vibration data must be measured and traceable before model claims are compared.",
+          "method": "R&R-aware cross-dataset evaluation with pre-registered condition matching and explicit mounting/refit strata.",
+          "data": "One public dataset at a time with raw or semi-raw vibration and declared acquisition metadata."
+        },
+        "axis_changes": [
+          {
+            "axis": "method",
+            "from": "Structured measurement-chain audit with calibration, repeatability, reproducibility, and uncertainty checks.",
+            "to": "R&R-aware cross-dataset evaluation with pre-registered condition matching and explicit mounting/refit strata."
+          }
+        ],
+        "core_claims": [
+          {
+            "claim_id": "C1",
+            "claim": "Public bearing records can be compared only over overlapping declared condition strata.",
+            "claim_type": "data_availability",
+            "evidence_candidate_ids": [
+              "F04-P04",
+              "F04-P05"
+            ],
+            "required_decision_metrics": [
+              {
+                "metric_id": "M1",
+                "metric": "declared-condition overlap fraction",
+                "metric_role": "data_availability",
+                "unit": "fraction [0,1]"
+              }
+            ]
+          },
+          {
+            "claim_id": "C2",
+            "claim": "R&R and time-series uncertainty evidence can bound between-record variance before a model comparison.",
+            "claim_type": "uncertainty_quality",
+            "evidence_candidate_ids": [
+              "F04-P13",
+              "F04-P14"
+            ],
+            "required_decision_metrics": [
+              {
+                "metric_id": "M2",
+                "metric": "between-record variance ratio",
+                "metric_role": "uncertainty_quality",
+                "unit": "ratio"
+              }
+            ]
+          }
+        ],
+        "resource_limits": [
+          {
+            "constraint_id": "RL-hours",
+            "resource": "offline_analysis_wall_clock",
+            "operator": "<=",
+            "value": 24,
+            "unit": "h"
+          },
+          {
+            "constraint_id": "RL-datasets",
+            "resource": "public_dataset_records_considered",
+            "operator": "<=",
+            "value": 4,
+            "unit": "datasets"
+          },
+          {
+            "constraint_id": "RL-download",
+            "resource": "dataset_or_model_download_volume",
+            "operator": "<=",
+            "value": 0,
+            "unit": "GB"
+          },
+          {
+            "constraint_id": "RL-equipment",
+            "resource": "equipment_control_sessions",
+            "operator": "<=",
+            "value": 0,
+            "unit": "sessions"
+          }
+        ],
+        "hard_gates": [
+          {
+            "gate_id": "target_problem_evidence",
+            "status": "pass",
+            "evidence_candidate_ids": [
+              "F04-P04",
+              "F04-P05"
+            ],
+            "required_precondition_ids": [
+              "P1"
+            ],
+            "rationale": "F04-D02: eligible public bearing records expose the target measurement-context problem.",
+            "blockers": []
+          },
+          {
+            "gate_id": "data_availability",
+            "status": "pass",
+            "evidence_candidate_ids": [
+              "F04-P04",
+              "F04-P05"
+            ],
+            "required_precondition_ids": [
+              "P1"
+            ],
+            "rationale": "F04-D02: the cited public records are bounded inputs for an offline metadata and signal audit.",
+            "blockers": []
+          },
+          {
+            "gate_id": "falsifiability",
+            "status": "pass",
+            "evidence_candidate_ids": [
+              "F04-P13",
+              "F04-P14"
+            ],
+            "required_precondition_ids": [
+              "P2"
+            ],
+            "rationale": "F04-D02: calibration, R&R, or UQ records define observable decision metrics and failure conditions.",
+            "blockers": []
+          },
+          {
+            "gate_id": "resource_feasibility",
+            "status": "pass",
+            "evidence_candidate_ids": [],
+            "required_precondition_ids": [],
+            "rationale": "F04-D02: the decisive test uses only public records and offline analysis within the finite ceilings.",
+            "blockers": []
+          },
+          {
+            "gate_id": "time_feasibility",
+            "status": "pass",
+            "evidence_candidate_ids": [],
+            "required_precondition_ids": [],
+            "rationale": "F04-D02: the staged test is bounded to the declared wall-clock limit and stops on missing prerequisites.",
+            "blockers": []
+          },
+          {
+            "gate_id": "safety_ethics_compliance",
+            "status": "pass",
+            "evidence_candidate_ids": [],
+            "required_precondition_ids": [],
+            "rationale": "F04-D02: no equipment control, human data, safety claim, upload, or service is required before confirmation.",
+            "blockers": []
+          },
+          {
+            "gate_id": "m1_citation_integrity",
+            "status": "pass",
+            "evidence_candidate_ids": [
+              "F04-P13",
+              "F04-P14"
+            ],
+            "required_precondition_ids": [],
+            "rationale": "F04-D02: candidate IDs resolve to eligible M1 records with preserved verification status and provenance.",
+            "blockers": []
+          }
+        ],
+        "transfer_case": {
+          "target_problem_evidence": [
+            "F04-P04",
+            "F04-P05"
+          ],
+          "source_success_evidence": [
+            "F04-P13",
+            "F04-P14"
+          ],
+          "transfer_compatibility": {
+            "concepts": [
+              "vibration amplitude, acquisition context, and uncertainty are explicit comparison concepts"
+            ],
+            "units": [
+              "acceleration units and frequency bands must be declared; no implicit conversion is allowed"
+            ],
+            "scales": [
+              "sampling rate, record duration, and frequency band define non-equivalent measurement scales"
+            ],
+            "boundary_conditions": [
+              "speed, load, sensor position, mounting, fault severity, and rig geometry bound comparisons"
+            ],
+            "assumptions": [
+              "public metadata are sufficient only when the stated fields or a bounded missing-evidence result are available"
+            ]
+          },
+          "anti_transfer_factors": [
+            "condition labels and sensor positions may not align",
+            "between-record variance can confound physical and acquisition effects",
+            "some public datasets provide no paired repeats"
+          ]
+        },
+        "scorecard": {
+          "dimensions": [
+            {
+              "dimension": "engineering_value",
+              "weight": 15,
+              "score": 4,
+              "evidence_candidate_ids": [
+                "F04-P04",
+                "F04-P05",
+                "F04-P13",
+                "F04-P14"
+              ],
+              "evidence": "engineering_value is bounded by the independent F04 M1 evidence and the stated measurement/UQ gate.",
+              "confidence": "medium",
+              "unknowns": [
+                "engineering_value: missing cross-dataset comparability remains unresolved"
+              ],
+              "change_triggers": [
+                "engineering_value: change if a decisive test violates its numeric criterion"
+              ]
+            },
+            {
+              "dimension": "gap_and_evidence_quality",
+              "weight": 15,
+              "score": 4,
+              "evidence_candidate_ids": [
+                "F04-P04",
+                "F04-P05",
+                "F04-P13",
+                "F04-P14"
+              ],
+              "evidence": "gap_and_evidence_quality is bounded by the independent F04 M1 evidence and the stated measurement/UQ gate.",
+              "confidence": "medium",
+              "unknowns": [
+                "gap_and_evidence_quality: missing cross-dataset comparability remains unresolved"
+              ],
+              "change_triggers": [
+                "gap_and_evidence_quality: change if a decisive test violates its numeric criterion"
+              ]
+            },
+            {
+              "dimension": "data_and_resource_fit",
+              "weight": 20,
+              "score": 4,
+              "evidence_candidate_ids": [
+                "F04-P04",
+                "F04-P05",
+                "F04-P13",
+                "F04-P14"
+              ],
+              "evidence": "data_and_resource_fit is bounded by the independent F04 M1 evidence and the stated measurement/UQ gate.",
+              "confidence": "medium",
+              "unknowns": [
+                "data_and_resource_fit: missing cross-dataset comparability remains unresolved"
+              ],
+              "change_triggers": [
+                "data_and_resource_fit: change if a decisive test violates its numeric criterion"
+              ]
+            },
+            {
+              "dimension": "validation_and_falsifiability",
+              "weight": 15,
+              "score": 4,
+              "evidence_candidate_ids": [
+                "F04-P04",
+                "F04-P05",
+                "F04-P13",
+                "F04-P14"
+              ],
+              "evidence": "validation_and_falsifiability is bounded by the independent F04 M1 evidence and the stated measurement/UQ gate.",
+              "confidence": "medium",
+              "unknowns": [
+                "validation_and_falsifiability: missing cross-dataset comparability remains unresolved"
+              ],
+              "change_triggers": [
+                "validation_and_falsifiability: change if a decisive test violates its numeric criterion"
+              ]
+            },
+            {
+              "dimension": "method_maturity",
+              "weight": 10,
+              "score": 3,
+              "evidence_candidate_ids": [
+                "F04-P04",
+                "F04-P05",
+                "F04-P13",
+                "F04-P14"
+              ],
+              "evidence": "method_maturity is bounded by the independent F04 M1 evidence and the stated measurement/UQ gate.",
+              "confidence": "medium",
+              "unknowns": [
+                "method_maturity: missing cross-dataset comparability remains unresolved"
+              ],
+              "change_triggers": [
+                "method_maturity: change if a decisive test violates its numeric criterion"
+              ]
+            },
+            {
+              "dimension": "time_to_decisive_signal",
+              "weight": 10,
+              "score": 3,
+              "evidence_candidate_ids": [
+                "F04-P04",
+                "F04-P05",
+                "F04-P13",
+                "F04-P14"
+              ],
+              "evidence": "time_to_decisive_signal is bounded by the independent F04 M1 evidence and the stated measurement/UQ gate.",
+              "confidence": "medium",
+              "unknowns": [
+                "time_to_decisive_signal: missing cross-dataset comparability remains unresolved"
+              ],
+              "change_triggers": [
+                "time_to_decisive_signal: change if a decisive test violates its numeric criterion"
+              ]
+            },
+            {
+              "dimension": "interdisciplinary_interface_quality",
+              "weight": 10,
+              "score": 4,
+              "evidence_candidate_ids": [
+                "F04-P04",
+                "F04-P05",
+                "F04-P13",
+                "F04-P14"
+              ],
+              "evidence": "interdisciplinary_interface_quality is bounded by the independent F04 M1 evidence and the stated measurement/UQ gate.",
+              "confidence": "medium",
+              "unknowns": [
+                "interdisciplinary_interface_quality: missing cross-dataset comparability remains unresolved"
+              ],
+              "change_triggers": [
+                "interdisciplinary_interface_quality: change if a decisive test violates its numeric criterion"
+              ]
+            },
+            {
+              "dimension": "safety_ethics_compliance",
+              "weight": 5,
+              "score": 4,
+              "evidence_candidate_ids": [
+                "F04-P04",
+                "F04-P05",
+                "F04-P13",
+                "F04-P14"
+              ],
+              "evidence": "safety_ethics_compliance is bounded by the independent F04 M1 evidence and the stated measurement/UQ gate.",
+              "confidence": "medium",
+              "unknowns": [
+                "safety_ethics_compliance: missing cross-dataset comparability remains unresolved"
+              ],
+              "change_triggers": [
+                "safety_ethics_compliance: change if a decisive test violates its numeric criterion"
+              ]
+            }
+          ],
+          "weighted_total": 76.0
+        },
+        "minimum_decisive_test": {
+          "scope": "minimum_decisive_test",
+          "hypothesis": "Pre-registering condition overlap and separating mounting/refit variation will reveal whether public records are comparable at the measurement level.",
+          "inputs": [
+            "two public bearing records",
+            "condition and unit declarations",
+            "repeatability/reproducibility or uncertainty components"
+          ],
+          "baseline": "Pooling records by fault label while ignoring condition overlap, mounting, and measurement-system variation.",
+          "steps": [
+            {
+              "step_id": "S1",
+              "action": "Pre-register compatible units, speed/load/fault strata, sampling rates, and frequency bands.",
+              "bounded_output": "M1 and an inclusion/exclusion table."
+            },
+            {
+              "step_id": "S2",
+              "action": "Decompose within-record, refit/mounting, and between-record variance using only declared or reconstructible components.",
+              "bounded_output": "Variance components and missing-component flags."
+            },
+            {
+              "step_id": "S3",
+              "action": "Compare the between-record variance ratio against the bounded decision thresholds.",
+              "bounded_output": "M2 and a go/stop/pivot decision."
+            }
+          ],
+          "primary_metric_id": "M2",
+          "claim_coverage": [
+            {
+              "claim_id": "C1",
+              "metric_ids": [
+                "M1"
+              ],
+              "decision_criteria": [
+                {
+                  "criterion_type": "success",
+                  "metric_id": "M1",
+                  "operator": ">=",
+                  "value": 0.75,
+                  "unit": "fraction [0,1]"
+                },
+                {
+                  "criterion_type": "stop",
+                  "metric_id": "M1",
+                  "operator": "<",
+                  "value": 0.5,
+                  "unit": "fraction [0,1]"
+                },
+                {
+                  "criterion_type": "pivot",
+                  "metric_id": "M1",
+                  "operator": ">=",
+                  "value": 0.5,
+                  "unit": "fraction [0,1]"
+                }
+              ],
+              "required_precondition_ids": [
+                "P1"
+              ]
+            },
+            {
+              "claim_id": "C2",
+              "metric_ids": [
+                "M2"
+              ],
+              "decision_criteria": [
+                {
+                  "criterion_type": "success",
+                  "metric_id": "M2",
+                  "operator": "<=",
+                  "value": 0.25,
+                  "unit": "ratio"
+                },
+                {
+                  "criterion_type": "stop",
+                  "metric_id": "M2",
+                  "operator": ">",
+                  "value": 0.5,
+                  "unit": "ratio"
+                },
+                {
+                  "criterion_type": "pivot",
+                  "metric_id": "M2",
+                  "operator": "<=",
+                  "value": 0.5,
+                  "unit": "ratio"
+                }
+              ],
+              "required_precondition_ids": [
+                "P2"
+              ]
+            }
+          ],
+          "required_preconditions": [
+            {
+              "precondition_id": "P1",
+              "description": "At least two public records declare compatible speed/load/fault strata and measurement units.",
+              "gate_id": "data_availability",
+              "status": "verified",
+              "evidence_candidate_ids": [
+                "F04-P04",
+                "F04-P05"
+              ],
+              "blocking_if_unresolved": true,
+              "preflight_check": "Align condition labels, units, sampling rates, sensor placement, and frequency bands before calculating overlap.",
+              "stop_condition": {
+                "metric": "declared-condition overlap fraction",
+                "operator": "<",
+                "value": 0.5,
+                "unit": "fraction [0,1]"
+              }
+            },
+            {
+              "precondition_id": "P2",
+              "description": "Repeatability or reproducibility components can be separated from between-record variance.",
+              "gate_id": "falsifiability",
+              "status": "bounded_testable",
+              "evidence_candidate_ids": [
+                "F04-P13",
+                "F04-P14"
+              ],
+              "blocking_if_unresolved": false,
+              "preflight_check": "Check for repeated conditions, refit/mounting factors, time-series uncertainty statements, and compatible variance definitions.",
+              "stop_condition": {
+                "metric": "between-record variance ratio",
+                "operator": ">",
+                "value": 0.5,
+                "unit": "ratio"
+              }
+            }
+          ],
+          "expected_time": "<= 24 h offline analysis",
+          "required_resources": [
+            "Python 3.12 offline parser",
+            "public records only",
+            "no equipment, service, upload, or model download"
+          ]
+        },
+        "supporting_candidate_ids": [
+          "F04-P04",
+          "F04-P05",
+          "F04-P13",
+          "F04-P14"
+        ],
+        "counter_candidate_ids": [
+          "F04-P13"
+        ],
+        "unknowns": [
+          "Public records may not provide enough aligned strata for a fair R&R comparison.",
+          "Variance components may use incompatible definitions.",
+          "A low variance ratio would not prove calibration traceability."
+        ],
+        "confidence": "medium",
+        "recommendation_status": "provisional"
+      },
+      {
+        "direction_id": "F04-D03",
+        "position": "transfer_exploration",
+        "title": "Uncertainty-aware generalization under unseen bearing conditions",
+        "evidence_tier": "mechanism-plausible",
+        "claim_language": "Divergent exploration suggestion",
+        "axis_profile": {
+          "problem": "Public bearing data should support uncertainty-aware generalization under unseen loads, rigs, or sensor configurations.",
+          "method": "Uncertainty-weighted domain generalization with provenance-conditioned uncertainty.",
+          "data": "Multi-dataset vibration and multimodal records spanning deliberately held-out operating conditions."
+        },
+        "axis_changes": [
+          {
+            "axis": "problem",
+            "from": "Public rolling-bearing vibration data must be measured and traceable before model claims are compared.",
+            "to": "Public bearing data should support uncertainty-aware generalization under unseen loads, rigs, or sensor configurations."
+          },
+          {
+            "axis": "method",
+            "from": "Structured measurement-chain audit with calibration, repeatability, reproducibility, and uncertainty checks.",
+            "to": "Uncertainty-weighted domain generalization with provenance-conditioned uncertainty."
+          },
+          {
+            "axis": "data",
+            "from": "One public dataset at a time with raw or semi-raw vibration and declared acquisition metadata.",
+            "to": "Multi-dataset vibration and multimodal records spanning deliberately held-out operating conditions."
+          }
+        ],
+        "core_claims": [
+          {
+            "claim_id": "C1",
+            "claim": "Public multimodal records can expose whether unseen-condition evaluation has adequate provenance coverage.",
+            "claim_type": "data_availability",
+            "evidence_candidate_ids": [
+              "F04-P04",
+              "F04-P05"
+            ],
+            "required_decision_metrics": [
+              {
+                "metric_id": "M1",
+                "metric": "cross-condition provenance coverage",
+                "metric_role": "data_availability",
+                "unit": "fraction [0,1]"
+              }
+            ]
+          },
+          {
+            "claim_id": "C2",
+            "claim": "Uncertainty-aware generalization is a transfer hypothesis that must be judged by interval coverage under held-out conditions.",
+            "claim_type": "uncertainty_quality",
+            "evidence_candidate_ids": [
+              "F04-P13",
+              "F04-P15",
+              "F04-P18"
+            ],
+            "required_decision_metrics": [
+              {
+                "metric_id": "M2",
+                "metric": "prediction interval coverage probability",
+                "metric_role": "uncertainty_quality",
+                "unit": "fraction [0,1]"
+              }
+            ]
+          }
+        ],
+        "resource_limits": [
+          {
+            "constraint_id": "RL-hours",
+            "resource": "offline_analysis_wall_clock",
+            "operator": "<=",
+            "value": 32,
+            "unit": "h"
+          },
+          {
+            "constraint_id": "RL-datasets",
+            "resource": "public_dataset_records_considered",
+            "operator": "<=",
+            "value": 5,
+            "unit": "datasets"
+          },
+          {
+            "constraint_id": "RL-download",
+            "resource": "dataset_or_model_download_volume",
+            "operator": "<=",
+            "value": 0,
+            "unit": "GB"
+          },
+          {
+            "constraint_id": "RL-equipment",
+            "resource": "equipment_control_sessions",
+            "operator": "<=",
+            "value": 0,
+            "unit": "sessions"
+          }
+        ],
+        "hard_gates": [
+          {
+            "gate_id": "target_problem_evidence",
+            "status": "pass",
+            "evidence_candidate_ids": [
+              "F04-P04",
+              "F04-P05"
+            ],
+            "required_precondition_ids": [
+              "P1"
+            ],
+            "rationale": "F04-D03: eligible public bearing records expose the target measurement-context problem.",
+            "blockers": []
+          },
+          {
+            "gate_id": "data_availability",
+            "status": "pass",
+            "evidence_candidate_ids": [
+              "F04-P04",
+              "F04-P05"
+            ],
+            "required_precondition_ids": [
+              "P1"
+            ],
+            "rationale": "F04-D03: the cited public records are bounded inputs for an offline metadata and signal audit.",
+            "blockers": []
+          },
+          {
+            "gate_id": "falsifiability",
+            "status": "pass",
+            "evidence_candidate_ids": [
+              "F04-P13",
+              "F04-P15",
+              "F04-P18"
+            ],
+            "required_precondition_ids": [
+              "P2"
+            ],
+            "rationale": "F04-D03: calibration, R&R, or UQ records define observable decision metrics and failure conditions.",
+            "blockers": []
+          },
+          {
+            "gate_id": "resource_feasibility",
+            "status": "pass",
+            "evidence_candidate_ids": [],
+            "required_precondition_ids": [],
+            "rationale": "F04-D03: the decisive test uses only public records and offline analysis within the finite ceilings.",
+            "blockers": []
+          },
+          {
+            "gate_id": "time_feasibility",
+            "status": "pass",
+            "evidence_candidate_ids": [],
+            "required_precondition_ids": [],
+            "rationale": "F04-D03: the staged test is bounded to the declared wall-clock limit and stops on missing prerequisites.",
+            "blockers": []
+          },
+          {
+            "gate_id": "safety_ethics_compliance",
+            "status": "pass",
+            "evidence_candidate_ids": [],
+            "required_precondition_ids": [],
+            "rationale": "F04-D03: no equipment control, human data, safety claim, upload, or service is required before confirmation.",
+            "blockers": []
+          },
+          {
+            "gate_id": "m1_citation_integrity",
+            "status": "pass",
+            "evidence_candidate_ids": [
+              "F04-P13",
+              "F04-P15",
+              "F04-P18"
+            ],
+            "required_precondition_ids": [],
+            "rationale": "F04-D03: candidate IDs resolve to eligible M1 records with preserved verification status and provenance.",
+            "blockers": []
+          }
+        ],
+        "transfer_case": {
+          "target_problem_evidence": [
+            "F04-P04",
+            "F04-P05"
+          ],
+          "source_success_evidence": [
+            "F04-P15",
+            "F04-P18"
+          ],
+          "transfer_compatibility": {
+            "concepts": [
+              "vibration amplitude, acquisition context, and uncertainty are explicit comparison concepts"
+            ],
+            "units": [
+              "acceleration units and frequency bands must be declared; no implicit conversion is allowed"
+            ],
+            "scales": [
+              "sampling rate, record duration, and frequency band define non-equivalent measurement scales"
+            ],
+            "boundary_conditions": [
+              "speed, load, sensor position, mounting, fault severity, and rig geometry bound comparisons"
+            ],
+            "assumptions": [
+              "public metadata are sufficient only when the stated fields or a bounded missing-evidence result are available"
+            ]
+          },
+          "anti_transfer_factors": [
+            "different physical units, sensor sensitivities, and frequency bands can invalidate transfer",
+            "public records may lack repeated calibration or target-condition evidence",
+            "rig, environment, and load shifts may be structural rather than covariate shifts"
+          ]
+        },
+        "scorecard": {
+          "dimensions": [
+            {
+              "dimension": "engineering_value",
+              "weight": 15,
+              "score": 3,
+              "evidence_candidate_ids": [
+                "F04-P04",
+                "F04-P05",
+                "F04-P15",
+                "F04-P18"
+              ],
+              "evidence": "engineering_value is bounded by the independent F04 M1 evidence and the stated measurement/UQ gate.",
+              "confidence": "medium",
+              "unknowns": [
+                "engineering_value: missing cross-dataset comparability remains unresolved"
+              ],
+              "change_triggers": [
+                "engineering_value: change if a decisive test violates its numeric criterion"
+              ]
+            },
+            {
+              "dimension": "gap_and_evidence_quality",
+              "weight": 15,
+              "score": 3,
+              "evidence_candidate_ids": [
+                "F04-P04",
+                "F04-P05",
+                "F04-P15",
+                "F04-P18"
+              ],
+              "evidence": "gap_and_evidence_quality is bounded by the independent F04 M1 evidence and the stated measurement/UQ gate.",
+              "confidence": "medium",
+              "unknowns": [
+                "gap_and_evidence_quality: missing cross-dataset comparability remains unresolved"
+              ],
+              "change_triggers": [
+                "gap_and_evidence_quality: change if a decisive test violates its numeric criterion"
+              ]
+            },
+            {
+              "dimension": "data_and_resource_fit",
+              "weight": 20,
+              "score": 3,
+              "evidence_candidate_ids": [
+                "F04-P04",
+                "F04-P05",
+                "F04-P15",
+                "F04-P18"
+              ],
+              "evidence": "data_and_resource_fit is bounded by the independent F04 M1 evidence and the stated measurement/UQ gate.",
+              "confidence": "medium",
+              "unknowns": [
+                "data_and_resource_fit: missing cross-dataset comparability remains unresolved"
+              ],
+              "change_triggers": [
+                "data_and_resource_fit: change if a decisive test violates its numeric criterion"
+              ]
+            },
+            {
+              "dimension": "validation_and_falsifiability",
+              "weight": 15,
+              "score": 3,
+              "evidence_candidate_ids": [
+                "F04-P04",
+                "F04-P05",
+                "F04-P15",
+                "F04-P18"
+              ],
+              "evidence": "validation_and_falsifiability is bounded by the independent F04 M1 evidence and the stated measurement/UQ gate.",
+              "confidence": "medium",
+              "unknowns": [
+                "validation_and_falsifiability: missing cross-dataset comparability remains unresolved"
+              ],
+              "change_triggers": [
+                "validation_and_falsifiability: change if a decisive test violates its numeric criterion"
+              ]
+            },
+            {
+              "dimension": "method_maturity",
+              "weight": 10,
+              "score": 2,
+              "evidence_candidate_ids": [
+                "F04-P04",
+                "F04-P05",
+                "F04-P15",
+                "F04-P18"
+              ],
+              "evidence": "method_maturity is bounded by the independent F04 M1 evidence and the stated measurement/UQ gate.",
+              "confidence": "medium",
+              "unknowns": [
+                "method_maturity: missing cross-dataset comparability remains unresolved"
+              ],
+              "change_triggers": [
+                "method_maturity: change if a decisive test violates its numeric criterion"
+              ]
+            },
+            {
+              "dimension": "time_to_decisive_signal",
+              "weight": 10,
+              "score": 2,
+              "evidence_candidate_ids": [
+                "F04-P04",
+                "F04-P05",
+                "F04-P15",
+                "F04-P18"
+              ],
+              "evidence": "time_to_decisive_signal is bounded by the independent F04 M1 evidence and the stated measurement/UQ gate.",
+              "confidence": "medium",
+              "unknowns": [
+                "time_to_decisive_signal: missing cross-dataset comparability remains unresolved"
+              ],
+              "change_triggers": [
+                "time_to_decisive_signal: change if a decisive test violates its numeric criterion"
+              ]
+            },
+            {
+              "dimension": "interdisciplinary_interface_quality",
+              "weight": 10,
+              "score": 4,
+              "evidence_candidate_ids": [
+                "F04-P04",
+                "F04-P05",
+                "F04-P15",
+                "F04-P18"
+              ],
+              "evidence": "interdisciplinary_interface_quality is bounded by the independent F04 M1 evidence and the stated measurement/UQ gate.",
+              "confidence": "medium",
+              "unknowns": [
+                "interdisciplinary_interface_quality: missing cross-dataset comparability remains unresolved"
+              ],
+              "change_triggers": [
+                "interdisciplinary_interface_quality: change if a decisive test violates its numeric criterion"
+              ]
+            },
+            {
+              "dimension": "safety_ethics_compliance",
+              "weight": 5,
+              "score": 4,
+              "evidence_candidate_ids": [
+                "F04-P04",
+                "F04-P05",
+                "F04-P15",
+                "F04-P18"
+              ],
+              "evidence": "safety_ethics_compliance is bounded by the independent F04 M1 evidence and the stated measurement/UQ gate.",
+              "confidence": "medium",
+              "unknowns": [
+                "safety_ethics_compliance: missing cross-dataset comparability remains unresolved"
+              ],
+              "change_triggers": [
+                "safety_ethics_compliance: change if a decisive test violates its numeric criterion"
+              ]
+            }
+          ],
+          "weighted_total": 59.0
+        },
+        "minimum_decisive_test": {
+          "scope": "minimum_decisive_test",
+          "hypothesis": "Uncertainty weighting will improve coverage under unseen bearing conditions only when measurement provenance and units are sufficiently comparable.",
+          "inputs": [
+            "public multi-condition bearing records",
+            "held-out condition labels",
+            "declared sensor/DAQ and unit metadata",
+            "uncertainty-aware predictions or interval summaries"
+          ],
+          "baseline": "Pooled-condition prediction with no provenance conditioning and no interval-coverage gate.",
+          "steps": [
+            {
+              "step_id": "S1",
+              "action": "Partition records by held-out load, rig, or sensor condition and verify unit/provenance compatibility.",
+              "bounded_output": "M1 and a held-out-condition ledger."
+            },
+            {
+              "step_id": "S2",
+              "action": "Evaluate an uncertainty-aware comparison using only supported measurement and condition metadata.",
+              "bounded_output": "Interval outputs and an explicit transfer-assumption log."
+            },
+            {
+              "step_id": "S3",
+              "action": "Score interval coverage on the held-out condition and apply the numeric stop/pivot rule.",
+              "bounded_output": "M2 and a transfer hypothesis decision."
+            }
+          ],
+          "primary_metric_id": "M2",
+          "claim_coverage": [
+            {
+              "claim_id": "C1",
+              "metric_ids": [
+                "M1"
+              ],
+              "decision_criteria": [
+                {
+                  "criterion_type": "success",
+                  "metric_id": "M1",
+                  "operator": ">=",
+                  "value": 0.8,
+                  "unit": "fraction [0,1]"
+                },
+                {
+                  "criterion_type": "stop",
+                  "metric_id": "M1",
+                  "operator": "<",
+                  "value": 0.6,
+                  "unit": "fraction [0,1]"
+                },
+                {
+                  "criterion_type": "pivot",
+                  "metric_id": "M1",
+                  "operator": ">=",
+                  "value": 0.6,
+                  "unit": "fraction [0,1]"
+                }
+              ],
+              "required_precondition_ids": [
+                "P1"
+              ]
+            },
+            {
+              "claim_id": "C2",
+              "metric_ids": [
+                "M2"
+              ],
+              "decision_criteria": [
+                {
+                  "criterion_type": "success",
+                  "metric_id": "M2",
+                  "operator": ">=",
+                  "value": 0.9,
+                  "unit": "fraction [0,1]"
+                },
+                {
+                  "criterion_type": "stop",
+                  "metric_id": "M2",
+                  "operator": "<",
+                  "value": 0.8,
+                  "unit": "fraction [0,1]"
+                },
+                {
+                  "criterion_type": "pivot",
+                  "metric_id": "M2",
+                  "operator": ">=",
+                  "value": 0.8,
+                  "unit": "fraction [0,1]"
+                }
+              ],
+              "required_precondition_ids": [
+                "P2"
+              ]
+            }
+          ],
+          "required_preconditions": [
+            {
+              "precondition_id": "P1",
+              "description": "Multiple public records declare comparable units and provenance for held-out operating-condition strata.",
+              "gate_id": "data_availability",
+              "status": "verified",
+              "evidence_candidate_ids": [
+                "F04-P04",
+                "F04-P05"
+              ],
+              "blocking_if_unresolved": true,
+              "preflight_check": "Check units, sampling rates, sensor configuration, speed/load, and held-out condition labels before any generalization score.",
+              "stop_condition": {
+                "metric": "cross-condition provenance coverage",
+                "operator": "<",
+                "value": 0.6,
+                "unit": "fraction [0,1]"
+              }
+            },
+            {
+              "precondition_id": "P2",
+              "description": "A coverage-based uncertainty metric can be computed without assuming that target-domain labels or calibration are available.",
+              "gate_id": "falsifiability",
+              "status": "bounded_testable",
+              "evidence_candidate_ids": [
+                "F04-P15",
+                "F04-P18"
+              ],
+              "blocking_if_unresolved": false,
+              "preflight_check": "Check that interval or uncertainty outputs are defined for the held-out condition and that coverage can be scored.",
+              "stop_condition": {
+                "metric": "prediction interval coverage probability",
+                "operator": "<",
+                "value": 0.8,
+                "unit": "fraction [0,1]"
+              }
+            }
+          ],
+          "expected_time": "<= 32 h offline analysis",
+          "required_resources": [
+            "Python 3.12 offline evaluator",
+            "public records and metadata only",
+            "no model download, service, upload, or equipment control"
+          ]
+        },
+        "supporting_candidate_ids": [
+          "F04-P04",
+          "F04-P05",
+          "F04-P15",
+          "F04-P18"
+        ],
+        "counter_candidate_ids": [
+          "F04-P13"
+        ],
+        "unknowns": [
+          "Unseen-condition coverage may conflate measurement shift with physical degradation.",
+          "No target-domain decisive result exists before confirmation.",
+          "Uncertainty estimates may not be traceable to the sensor measurement chain."
+        ],
+        "confidence": "medium",
+        "recommendation_status": "provisional"
+      }
+    ],
+    "high_risk_ideas": [],
+    "portfolio_status": "provisional"
+  },
+  "direction_decision": {
+    "selected_direction_id": "F04-D01",
+    "status": "user_confirmed",
+    "permitted_next_actions": [
+      "modify",
+      "reject",
+      "generate_route"
+    ],
+    "confirmation_event": {
+      "actor_role": "user",
+      "selected_direction_id": "F04-D01",
+      "source_message_id": "codex-task:019fd4f7-e1c4-7fd1-9799-786f62fda8e6:item-46",
+      "source_message_excerpt": "Confirm F04 direction F04-D01",
+      "source_message_sha256": "449d273dd5a49d821bd2785f5361deaafdd3e5bfd3442f6f3b0b01251f7b5bd0",
+      "previous_bundle_hash": "884e80387776ecdf3963a3db79c1bec3eb8fe48f65f17c0fc8852d61b54f8678"
+    }
+  },
+  "route_output": null
+}

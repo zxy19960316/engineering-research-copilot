@@ -9,7 +9,6 @@ import json
 import unittest
 from pathlib import Path
 
-
 ROOT = Path(__file__).resolve().parents[2]
 SCRIPT = Path(__file__).with_name("confirm_f04_d01.py")
 DRAFT = ROOT / "evals" / "f04-upstream" / "m2" / "f04-m2-direction-bundle.json"
@@ -94,7 +93,7 @@ class ConfirmF04D01Tests(unittest.TestCase):
             for direction in changed["direction_portfolio"]["directions"]
             if direction["direction_id"] == "F04-D01"
         )
-        direction["summary"] += " changed"
+        direction["title"] += " changed"
 
         with self.assertRaisesRegex(ValueError, "selected_direction_hash_mismatch"):
             self.module.build_confirmed(changed)
