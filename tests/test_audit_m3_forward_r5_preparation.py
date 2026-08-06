@@ -92,6 +92,7 @@ class AuditM3ForwardR5PreparationTests(unittest.TestCase):
                 mock.patch.object(audit, "preflight_batch", wraps=audit.preflight_batch) as preflight_mock,
             ):
                 result = audit.audit_preparation(manifest_path)
+                after = manifest_path.read_bytes()
 
         self.assertEqual(result["status"], "valid")
         self.assertEqual(len(result["cases"]), 5)
@@ -99,7 +100,7 @@ class AuditM3ForwardR5PreparationTests(unittest.TestCase):
         self.assertEqual(result["batch_preflight"]["case_ids_preflighted"], list(CASE_IDS))
         self.assertEqual(result["batch_preflight"]["side_effects"], [])
         self.assertEqual(preflight_mock.call_count, 1)
-        self.assertEqual(manifest_path.read_bytes(), before)
+        self.assertEqual(after, before)
 
     def test_missing_validator_receipt_or_alias_is_blocked_before_any_callback(self):
         with tempfile.TemporaryDirectory(dir=REPO_ROOT) as temp_dir:

@@ -178,10 +178,11 @@ def _zero_counters(manifest: dict[str, Any], errors: list[str]) -> None:
             errors.append(f"manifest_counter_nonzero:{key}")
 
 
-def preflight_batch(manifest_path: Path) -> dict[str, Any]:
+def preflight_batch(manifest_path: Path, result_root: Path | None = None) -> dict[str, Any]:
     """Dry-preflight every case before any caller callback can run."""
 
     errors: list[str] = []
+    active_result_root = R5_RESULT_ROOT if result_root is None else Path(result_root)
     manifest = _load_manifest(manifest_path, errors)
     if manifest is None:
         return {"status": "blocked", "errors": sorted(set(errors)), "plans": [], "side_effects": []}
@@ -192,7 +193,7 @@ def preflight_batch(manifest_path: Path) -> dict[str, Any]:
     if manifest.get("prompts_frozen") is not True:
         errors.append("prompts_not_frozen")
     _zero_counters(manifest, errors)
-    expected_root = _relative(R5_RESULT_ROOT)
+    expected_root = _relative(active_result_root)
     if manifest.get("result_root") != expected_root:
         errors.append("result_root_not_canonical")
     raw_cases = manifest.get("cases")
@@ -221,11 +222,11 @@ def preflight_batch(manifest_path: Path) -> dict[str, Any]:
         if case is None:
             errors.append(f"case_missing:{case_id}")
             continue
-        plan = _preflight_case(case, R5_RESULT_ROOT)
+        plan = _preflight_case(case, active_result_root)
         plans.append(plan)
         path_maps[case_id] = case.get("future_paths") if isinstance(case, dict) else None
         errors.extend(plan["errors"])
-    errors.extend(validate_future_path_sets(path_maps, R5_RESULT_ROOT))
+    errors.extend(validate_future_path_sets(path_maps, active_result_root))
     if errors:
         return {
             "status": "blocked",
