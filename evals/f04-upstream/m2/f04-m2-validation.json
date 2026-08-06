@@ -1,0 +1,22 @@
+{
+  "artifact": "evals/f04-upstream/m2/f04-m2-direction-bundle.json",
+  "validator": "skills/engineering-research-copilot/scripts/validate_m2_direction_bundle.py",
+  "command": "python -X utf8 skills/engineering-research-copilot/scripts/validate_m2_direction_bundle.py evals/f04-upstream/m2/f04-m2-direction-bundle.json",
+  "executed_at": "2026-08-06T11:36:31+08:00",
+  "exit_code": 0,
+  "validator_output": {
+    "status": "valid",
+    "errors": [],
+    "evidence_gaps": []
+  },
+  "proves": [
+    "The M2.1.1 bundle embeds a validator-passing M1_COMPLETE source and exactly one provisional main, one adjacent alternative, and one transfer exploration.",
+    "All seven hard gates pass for each formal direction, with finite resource ceilings, explicit units, numeric success/stop/pivot criteria, and bounded preconditions.",
+    "The decision remains waiting_for_user_confirmation with no confirmation event and no route output."
+  ],
+  "does_not_prove": [
+    "That any direction has been selected by the user.",
+    "A target-domain decisive result, route execution, experiment, simulation, training, or deployment.",
+    "Common calibration traceability across all public bearing datasets."
+  ]
+}

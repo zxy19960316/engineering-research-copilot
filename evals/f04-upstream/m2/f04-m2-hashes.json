@@ -1,0 +1,23 @@
+{
+  "artifact": "evals/f04-upstream/m2/f04-m2-direction-bundle.json",
+  "hash_algorithm": "SHA-256",
+  "raw_bytes": {
+    "sha256": "d8ba0db929fdbe5c243084f779ffe90c0993a8722eb0e45b3a81a72d1ab07f28",
+    "byte_length": 173882,
+    "binding": "Exact UTF-8 bytes in the working tree after the M2 validator-passing composition."
+  },
+  "canonical_payload": {
+    "sha256": "884e80387776ecdf3963a3db79c1bec3eb8fe48f65f17c0fc8852d61b54f8678",
+    "byte_length": 116812,
+    "canonicalization": "json.dumps(ensure_ascii=False, sort_keys=True, separators=(',', ':'), allow_nan=False), encoded as UTF-8"
+  },
+  "pre_confirmation_bundle_sha256": "884e80387776ecdf3963a3db79c1bec3eb8fe48f65f17c0fc8852d61b54f8678",
+  "source_m1_bundle_sha256": "53f7ff7baad4f9b13b5f27ae1a52010dc640fe45cb7a2fdd05225019882c3924",
+  "direction_excerpt_sha256": {
+    "F04-D01": "1f81072903df3afa27d49bd06c17209141014ac8ea5026973a8bc7bd8e69b310",
+    "F04-D02": "3646fd2fb8adceaedb8bf14cbf588bcb1b9c5415e57fef237a789020adc71246",
+    "F04-D03": "f5fa78278ae9b78d1d609a812745308a8827b13a31359136738581bf797cca07"
+  },
+  "excerpt_definition": "Each direction hash is the SHA-256 of the exact canonical UTF-8 JSON object at direction_portfolio.directions[i].",
+  "validator_receipt": "evals/f04-upstream/m2/f04-m2-validation.json"
+}
