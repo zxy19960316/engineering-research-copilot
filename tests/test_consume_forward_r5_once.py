@@ -123,7 +123,71 @@ class ConsumeForwardR5OnceTests(unittest.TestCase):
             self.assertFalse(self._path(plan, "composed_bundle_json").exists())
             transaction_raw = self._path(plan, "case_transaction_json").read_text(encoding="utf-8")
             self.assertNotIn("secret exception text", transaction_raw)
+            receipt = json.loads(
+                self._path(plan, "composer_invocation_receipt_json").read_text(
+                    encoding="utf-8"
+                )
+            )
+            self.assertEqual(receipt["failure_stage"], "unexpected")
+            self.assertEqual(receipt["failure_code"], "unexpected_processing_failure")
+            self.assertEqual(receipt["contract_errors"], [])
+            self.assertEqual(receipt["validator_errors"], [])
+            self.assertEqual(receipt["evidence_gaps"], [])
+            self.assertEqual(receipt["retry_count"], 0)
+            self.assertEqual(len(receipt["source_sha256"]), 64)
+            self.assertEqual(len(receipt["model_final_sha256"]), 64)
+            self.assertEqual(receipt["model_final_sha256"], receipt["payload_sha256"])
+            self.assertNotIn("secret exception text", json.dumps(receipt))
             validate.assert_not_called()
+
+    def test_structured_composer_failure_whitelists_contract_and_validator_codes(self):
+        class StructuredFailure(RuntimeError):
+            def __init__(self) -> None:
+                super().__init__("uncontrolled secret C:\\private\\trace.txt")
+                self.code = "invalid_composed_m3_bundle"
+                self.detail = {
+                    "contract_errors": ["allowed_contract_code", "bad code with spaces"],
+                    "validator_errors": [
+                        "method_card_pivot_condition_not_authoritative",
+                        "method_card_stop_condition_not_authoritative",
+                    ],
+                    "validator_evidence_gaps": ["allowed_gap", "https://secret.invalid"],
+                    "traceback": "must not persist",
+                }
+
+        with tempfile.TemporaryDirectory(dir=REPO_ROOT) as temp_dir:
+            root = Path(temp_dir)
+            plan = self._plan(root, "m3-f02")
+            result = consumer.consume_case_once(
+                plan,
+                b'{"model":"final"}\n',
+                compose_once=mock.Mock(side_effect=StructuredFailure()),
+                validate_once=mock.Mock(),
+            )
+
+            receipt = json.loads(
+                self._path(plan, "composer_invocation_receipt_json").read_text(
+                    encoding="utf-8"
+                )
+            )
+
+        self.assertEqual(result["status"], "processing_failed")
+        self.assertEqual(receipt["failure_stage"], "m3_validation")
+        self.assertEqual(receipt["failure_code"], "invalid_composed_m3_bundle")
+        self.assertEqual(receipt["contract_errors"], ["allowed_contract_code"])
+        self.assertEqual(
+            receipt["validator_errors"],
+            [
+                "method_card_pivot_condition_not_authoritative",
+                "method_card_stop_condition_not_authoritative",
+            ],
+        )
+        self.assertEqual(receipt["evidence_gaps"], ["allowed_gap"])
+        self.assertEqual(receipt["retry_count"], 0)
+        serialized = json.dumps(receipt)
+        self.assertNotIn("private", serialized)
+        self.assertNotIn("traceback", serialized)
+        self.assertNotIn("https", serialized)
 
     def test_validator_failure_after_composition_records_bounded_invocations(self):
         with tempfile.TemporaryDirectory(dir=REPO_ROOT) as temp_dir:

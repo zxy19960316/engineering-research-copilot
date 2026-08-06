@@ -6,14 +6,101 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import re
 from pathlib import Path
 from typing import Any, Callable
 
 from r5_dispatch_contract import validate_case_record, validate_future_paths
 
 
+SAFE_CODE = re.compile(r"^[a-z0-9][a-z0-9_.:-]{0,127}$")
+COMPOSITION_FAILURE_CODES = {
+    "composer_callable_missing",
+    "invalid_source_m2_bundle",
+    "m2_invalid_json",
+    "m2_object_required",
+    "payload_invalid_json",
+    "payload_object_required",
+}
+
+
 def _sha256(raw: bytes) -> str:
     return hashlib.sha256(raw).hexdigest()
+
+
+def _safe_codes(value: Any) -> list[str]:
+    if not isinstance(value, list):
+        return []
+    return sorted(
+        {
+            item
+            for item in value
+            if isinstance(item, str) and SAFE_CODE.fullmatch(item) is not None
+        }
+    )
+
+
+def _source_sha256(plan: dict[str, Any]) -> str | None:
+    source = plan.get("source_input_path")
+    if not isinstance(source, Path):
+        return None
+    try:
+        return _sha256(source.read_bytes())
+    except OSError:
+        return None
+
+
+def _failure_diagnostic(
+    plan: dict[str, Any],
+    final_raw: bytes,
+    *,
+    stage: str,
+    code: str,
+    contract_errors: Any = None,
+    validator_errors: Any = None,
+    evidence_gaps: Any = None,
+) -> dict[str, Any]:
+    return {
+        "failure_stage": stage,
+        "failure_code": code,
+        "contract_errors": _safe_codes(contract_errors),
+        "validator_errors": _safe_codes(validator_errors),
+        "evidence_gaps": _safe_codes(evidence_gaps),
+        "source_sha256": _source_sha256(plan),
+        "model_final_sha256": _sha256(final_raw),
+        "payload_sha256": _sha256(final_raw) if plan.get("case_id") != "m3-f03" else None,
+        "retry_count": 0,
+    }
+
+
+def _exception_diagnostic(
+    plan: dict[str, Any], final_raw: bytes, exception: Exception
+) -> dict[str, Any]:
+    code = getattr(exception, "code", None)
+    detail = getattr(exception, "detail", None)
+    safe_detail = detail if isinstance(detail, dict) else {}
+    if code == "payload_contract_invalid":
+        stage = "payload_contract"
+    elif code == "invalid_composed_m3_bundle":
+        stage = "m3_validation"
+    elif code in COMPOSITION_FAILURE_CODES:
+        stage = "composition"
+    else:
+        return _failure_diagnostic(
+            plan,
+            final_raw,
+            stage="unexpected",
+            code="unexpected_processing_failure",
+        )
+    return _failure_diagnostic(
+        plan,
+        final_raw,
+        stage=stage,
+        code=code,
+        contract_errors=safe_detail.get("contract_errors"),
+        validator_errors=safe_detail.get("validator_errors"),
+        evidence_gaps=safe_detail.get("validator_evidence_gaps"),
+    )
 
 
 def _path_for(plan: dict[str, Any], key: str) -> Path | None:
@@ -139,6 +226,7 @@ def _failure_result(
     code: str,
     *,
     validation_result: dict[str, Any] | None = None,
+    diagnostic: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     if code not in record["transaction_failures"]:
         record["transaction_failures"].append(code)
@@ -150,6 +238,13 @@ def _failure_result(
         "status": "processing_failed",
         "errors": sorted(set(record["transaction_failures"])),
         "record": record,
+        "failure": diagnostic
+        or _failure_diagnostic(
+            plan,
+            final_raw,
+            stage="unexpected",
+            code="unexpected_processing_failure",
+        ),
     }
 
 
@@ -202,6 +297,12 @@ def consume_case_once(
             return _failure_result(plan, record, final_raw, _failure_code("payload"))
         record["composer_invocations"] = 1
         if compose_once is None:
+            diagnostic = _failure_diagnostic(
+                plan,
+                final_raw,
+                stage="composition",
+                code="composer_callable_missing",
+            )
             try:
                 _write_new_json(
                     composer_receipt_path,
@@ -209,18 +310,25 @@ def consume_case_once(
                         "case_id": case_id,
                         "composer_invocation_count": 1,
                         "status": "failed",
-                        "failure_code": "composer_callable_missing",
+                        **diagnostic,
                     },
                 )
             except Exception:
                 pass
-            return _failure_result(plan, record, final_raw, "composer_callable_missing")
+            return _failure_result(
+                plan,
+                record,
+                final_raw,
+                "composer_callable_missing",
+                diagnostic=diagnostic,
+            )
         try:
             composed = compose_once(payload_path, bundle_path)
             if not isinstance(composed, dict):
                 raise TypeError("composer_result_object_required")
             _write_new_json(bundle_path, composed)
-        except Exception:
+        except Exception as exception:
+            diagnostic = _exception_diagnostic(plan, final_raw, exception)
             try:
                 _write_new_json(
                     composer_receipt_path,
@@ -228,12 +336,18 @@ def consume_case_once(
                         "case_id": case_id,
                         "composer_invocation_count": 1,
                         "status": "failed",
-                        "failure_code": _failure_code("composer"),
+                        **diagnostic,
                     },
                 )
             except Exception:
                 pass
-            return _failure_result(plan, record, final_raw, _failure_code("composer"))
+            return _failure_result(
+                plan,
+                record,
+                final_raw,
+                _failure_code("composer"),
+                diagnostic=diagnostic,
+            )
         try:
             _write_new_json(
                 composer_receipt_path,
@@ -263,6 +377,12 @@ def consume_case_once(
         if not isinstance(validation_result, dict):
             raise TypeError("validator_result_object_required")
     except Exception:
+        diagnostic = _failure_diagnostic(
+            plan,
+            final_raw,
+            stage="unexpected",
+            code="validator_invocation_failed",
+        )
         validator_receipt_path = _path_for(plan, "validator_receipt_json")
         if validator_receipt_path is not None:
             try:
@@ -272,12 +392,18 @@ def consume_case_once(
                         "case_id": case_id,
                         "validator_invocation_count": 1,
                         "status": "failed",
-                        "failure_code": _failure_code("validator"),
+                        **diagnostic,
                     },
                 )
             except Exception:
                 pass
-        return _failure_result(plan, record, final_raw, _failure_code("validator"))
+        return _failure_result(
+            plan,
+            record,
+            final_raw,
+            _failure_code("validator"),
+            diagnostic=diagnostic,
+        )
 
     validation_path = _path_for(plan, "validation_json")
     if validation_path is None:
