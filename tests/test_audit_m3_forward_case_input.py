@@ -12,7 +12,10 @@ sys.path.insert(0, str(REPO_ROOT / "evals" / "m3"))
 sys.path.insert(0, str(REPO_ROOT / "tests"))
 
 from audit_forward_case_input import audit_case  # noqa: E402
-from test_validate_m2_direction_bundle import canonical_sha256  # noqa: E402
+from test_validate_m2_direction_bundle import (  # noqa: E402
+    _confirm_bundle,
+    canonical_sha256,
+)
 from test_validate_m3_method_bundle import (  # noqa: E402
     _make_production_m3_bundle,
     _make_route_compatible,
@@ -179,9 +182,9 @@ class AuditM3ForwardCaseInputTests(unittest.TestCase):
 
         direction = _selected(bundle)
         direction["title"] = (
-            "Non-nuclear controlled physical measurement calibration and uncertainty"
+            "Controlled physical measurement calibration and uncertainty"
         )
-        direction["minimum_decisive_test"]["scope"] = (
+        direction["minimum_decisive_test"]["hypothesis"] = (
             "measurement calibration repeatability reproducibility uncertainty budget"
         )
         direction["minimum_decisive_test"]["inputs"].append(
@@ -193,6 +196,7 @@ class AuditM3ForwardCaseInputTests(unittest.TestCase):
             "Verify metric unit, calibration trace, repeatability, reproducibility, "
             "and measurement uncertainty before the bounded test."
         )
+        _confirm_bundle(bundle)
         result = audit_case("m3-f04", bundle, _receipt(bundle, "m3-f04"))
         self.assertEqual(result["status"], "eligible")
         self.assertEqual(result["coaching_mode"], "bounded")
@@ -262,8 +266,7 @@ class AuditM3ForwardCaseInputTests(unittest.TestCase):
         )
         for round_name in ("round1", "round2"):
             for candidate in bundle["source_m1_bundle"][round_name]["candidate_pool"]:
-                if "safety" in json.dumps(candidate, ensure_ascii=False).lower():
-                    candidate["verification_status"] = "verified_preprint"
+                candidate["verification_status"] = "verified_preprint"
         result = audit_case("m3-f05", bundle, _receipt(bundle, "m3-f05"))
         self.assertConflict(result, "non_preprint_safety_source_missing")
 
