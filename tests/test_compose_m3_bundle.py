@@ -216,8 +216,69 @@ class ComposeM3BundleTests(unittest.TestCase):
             self.assertFalse(output_path.exists())
             self.assertEqual(json.loads(payload_path.read_text(encoding="utf-8")), payload_before)
             receipt = json.loads(completed.stdout)
-            self.assertEqual(receipt["error"], "invalid_composed_m3_bundle")
-            self.assertIn("missing_method_card_failure_modes", receipt["validator_errors"])
+            self.assertEqual(receipt["error"], "payload_contract_invalid")
+            self.assertEqual(receipt["contract_errors"][0]["path"], "method_cards[0]")
+
+    def test_reports_metric_object_as_field_level_contract_error(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            m2_path, payload_path, output_path, _, payload = self._inputs(root)
+            payload["method_cards"][0]["primary_metrics"] = [
+                {"metric_id": "M1", "metric": "description", "unit": "fraction"}
+            ]
+            self._write_json(payload_path, payload)
+
+            completed = self._run(m2_path, payload_path, output_path)
+
+            self.assertNotEqual(completed.returncode, 0)
+            self.assertFalse(output_path.exists())
+            receipt = json.loads(completed.stdout)
+            self.assertEqual(receipt["error"], "payload_contract_invalid")
+            self.assertEqual(
+                receipt["contract_errors"],
+                [
+                    {
+                        "code": "primary_metrics_item_type",
+                        "path": "method_cards[0].primary_metrics[0]",
+                        "expected": "string metric_id",
+                    }
+                ],
+            )
+
+    def test_reports_route_incompatible_and_empty_cards_without_malformed_bundle(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            m2_path, payload_path, output_path, _, _ = self._inputs(root)
+            self._write_json(
+                payload_path,
+                {
+                    "coaching_mode": "route_incompatible",
+                    "method_cards": [],
+                    "domain_overlays": [],
+                },
+            )
+
+            completed = self._run(m2_path, payload_path, output_path)
+
+            self.assertNotEqual(completed.returncode, 0)
+            self.assertFalse(output_path.exists())
+            receipt = json.loads(completed.stdout)
+            self.assertEqual(receipt["error"], "payload_contract_invalid")
+            self.assertEqual(
+                receipt["contract_errors"],
+                [
+                    {
+                        "code": "coaching_mode_enum",
+                        "path": "coaching_mode",
+                        "expected": ["bounded", "route_specific"],
+                    },
+                    {
+                        "code": "method_cards_min_items",
+                        "path": "method_cards",
+                        "expected": "at least one closed method card",
+                    },
+                ],
+            )
 
     def test_rejects_invalid_m2_without_writing_output(self):
         with tempfile.TemporaryDirectory() as temp_dir:
