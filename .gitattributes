@@ -8,3 +8,8 @@
 
 # Materialize immutable historical r2 input blobs without CRLF conversion.
 /evals/m3/forward-inputs-r2/** text eol=lf
+
+# Preserve byte-sensitive historical r2 results and forward reports without rewriting their blobs.
+/evals/m3/results/forward-r2/** text eol=lf
+/evals/m3/results/2026-08-05-forward-evaluation-r2.md text eol=lf
+/evals/m3/results/2026-08-06-forward-evaluation-r3.md text eol=lf
