@@ -18,3 +18,7 @@
 /evals/m3/forward-inputs-r4/** text eol=lf
 /evals/m3/results/forward-r4/** text eol=lf
 /evals/m3/forward-cases-r4.md text eol=lf
+
+# Keep deterministic M3 offline fixture materialization aligned with its builder.
+/evals/m3/fixtures/** text eol=lf
+/evals/m3/adversarial-cases.json text eol=lf
