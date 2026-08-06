@@ -1,0 +1,161 @@
+{
+  "schema_version": "m3.1-forward-acceptance-r4-v1",
+  "status": "ready_for_authorized_fresh_contexts",
+  "m3_status": "IN_PROGRESS",
+  "m4_status": "NOT_STARTED",
+  "m5_status": "NOT_STARTED",
+  "branch": "codex/m3.1.1-r4-byte-gate-resume",
+  "starting_head": "64706d9a1adb1289bb5d06b51d6fa8ce45066387",
+  "frozen_from_head": "823ec90c09defb5826e899408507ffa9f2fa3949",
+  "immutable_r3_baseline": "dbcbbb6b4fe501de87f655edf22099ad62363c57",
+  "byte_gate": {
+    "status": "valid",
+    "audited_file_count": 66,
+    "mismatch_count": 0,
+    "error_count": 0,
+    "evidence_path": "evals/m3/results/forward-r4/r2-r3-byte-preservation-fresh-worktree.json"
+  },
+  "authorization": {
+    "actor_role": "user",
+    "source_task_id": "019fd467-790b-7551-9157-ddd3b2222ca1",
+    "source_message_excerpt": "从 64706d9 新建独立 follow-up task/worktree，让新增的 LF 规则在全新检出时生效，重新执行字节门；通过后再完成 r4 冻结和五个一次性验收。",
+    "source_message_sha256": "31b0577d2e60aae0bf4f1301919465850c4b7c83294c531a206aa56c84bacc65",
+    "authorized_scope": "Consume exactly five frozen r4 fresh contexts exactly once each after the fresh-checkout byte gate and every r4 preparation gate pass; no push, PR, merge, tag, main change, M4, M5, route, experiment, simulation, training, inference, download, service, deployment, upload, or external/model call."
+  },
+  "contract": {
+    "path": "evals/m3/forward-inputs-r4/m3-model-output-contract.schema.json",
+    "raw_sha256": "a8b2c138a6b1ac59bc6316936f71565b5bfcc51ed9f7a6c6ff03ee1a80fb06b4"
+  },
+  "cases": [
+    {
+      "case_id": "m3-f01",
+      "input_path": "evals/m3/forward-inputs-r2/m3-f01-bounded-confirmed.bundle.json",
+      "input_raw_sha256": "b0c47b0135d9a2340eb37cd3bb661fff7f4c9bee8738676c4b0976dd6796d091",
+      "input_canonical_sha256": "34cb98223d920587b1d4e54ad0722d94ff91c3826ccc19f52bc799de011884d4",
+      "m2_validation_path": "evals/m3/forward-inputs-r4/m3-f01.m2-validation.json",
+      "m2_validation_raw_sha256": "f04bf3b7ff8dd55af31703ed0657917673145563384d59b4c65135b19e4f4ad9",
+      "eligibility_path": "evals/m3/forward-inputs-r4/m3-f01.eligibility.json",
+      "eligibility_raw_sha256": "1880965a47d951e2febd3afec55e544e101a4e73dc6078fe3fbeed4ef9c0b6b8",
+      "eligibility_status": "eligible",
+      "prompt_path": "evals/m3/results/forward-r4/prompts/m3-f01.prompt.txt",
+      "prompt_raw_sha256": "b02d02b2c2a23928cb2ef8cbbc4c1f24096adde722b80db1ad1af0c49ec540c9",
+      "contract_path": "evals/m3/forward-inputs-r4/m3-model-output-contract.schema.json",
+      "contract_raw_sha256": "a8b2c138a6b1ac59bc6316936f71565b5bfcc51ed9f7a6c6ff03ee1a80fb06b4",
+      "allowed_read_paths": [
+        "AGENTS.md",
+        "skills/engineering-research-copilot/SKILL.md",
+        "skills/engineering-research-copilot/references/core-method-coaching.md",
+        "skills/engineering-research-copilot/references/method-data-ml-hybrid.md",
+        "evals/m3/forward-inputs-r4/m3-model-output-contract.schema.json",
+        "evals/m3/results/forward-r4/prompts/m3-f01.prompt.txt",
+        "evals/m3/forward-inputs-r2/m3-f01-bounded-confirmed.bundle.json"
+      ]
+    },
+    {
+      "case_id": "m3-f02",
+      "input_path": "evals/m3/forward-inputs-r2/m3-f02-route-compatible.bundle.json",
+      "input_raw_sha256": "8db4db7f9173a8d10598af49e8ffd83dca12e34692c2827ec47031a30ab49da1",
+      "input_canonical_sha256": "fc7301d37737d85bc1bd2f0a3c2d51d842d0fe3fbdf1ded142e2d62f04d40841",
+      "m2_validation_path": "evals/m3/forward-inputs-r4/m3-f02.m2-validation.json",
+      "m2_validation_raw_sha256": "9d6f4acbbd04392feb9dd65a1eb067bc477fa8a1257349ba332eb7c70ab0fbb7",
+      "eligibility_path": "evals/m3/forward-inputs-r4/m3-f02.eligibility.json",
+      "eligibility_raw_sha256": "42c73b8d78b5084a3fc7c1b23e526e353fc65ef152cd705f15ee3c37346a3ef5",
+      "eligibility_status": "eligible",
+      "prompt_path": "evals/m3/results/forward-r4/prompts/m3-f02.prompt.txt",
+      "prompt_raw_sha256": "24b93395a7731e1ec10e6bfcc2a01000574fb40d8775e203ccc91900ba158375",
+      "contract_path": "evals/m3/forward-inputs-r4/m3-model-output-contract.schema.json",
+      "contract_raw_sha256": "a8b2c138a6b1ac59bc6316936f71565b5bfcc51ed9f7a6c6ff03ee1a80fb06b4",
+      "allowed_read_paths": [
+        "AGENTS.md",
+        "skills/engineering-research-copilot/SKILL.md",
+        "skills/engineering-research-copilot/references/core-method-coaching.md",
+        "skills/engineering-research-copilot/references/method-data-ml-hybrid.md",
+        "skills/engineering-research-copilot/references/domain-nuclear-ml.md",
+        "evals/m3/forward-inputs-r4/m3-model-output-contract.schema.json",
+        "evals/m3/results/forward-r4/prompts/m3-f02.prompt.txt",
+        "evals/m3/forward-inputs-r2/m3-f02-route-compatible.bundle.json"
+      ]
+    },
+    {
+      "case_id": "m3-f03",
+      "input_path": "evals/m3/forward-inputs-r2/m3-f03-approved-change.bundle.json",
+      "input_raw_sha256": "eb20714de4ef2b6897e69a20169d29c4f38e6f9587d0091994dad6e3e8daafe4",
+      "input_canonical_sha256": "72f0d522610f159c4bf39ba404f850dd9f86796fc7217e536614f6c44bdbee21",
+      "m2_validation_path": "evals/m3/forward-inputs-r4/m3-f03.m2-validation.json",
+      "m2_validation_raw_sha256": "c791f62423ee3457620c722d58a292f0c6f97dc68ac14dfd93e19bfff21fdf8d",
+      "eligibility_path": "evals/m3/forward-inputs-r4/m3-f03.eligibility.json",
+      "eligibility_raw_sha256": "889823e0e705390c4be765b6a62f9b30a7fbccca57bdaba845e06391be8decdd",
+      "eligibility_status": "eligible",
+      "prompt_path": "evals/m3/results/forward-r4/prompts/m3-f03.prompt.txt",
+      "prompt_raw_sha256": "23a1fd32a5ef4663cacadd5f21e54eb59d0bace128fa9be24791e993acf7c9af",
+      "contract_path": "evals/m3/forward-inputs-r4/m3-model-output-contract.schema.json",
+      "contract_raw_sha256": "a8b2c138a6b1ac59bc6316936f71565b5bfcc51ed9f7a6c6ff03ee1a80fb06b4",
+      "allowed_read_paths": [
+        "AGENTS.md",
+        "skills/engineering-research-copilot/SKILL.md",
+        "skills/engineering-research-copilot/references/core-method-coaching.md",
+        "evals/m3/forward-inputs-r4/m3-model-output-contract.schema.json",
+        "evals/m3/results/forward-r4/prompts/m3-f03.prompt.txt",
+        "evals/m3/forward-inputs-r2/m3-f03-approved-change.bundle.json"
+      ]
+    },
+    {
+      "case_id": "m3-f04",
+      "input_path": "evals/f04-upstream/m2/f04-m2-confirmed.bundle.json",
+      "input_raw_sha256": "dbc1e778e0b53ea5c8724bcaea39803d13d524a67f8e72a24a046a380ff574e4",
+      "input_canonical_sha256": "9601cfc01609dd8aae6b76073caf66928e4aa67d9dac3fd7fe52e922cdb66526",
+      "m2_validation_path": "evals/m3/forward-inputs-r4/m3-f04.m2-validation.json",
+      "m2_validation_raw_sha256": "1ca90b5d435ae39c8ffc7a8e5aec223e8f571ecba98e4e0c8a0c243e6425fdfc",
+      "eligibility_path": "evals/m3/forward-inputs-r4/m3-f04.eligibility.json",
+      "eligibility_raw_sha256": "a110e77e791bb78a0b63c421ff8c91b34282f8eee85f2739d7e10b0e667cdfeb",
+      "eligibility_status": "eligible",
+      "prompt_path": "evals/m3/results/forward-r4/prompts/m3-f04.prompt.txt",
+      "prompt_raw_sha256": "8437b8505ab47e6579d71531b51c46baa008cc60308d6a484b003c8087340cf3",
+      "contract_path": "evals/m3/forward-inputs-r4/m3-model-output-contract.schema.json",
+      "contract_raw_sha256": "a8b2c138a6b1ac59bc6316936f71565b5bfcc51ed9f7a6c6ff03ee1a80fb06b4",
+      "allowed_read_paths": [
+        "AGENTS.md",
+        "skills/engineering-research-copilot/SKILL.md",
+        "skills/engineering-research-copilot/references/core-method-coaching.md",
+        "skills/engineering-research-copilot/references/method-experiment-measurement-uq.md",
+        "evals/m3/forward-inputs-r4/m3-model-output-contract.schema.json",
+        "evals/m3/results/forward-r4/prompts/m3-f04.prompt.txt",
+        "evals/f04-upstream/m2/f04-m2-confirmed.bundle.json"
+      ]
+    },
+    {
+      "case_id": "m3-f05",
+      "input_path": "evals/m3/forward-inputs-r2/m3-f02-route-compatible.bundle.json",
+      "input_raw_sha256": "8db4db7f9173a8d10598af49e8ffd83dca12e34692c2827ec47031a30ab49da1",
+      "input_canonical_sha256": "fc7301d37737d85bc1bd2f0a3c2d51d842d0fe3fbdf1ded142e2d62f04d40841",
+      "m2_validation_path": "evals/m3/forward-inputs-r4/m3-f05.m2-validation.json",
+      "m2_validation_raw_sha256": "c5f237a7cb65909add59b12a68c7705a169074c1fe65154f6ad7870f8cdc7e63",
+      "eligibility_path": "evals/m3/forward-inputs-r4/m3-f05.eligibility.json",
+      "eligibility_raw_sha256": "46893a54bfab0c9edba09f98a2873175024ed6ad7299247781e5875aa572fd99",
+      "eligibility_status": "eligible",
+      "prompt_path": "evals/m3/results/forward-r4/prompts/m3-f05.prompt.txt",
+      "prompt_raw_sha256": "82493751ddb913f16cee50dbafacdeefaeb32a53d8104a1e1c11d1185ebe16a1",
+      "contract_path": "evals/m3/forward-inputs-r4/m3-model-output-contract.schema.json",
+      "contract_raw_sha256": "a8b2c138a6b1ac59bc6316936f71565b5bfcc51ed9f7a6c6ff03ee1a80fb06b4",
+      "allowed_read_paths": [
+        "AGENTS.md",
+        "skills/engineering-research-copilot/SKILL.md",
+        "skills/engineering-research-copilot/references/core-method-coaching.md",
+        "skills/engineering-research-copilot/references/method-data-ml-hybrid.md",
+        "skills/engineering-research-copilot/references/domain-nuclear-ml.md",
+        "evals/m3/forward-inputs-r4/m3-model-output-contract.schema.json",
+        "evals/m3/results/forward-r4/prompts/m3-f05.prompt.txt",
+        "evals/m3/forward-inputs-r2/m3-f02-route-compatible.bundle.json"
+      ]
+    }
+  ],
+  "prompts_frozen": true,
+  "fresh_contexts_consumed": 0,
+  "notes": [
+    "All five manifest-selected inputs passed one explicit Python 3.12 M2 validator invocation and one r4 eligibility audit.",
+    "All source, canonical, eligibility, prompt, and contract hashes are recomputed from the current checkout.",
+    "No model final, payload, bundle, outcome, validation output, context record, or task identifier is recorded in this preparation manifest.",
+    "F03 source resolution is manifest-owned and equals the exact r2 approved-change bundle path.",
+    "The acceptance matrix is recorded outside the installable Skill and is not passed to any fresh context."
+  ]
+}

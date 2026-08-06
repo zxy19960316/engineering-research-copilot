@@ -1,0 +1,26 @@
+{
+  "case_id": "m3-f05",
+  "constructed_by_context": "codex-task:019fd467-790b-7551-9157-ddd3b2222ca1:r4-m2-validation:m3-f05",
+  "errors": [],
+  "evidence_gaps": [],
+  "input_canonical_sha256": "fc7301d37737d85bc1bd2f0a3c2d51d842d0fe3fbdf1ded142e2d62f04d40841",
+  "input_path": "evals/m3/forward-inputs-r2/m3-f02-route-compatible.bundle.json",
+  "input_raw_sha256": "8db4db7f9173a8d10598af49e8ffd83dca12e34692c2827ec47031a30ab49da1",
+  "invocation_count": 1,
+  "reviewed_by_context": "codex-task:019fd467-790b-7551-9157-ddd3b2222ca1:r4-eligibility-audit:m3-f05",
+  "reviewed_head": "823ec90c09defb5826e899408507ffa9f2fa3949",
+  "schema_version": "m3.1-r4-m2-validation-receipt-v1",
+  "source_m1_acceptance_status": "complete",
+  "status": "valid",
+  "validator": "skills/engineering-research-copilot/scripts/validate_m2_direction_bundle.py",
+  "validator_argv": [
+    "C:\\Users\\94310\\AppData\\Local\\Programs\\Python\\Python312\\python.exe",
+    "-X",
+    "utf8",
+    "skills/engineering-research-copilot/scripts/validate_m2_direction_bundle.py",
+    "evals/m3/forward-inputs-r2/m3-f02-route-compatible.bundle.json"
+  ],
+  "validator_exit_code": 0,
+  "validator_script_sha256": "64b5f1c48d606f5598f6098259dc3c333c981a4141bcaa4371b2a5431de51b81",
+  "validator_stdout_sha256": "11dbafb7b261afd4cee36fa1c30eae9b7cc52f869f3bf22391f6e80f9e2c12d4"
+}

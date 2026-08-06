@@ -13,3 +13,8 @@
 /evals/m3/results/forward-r2/** text eol=lf
 /evals/m3/results/2026-08-05-forward-evaluation-r2.md text eol=lf
 /evals/m3/results/2026-08-06-forward-evaluation-r3.md text eol=lf
+
+# Preserve byte-sensitive r4 frozen inputs, prompts, receipts, and manifests.
+/evals/m3/forward-inputs-r4/** text eol=lf
+/evals/m3/results/forward-r4/** text eol=lf
+/evals/m3/forward-cases-r4.md text eol=lf
