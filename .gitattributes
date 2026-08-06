@@ -1,2 +1,7 @@
 # Preserve byte-sensitive F04 evidence exactly across Windows worktrees.
 /evals/f04-upstream/** text eol=lf
+
+# Preserve byte-sensitive r3 inputs, prompts, receipts, and manifests.
+/evals/m3/forward-inputs-r3/** text eol=lf
+/evals/m3/results/forward-r3/** text eol=lf
+/evals/m3/forward-cases-r3.md text eol=lf
