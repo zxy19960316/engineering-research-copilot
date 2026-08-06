@@ -37,6 +37,7 @@ jobs:
             evals/m3/run_forward_outcome_validation_once.py \
             evals/m3/dispatch_forward_r4.py \
             evals/m3/audit_forward_inputs.py \
+            evals/m3/diagnose_forward_input_hashes.py \
             evals/m3/audit_forward_acceptance.py \
             evals/m3/audit_forward_r4_preparation.py \
             evals/m3/audit_immutable_forward_evidence.py \
@@ -65,3 +66,19 @@ jobs:
         run: python evals/m3/audit_forward_inputs.py evals/m3/forward-inputs-r2/manifest.json
       - name: Audit M3 fresh acceptance
         run: python evals/m3/audit_forward_acceptance.py evals/m3/results/forward-r2/acceptance-manifest.json
+
+  historical-audit-cross-platform:
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+          - windows-latest
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Audit historical M3 inputs on LF and CRLF worktrees
+        run: python -X utf8 -m unittest tests.test_audit_m3_forward_inputs -v

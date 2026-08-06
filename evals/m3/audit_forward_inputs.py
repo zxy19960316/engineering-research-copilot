@@ -8,6 +8,7 @@ import json
 import math
 import os
 import stat
+import subprocess
 import sys
 from pathlib import Path
 from typing import Any
@@ -15,6 +16,7 @@ from typing import Any
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 M3_FIXTURE_ROOT = (REPO_ROOT / "evals" / "m3" / "fixtures").resolve()
+HISTORICAL_IDENTITY_PATH = REPO_ROOT / "evals" / "m3" / "historical-json-identities.json"
 M2_SCRIPT_ROOT = REPO_ROOT / "skills" / "engineering-research-copilot" / "scripts"
 sys.path.insert(0, str(M2_SCRIPT_ROOT))
 
@@ -78,6 +80,16 @@ def _empty_case(case_id: str) -> dict[str, Any]:
         "status": "valid",
         "errors": [],
         "evidence_gaps": [],
+        "expected_raw_sha256": None,
+        "observed_raw_sha256": None,
+        "source_m1_expected_sha256": None,
+        "source_m1_observed_sha256": None,
+        "input_git_blob_oid": None,
+        "source_m1_git_blob_oid": None,
+        "input_canonical_sha256": None,
+        "source_m1_canonical_sha256": None,
+        "input_identity_status": "not_checked",
+        "source_m1_identity_status": "not_checked",
     }
 
 
@@ -109,6 +121,54 @@ def _canonical_sha256(value: Any) -> str:
         allow_nan=False,
     ).encode("utf-8")
     return hashlib.sha256(payload).hexdigest()
+
+
+def _historical_identities() -> dict[str, dict[str, Any]]:
+    try:
+        value = json.loads(HISTORICAL_IDENTITY_PATH.read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, json.JSONDecodeError):
+        return {}
+    if (
+        not isinstance(value, dict)
+        or value.get("schema_version") != "m3.1-historical-json-identities-v1"
+        or not isinstance(value.get("artifacts"), list)
+    ):
+        return {}
+    return {
+        item["path"]: item
+        for item in value["artifacts"]
+        if isinstance(item, dict) and isinstance(item.get("path"), str)
+    }
+
+
+def _repo_relative(path: Path) -> str | None:
+    try:
+        return path.resolve().relative_to(REPO_ROOT.resolve()).as_posix()
+    except ValueError:
+        return None
+
+
+def _git_blob_oid(path: Path) -> str | None:
+    relative = _repo_relative(path)
+    if relative is None:
+        return None
+    try:
+        completed = subprocess.run(
+            ["git", "rev-parse", f"HEAD:{relative}"],
+            cwd=REPO_ROOT,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            check=False,
+        )
+    except OSError:
+        return None
+    value = completed.stdout.strip()
+    if completed.returncode != 0 or len(value) != 40 or any(
+        char not in "0123456789abcdef" for char in value
+    ):
+        return None
+    return value
 
 
 def _has_reparse_point(path: Path) -> bool:
@@ -164,18 +224,65 @@ def _validate_hashes(
     canonical_hash: Any,
     prefix: str,
     errors: list[str],
+    case: dict[str, Any],
 ) -> Any:
-    if not isinstance(raw_hash, str) or len(raw_hash) != 64 or _sha256(path) != raw_hash:
+    raw_field = "expected_raw_sha256" if prefix == "input" else "source_m1_expected_sha256"
+    observed_field = "observed_raw_sha256" if prefix == "input" else "source_m1_observed_sha256"
+    blob_field = "input_git_blob_oid" if prefix == "input" else "source_m1_git_blob_oid"
+    canonical_field = (
+        "input_canonical_sha256" if prefix == "input" else "source_m1_canonical_sha256"
+    )
+    identity_field = "input_identity_status" if prefix == "input" else "source_m1_identity_status"
+    case[raw_field] = raw_hash
+    try:
+        case[observed_field] = _sha256(path)
+    except OSError:
+        case[identity_field] = "invalid"
         errors.append(f"{prefix}_raw_sha256_mismatch")
+        return None
     payload = _load_json_file(path, prefix, errors)
-    if payload is not None and canonical_hash is not None:
+    actual_canonical = None
+    if payload is not None:
         try:
             actual_canonical = _canonical_sha256(payload)
         except (TypeError, ValueError):
             errors.append(f"{prefix}_canonical_json_invalid")
         else:
-            if not isinstance(canonical_hash, str) or actual_canonical != canonical_hash:
+            case[canonical_field] = actual_canonical
+            if canonical_hash is not None and (
+                not isinstance(canonical_hash, str) or actual_canonical != canonical_hash
+            ):
                 errors.append(f"{prefix}_canonical_sha256_mismatch")
+    relative = _repo_relative(path)
+    identity = _historical_identities().get(relative or "")
+    if identity is None:
+        if (
+            not isinstance(raw_hash, str)
+            or len(raw_hash) != 64
+            or case[observed_field] != raw_hash
+        ):
+            errors.append(f"{prefix}_raw_sha256_mismatch")
+        case[identity_field] = "legacy_raw_only" if payload is not None else "invalid"
+        return payload
+
+    blob_oid = _git_blob_oid(path)
+    case[blob_field] = blob_oid
+    if raw_hash != identity.get("legacy_raw_sha256"):
+        errors.append(f"{prefix}_raw_sha256_mismatch")
+    if blob_oid != identity.get("git_blob_oid"):
+        errors.append(f"{prefix}_git_blob_oid_mismatch")
+    if actual_canonical != identity.get("canonical_sha256"):
+        errors.append(f"{prefix}_canonical_sha256_mismatch")
+    identity_errors = {
+        f"{prefix}_raw_sha256_mismatch",
+        f"{prefix}_git_blob_oid_mismatch",
+        f"{prefix}_canonical_sha256_mismatch",
+        f"{prefix}_canonical_json_invalid",
+        f"{prefix}_invalid_json",
+    }
+    case[identity_field] = (
+        "invalid" if identity_errors.intersection(errors) else "valid"
+    )
     return payload
 
 
@@ -480,6 +587,7 @@ def _audit_case(case_data: dict[str, Any], manifest: dict[str, Any]) -> dict[str
             None,
             "source_m1",
             case["errors"],
+            case,
         )
 
     if case_data.get("input_path") is None:
@@ -497,6 +605,7 @@ def _audit_case(case_data: dict[str, Any], manifest: dict[str, Any]) -> dict[str
             case_data.get("canonical_sha256"),
             "input",
             case["errors"],
+            case,
         )
     if not isinstance(bundle, dict):
         _close_case(case)

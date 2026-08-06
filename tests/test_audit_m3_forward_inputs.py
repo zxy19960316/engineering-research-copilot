@@ -3,6 +3,8 @@ from __future__ import annotations
 import copy
 import hashlib
 import json
+import subprocess
+import sys
 import tempfile
 import unittest
 from pathlib import Path
@@ -11,6 +13,7 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[1]
 M3_INPUT_ROOT = REPO_ROOT / "evals" / "m3" / "forward-inputs"
 OLD_MANIFEST = M3_INPUT_ROOT / "manifest.json"
+DIAGNOSTIC = REPO_ROOT / "evals" / "m3" / "diagnose_forward_input_hashes.py"
 
 import sys
 
@@ -151,6 +154,77 @@ class AuditM3ForwardInputsTests(unittest.TestCase):
         f03 = self._case(result, "m3-f03")
         self.assertEqual(f03["status"], "valid")
         self.assertEqual(f03["errors"], [])
+
+    def test_historical_json_identity_is_cross_platform_and_diagnostic(self):
+        result = self._audit(_r2_manifest())
+
+        for case_id in ("m3-f01", "m3-f03", "m3-f04"):
+            case = self._case(result, case_id)
+            self.assertTrue(
+                {
+                    "case_id",
+                    "status",
+                    "errors",
+                    "evidence_gaps",
+                    "expected_raw_sha256",
+                    "observed_raw_sha256",
+                    "source_m1_expected_sha256",
+                    "source_m1_observed_sha256",
+                    "input_git_blob_oid",
+                    "source_m1_git_blob_oid",
+                    "input_canonical_sha256",
+                    "source_m1_canonical_sha256",
+                }.issubset(case)
+            )
+            self.assertEqual(case["source_m1_identity_status"], "valid")
+            self.assertEqual(len(case["source_m1_git_blob_oid"]), 40)
+            self.assertEqual(len(case["source_m1_canonical_sha256"]), 64)
+
+        f01 = self._case(result, "m3-f01")
+        self.assertEqual(f01["input_identity_status"], "not_checked")
+        self.assertIsNone(f01["expected_raw_sha256"])
+        self.assertIsNone(f01["observed_raw_sha256"])
+        self.assertEqual(
+            f01["source_m1_expected_sha256"],
+            "ff6d4eed792358049213b114dbca3d3850c1c95caad68bb0e50cfb6f5b802529",
+        )
+
+        f04 = self._case(result, "m3-f04")
+        self.assertIsNone(f04["expected_raw_sha256"])
+        self.assertIsNone(f04["observed_raw_sha256"])
+        self.assertEqual(
+            f04["source_m1_expected_sha256"],
+            "bee8c0f739647512298d180eb68c934e96dd55054a4aec851ddead7b8e846173",
+        )
+
+        f03 = self._case(result, "m3-f03")
+        self.assertEqual(f03["input_identity_status"], "valid")
+
+    def test_read_only_diagnostic_cli_prints_complete_audit(self):
+        with tempfile.TemporaryDirectory(dir=REPO_ROOT) as temp_dir:
+            manifest_path = Path(temp_dir) / "manifest.json"
+            manifest_path.write_text(
+                json.dumps(_r2_manifest(), ensure_ascii=False, indent=2) + "\n",
+                encoding="utf-8",
+                newline="\n",
+            )
+            completed = subprocess.run(
+                [sys.executable, "-X", "utf8", str(DIAGNOSTIC), str(manifest_path)],
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+                check=False,
+            )
+
+        self.assertEqual(completed.returncode, 1)
+        self.assertEqual(completed.stderr, "")
+        result = json.loads(completed.stdout)
+        f03 = self._case(result, "m3-f03")
+        self.assertEqual(f03["status"], "valid")
+        self.assertEqual(f03["errors"], [])
+        self.assertEqual(f03["evidence_gaps"], [])
+        self.assertEqual(len(f03["source_m1_expected_sha256"]), 64)
+        self.assertEqual(len(f03["source_m1_observed_sha256"]), 64)
 
 
 if __name__ == "__main__":
