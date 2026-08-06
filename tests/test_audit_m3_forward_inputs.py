@@ -8,6 +8,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -15,11 +16,9 @@ M3_INPUT_ROOT = REPO_ROOT / "evals" / "m3" / "forward-inputs"
 OLD_MANIFEST = M3_INPUT_ROOT / "manifest.json"
 DIAGNOSTIC = REPO_ROOT / "evals" / "m3" / "diagnose_forward_input_hashes.py"
 
-import sys
-
 sys.path.insert(0, str(REPO_ROOT / "evals" / "m3"))
 
-from audit_forward_inputs import audit_manifest  # noqa: E402
+import audit_forward_inputs as audit  # noqa: E402
 
 
 def _raw_sha256(path: Path) -> str:
@@ -66,7 +65,7 @@ class AuditM3ForwardInputsTests(unittest.TestCase):
                 json.dumps(manifest, ensure_ascii=False, indent=2) + "\n",
                 encoding="utf-8",
             )
-            return audit_manifest(path)
+            return audit.audit_manifest(path)
 
     def _case(self, result: dict, case_id: str) -> dict:
         return next(case for case in result["cases"] if case["case_id"] == case_id)
@@ -199,6 +198,59 @@ class AuditM3ForwardInputsTests(unittest.TestCase):
 
         f03 = self._case(result, "m3-f03")
         self.assertEqual(f03["input_identity_status"], "valid")
+
+    def test_historical_identity_registry_rejects_evidence_head_drift(self):
+        registry = json.loads(audit.HISTORICAL_IDENTITY_PATH.read_text(encoding="utf-8"))
+        registry["evidence_head"] = "0" * 40
+        with tempfile.TemporaryDirectory(dir=REPO_ROOT) as temp_dir:
+            registry_path = Path(temp_dir) / "historical-identities.json"
+            registry_path.write_text(
+                json.dumps(registry, ensure_ascii=False, indent=2) + "\n",
+                encoding="utf-8",
+                newline="\n",
+            )
+            with mock.patch.object(audit, "HISTORICAL_IDENTITY_PATH", registry_path):
+                result = self._audit(_r2_manifest())
+
+        self.assertEqual(result["status"], "invalid")
+        self.assertIn("historical_evidence_head_mismatch", result["errors"])
+
+    def test_modified_worktree_and_registry_cannot_replace_fixed_head_identity(self):
+        manifest = _r2_manifest()
+        target_path = (REPO_ROOT / manifest["cases"][2]["source_m1_artifact"]).resolve()
+        original_loader = audit._load_json_file
+        tampered = original_loader(target_path, "source_m1", [])
+        tampered = {**tampered, "simultaneous_worktree_and_registry_tamper": True}
+        registry = json.loads(audit.HISTORICAL_IDENTITY_PATH.read_text(encoding="utf-8"))
+        registry_entry = next(
+            item
+            for item in registry["artifacts"]
+            if item["path"] == target_path.relative_to(REPO_ROOT).as_posix()
+        )
+        registry_entry["canonical_sha256"] = audit._canonical_sha256(tampered)
+
+        def load_tampered_worktree(path: Path, prefix: str, errors: list[str]) -> object:
+            if path.resolve() == target_path:
+                return copy.deepcopy(tampered)
+            return original_loader(path, prefix, errors)
+
+        with tempfile.TemporaryDirectory(dir=REPO_ROOT) as temp_dir:
+            registry_path = Path(temp_dir) / "historical-identities.json"
+            registry_path.write_text(
+                json.dumps(registry, ensure_ascii=False, indent=2) + "\n",
+                encoding="utf-8",
+                newline="\n",
+            )
+            with (
+                mock.patch.object(audit, "HISTORICAL_IDENTITY_PATH", registry_path),
+                mock.patch.object(audit, "_load_json_file", side_effect=load_tampered_worktree),
+            ):
+                result = self._audit(manifest)
+
+        f03 = self._case(result, "m3-f03")
+        self.assertEqual(f03["status"], "invalid")
+        self.assertIn("source_m1_canonical_sha256_mismatch", f03["errors"])
+        self.assertIn("source_m1_worktree_content_mismatch", f03["errors"])
 
     def test_read_only_diagnostic_cli_prints_complete_audit(self):
         with tempfile.TemporaryDirectory(dir=REPO_ROOT) as temp_dir:

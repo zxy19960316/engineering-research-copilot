@@ -17,6 +17,7 @@ from typing import Any
 REPO_ROOT = Path(__file__).resolve().parents[2]
 M3_FIXTURE_ROOT = (REPO_ROOT / "evals" / "m3" / "fixtures").resolve()
 HISTORICAL_IDENTITY_PATH = REPO_ROOT / "evals" / "m3" / "historical-json-identities.json"
+HISTORICAL_EVIDENCE_HEAD = "1b696bce53ee0a11163bfe4f91a9a49ab3af6f49"
 M2_SCRIPT_ROOT = REPO_ROOT / "skills" / "engineering-research-copilot" / "scripts"
 sys.path.insert(0, str(M2_SCRIPT_ROOT))
 
@@ -123,16 +124,21 @@ def _canonical_sha256(value: Any) -> str:
     return hashlib.sha256(payload).hexdigest()
 
 
-def _historical_identities() -> dict[str, dict[str, Any]]:
+def _historical_identities(errors: list[str]) -> dict[str, dict[str, Any]]:
     try:
         value = json.loads(HISTORICAL_IDENTITY_PATH.read_text(encoding="utf-8"))
     except (OSError, UnicodeError, json.JSONDecodeError):
+        errors.append("historical_identity_registry_invalid")
         return {}
     if (
         not isinstance(value, dict)
         or value.get("schema_version") != "m3.1-historical-json-identities-v1"
         or not isinstance(value.get("artifacts"), list)
     ):
+        errors.append("historical_identity_registry_invalid")
+        return {}
+    if value.get("evidence_head") != HISTORICAL_EVIDENCE_HEAD:
+        errors.append("historical_evidence_head_mismatch")
         return {}
     return {
         item["path"]: item
@@ -154,7 +160,7 @@ def _git_blob_oid(path: Path) -> str | None:
         return None
     try:
         completed = subprocess.run(
-            ["git", "rev-parse", f"HEAD:{relative}"],
+            ["git", "rev-parse", f"{HISTORICAL_EVIDENCE_HEAD}:{relative}"],
             cwd=REPO_ROOT,
             capture_output=True,
             text=True,
@@ -169,6 +175,21 @@ def _git_blob_oid(path: Path) -> str | None:
     ):
         return None
     return value
+
+
+def _git_blob_json(blob_oid: str) -> Any:
+    try:
+        completed = subprocess.run(
+            ["git", "cat-file", "blob", blob_oid],
+            cwd=REPO_ROOT,
+            capture_output=True,
+            check=False,
+        )
+        if completed.returncode != 0:
+            return None
+        return json.loads(completed.stdout.decode("utf-8", errors="strict"))
+    except (OSError, UnicodeError, json.JSONDecodeError):
+        return None
 
 
 def _has_reparse_point(path: Path) -> bool:
@@ -225,6 +246,7 @@ def _validate_hashes(
     prefix: str,
     errors: list[str],
     case: dict[str, Any],
+    historical_identities: dict[str, dict[str, Any]],
 ) -> Any:
     raw_field = "expected_raw_sha256" if prefix == "input" else "source_m1_expected_sha256"
     observed_field = "observed_raw_sha256" if prefix == "input" else "source_m1_observed_sha256"
@@ -248,14 +270,14 @@ def _validate_hashes(
         except (TypeError, ValueError):
             errors.append(f"{prefix}_canonical_json_invalid")
         else:
-            case[canonical_field] = actual_canonical
             if canonical_hash is not None and (
                 not isinstance(canonical_hash, str) or actual_canonical != canonical_hash
             ):
                 errors.append(f"{prefix}_canonical_sha256_mismatch")
     relative = _repo_relative(path)
-    identity = _historical_identities().get(relative or "")
+    identity = historical_identities.get(relative or "")
     if identity is None:
+        case[canonical_field] = actual_canonical
         if (
             not isinstance(raw_hash, str)
             or len(raw_hash) != 64
@@ -267,18 +289,29 @@ def _validate_hashes(
 
     blob_oid = _git_blob_oid(path)
     case[blob_field] = blob_oid
+    historical_payload = _git_blob_json(blob_oid) if blob_oid is not None else None
+    historical_canonical = None
+    if historical_payload is not None:
+        try:
+            historical_canonical = _canonical_sha256(historical_payload)
+        except (TypeError, ValueError):
+            historical_canonical = None
+    case[canonical_field] = historical_canonical
     if raw_hash != identity.get("legacy_raw_sha256"):
         errors.append(f"{prefix}_raw_sha256_mismatch")
     if blob_oid != identity.get("git_blob_oid"):
         errors.append(f"{prefix}_git_blob_oid_mismatch")
-    if actual_canonical != identity.get("canonical_sha256"):
+    if historical_canonical != identity.get("canonical_sha256"):
         errors.append(f"{prefix}_canonical_sha256_mismatch")
+    if actual_canonical != historical_canonical:
+        errors.append(f"{prefix}_worktree_content_mismatch")
     identity_errors = {
         f"{prefix}_raw_sha256_mismatch",
         f"{prefix}_git_blob_oid_mismatch",
         f"{prefix}_canonical_sha256_mismatch",
         f"{prefix}_canonical_json_invalid",
         f"{prefix}_invalid_json",
+        f"{prefix}_worktree_content_mismatch",
     }
     case[identity_field] = (
         "invalid" if identity_errors.intersection(errors) else "valid"
@@ -560,7 +593,11 @@ def _validate_m2_receipt(
         case["errors"].append("m2_validation_input_path_mismatch")
 
 
-def _audit_case(case_data: dict[str, Any], manifest: dict[str, Any]) -> dict[str, Any]:
+def _audit_case(
+    case_data: dict[str, Any],
+    manifest: dict[str, Any],
+    historical_identities: dict[str, dict[str, Any]],
+) -> dict[str, Any]:
     case_id = case_data.get("case_id", "unknown")
     case = _empty_case(case_id)
     missing = CASE_REQUIRED_FIELDS - set(case_data)
@@ -588,6 +625,7 @@ def _audit_case(case_data: dict[str, Any], manifest: dict[str, Any]) -> dict[str
             "source_m1",
             case["errors"],
             case,
+            historical_identities,
         )
 
     if case_data.get("input_path") is None:
@@ -606,6 +644,7 @@ def _audit_case(case_data: dict[str, Any], manifest: dict[str, Any]) -> dict[str
             "input",
             case["errors"],
             case,
+            historical_identities,
         )
     if not isinstance(bundle, dict):
         _close_case(case)
@@ -659,6 +698,7 @@ def audit_manifest(manifest_path: str | Path) -> dict[str, Any]:
         errors.append("invalid_manifest_schema_version")
     if manifest.get("evidence_class") != "independent_m2_input_preparation":
         errors.append("invalid_manifest_evidence_class")
+    historical_identities = _historical_identities(errors)
     raw_cases = manifest.get("cases")
     if not isinstance(raw_cases, list):
         return {
@@ -673,7 +713,7 @@ def audit_manifest(manifest_path: str | Path) -> dict[str, Any]:
     if tuple(case_by_id) != EXPECTED_CASE_IDS:
         errors.append("manifest_case_ids_mismatch")
     cases = [
-        _audit_case(case_by_id[case_id], manifest)
+        _audit_case(case_by_id[case_id], manifest, historical_identities)
         for case_id in EXPECTED_CASE_IDS
         if case_id in case_by_id
     ]

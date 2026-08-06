@@ -113,10 +113,20 @@ def _safe_file(raw_path: Any, code: str, errors: list[str]) -> Path | None:
     return resolved
 
 
-def _evidence_blob(path: Path) -> bytes | None:
+def _evidence_blob(path: Path, errors: list[str]) -> bytes | None:
     try:
         relative = path.resolve().relative_to(REPO_ROOT.resolve()).as_posix()
         if not relative.startswith("evals/"):
+            errors.append(f"r5_evidence_blob_missing:{relative}")
+            return None
+        head = subprocess.run(
+            ["git", "cat-file", "-e", f"{R5_EVIDENCE_HEAD}^{{commit}}"],
+            cwd=REPO_ROOT,
+            capture_output=True,
+            check=False,
+        )
+        if head.returncode != 0:
+            errors.append("r5_evidence_head_unavailable")
             return None
         completed = subprocess.run(
             ["git", "show", f"{R5_EVIDENCE_HEAD}:{relative}"],
@@ -124,9 +134,16 @@ def _evidence_blob(path: Path) -> bytes | None:
             capture_output=True,
             check=False,
         )
-    except (OSError, ValueError):
+    except OSError:
+        errors.append("r5_evidence_head_unavailable")
         return None
-    return completed.stdout if completed.returncode == 0 else None
+    except ValueError:
+        errors.append(f"r5_evidence_blob_missing:{path.as_posix()}")
+        return None
+    if completed.returncode != 0:
+        errors.append(f"r5_evidence_blob_missing:{relative}")
+        return None
+    return completed.stdout
 
 
 def _parse_json(raw: bytes) -> Any:
@@ -147,26 +164,29 @@ def _read_artifact(
     except OSError:
         errors.append(f"{code}_unreadable")
         return None
-    identity_raw = _evidence_blob(path) or worktree_raw
+    identity_raw = _evidence_blob(path, errors)
+    if identity_raw is None:
+        return None
     value: Any = None
     if json_required:
         try:
-            value = _parse_json(worktree_raw)
+            worktree_value = _parse_json(worktree_raw)
             identity_value = _parse_json(identity_raw)
         except (UnicodeError, json.JSONDecodeError, ValueError):
             errors.append(f"{code}_invalid_json")
             return None
-        if not isinstance(value, dict) or not isinstance(identity_value, dict):
+        if not isinstance(worktree_value, dict) or not isinstance(identity_value, dict):
             errors.append(f"{code}_object_required")
             return None
-        if not _json_equal(value, identity_value):
+        if not _json_equal(worktree_value, identity_value):
             errors.append(f"{code}_worktree_content_mismatch")
+        value = identity_value
     else:
         normalized = worktree_raw.replace(b"\r\n", b"\n").replace(b"\r", b"\n")
         identity_normalized = identity_raw.replace(b"\r\n", b"\n").replace(b"\r", b"\n")
         if normalized != identity_normalized:
             errors.append(f"{code}_worktree_content_mismatch")
-        value = worktree_raw
+        value = identity_raw
     return {
         "value": value,
         "sha256": _sha256(identity_raw),

@@ -281,7 +281,17 @@ class AuditM3ForwardR5AcceptanceTests(unittest.TestCase):
         ]
 
     def _audit(self, manifest_path: Path, result_root: Path) -> dict:
-        with mock.patch.object(audit, "R5_RESULT_ROOT", result_root):
+        def read_fixture_blob(path: Path, errors: list[str]) -> bytes | None:
+            del errors
+            try:
+                return path.read_bytes()
+            except OSError:
+                return None
+
+        with (
+            mock.patch.object(audit, "R5_RESULT_ROOT", result_root),
+            mock.patch.object(audit, "_evidence_blob", side_effect=read_fixture_blob),
+        ):
             return audit.audit_acceptance_manifest(manifest_path)
 
     def _case_entry(self, manifest: dict, case_id: str) -> dict:
@@ -404,6 +414,29 @@ class AuditM3ForwardR5AcceptanceTests(unittest.TestCase):
             f02["model_final_sha256"],
             "72b0aaef8fdabb3456d1226ba4ef93705512d60c74cccf5c29da2f0278b154a2",
         )
+
+    def test_unreadable_evidence_head_invalidates_acceptance_audit(self):
+        with mock.patch.object(audit, "R5_EVIDENCE_HEAD", "0" * 40):
+            result = audit.audit_acceptance_manifest(CONSUMED_MANIFEST)
+
+        self.assertEqual(result["status"], "invalid")
+        self.assertIn("r5_evidence_head_unavailable", result["errors"])
+
+    def test_missing_evidence_path_is_not_replaced_by_worktree_content(self):
+        with tempfile.TemporaryDirectory(dir=REPO_ROOT / "evals") as temp_dir:
+            path = Path(temp_dir) / "worktree-only.json"
+            self._write_json(path, {"worktree": "must-not-be-evidence"})
+            errors: list[str] = []
+            artifact = audit._read_artifact(
+                path,
+                "worktree_only",
+                errors,
+                json_required=True,
+            )
+
+        relative = path.relative_to(REPO_ROOT).as_posix()
+        self.assertIsNone(artifact)
+        self.assertIn(f"r5_evidence_blob_missing:{relative}", errors)
 
     def test_modified_validation_without_manifest_update_is_rejected(self):
         with tempfile.TemporaryDirectory(dir=REPO_ROOT) as temp_dir:
