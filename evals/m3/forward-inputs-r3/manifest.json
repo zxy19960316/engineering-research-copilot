@@ -1,6 +1,6 @@
 {
   "schema_version": "m3.1-forward-inputs-r3-preparation-v1",
-  "status": "ready_to_freeze_prompts",
+  "status": "frozen_ready_for_fresh_contexts",
   "branch": "codex/m3.1.1-r3-acceptance-repair",
   "r2_frozen_head": "6ec576a47a804300e2a95e6bddfff1d00c5270a3",
   "r2_freeze_diagnostic": {
@@ -24,7 +24,9 @@
       "eligibility_path": "evals/m3/forward-inputs-r3/m3-f01.eligibility.json",
       "eligibility_raw_sha256": "1880965a47d951e2febd3afec55e544e101a4e73dc6078fe3fbeed4ef9c0b6b8",
       "eligibility_status": "eligible",
-      "coaching_mode": "bounded"
+      "coaching_mode": "bounded",
+      "prompt_path": "evals/m3/results/forward-r3/prompts/m3-f01.prompt.txt",
+      "prompt_raw_sha256": "59363d61a2015f894b35ee18a8c499a866e85e8d7735ba294f524d03430ad735"
     },
     {
       "case_id": "m3-f02",
@@ -36,7 +38,9 @@
       "eligibility_path": "evals/m3/forward-inputs-r3/m3-f02.eligibility.json",
       "eligibility_raw_sha256": "42c73b8d78b5084a3fc7c1b23e526e353fc65ef152cd705f15ee3c37346a3ef5",
       "eligibility_status": "eligible",
-      "coaching_mode": "route_specific"
+      "coaching_mode": "route_specific",
+      "prompt_path": "evals/m3/results/forward-r3/prompts/m3-f02.prompt.txt",
+      "prompt_raw_sha256": "34c7f8dcb7bb9642dd9f86530e59fadebf750c63fe02ee7eb483aea5b82f3c01"
     },
     {
       "case_id": "m3-f03",
@@ -48,7 +52,9 @@
       "eligibility_path": "evals/m3/forward-inputs-r3/m3-f03.eligibility.json",
       "eligibility_raw_sha256": "889823e0e705390c4be765b6a62f9b30a7fbccca57bdaba845e06391be8decdd",
       "eligibility_status": "eligible",
-      "coaching_mode": null
+      "coaching_mode": null,
+      "prompt_path": "evals/m3/results/forward-r3/prompts/m3-f03.prompt.txt",
+      "prompt_raw_sha256": "8024f39c60b966e28c3a6545ce225f65e7574cbb3024a99327b38e0a2179703b"
     },
     {
       "case_id": "m3-f04",
@@ -63,7 +69,9 @@
       "coaching_mode": "bounded",
       "upstream_acceptance_path": "evals/m3/forward-inputs-r3/f04-upstream/acceptance-manifest.json",
       "upstream_acceptance_raw_sha256": "ba8ba8a8b3d10b80fae740e9d05e2b6957ff4ad8f1f312c15c9399bf2497a3cb",
-      "selected_direction_id": "F04-D01"
+      "selected_direction_id": "F04-D01",
+      "prompt_path": "evals/m3/results/forward-r3/prompts/m3-f04.prompt.txt",
+      "prompt_raw_sha256": "d963dc6534e658d61d188d99683cb022aac9910abdc0e746828decfac2b3f4cf"
     },
     {
       "case_id": "m3-f05",
@@ -82,15 +90,17 @@
         "specialist_review_required",
         "no_operational_or_safety_credit",
         "transfer_status_hypothesis"
-      ]
+      ],
+      "prompt_path": "evals/m3/results/forward-r3/prompts/m3-f05.prompt.txt",
+      "prompt_raw_sha256": "860ab750373b491b6d9e242173897dec417aa08ce5c0efbdd4d34fa09ebcf1f1"
     }
   ],
   "fresh_contexts_consumed": 0,
-  "prompts_frozen": false,
+  "prompts_frozen": true,
   "notes": [
     "F01, F02, F03, F04, and revised route-specific F05 pass the r3 pre-prompt eligibility audit.",
     "The old route-free r2 F05 input remains M2-valid but is not eligible for revised r3 F05.",
     "F04-D01 has an independently reviewed, route-free, user-confirmed non-nuclear M1/M2 lineage. The initial raw-byte review remains preserved as invalid and the later LF-bound fresh-worktree review supersedes it for input acceptance only.",
-    "No prompt is frozen and no r3 fresh context has been consumed at this preparation state."
+    "All five prompts and immutable inputs are frozen by raw SHA-256; no r3 fresh context has been consumed at this state."
   ]
 }
