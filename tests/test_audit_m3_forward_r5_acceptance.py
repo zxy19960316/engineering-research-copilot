@@ -11,6 +11,7 @@ from unittest import mock
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO_ROOT / "evals" / "m3"))
+sys.path.insert(0, str(REPO_ROOT / "tests"))
 
 import audit_forward_r5_acceptance as audit  # noqa: E402
 from r5_dispatch_contract import (  # noqa: E402
@@ -19,9 +20,13 @@ from r5_dispatch_contract import (  # noqa: E402
     derive_counters,
     canonical_future_paths,
 )
+from test_validate_m3_method_bundle import make_valid_m3_bundle  # noqa: E402
 
 
 R4_MANIFEST = REPO_ROOT / "evals" / "m3" / "results" / "forward-r4" / "acceptance-manifest.json"
+F03_SOURCE = REPO_ROOT / "evals" / "m3" / "forward-inputs-r2" / "m3-f03-approved-change.bundle.json"
+F03_OUTCOME = REPO_ROOT / "evals" / "m3" / "results" / "forward-r5" / "m3-f03.outcome.json"
+CONSUMED_MANIFEST = REPO_ROOT / "evals" / "m3" / "results" / "forward-r5" / "acceptance-manifest-consumed.json"
 
 
 class AuditM3ForwardR5AcceptanceTests(unittest.TestCase):
@@ -63,25 +68,133 @@ class AuditM3ForwardR5AcceptanceTests(unittest.TestCase):
     def _manifest(self, root: Path, records: list[dict]) -> tuple[Path, Path]:
         result_root = root / "forward-r5"
         result_root.mkdir()
+        input_root = root / "inputs"
+        input_root.mkdir()
+        prompt_root = root / "prompts"
+        prompt_root.mkdir()
+        contract_path = root / "contract.json"
+        self._write_json(contract_path, {"schema_version": "test-contract-v1"})
         cases = []
+        task_ids: dict[str, str | None] = {}
+        finalization_ids: dict[str, str] = {}
         for record in records:
+            case_id = record["case_id"]
             paths = canonical_future_paths(record["case_id"], result_root)
-            for key, raw in paths.items():
-                if raw is None:
-                    continue
-                path = result_root / raw
-                if key == "model_final_json" or record["state"] in {
-                    "processed_accepted",
-                    "processed_invalid",
-                }:
-                    path.write_text("{}\n", encoding="utf-8", newline="\n")
-                elif record["state"] == "processing_failed" and (
-                    key in {"context_finalization_json", "case_transaction_json"}
-                    or (key == "composer_invocation_receipt_json" and record["composer_invocations"] == 1)
-                    or (key == "validator_receipt_json" and record["validator_invocations"] == 1)
-                ):
-                    path.write_text("{}\n", encoding="utf-8", newline="\n")
-            cases.append({"case_id": record["case_id"], "record": record, "future_paths": paths})
+            if case_id == "m3-f03":
+                source_value = json.loads(F03_SOURCE.read_text(encoding="utf-8"))
+            else:
+                source_value = make_valid_m3_bundle()["source_m2_bundle"]
+            source_path = input_root / f"{case_id}.source.json"
+            self._write_json(source_path, source_value)
+            prompt_path = prompt_root / f"{case_id}.prompt.txt"
+            prompt_path.write_text(f"frozen prompt for {case_id}\n", encoding="utf-8", newline="\n")
+
+            model_value: dict = {}
+            bundle_value: dict | None = None
+            outcome_value: dict | None = None
+            validation_value: dict | None = None
+            if record["state"] in {"processed_accepted", "processed_invalid"}:
+                if case_id == "m3-f03":
+                    outcome_value = (
+                        json.loads(F03_OUTCOME.read_text(encoding="utf-8"))
+                        if record["accepted"]
+                        else {}
+                    )
+                    model_value = outcome_value
+                    replay = audit.validate_forward_outcome(case_id, source_value, outcome_value)
+                    validation_value = {
+                        **replay,
+                        "accepted": replay.get("status") == "accepted_expected_block",
+                    }
+                else:
+                    bundle_value = make_valid_m3_bundle()
+                    source_value = bundle_value["source_m2_bundle"]
+                    self._write_json(source_path, source_value)
+                    model_value = {
+                        key: bundle_value[key]
+                        for key in ("coaching_mode", "method_cards", "domain_overlays")
+                    }
+                    replay = audit.validate_m3_bundle(bundle_value)
+                    validation_value = {**replay, "accepted": replay["status"] == "valid"}
+                    outcome_value = {
+                        "case_id": case_id,
+                        "accepted": validation_value["accepted"],
+                        "validation_status": validation_value["status"],
+                    }
+
+            artifact_hashes: dict[str, str] = {}
+            if record["task_finalizations_observed"] == 1:
+                model_path = result_root / paths["model_final_json"]
+                self._write_json(model_path, model_value)
+                artifact_hashes["model_final_json"] = hashlib.sha256(model_path.read_bytes()).hexdigest()
+            if record["state"] in {"processing_failed", "processed_accepted", "processed_invalid"}:
+                context = {
+                    key: record[key]
+                    for key in audit.RECORD_CONTEXT_KEYS
+                }
+                context["final_raw_sha256"] = artifact_hashes["model_final_json"]
+                context["final_byte_length"] = (result_root / paths["model_final_json"]).stat().st_size
+                if validation_value is not None:
+                    context["validation_status"] = validation_value["status"]
+                context_path = result_root / paths["context_finalization_json"]
+                transaction_path = result_root / paths["case_transaction_json"]
+                self._write_json(context_path, context)
+                self._write_json(transaction_path, record)
+                artifact_hashes["context_finalization_json"] = hashlib.sha256(context_path.read_bytes()).hexdigest()
+                artifact_hashes["case_transaction_json"] = hashlib.sha256(transaction_path.read_bytes()).hexdigest()
+            if record["composer_invocations"] == 1:
+                composer_receipt = {
+                    "case_id": case_id,
+                    "composer_invocation_count": 1,
+                    "status": "invoked" if record["state"] in {"processed_accepted", "processed_invalid"} else "failed",
+                }
+                receipt_path = result_root / paths["composer_invocation_receipt_json"]
+                self._write_json(receipt_path, composer_receipt)
+                artifact_hashes["composer_invocation_receipt_json"] = hashlib.sha256(receipt_path.read_bytes()).hexdigest()
+            if bundle_value is not None:
+                payload_path = result_root / paths["payload_json"]
+                bundle_path = result_root / paths["composed_bundle_json"]
+                self._write_json(payload_path, model_value)
+                self._write_json(bundle_path, bundle_value)
+                artifact_hashes["payload_json"] = hashlib.sha256(payload_path.read_bytes()).hexdigest()
+                artifact_hashes["composed_bundle_json"] = hashlib.sha256(bundle_path.read_bytes()).hexdigest()
+            if record["validator_invocations"] == 1:
+                validator_receipt = {
+                    "case_id": case_id,
+                    "validator_invocation_count": 1,
+                    "status": "invoked" if record["state"] in {"processed_accepted", "processed_invalid"} else "failed",
+                }
+                receipt_path = result_root / paths["validator_receipt_json"]
+                self._write_json(receipt_path, validator_receipt)
+                artifact_hashes["validator_receipt_json"] = hashlib.sha256(receipt_path.read_bytes()).hexdigest()
+            if validation_value is not None and outcome_value is not None:
+                validation_path = result_root / paths["validation_json"]
+                outcome_path = result_root / paths["outcome_json"]
+                self._write_json(validation_path, validation_value)
+                self._write_json(outcome_path, outcome_value)
+                artifact_hashes["validation_json"] = hashlib.sha256(validation_path.read_bytes()).hexdigest()
+                artifact_hashes["outcome_json"] = hashlib.sha256(outcome_path.read_bytes()).hexdigest()
+
+            finalization_id = f"finalization-{case_id}"
+            task_ids[case_id] = record["task_id"]
+            finalization_ids[case_id] = finalization_id
+            cases.append(
+                {
+                    "case_id": case_id,
+                    "record": record,
+                    "future_paths": paths,
+                    "fresh_context_thread_id": record["task_id"],
+                    "finalization_turn_id": finalization_id,
+                    "input_path": source_path.relative_to(REPO_ROOT).as_posix(),
+                    "input_raw_sha256": hashlib.sha256(source_path.read_bytes()).hexdigest(),
+                    "input_canonical_sha256": audit._canonical_sha256(source_value),
+                    "prompt_path": prompt_path.relative_to(REPO_ROOT).as_posix(),
+                    "prompt_raw_sha256": hashlib.sha256(prompt_path.read_bytes()).hexdigest(),
+                    "contract_path": contract_path.relative_to(REPO_ROOT).as_posix(),
+                    "contract_raw_sha256": hashlib.sha256(contract_path.read_bytes()).hexdigest(),
+                    "artifact_sha256": artifact_hashes,
+                }
+            )
         historical = {
             "path": str(R4_MANIFEST.relative_to(REPO_ROOT)).replace("\\", "/"),
             "raw_sha256": hashlib.sha256(R4_MANIFEST.read_bytes()).hexdigest(),
@@ -111,6 +224,14 @@ class AuditM3ForwardR5AcceptanceTests(unittest.TestCase):
             "result_root": result_root.relative_to(REPO_ROOT).as_posix(),
             "counters": counters,
             "historical_r4": historical,
+            "contract": {
+                "path": contract_path.relative_to(REPO_ROOT).as_posix(),
+                "raw_sha256": hashlib.sha256(contract_path.read_bytes()).hexdigest(),
+            },
+            "run": {
+                "task_ids": task_ids,
+                "finalization_turn_ids": finalization_ids,
+            },
             "cases": cases,
         }
         path = root / "acceptance-manifest.json"
@@ -162,6 +283,9 @@ class AuditM3ForwardR5AcceptanceTests(unittest.TestCase):
     def _audit(self, manifest_path: Path, result_root: Path) -> dict:
         with mock.patch.object(audit, "R5_RESULT_ROOT", result_root):
             return audit.audit_acceptance_manifest(manifest_path)
+
+    def _case_entry(self, manifest: dict, case_id: str) -> dict:
+        return next(item for item in manifest["cases"] if item["case_id"] == case_id)
 
     def test_five_finalizations_and_one_processed_case_are_counted_from_records(self):
         with tempfile.TemporaryDirectory(dir=REPO_ROOT) as temp_dir:
@@ -268,6 +392,112 @@ class AuditM3ForwardR5AcceptanceTests(unittest.TestCase):
         self.assertEqual(result["historical_r4"]["status"], "blocked_not_accepted")
         self.assertEqual(result["counters"]["task_finalizations_observed"], 5)
         self.assertEqual(result["historical_r4"]["count_as_r5"], False)
+
+    def test_consumed_r5_is_cross_validated_but_remains_blocked(self):
+        result = audit.audit_acceptance_manifest(CONSUMED_MANIFEST)
+
+        self.assertEqual(result["status"], "blocked_not_accepted")
+        self.assertEqual(result["errors"], ["acceptance_requirements_unmet"])
+        f02 = next(item for item in result["cases"] if item["case_id"] == "m3-f02")
+        self.assertEqual(f02["record_state"], "processing_failed")
+        self.assertEqual(
+            f02["model_final_sha256"],
+            "72b0aaef8fdabb3456d1226ba4ef93705512d60c74cccf5c29da2f0278b154a2",
+        )
+
+    def test_modified_validation_without_manifest_update_is_rejected(self):
+        with tempfile.TemporaryDirectory(dir=REPO_ROOT) as temp_dir:
+            root = Path(temp_dir)
+            manifest_path, result_root = self._manifest(root, self._accepted_records())
+            validation_path = result_root / "m3-f01.validation.json"
+            validation = json.loads(validation_path.read_text(encoding="utf-8"))
+            validation["errors"] = ["tampered_validation"]
+            self._write_json(validation_path, validation)
+            result = self._audit(manifest_path, result_root)
+
+        self.assertEqual(result["status"], "invalid")
+        self.assertIn("validation_replay_mismatch:m3-f01", result["errors"])
+
+    def test_modified_transaction_state_is_rejected(self):
+        with tempfile.TemporaryDirectory(dir=REPO_ROOT) as temp_dir:
+            root = Path(temp_dir)
+            manifest_path, result_root = self._manifest(root, self._accepted_records())
+            transaction_path = result_root / "m3-f01.transaction.json"
+            transaction = json.loads(transaction_path.read_text(encoding="utf-8"))
+            transaction["state"] = "processing_failed"
+            self._write_json(transaction_path, transaction)
+            result = self._audit(manifest_path, result_root)
+
+        self.assertEqual(result["status"], "invalid")
+        self.assertIn("transaction_record_mismatch:m3-f01", result["errors"])
+
+    def test_deleted_receipt_is_rejected(self):
+        with tempfile.TemporaryDirectory(dir=REPO_ROOT) as temp_dir:
+            root = Path(temp_dir)
+            manifest_path, result_root = self._manifest(root, self._accepted_records())
+            (result_root / "m3-f01.validator-receipt.json").unlink()
+            result = self._audit(manifest_path, result_root)
+
+        self.assertEqual(result["status"], "invalid")
+        self.assertIn("artifact_missing:m3-f01:validator_receipt_json", result["errors"])
+
+    def test_failed_case_cannot_be_flipped_to_accepted(self):
+        with tempfile.TemporaryDirectory(dir=REPO_ROOT) as temp_dir:
+            root = Path(temp_dir)
+            records = self._partial_records()
+            records[1] = self._record(
+                "m3-f02",
+                "processing_failed",
+                task_id="task-m3-f02",
+                finalizations=1,
+                preflighted=1,
+                composer=1,
+                failures=["composer_invocation_failed"],
+            )
+            manifest_path, result_root = self._manifest(root, records)
+            manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+            self._case_entry(manifest, "m3-f02")["record"]["accepted"] = True
+            self._write_json(manifest_path, manifest)
+            result = self._audit(manifest_path, result_root)
+
+        self.assertEqual(result["status"], "invalid")
+        self.assertIn("accepted_state_invalid", result["errors"])
+
+    def test_bundle_from_another_case_is_rejected(self):
+        with tempfile.TemporaryDirectory(dir=REPO_ROOT) as temp_dir:
+            root = Path(temp_dir)
+            manifest_path, result_root = self._manifest(root, self._accepted_records())
+            source = REPO_ROOT / "evals" / "m3" / "results" / "forward-r5" / "m3-f04.bundle.json"
+            target = result_root / "m3-f01.bundle.json"
+            target.write_bytes(source.read_bytes())
+            result = self._audit(manifest_path, result_root)
+
+        self.assertEqual(result["status"], "invalid")
+        self.assertIn("composed_source_mismatch:m3-f01", result["errors"])
+
+    def test_modified_artifact_with_stale_hash_is_rejected(self):
+        with tempfile.TemporaryDirectory(dir=REPO_ROOT) as temp_dir:
+            root = Path(temp_dir)
+            manifest_path, result_root = self._manifest(root, self._accepted_records())
+            self._write_json(result_root / "m3-f01.model-final.json", {"tampered": True})
+            result = self._audit(manifest_path, result_root)
+
+        self.assertEqual(result["status"], "invalid")
+        self.assertIn("artifact_sha256_mismatch:m3-f01:model_final_json", result["errors"])
+
+    def test_result_root_must_equal_frozen_root_not_a_subdirectory(self):
+        with tempfile.TemporaryDirectory(dir=REPO_ROOT) as temp_dir:
+            root = Path(temp_dir)
+            manifest_path, result_root = self._manifest(root, self._accepted_records())
+            nested = result_root / "nested"
+            nested.mkdir()
+            manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+            manifest["result_root"] = nested.relative_to(REPO_ROOT).as_posix()
+            self._write_json(manifest_path, manifest)
+            result = self._audit(manifest_path, result_root)
+
+        self.assertEqual(result["status"], "invalid")
+        self.assertIn("result_root_not_exact", result["errors"])
 
 
 if __name__ == "__main__":
