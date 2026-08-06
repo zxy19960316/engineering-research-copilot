@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "m3.1-forward-r5.1-f02-model-output-contract-v1",
+  "title": "M3.1 r5.1-f02 replacement model output",
+  "description": "A closed M3 model payload using the inherited r5 structural schema plus an exact upstream authority rule for every method-card and overlay stop or pivot condition.",
+  "allOf": [
+    {
+      "$ref": "../forward-inputs-r5/m3-model-output-contract.schema.json"
+    }
+  ],
+  "x-authority-inheritance": {
+    "source": "source_m2_bundle.route_output",
+    "condition_fields": [
+      "criterion_type",
+      "metric_id",
+      "operator",
+      "value",
+      "unit"
+    ],
+    "rule": "Every emitted stop_conditions or pivot_conditions object, including overlay additional_stop_conditions, must be an exact JSON-semantic copy of one authoritative object from the matching route_output array. Do not synthesize, normalize, convert, round, paraphrase, or combine any field.",
+    "fail_closed": "If an exact authoritative object cannot be copied, emit no invented replacement and do not claim a valid method payload."
+  },
+  "x-base-contract-binding": {
+    "path": "evals/m3/forward-inputs-r5/m3-model-output-contract.schema.json",
+    "git_blob_oid": "e987a2568619de2a8dcb0595b5e7370580195af2",
+    "raw_sha256": "8f2dc8c2d5bcaccb29f02b1c078ac0ff5076e2d5bf9d2f713a0ce7b876249e21",
+    "canonical_sha256": "c9a80d2ab6aa6b755f555d2e5c96c73bb446268e88a958c2288112c442cd8f1b"
+  }
+}

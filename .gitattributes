@@ -22,3 +22,7 @@
 # Keep deterministic M3 offline fixture materialization aligned with its builder.
 /evals/m3/fixtures/** text eol=lf
 /evals/m3/adversarial-cases.json text eol=lf
+
+# Preserve byte-sensitive r5.1-f02 replacement preparation inputs and reserved root.
+/evals/m3/forward-inputs-r5.1-f02/** text eol=lf
+/evals/m3/results/forward-r5.1-f02/** text eol=lf
