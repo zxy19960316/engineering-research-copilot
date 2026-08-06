@@ -107,7 +107,6 @@ class DispatchForwardR5Tests(unittest.TestCase):
             manifest["cases"][-1]["future_paths"]["validator_receipt_json"] = "../escape.json"
             self._write_json(manifest_path, manifest)
             callback = mock.Mock()
-
             with (
                 mock.patch.object(dispatcher, "R5_RESULT_ROOT", result_root),
                 mock.patch.object(
@@ -137,12 +136,11 @@ class DispatchForwardR5Tests(unittest.TestCase):
                     wraps=dispatcher._preflight_case,
                 ) as preflight_mock,
             ):
-                result = dispatcher.dispatch_batch(manifest_path, callback)
+                result = dispatcher.preflight_batch(manifest_path)
 
             self.assertEqual(result["status"], "ready")
             self.assertEqual(preflight_mock.call_count, 5)
-            callback.assert_not_called()
-            self.assertEqual(result["plans"], [])
+            self.assertEqual(len(result["plans"]), 5)
 
     def test_f03_resolves_exact_frozen_r2_input_path(self):
         with tempfile.TemporaryDirectory(dir=REPO_ROOT) as temp_dir:
