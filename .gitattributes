@@ -5,3 +5,6 @@
 /evals/m3/forward-inputs-r3/** text eol=lf
 /evals/m3/results/forward-r3/** text eol=lf
 /evals/m3/forward-cases-r3.md text eol=lf
+
+# Materialize immutable historical r2 input blobs without CRLF conversion.
+/evals/m3/forward-inputs-r2/** text eol=lf
