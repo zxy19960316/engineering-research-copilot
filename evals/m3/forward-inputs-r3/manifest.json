@@ -1,6 +1,6 @@
 {
   "schema_version": "m3.1-forward-inputs-r3-preparation-v1",
-  "status": "blocked_by_f04_upstream_input",
+  "status": "ready_to_freeze_prompts",
   "branch": "codex/m3.1.1-r3-acceptance-repair",
   "r2_frozen_head": "6ec576a47a804300e2a95e6bddfff1d00c5270a3",
   "r2_freeze_diagnostic": {
@@ -52,16 +52,18 @@
     },
     {
       "case_id": "m3-f04",
-      "input_path": null,
-      "input_raw_sha256": null,
-      "input_canonical_sha256": null,
+      "input_path": "evals/f04-upstream/m2/f04-m2-confirmed.bundle.json",
+      "input_raw_sha256": "dbc1e778e0b53ea5c8724bcaea39803d13d524a67f8e72a24a046a380ff574e4",
+      "input_canonical_sha256": "9601cfc01609dd8aae6b76073caf66928e4aa67d9dac3fd7fe52e922cdb66526",
       "m2_validation_path": "evals/m3/forward-inputs-r3/m3-f04.m2-validation.json",
-      "m2_validation_raw_sha256": "2141f4f09e6e0e6cf91fb44f1fcb1cccf89baa26a5db2a608ef2c46283d68788",
+      "m2_validation_raw_sha256": "19c89bf9750491da28674ef6a7b870a33840f0e7c2e0c86a58a15724e71bc914",
       "eligibility_path": "evals/m3/forward-inputs-r3/m3-f04.eligibility.json",
-      "eligibility_raw_sha256": "65228e5e1c414123cccdbd768fbac576a4d733313d0cce97fbbd3c0707438bc2",
-      "eligibility_status": "not_run",
+      "eligibility_raw_sha256": "a110e77e791bb78a0b63c421ff8c91b34282f8eee85f2739d7e10b0e667cdfeb",
+      "eligibility_status": "eligible",
       "coaching_mode": "bounded",
-      "evidence_gap": "no independently accepted complete non-nuclear M1/M2 input"
+      "upstream_acceptance_path": "evals/m3/forward-inputs-r3/f04-upstream/acceptance-manifest.json",
+      "upstream_acceptance_raw_sha256": "ba8ba8a8b3d10b80fae740e9d05e2b6957ff4ad8f1f312c15c9399bf2497a3cb",
+      "selected_direction_id": "F04-D01"
     },
     {
       "case_id": "m3-f05",
@@ -86,8 +88,9 @@
   "fresh_contexts_consumed": 0,
   "prompts_frozen": false,
   "notes": [
-    "F01, F02, F03, and revised route-specific F05 pass the r3 pre-prompt eligibility audit.",
+    "F01, F02, F03, F04, and revised route-specific F05 pass the r3 pre-prompt eligibility audit.",
     "The old route-free r2 F05 input remains M2-valid but is not eligible for revised r3 F05.",
-    "F04 remains NOT_RUN; no prompt is frozen and no fresh context is consumed until a new independently accepted non-nuclear M1/M2 lineage exists."
+    "F04-D01 has an independently reviewed, route-free, user-confirmed non-nuclear M1/M2 lineage. The initial raw-byte review remains preserved as invalid and the later LF-bound fresh-worktree review supersedes it for input acceptance only.",
+    "No prompt is frozen and no r3 fresh context has been consumed at this preparation state."
   ]
 }

@@ -1,0 +1,87 @@
+{
+  "schema_version": "m3.1-r3-f04-upstream-acceptance-v1",
+  "status": "accepted",
+  "case_id": "m3-f04",
+  "coaching_mode": "bounded",
+  "source_commits": [
+    {
+      "source_branch_sha": "45c523a93fbf82aea3b8e6d2704633f55a933745",
+      "r3_cherry_pick_sha": "1c29d605b9bdfee335ac046f09995ecca09b3109",
+      "purpose": "independent M1 upstream evidence"
+    },
+    {
+      "source_branch_sha": "c960b8139627f7b18fda3095aaa8bfee8020661c",
+      "r3_cherry_pick_sha": "bba9a6f8f1ccdab907e4c87d7ede4b520710d3a6",
+      "purpose": "provisional M2.1.1 directions"
+    },
+    {
+      "source_branch_sha": "53d729f15f4fae83dcde570ea03b42224f6f11b2",
+      "r3_cherry_pick_sha": "f05b26405575d864abc374093f748ca5e4e7c281",
+      "purpose": "confirmation binding specification"
+    },
+    {
+      "source_branch_sha": "8804b6abe5617ec5bc00f91844bdc7eb6fa6328c",
+      "r3_cherry_pick_sha": "a15e4443aab297459610ab510e81c1d424b3c2a4",
+      "purpose": "route-free F04-D01 confirmation successor"
+    }
+  ],
+  "source_m1": {
+    "path": "evals/f04-upstream/m1/f04-m1-calibration.json",
+    "raw_sha256": "6b5780d0ffe20349cb11aa9a0c841d54e4cb5914ec0aa9b0bfd3d1016ea88bde",
+    "canonical_sha256": "53f7ff7baad4f9b13b5f27ae1a52010dc640fe45cb7a2fdd05225019882c3924",
+    "terminal_state": "M1_COMPLETE",
+    "outcome": "complete",
+    "validation_path": "evals/f04-upstream/m1/f04-m1-validation.json",
+    "validation_status": "valid"
+  },
+  "preconfirmation_m2": {
+    "path": "evals/f04-upstream/m2/f04-m2-direction-bundle.json",
+    "raw_sha256": "d8ba0db929fdbe5c243084f779ffe90c0993a8722eb0e45b3a81a72d1ab07f28",
+    "canonical_sha256": "884e80387776ecdf3963a3db79c1bec3eb8fe48f65f17c0fc8852d61b54f8678"
+  },
+  "confirmed_m2": {
+    "path": "evals/f04-upstream/m2/f04-m2-confirmed.bundle.json",
+    "raw_sha256": "dbc1e778e0b53ea5c8724bcaea39803d13d524a67f8e72a24a046a380ff574e4",
+    "canonical_sha256": "9601cfc01609dd8aae6b76073caf66928e4aa67d9dac3fd7fe52e922cdb66526",
+    "selected_direction_id": "F04-D01",
+    "selected_direction_canonical_sha256": "1f81072903df3afa27d49bd06c17209141014ac8ea5026973a8bc7bd8e69b310",
+    "confirmation_source_message_id": "codex-task:019fd4f7-e1c4-7fd1-9799-786f62fda8e6:item-46",
+    "confirmation_source_excerpt": "Confirm F04 direction F04-D01",
+    "route_output": null
+  },
+  "construction_context": "codex-task:019fd467-790b-7551-9157-ddd3b2222ca1",
+  "independent_review": {
+    "review_status": "valid",
+    "reviewer_context": "codex-task:019fd562-79ce-7b50-8271-bcf72e5e9620",
+    "reviewed_head": "738f337b2dd645fc5e0c8c159fd42d02b67defc5",
+    "m1_validation_status": "valid",
+    "m2_validation_status": "valid",
+    "filesystem_raw_sha256": "dbc1e778e0b53ea5c8724bcaea39803d13d524a67f8e72a24a046a380ff574e4",
+    "canonical_sha256": "9601cfc01609dd8aae6b76073caf66928e4aa67d9dac3fd7fe52e922cdb66526",
+    "eligibility_result": {
+      "case_id": "m3-f04",
+      "coaching_mode": "bounded",
+      "status": "eligible",
+      "errors": [],
+      "evidence_gaps": [],
+      "required_model_boundaries": []
+    }
+  },
+  "byte_preservation": {
+    "f04_lf_rule_commit": "63a96eec6974d619910426c1f1f093df7f77c4e2",
+    "r3_lf_rule_commit": "e0bedffcc35483e4c189cb404d9bc4653e3934a7",
+    "r2_input_lf_rule_commit": "2ee10ca5c8b7c216e57b1966dcf434fac876de08",
+    "fresh_worktree_crlf_count": 0,
+    "prior_invalid_review_path": "evals/m3/forward-inputs-r3/f04-upstream/2026-08-06-initial-review-invalid.json",
+    "prior_invalid_review_raw_sha256": "75173fc8f0b549cc30ad2f388eefc92c72365716820c4ea9bebe67cdf2f6ce03",
+    "prior_review_status": "invalid"
+  },
+  "errors": [],
+  "evidence_gaps": [],
+  "does_not_prove": [
+    "route execution or research-route feasibility",
+    "empirical bearing measurement, calibration, repeatability, reproducibility, or uncertainty performance",
+    "target-domain transfer success",
+    "M3 fresh-context acceptance"
+  ]
+}
