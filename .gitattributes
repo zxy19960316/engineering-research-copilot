@@ -1,0 +1,2 @@
+# Preserve byte-sensitive F04 evidence exactly across Windows worktrees.
+/evals/f04-upstream/** text eol=lf
