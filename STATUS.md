@@ -14,13 +14,17 @@ Accepted fresh cases: `F01, F03, F04, F05`
 
 Failed fresh case: `F02`
 
-Exact-HEAD CI: `FAILED` (GitHub Actions run `31096079186`)
+Exact-HEAD CI: `PASSED` for r5.1 CI/acceptance hardening implementation HEAD `18e48e38e44b0f0e18e323246496e0919d36fcdc` (GitHub Actions run `31105995299`)
 
 M3: `IN_PROGRESS`
 
 M4: `NOT_STARTED`
 
-M3.1 implementation is complete, but M3.1.1 r5 acceptance is not. The consumed r5 evidence remains immutable at `evals/m3/results/forward-r5/`: F01, F03, F04, and F05 were accepted, while F02 failed after its single composer invocation. The r5.1 branch is limited to CI compatibility repair, read-only F02 offline diagnosis, acceptance-auditor hardening, and status/evidence cleanup. It does not authorize a new fresh run, M3 closure, merge, push, M4 branching, experiment or route execution, training, downloads, services, deployment, uploads, RRC integration, or platform integration.
+r5.1 CI and acceptance hardening implementation: `COMPLETE`
+
+r5.1 closure-evidence exact-HEAD CI: `NOT_RUN`
+
+M3.1 implementation is complete, but M3.1.1 r5 acceptance is not. The consumed r5 evidence remains immutable at `evals/m3/results/forward-r5/`: F01, F03, F04, and F05 were accepted, while F02 failed after its single composer invocation. r5.1 completed only CI compatibility repair, read-only F02 offline diagnosis, acceptance-auditor hardening, and status/evidence cleanup. It does not close M3, accept r5, authorize a new fresh run, start r5.1-f02 preparation, merge, branch M4, or execute an experiment, route, training, download, service, deployment, upload, RRC integration, or platform integration.
 
 Before route-specific method-card instantiation, M3.1.1 must validate the complete M2.1.1 bundle, require `user_confirmed`, recompute the selected-direction binding, reject every non-empty `approved_constraint_changes` list with `unsupported_approved_constraint_change_provenance`, and rederive claim metrics, claim-specific preconditions, resource ceilings, actual Go/Stop/Pivot coverage, safety-source eligibility, and method-card internal bindings from upstream structures.
 
@@ -42,6 +46,7 @@ Before route-specific method-card instantiation, M3.1.1 must validate the comple
 - [x] Complete local r4 preparation gates pass at HEAD `fca83eecf4737a00f37a129d31a1822344b2eac0`: focused 29/29, full 334/334, unchanged M1/M2/M3 replays, package audit, and Skill validation. This is local structural evidence only; no exact-HEAD remote CI or closure CI is claimed.
 - [ ] Five genuinely fresh-context r4 forward evaluations completed with accepted validator results. The first coordinator consumption, F03, stopped with `consumed_with_callback_failure`; no remaining case was dispatched, composed, or validated after that failure.
 - [x] F03 one-shot evidence and the dispatcher callback failure are preserved at `evals/m3/results/forward-r4/m3-f03.outcome.json`, `m3-f03.validation.json`, and `m3-f03.dispatch-callback-failure.json`; no repair or retry was performed and all later r4 acceptance/closure gates remain `NOT_RUN`.
+- [x] r5.1 CI/acceptance hardening implementation HEAD `18e48e38e44b0f0e18e323246496e0919d36fcdc` passed exact-HEAD GitHub Actions run `31105995299`; validate, Ubuntu historical audit, and Windows historical audit all completed successfully with no skipped project gates. This closes only r5.1 hardening and leaves r5 blocked.
 
 ## M3.1.1 r5 historical preparation and terminal result
 
@@ -54,6 +59,14 @@ The independent r5 dispatcher-receipt and five-task contract repair was structur
 This readiness status is preparation evidence only. After the separately authorized one-shot r5 consumption, the r5 terminal status is recorded below as `BLOCKED_NOT_ACCEPTED`; M3 remains `IN_PROGRESS`; M4 and M5 remain `NOT_STARTED`. The following M3 local-result section preserves the historical r4 `BLOCKED_NOT_ACCEPTED` state and is not reinterpreted as r5 evidence.
 
 Authorized r5 consumption observed exactly five finalizations and made exactly five dispatcher callbacks. F01, F03, F04, and F05 reached `processed_accepted`; F02 preserved a `processing_failed` transaction after its only composer invocation returned `composer_invocation_failed`. The derived counters are `tasks_launched=5`, `task_finalizations_observed=5`, `dispatcher_cases_preflighted=5`, `dispatcher_cases_processed=4`, `composer_invocations=4`, `validator_invocations=4`, `accepted_cases=4`, and `transaction_failures=1`. The acceptance audit returned `blocked_not_accepted`; later acceptance/closure gates are `NOT_RUN`. Full evidence is in `evals/m3/results/forward-r5/acceptance-manifest-consumed.json` and `evals/m3/results/2026-08-06-m3.1.1-r5-forward-consumption-validation.md`.
+
+## M3.1.1 r5.1 CI and acceptance hardening closure
+
+Status: `IMPLEMENTATION_COMPLETE; CLOSURE_RECORD_PENDING_EXACT_HEAD_CI`
+
+Implementation HEAD `18e48e38e44b0f0e18e323246496e0919d36fcdc` passed exact-HEAD GitHub Actions run `31105995299`. The `validate` job and both Ubuntu and Windows historical-audit jobs concluded `success`; every project validation step executed successfully. The full local suite passed 388 tests, M1/M2/M3 replays matched their frozen expectations, both fixture-regeneration diffs were empty, the package and standard Skill audits passed, and the expected r5 blocked-state audit remained valid. The frozen r5 result tree has zero diff from evidence HEAD `1b696bce53ee0a11163bfe4f91a9a49ab3af6f49`.
+
+This closure records only the completion of r5.1 CI compatibility and acceptance hardening. It does not relabel F02, does not accept r5, and does not close M3. The closure-evidence commit containing this paragraph cannot truthfully embed or pre-claim its own SHA or exact-HEAD CI; that separate gate remains `NOT_RUN` until this new commit is pushed under explicit authorization. See `evals/m3/results/2026-08-06-m3.1.1-r5.1-ci-closure-validation.md`.
 
 ## M3 local result
 
@@ -195,7 +208,7 @@ Evidence is recorded under `evals/m1/`, including preserved failed runs and inde
 ## External state
 
 - Git remote: `https://github.com/zxy19960316/engineering-research-copilot.git`
-- Active local branch: `codex/m3.1.1-r5-dispatch-contract-repair`
+- Active local branch: `codex/m3.1.1-r5.1-ci-and-acceptance-hardening`
 - External APIs/services configured: none
 - RRC integration: not started
 - Platform integration: not required for the local Skill competition track
