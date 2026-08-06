@@ -14,7 +14,7 @@ Accepted fresh cases: `F01, F03, F04, F05`
 
 Failed fresh case: `F02`
 
-Exact-HEAD CI: `PASSED` for r5.1 CI/acceptance hardening implementation HEAD `18e48e38e44b0f0e18e323246496e0919d36fcdc` (GitHub Actions run `31105995299`)
+Exact-HEAD CI: `FAILED` for the immutable r5 acceptance state (GitHub Actions run `31096079186`)
 
 M3: `IN_PROGRESS`
 
@@ -22,7 +22,11 @@ M4: `NOT_STARTED`
 
 r5.1 CI and acceptance hardening implementation: `COMPLETE`
 
-r5.1 closure-evidence exact-HEAD CI: `NOT_RUN`
+r5.1 implementation exact-HEAD CI: `PASSED` on HEAD `18e48e38e44b0f0e18e323246496e0919d36fcdc` (GitHub Actions run `31105995299`)
+
+r5.1 first closure-evidence exact-HEAD CI: `FAILED` on HEAD `92517be9b936b299f1cd1fa04bee120ef4760323` (GitHub Actions run `31107751125`)
+
+r5.1 corrected closure-evidence exact-HEAD CI: `NOT_RUN`
 
 M3.1 implementation is complete, but M3.1.1 r5 acceptance is not. The consumed r5 evidence remains immutable at `evals/m3/results/forward-r5/`: F01, F03, F04, and F05 were accepted, while F02 failed after its single composer invocation. r5.1 completed only CI compatibility repair, read-only F02 offline diagnosis, acceptance-auditor hardening, and status/evidence cleanup. It does not close M3, accept r5, authorize a new fresh run, start r5.1-f02 preparation, merge, branch M4, or execute an experiment, route, training, download, service, deployment, upload, RRC integration, or platform integration.
 
@@ -47,6 +51,7 @@ Before route-specific method-card instantiation, M3.1.1 must validate the comple
 - [ ] Five genuinely fresh-context r4 forward evaluations completed with accepted validator results. The first coordinator consumption, F03, stopped with `consumed_with_callback_failure`; no remaining case was dispatched, composed, or validated after that failure.
 - [x] F03 one-shot evidence and the dispatcher callback failure are preserved at `evals/m3/results/forward-r4/m3-f03.outcome.json`, `m3-f03.validation.json`, and `m3-f03.dispatch-callback-failure.json`; no repair or retry was performed and all later r4 acceptance/closure gates remain `NOT_RUN`.
 - [x] r5.1 CI/acceptance hardening implementation HEAD `18e48e38e44b0f0e18e323246496e0919d36fcdc` passed exact-HEAD GitHub Actions run `31105995299`; validate, Ubuntu historical audit, and Windows historical audit all completed successfully with no skipped project gates. This closes only r5.1 hardening and leaves r5 blocked.
+- [ ] r5.1 closure-evidence exact-HEAD CI. First closure record HEAD `92517be9b936b299f1cd1fa04bee120ef4760323` failed run `31107751125` because its status text replaced the preserved r5 CI failure field; later validate steps were skipped. The corrected closure record requires a new exact-HEAD run.
 
 ## M3.1.1 r5 historical preparation and terminal result
 
@@ -62,11 +67,11 @@ Authorized r5 consumption observed exactly five finalizations and made exactly f
 
 ## M3.1.1 r5.1 CI and acceptance hardening closure
 
-Status: `IMPLEMENTATION_COMPLETE; CLOSURE_RECORD_PENDING_EXACT_HEAD_CI`
+Status: `IMPLEMENTATION_COMPLETE; FIRST_CLOSURE_RECORD_CI_FAILED; CORRECTED_CLOSURE_RECORD_PENDING_EXACT_HEAD_CI`
 
 Implementation HEAD `18e48e38e44b0f0e18e323246496e0919d36fcdc` passed exact-HEAD GitHub Actions run `31105995299`. The `validate` job and both Ubuntu and Windows historical-audit jobs concluded `success`; every project validation step executed successfully. The full local suite passed 388 tests, M1/M2/M3 replays matched their frozen expectations, both fixture-regeneration diffs were empty, the package and standard Skill audits passed, and the expected r5 blocked-state audit remained valid. The frozen r5 result tree has zero diff from evidence HEAD `1b696bce53ee0a11163bfe4f91a9a49ab3af6f49`.
 
-This closure records only the completion of r5.1 CI compatibility and acceptance hardening. It does not relabel F02, does not accept r5, and does not close M3. The closure-evidence commit containing this paragraph cannot truthfully embed or pre-claim its own SHA or exact-HEAD CI; that separate gate remains `NOT_RUN` until this new commit is pushed under explicit authorization. See `evals/m3/results/2026-08-06-m3.1.1-r5.1-ci-closure-validation.md`.
+The first closure-evidence record HEAD `92517be9b936b299f1cd1fa04bee120ef4760323` failed exact-HEAD run `31107751125`: both cross-platform historical-audit jobs succeeded, but `test_status_top_reports_current_r5_blocked_state` rejected replacement of the preserved r5 `Exact-HEAD CI: FAILED` field, and all later validate steps were skipped. This correction restores that r5 field and records the successful r5.1 implementation CI separately. It does not relabel F02, accept r5, or close M3. The corrected closure-evidence commit cannot truthfully embed or pre-claim its own SHA or exact-HEAD CI; that successor gate remains `NOT_RUN` until push and is reported externally afterward. See `evals/m3/results/2026-08-06-m3.1.1-r5.1-ci-closure-validation.md`.
 
 ## M3 local result
 
