@@ -159,7 +159,7 @@ git commit -m "eval: bind confirmed F04-D01 direction"
 
 **Interfaces:**
 - Consumes: the clean F04 branch with four commits after `99d5c03`.
-- Produces: the same commits, hashes, and file bytes in the r3 ancestry; no r2 path changes.
+- Produces: four independently reviewable cherry-picked commits with the same file bytes and semantic boundaries in r3; record both the original F04 source SHAs and the new r3 cherry-pick SHAs because their parents differ. No r2 path changes.
 
 - [ ] **Step 1: Verify the exact commit list and byte scope**
 
