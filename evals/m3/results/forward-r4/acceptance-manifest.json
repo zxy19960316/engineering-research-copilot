@@ -1,0 +1,57 @@
+{
+  "schema_version": "m3.1-forward-acceptance-r4-v1",
+  "status": "blocked_not_accepted",
+  "m3_status": "IN_PROGRESS",
+  "m4_status": "NOT_STARTED",
+  "m5_status": "NOT_STARTED",
+  "branch": "codex/m3.1.1-r4-byte-gate-resume",
+  "candidate_head": "058b93d944d67b9e5c862ab5e1e74bb86d652512",
+  "required_starting_head": "64706d9a1adb1289bb5d06b51d6fa8ce45066387",
+  "immutable_r3_baseline": "dbcbbb6b4fe501de87f655edf22099ad62363c57",
+  "input_manifest": {
+    "path": "evals/m3/forward-inputs-r4/manifest.json",
+    "raw_sha256": "9414c890f28b260c35a9e17cefdc556b26ba10b3a8af014089d6707a45f3a555",
+    "prompts_frozen": true,
+    "pre_consumption_fresh_contexts_consumed": 0
+  },
+  "case_specification": {
+    "path": "evals/m3/forward-cases-r4.md",
+    "raw_sha256": "6681bfddf932db640e58d836f1b44914599b74aeed7b79f3a887f00f70180fb3"
+  },
+  "authorization": {
+    "actor_role": "user",
+    "source_task_id": "019fd467-790b-7551-9157-ddd3b2222ca1",
+    "source_message_excerpt": "从 64706d9 新建独立 follow-up task/worktree，让新增的 LF 规则在全新检出时生效，重新执行字节门；通过后再完成 r4 冻结和五个一次性验收。",
+    "source_message_sha256": "31b0577d2e60aae0bf4f1301919465850c4b7c83294c531a206aa56c84bacc65",
+    "authorized_scope": "Consume exactly five frozen r4 fresh contexts once each only after the fresh-checkout byte gate and all preparation gates pass; no push, PR, merge, tag, main change, M4, M5, route, experiment, simulation, network, model, or service execution."
+  },
+  "fresh_contexts_consumed": 1,
+  "cases": [
+    {
+      "case_id": "m3-f03",
+      "fresh_context_id": "019fd626-8d87-7020-adcc-b42e03f77729",
+      "finalization_count": 1,
+      "composer_invocation_count": 0,
+      "validator_invocation_count": 1,
+      "observed_status": "accepted_expected_block",
+      "dispatch_status": "consumed_with_callback_failure",
+      "accepted": false,
+      "failure_record_path": "evals/m3/results/forward-r4/m3-f03.dispatch-callback-failure.json"
+    }
+  ],
+  "remaining_cases": [
+    "m3-f01",
+    "m3-f02",
+    "m3-f04",
+    "m3-f05"
+  ],
+  "later_gates": "NOT_RUN",
+  "terminal_state": "BLOCKED/NOT_ACCEPTED",
+  "blocking_gate": "m3-f03 manifest-dispatch callback failed after its single validator invocation; no repair or retry is authorized",
+  "notes": [
+    "The fresh-checkout byte gate and all r4 preparation gates passed before fresh-context creation.",
+    "The frozen r4 input manifest and prompts remain unchanged; the prior blocked r4 and all r2/r3 evidence remain preserved.",
+    "The single F03 model final is byte-preserved and its outcome validator returned accepted_expected_block, but the dispatcher transaction did not close cleanly.",
+    "No remaining case output, composer, validator, local closure, exact-HEAD CI, push, PR, M4, or M5 gate is claimed or run after the blocking callback failure."
+  ]
+}
