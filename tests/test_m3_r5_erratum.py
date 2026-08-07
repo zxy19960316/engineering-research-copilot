@@ -95,18 +95,27 @@ class M3R5ErratumTests(unittest.TestCase):
         self.assertEqual(diagnostic["retry_count"], 0)
         self.assertFalse(diagnostic["composed_output_created"])
 
-    def test_status_top_reports_current_r5_blocked_state(self):
+    def test_status_top_reports_current_r5_1_f02_terminal_state(self):
         text = (REPO_ROOT / "STATUS.md").read_text(encoding="utf-8")
         current = text.split("## M3 checklist", 1)[0]
 
-        self.assertIn("Active revision: `M3.1.1 r5`", current)
-        self.assertIn(f"Evidence HEAD: `{EVIDENCE_HEAD}`", current)
-        self.assertIn("Status: `BLOCKED_NOT_ACCEPTED`", current)
+        self.assertIn(
+            "Active revision: `M3.1.1 r5.1-f02 terminal evidence closure`",
+            current,
+        )
+        self.assertIn(f"Historical r5 evidence HEAD: `{EVIDENCE_HEAD}`", current)
+        self.assertIn("Status: `TERMINAL_NOT_ACCEPTED`", current)
+        self.assertIn("Historical r5 status: `BLOCKED_NOT_ACCEPTED`", current)
         self.assertIn("Accepted fresh cases: `F01, F03, F04, F05`", current)
         self.assertIn("Failed fresh case: `F02`", current)
         self.assertIn("Exact-HEAD CI: `FAILED`", current)
         self.assertIn("M3: `IN_PROGRESS`", current)
         self.assertIn("M4: `NOT_STARTED`", current)
+        self.assertIn("r5.1-f02 retry: `FORBIDDEN`", current)
+        self.assertIn("r5.1-f02 replacement task budget: `CONSUMED`", current)
+        self.assertIn(
+            "r5.1-f02 authorization token: `CONSUMED / TERMINAL`", current
+        )
         self.assertNotIn("READY_FOR_AUTHORIZED_R5_FRESH_CONTEXTS", current)
 
 

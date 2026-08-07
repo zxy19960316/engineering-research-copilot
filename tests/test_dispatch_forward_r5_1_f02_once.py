@@ -25,6 +25,15 @@ NEW_TASK_ID = "019fffff-0000-7000-8000-000000000001"
 
 
 class DispatchForwardR51F02OnceTests(unittest.TestCase):
+    @staticmethod
+    def _frozen_ready_audit() -> dict:
+        authorization = json.loads(AUTHORIZATION.read_text(encoding="utf-8"))
+        return {
+            "status": "ready_for_one_shot_fresh_execution",
+            "authorization_token": authorization["authorization_token"],
+            "errors": [],
+        }
+
     def _invalid_authorization(self, root: Path) -> Path:
         value = json.loads(AUTHORIZATION.read_text(encoding="utf-8"))
         value["readiness_ci_run_id"] = 1
@@ -40,7 +49,12 @@ class DispatchForwardR51F02OnceTests(unittest.TestCase):
     def test_dry_run_preflight_has_zero_callback_and_zero_side_effects(self):
         callback = mock.Mock()
         before = {path.name: path.read_bytes() for path in dispatch.RESULT_ROOT.iterdir()}
-        result = dispatch.preflight_execution(AUTHORIZATION)
+        with mock.patch.object(
+            dispatch,
+            "audit_execution_authorization",
+            return_value=self._frozen_ready_audit(),
+        ):
+            result = dispatch.preflight_execution(AUTHORIZATION)
         after = {path.name: path.read_bytes() for path in dispatch.RESULT_ROOT.iterdir()}
         self.assertEqual(result["status"], "ready_for_one_shot_fresh_execution")
         self.assertEqual(result["callback_invocations"], 0)
@@ -62,7 +76,14 @@ class DispatchForwardR51F02OnceTests(unittest.TestCase):
         with tempfile.TemporaryDirectory(dir=REPO_ROOT) as temp_dir:
             root = Path(temp_dir)
             callback = mock.Mock(return_value=NEW_TASK_ID)
-            with mock.patch.object(dispatch, "RESULT_ROOT", root):
+            with (
+                mock.patch.object(dispatch, "RESULT_ROOT", root),
+                mock.patch.object(
+                    dispatch,
+                    "audit_execution_authorization",
+                    return_value=self._frozen_ready_audit(),
+                ),
+            ):
                 first = dispatch.dispatch_authorized_once(AUTHORIZATION, callback)
                 second_callback = mock.Mock(return_value="second-task")
                 second = dispatch.dispatch_authorized_once(
@@ -83,7 +104,14 @@ class DispatchForwardR51F02OnceTests(unittest.TestCase):
         with tempfile.TemporaryDirectory(dir=REPO_ROOT) as temp_dir:
             root = Path(temp_dir)
             callback = mock.Mock(return_value=dispatch.HISTORICAL_TASK_ID)
-            with mock.patch.object(dispatch, "RESULT_ROOT", root):
+            with (
+                mock.patch.object(dispatch, "RESULT_ROOT", root),
+                mock.patch.object(
+                    dispatch,
+                    "audit_execution_authorization",
+                    return_value=self._frozen_ready_audit(),
+                ),
+            ):
                 first = dispatch.dispatch_authorized_once(AUTHORIZATION, callback)
                 retry = mock.Mock(return_value=NEW_TASK_ID)
                 second = dispatch.dispatch_authorized_once(AUTHORIZATION, retry)
@@ -98,7 +126,14 @@ class DispatchForwardR51F02OnceTests(unittest.TestCase):
         with tempfile.TemporaryDirectory(dir=REPO_ROOT) as temp_dir:
             root = Path(temp_dir)
             callback = mock.Mock(side_effect=RuntimeError("private launch detail"))
-            with mock.patch.object(dispatch, "RESULT_ROOT", root):
+            with (
+                mock.patch.object(dispatch, "RESULT_ROOT", root),
+                mock.patch.object(
+                    dispatch,
+                    "audit_execution_authorization",
+                    return_value=self._frozen_ready_audit(),
+                ),
+            ):
                 first = dispatch.dispatch_authorized_once(AUTHORIZATION, callback)
                 retry = mock.Mock(return_value=NEW_TASK_ID)
                 second = dispatch.dispatch_authorized_once(AUTHORIZATION, retry)
@@ -115,7 +150,14 @@ class DispatchForwardR51F02OnceTests(unittest.TestCase):
             compose = mock.Mock(return_value={"bundle": "composed"})
             validate = mock.Mock(return_value={"status": "valid", "accepted": True})
             final_raw = b'{"model":"final"}\r\n'
-            with mock.patch.object(dispatch, "RESULT_ROOT", root):
+            with (
+                mock.patch.object(dispatch, "RESULT_ROOT", root),
+                mock.patch.object(
+                    dispatch,
+                    "audit_execution_authorization",
+                    return_value=self._frozen_ready_audit(),
+                ),
+            ):
                 launch = dispatch.dispatch_authorized_once(
                     AUTHORIZATION, lambda: NEW_TASK_ID
                 )
@@ -147,7 +189,14 @@ class DispatchForwardR51F02OnceTests(unittest.TestCase):
     def test_existing_result_artifact_is_not_overwritten(self):
         with tempfile.TemporaryDirectory(dir=REPO_ROOT) as temp_dir:
             root = Path(temp_dir)
-            with mock.patch.object(dispatch, "RESULT_ROOT", root):
+            with (
+                mock.patch.object(dispatch, "RESULT_ROOT", root),
+                mock.patch.object(
+                    dispatch,
+                    "audit_execution_authorization",
+                    return_value=self._frozen_ready_audit(),
+                ),
+            ):
                 dispatch.dispatch_authorized_once(AUTHORIZATION, lambda: NEW_TASK_ID)
                 model_final = root / "m3-f02.model-final.json"
                 model_final.write_bytes(b"sentinel\n")

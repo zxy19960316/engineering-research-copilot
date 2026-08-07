@@ -44,7 +44,12 @@ class DispatchForwardR51F02Tests(unittest.TestCase):
 
     def test_ready_preflight_still_refuses_callback_without_fresh_authorization(self):
         callback = mock.Mock()
-        result = dispatch.preflight_dispatch(MANIFEST, callback)
+        with mock.patch.object(
+            dispatch,
+            "audit_authorization",
+            return_value={"status": "ready_for_fresh_authorization", "errors": []},
+        ):
+            result = dispatch.preflight_dispatch(MANIFEST, callback)
 
         self.assertEqual(result["status"], "ready_for_fresh_authorization")
         self.assertEqual(result["callback_invocations"], 0)

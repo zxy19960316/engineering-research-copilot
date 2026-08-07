@@ -24,6 +24,16 @@ AUTHORIZATION = (
 
 
 class AuditM3ForwardR51F02ExecutionAuthorizationTests(unittest.TestCase):
+    def _frozen_readiness_result(self) -> dict:
+        authorization = json.loads(AUTHORIZATION.read_text(encoding="utf-8"))
+        return {
+            "status": "ready_for_fresh_authorization",
+            "result_artifact_count": 0,
+            "historical_f02_retry_count": 0,
+            "counters": authorization["counters"],
+            "errors": [],
+        }
+
     def _mutated(self, mutate) -> dict:
         value = json.loads(AUTHORIZATION.read_text(encoding="utf-8"))
         mutate(value)
@@ -38,7 +48,12 @@ class AuditM3ForwardR51F02ExecutionAuthorizationTests(unittest.TestCase):
             return audit.audit_execution_authorization(path)
 
     def test_frozen_execution_authorization_is_ready_without_side_effects(self):
-        result = audit.audit_execution_authorization(AUTHORIZATION)
+        with mock.patch.object(
+            audit,
+            "readiness_audit",
+            return_value=self._frozen_readiness_result(),
+        ):
+            result = audit.audit_execution_authorization(AUTHORIZATION)
         self.assertEqual(result["status"], "ready_for_one_shot_fresh_execution")
         self.assertEqual(result["case_id"], "m3-f02")
         self.assertEqual(result["revision"], "r5.1-f02")

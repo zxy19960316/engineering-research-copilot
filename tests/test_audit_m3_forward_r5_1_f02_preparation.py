@@ -39,7 +39,11 @@ class AuditM3ForwardR51F02PreparationTests(unittest.TestCase):
 
     def test_accepts_frozen_one_case_preparation_without_side_effects(self):
         before = {path.name: path.read_bytes() for path in audit.RESULT_ROOT.iterdir()}
-        result = audit.audit_preparation(MANIFEST)
+        with (
+            mock.patch.object(audit, "_check_result_root", return_value=0),
+            mock.patch.object(audit, "validate_future_paths", return_value=[]),
+        ):
+            result = audit.audit_preparation(MANIFEST)
         after = {path.name: path.read_bytes() for path in audit.RESULT_ROOT.iterdir()}
 
         self.assertEqual(result["status"], "ready_for_fresh_authorization")

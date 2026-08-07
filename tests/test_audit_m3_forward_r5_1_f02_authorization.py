@@ -43,7 +43,16 @@ class AuditM3ForwardR51F02AuthorizationTests(unittest.TestCase):
             return audit.audit_authorization(path)
 
     def test_frozen_valid_preparation_is_ready_without_authorizing_a_run(self):
-        result = audit.audit_authorization(MANIFEST)
+        with (
+            mock.patch.object(audit, "_check_result_root", return_value=0),
+            mock.patch.object(audit, "validate_future_paths", return_value=[]),
+            mock.patch.object(
+                audit,
+                "audit_preparation",
+                return_value={"status": "ready_for_fresh_authorization"},
+            ),
+        ):
+            result = audit.audit_authorization(MANIFEST)
 
         self.assertEqual(result["status"], "ready_for_fresh_authorization")
         self.assertEqual(result["case_id"], "m3-f02")
