@@ -25,7 +25,14 @@ class DispatchForwardR52F02Tests(unittest.TestCase):
     def test_valid_gate_2_preflight_never_invokes_callback(self):
         callback = mock.Mock()
 
-        result = dispatch.preflight_dispatch(MANIFEST, callback)
+        with mock.patch.object(
+            dispatch, "audit_preparation"
+        ) as preparation_audit:
+            preparation_audit.return_value = {
+                "status": "gate_2_preparation_valid",
+                "errors": [],
+            }
+            result = dispatch.preflight_dispatch(MANIFEST, callback)
 
         self.assertEqual(result["status"], "gate_2_preparation_ready")
         self.assertEqual(result["reason"], "fresh_run_not_authorized")

@@ -56,7 +56,10 @@ class AuditM3ForwardR52F02PreparationTests(unittest.TestCase):
             path.name: path.read_bytes() for path in audit.RESULT_ROOT.iterdir()
         }
 
-        result = audit.audit_preparation(MANIFEST)
+        with mock.patch.object(
+            audit, "_authorization_instance_absent", return_value=True
+        ):
+            result = audit.audit_preparation(MANIFEST)
 
         after = {path.name: path.read_bytes() for path in audit.RESULT_ROOT.iterdir()}
         self.assertEqual(result["status"], "gate_2_preparation_valid")
