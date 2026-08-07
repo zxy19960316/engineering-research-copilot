@@ -4,19 +4,21 @@
 
 `M3 — Engineering method cards`
 
-Active revision: `M3.1.1 r5.2-f02 Gate 3 one-shot fresh execution authorization`
+Active revision: `M3.1.1 r5.2-f02 Gate 3 accepted terminal evidence`
 
 Historical r5 evidence HEAD: `1b696bce53ee0a11163bfe4f91a9a49ab3af6f49`
 
 Execution evidence HEAD: `a847b3eaf39a6f4f70353cd669e41e414afc658c`
 
-Status: `READY_FOR_ONE_SHOT_FRESH_EXECUTION; EXECUTION_NOT_RUN`
+Status: `GATE_3_COMPLETE; F02_ACCEPTED; GATE_4_NOT_STARTED`
 
 Historical r5 status: `BLOCKED_NOT_ACCEPTED`
 
-Accepted fresh cases: `F01, F03, F04, F05`
+Historical accepted fresh cases: `F01, F03, F04, F05`
 
-Failed fresh case: `F02`
+Historical failed fresh case: `F02`
+
+r5.2-f02 replacement: `F02 ACCEPTED; PRE_AGGREGATE`
 
 Exact-HEAD CI: `FAILED` for the immutable r5 acceptance state (GitHub Actions run `31096079186`)
 
@@ -98,9 +100,13 @@ Gate 2 prompt contradiction lint: `PASSED`
 
 Gate 2 new fresh-run authorization: `false`
 
-Gate 3 one-shot authorization: `LOCAL_READY; EXACT_HEAD_CI_PENDING; NOT_CONSUMED`
+Gate 3 one-shot authorization: `CONSUMED; EXACT_HEAD_CI_PASSED`
 
 Gate 3 authorization implementation HEAD: `765b99afe2b9b0968fbbcbff1f24dd6119fa1da1`
+
+Gate 3 corrected authorization delivery HEAD: `0a6bb7876148a8990934c88cd0fe11aebc0cad7d`
+
+Gate 3 authorization exact-HEAD CI: `PASSED` (GitHub Actions run `31189442896`)
 
 Gate 3 first authorization exact-HEAD CI: `FAILED` on HEAD `eb154888cdb43b62ce039b06e9e5dc0027885be2` (GitHub Actions run `31188398030`; stale Gate 2 status assertion and platform-dependent Gate 2 worktree-byte comparison)
 
@@ -108,17 +114,27 @@ Gate 3 authorization receipt SHA-256: `84a684c6a5b12ad207f41fea04dfe26bb88d4c2cb
 
 Gate 3 execution-control SHA-256: `98c418aaebea54e148894ab86f791cd060d57cc1ef2ab262bf432d0747b3904e`
 
-Gate 3 local gates: `PASSED; focused=78/78; full=547/547`
+Gate 3 terminal evidence exact-HEAD CI: `PENDING`
 
-r5.2-f02 fresh execution: `NOT_RUN`
+r5.2-f02 fresh execution: `ACCEPTED; TERMINAL`
 
-r5.2-f02 result root: `LOGICALLY_EMPTY; .gitkeep_ONLY; artifact_count=0`
+r5.2-f02 task ID: `019fdcb5-14e4-7462-be4f-379b72171a4d`
 
-r5.2-f02 counters: `tasks=0; finalizations=0; composer=0; validator=0; retry=0`
+r5.2-f02 finalization ID: `019fdcb5-1932-7182-a682-ea8bbd4703ab`
+
+r5.2-f02 raw final: `14532 bytes; sha256=a8ec9c94fe5b55555dd1907e770054aacb5d396d050175b18d0f8d435c97eac7`
+
+r5.2-f02 result root: `TERMINAL; entries=13; logical_artifacts=12; allowlist_match=true`
+
+r5.2-f02 counters: `tasks=1; finalizations=1; composer=1; validator=1; retry=0`
+
+r5.2-f02 retry: `FORBIDDEN`
+
+Gate 4: `NOT_STARTED`
 
 M3 closure: `NOT_RUN`
 
-M3.1 implementation is complete, but M3.1.1 acceptance is not. The consumed historical r5 evidence remains immutable at `evals/m3/results/forward-r5/`: F01, F03, F04, and F05 were accepted, while historical F02 failed. The separately authorized r5.1-f02 replacement launched exactly one new task, observed exactly one finalization, preserved the 216-byte non-JSON final verbatim, invoked the composer once, and stopped with `processing_failed` / `payload_invalid_json`; the validator was not invoked. No retry or repair is permitted. This state does not close M3, accept fresh F02, aggregate cross-revision acceptance, merge, branch M4, or execute an experiment, route, training, download, service, deployment, upload, RRC integration, or platform integration.
+M3.1 implementation is complete, but M3 closure has not run. The consumed historical r5 evidence remains immutable at `evals/m3/results/forward-r5/`: F01, F03, F04, and F05 were accepted, while historical F02 failed. The r5.1-f02 replacement remains an immutable 216-byte `terminal_not_accepted` result. The separately authorized r5.2-f02 execution created one new task, observed one finalization, froze 14,532 raw bytes before parsing, invoked composer and validator exactly once, and reached `accepted` with retry zero. Gate 4 cross-revision aggregation, M3 final validation, M3 closure, and M4 remain unstarted.
 
 Before route-specific method-card instantiation, M3.1.1 must validate the complete M2.1.1 bundle, require `user_confirmed`, recompute the selected-direction binding, reject every non-empty `approved_constraint_changes` list with `unsupported_approved_constraint_change_provenance`, and rederive claim metrics, claim-specific preconditions, resource ceilings, actual Go/Stop/Pivot coverage, safety-source eligibility, and method-card internal bindings from upstream structures.
 
@@ -160,6 +176,9 @@ Before route-specific method-card instantiation, M3.1.1 must validate the comple
 - [x] Gate 1 separates and hash-binds the frozen repository prompt, the consumed-turn model-visible message envelope, and the external user authorization. It confirms `authorization_not_visible_in_consumed_turn` with direct evidence and classifies all 216 raw bytes as non-JSON authorization-deferral prose.
 - [x] Gate 1 performs exactly one offline replay through the existing composer loader, reproducing `payload_invalid_json` at line 1, column 1, byte offset 0 with zero model calls, writes, or retries. The late authorized turn remains post-terminal observation only.
 - [x] Gate 2 locally freezes the contradiction-free r5.2-f02 prompt, hash-bound input and authorization-receipt schema, strict JSON boundary, raw-response observation schema, nine synthetic regression cases, read-only preparation auditor, and callback-free dispatcher. The logical result root contains only an empty `.gitkeep`; no authorization receipt instance, task, finalization, composer call, validator call, or retry exists. Exact-HEAD remote CI remains pending at this record commit.
+- [x] Gate 3 authorization baseline HEAD `0a6bb7876148a8990934c88cd0fe11aebc0cad7d` passed exact-HEAD GitHub Actions run `31189442896` before the exclusive launch claim was consumed.
+- [x] Gate 3 created exactly one new r5.2-f02 task and consumed exactly one finalization. The 14,532-byte raw final is frozen before parsing with SHA-256 `a8ec9c94fe5b55555dd1907e770054aacb5d396d050175b18d0f8d435c97eac7`; composer and validator counts are one, retry is zero, and the result is accepted.
+- [x] The r5.2-f02 terminal manifest and independent production replay auditor report `accepted`, exact `1/1/1/1/0` counters, an exact result-root allowlist, no unexpected artifacts or side effects, unchanged historical r5 and r5.1 evidence, and `Gate 4 = NOT_STARTED`.
 
 ## M3.1.1 r5 historical preparation and terminal result
 
@@ -237,17 +256,19 @@ GPT-5.6 Sol documents native Structured Outputs support, but the current `codex_
 
 Local validation passed on implementation HEAD `1b6583b694c0d2263bcf7e12bf62b4a5e6567a47`: 32 focused Gate 2 tests, 49 combined Gate 1/Gate 2 tests, and 518 full tests; unchanged M1, M2, and M3 replays; empty M2/M3 fixture-regeneration diffs; valid package and standard Skill audits; valid r5 blocked-state, r5.1 terminal, Gate 1 root-cause, Gate 2 preparation, and callback-free dispatcher audits. Historical `forward-r5` and `forward-r5.1-f02` Git trees match their frozen evidence heads. `evals/m3/results/forward-r5.2-f02/` contains only an empty `.gitkeep`; task/finalization/composer/validator/retry counters remain `0/0/0/0/0`; `new_fresh_run_authorized=false`; fresh execution, cross-revision aggregation, M3 closure, and M4 remain `NOT_RUN`. Delivery HEAD `05e64d9678f9755126b1c1a0bfa4835bd8296e08` passed exact-HEAD GitHub Actions run `31184790162`. See `evals/m3/results/2026-08-07-m3.1.1-r5.2-f02-protocol-preparation-validation.md`.
 
-## M3.1.1 r5.2-f02 Gate 3 one-shot execution authorization
+## M3.1.1 r5.2-f02 Gate 3 one-shot fresh execution
 
-Status: `LOCAL_READY_AWAITING_EXACT_HEAD_CI; AUTHORIZATION_NOT_CONSUMED; FRESH_EXECUTION_NOT_RUN`
+Status: `COMPLETE; TERMINAL_ACCEPTED; TERMINAL_EVIDENCE_CI_PENDING`
 
 The external authorization receipt is a separate closed five-field object with `revision=r5.2-f02`, `authorized=true`, the frozen prompt and input-binding SHA-256 values, and `authorized_task_count=1`. Its raw SHA-256 is `84a684c6a5b12ad207f41fea04dfe26bb88d4c2cb233e774ff36fef110e62604`. The execution-control record has raw SHA-256 `98c418aaebea54e148894ab86f791cd060d57cc1ef2ab262bf432d0747b3904e`; it binds Gate 2 delivery HEAD `05e64d9678f9755126b1c1a0bfa4835bd8296e08`, successful run `31184790162`, this branch, the worktree project target, the exact prompt as the sole initial user message, and one-task/one-finalization/one-composer/one-validator/no-retry limits.
 
 The current `codex_app.create_thread` surface was rechecked and still exposes `model`, `prompt`, `target`, `thinking`, and `title`, with no response-format or JSON-Schema request field. The selected mode therefore remains `strict_text_json_fail_closed`. The frozen request projection omits `model` and `thinking`, has SHA-256 `8617b95e1560632285fd5b08dc114a16a37718f83e7769cc9ff00d79fa92ce1f`, and the initial-user-message projection has SHA-256 `fc3ca3d98bf96c9e3d389df38d49b35e00c636231b2aa47c9d00be72b28e6f49`.
 
-Initial authorization delivery HEAD `eb154888cdb43b62ce039b06e9e5dc0027885be2` failed GitHub Actions run `31188398030` before execution. The failures were confined to a stale status test that still required the Gate 2 heading and an authorization audit that compared non-byte-sensitive Gate 2 source worktree bytes with Git blobs, which failed on Windows CRLF materialization. Fix HEAD `765b99afe2b9b0968fbbcbff1f24dd6119fa1da1` updates the status assertions to the Gate 3 `NOT_RUN/0` truth and compares Gate 2 committed Git blobs with Gate 2 committed Git blobs. No launch claim or task was created during the failed run or fix.
+Initial authorization delivery HEAD `eb154888cdb43b62ce039b06e9e5dc0027885be2` failed GitHub Actions run `31188398030` before execution. The failures were confined to a stale status test that still required the Gate 2 heading and an authorization audit that compared non-byte-sensitive Gate 2 source worktree bytes with Git blobs, which failed on Windows CRLF materialization. Fix HEAD `765b99afe2b9b0968fbbcbff1f24dd6119fa1da1` updates the status assertions to the Gate 3 `NOT_RUN/0` truth and compares Gate 2 committed Git blobs with Gate 2 committed Git blobs. No launch claim or task was created during the failed run or fix. Corrected authorization delivery HEAD `0a6bb7876148a8990934c88cd0fe11aebc0cad7d` passed GitHub Actions run `31189442896`; validate and both cross-platform jobs were green before execution began.
 
-Local validation after the fix passed 78 focused Gate 1/Gate 2/Gate 3 tests and 547 full tests, unchanged M1/M2/M3 replays, empty M2/M3 fixture regeneration diffs, package and standard Skill validation, the read-only authorization audit, and immutable-history comparisons. The result root still contains only an empty `.gitkeep`; counters remain `tasks/finalizations/composer/validator/retry=0/0/0/0/0`; callback invocations and side effects are zero. No task ID, launch attempt, launch receipt, raw final, observation, payload, bundle, validation, transaction, or terminal manifest exists. Exact-HEAD remote CI for the corrected authorization delivery commit remains pending and the authorization must not be consumed until it is green. See `evals/m3/results/2026-08-07-m3.1.1-r5.2-f02-one-shot-authorization-validation.md`.
+After that green gate, the exclusive launch claim created exactly one new task, `019fdcb5-14e4-7462-be4f-379b72171a4d`, with one completed turn/finalization, `019fdcb5-1932-7182-a682-ea8bbd4703ab`. No follow-up message, retry, second task, or second finalization was created. The tool-boundary final was frozen as 14,532 UTF-8 bytes with SHA-256 `a8ec9c94fe5b55555dd1907e770054aacb5d396d050175b18d0f8d435c97eac7` before the strict parser ran. Provider request ID, finish reason, input tokens, and output tokens were not exposed and are recorded as `null` / `not_exposed`, not inferred.
+
+The strict parser accepted exactly one JSON object. The production composer and validator were each invoked once; the validator returned `valid` with no errors or evidence gaps, the transaction completed, and the terminal manifest records `accepted=true`. Final counters are `tasks/finalizations/composer/validator/retry=1/1/1/1/0`. The 13-entry result-root allowlist matches exactly, unexpected artifacts and side effects are empty, the fresh task worktree is clean, and historical `forward-r5` and `forward-r5.1-f02` diffs are empty. The independent terminal auditor reproduces the accepted composer/validator outcome without writing or retrying. Gate 4, cross-revision aggregation, M3 final validation, M3 closure, and M4 remain `NOT_STARTED`. See `evals/m3/results/2026-08-07-m3.1.1-r5.2-f02-one-shot-execution-validation.md`.
 
 ## M3 local result
 

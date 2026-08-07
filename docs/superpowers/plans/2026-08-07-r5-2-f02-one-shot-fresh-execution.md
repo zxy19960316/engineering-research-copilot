@@ -59,7 +59,7 @@
 - `validate_launch_receipt(value: object, *, attempt: dict[str, object], task_id: str | None = None) -> list[str]` binds one nonhistorical task and one launch.
 - `write_new_bytes(path: Path, raw: bytes) -> None` and `write_new_json(path: Path, value: dict[str, object]) -> None` use exclusive creation and fsync.
 
-- [ ] **Step 1: Write red contract tests**
+- [x] **Step 1: Write red contract tests**
 
 Test the exact five-field receipt through `validate_authorization_receipt`, execution-control identities, all maxima equal one, all counters zero, retry/repair/follow-up/second-finalization flags false, current request-surface fields, deterministic request and model-visible-message hashes, historical task rejection, and second-write failure.
 
@@ -74,13 +74,13 @@ with self.assertRaises(FileExistsError):
     contract.write_new_bytes(path, b"second")
 ```
 
-- [ ] **Step 2: Run the focused test and observe the missing-module failure**
+- [x] **Step 2: Run the focused test and observe the missing-module failure**
 
 Run: `python -X utf8 -m unittest tests.test_r5_2_f02_execution_contract -v`
 
 Expected: import failure for `r5_2_f02_execution_contract`.
 
-- [ ] **Step 3: Implement the minimal closed contracts and freeze JSON artifacts**
+- [x] **Step 3: Implement the minimal closed contracts and freeze JSON artifacts**
 
 The authorization instance must be exactly:
 
@@ -90,7 +90,7 @@ The authorization instance must be exactly:
 
 The execution control must bind the Gate 2 HEAD/run, project ID `ff35b25f-4644-41c8-9073-74c697559439`, worktree branch, exact prompt as the sole initial user message, omitted model/thinking fields, strict-text mode, result/future paths, maxima `1/1/1/1`, retry zero, and Gate 4 false.
 
-- [ ] **Step 4: Run the focused test and commit**
+- [x] **Step 4: Run the focused test and commit**
 
 Run: `python -X utf8 -m unittest tests.test_r5_2_f02_execution_contract -v`
 
@@ -111,7 +111,7 @@ Commit: `eval: authorize one r5.2-f02 fresh task`
 - `audit_execution_authorization(path, *, result_root=RESULT_ROOT) -> dict[str, object]` returns `ready_for_one_shot_fresh_execution` only with a valid receipt/control, empty root, zero counters, prompt/input hashes, frozen Gate 2 blobs, green-readiness binding, current surface decision, and clean historical trees.
 - The Gate 2 baseline test audits the immutable preparation snapshot by patching successor state to its original absent/empty values; it does not reinterpret the current successor worktree as Gate 2.
 
-- [ ] **Step 1: Write red drift and read-only tests**
+- [x] **Step 1: Write red drift and read-only tests**
 
 Cover receipt field drift, prompt/input mismatch, control/request projection drift, unsafe permission, nonzero counter, unexpected result artifact, Gate 2 blob drift, historical r5/r5.1 drift, and repeatability with `side_effects=[]`.
 
@@ -122,17 +122,17 @@ self.assertEqual(result["counters"], {"tasks": 0, "finalizations": 0, "composer"
 self.assertEqual(result["side_effects"], [])
 ```
 
-- [ ] **Step 2: Run the focused test and observe failure**
+- [x] **Step 2: Run the focused test and observe failure**
 
 Run: `python -X utf8 -m unittest tests.test_audit_m3_forward_r5_2_f02_execution_authorization -v`
 
 Expected: import failure for the auditor.
 
-- [ ] **Step 3: Implement snapshot-bound auditing**
+- [x] **Step 3: Implement snapshot-bound auditing**
 
 Read frozen Gate 2 artifacts from `05e64d...` with Git plumbing, compare current bytes, validate the five-field receipt and execution control, require only a zero-byte `.gitkeep`, and compare both historical evidence directories to their evidence heads. Do not call a launcher or write files.
 
-- [ ] **Step 4: Run both Gate 2 and authorization tests and commit**
+- [x] **Step 4: Run both Gate 2 and authorization tests and commit**
 
 Run:
 
@@ -163,7 +163,7 @@ Commit: `test: audit r5.2-f02 execution authorization`
 - `consume_final_once(..., final_raw: bytes, observation: dict[str, object], compose_once, validate_once) -> dict[str, object]` writes raw bytes and observation first, then invokes the strict parser/composer boundary once and validator at most once, finally writing context, transaction, and terminal manifest.
 - `audit_terminal(result_root=RESULT_ROOT) -> dict[str, object]` independently recomputes bytes, counters, accepted state, artifact allowlist, immutable histories, and retry zero.
 
-- [ ] **Step 1: Write red exactly-once and terminal matrix tests**
+- [x] **Step 1: Write red exactly-once and terminal matrix tests**
 
 Use temporary result roots. Prove preflight writes nothing; claim writes once; a second claim/task/finalization fails without callbacks or overwrite; raw bytes exist before a deliberately failing parser callback; invalid JSON ends `terminal_not_accepted` with `1/1/1/0/0`; valid accepted payload ends `accepted` with `1/1/1/1/0`; and no failure path retries.
 
@@ -178,19 +178,19 @@ self.assertEqual(result["counters"], {
 self.assertTrue((root / "m3-f02.model-final.raw").exists())
 ```
 
-- [ ] **Step 2: Run focused tests and observe missing-module failures**
+- [x] **Step 2: Run focused tests and observe missing-module failures**
 
 Run the three new `unittest` modules with `python -X utf8`.
 
-- [ ] **Step 3: Implement exclusive launch operations**
+- [x] **Step 3: Implement exclusive launch operations**
 
 Every mutating operation must validate the authorization first. `claim` writes the authorization/control hashes and one-attempt/no-retry limits before any external call. `record-launch` binds exactly one new task and records the frozen request/message projection hashes and coordinator-observed creation time.
 
-- [ ] **Step 4: Implement raw-first terminal consumption**
+- [x] **Step 4: Implement raw-first terminal consumption**
 
 Write `m3-f02.model-final.raw` and `m3-f02.raw-response-observation.json` with exclusive creation and fsync before `parse_strict_json_object`. On parse or composer failure, write a failed composer receipt, context, transaction, and terminal manifest with validator zero. On composition success, write the payload/bundle/composer receipt, invoke the existing validator once, write validation/validator receipt, and accept only `status=valid` with empty errors and gaps. All terminal records set retry zero and forbidden.
 
-- [ ] **Step 5: Implement independent terminal audit and commit**
+- [x] **Step 5: Implement independent terminal audit and commit**
 
 Require the exact terminal allowlist, matching raw SHA/length, launch/task/finalization bindings, transaction/receipt counters, history diffs empty, no unexpected artifacts, no side effects, and either the complete accepted predicate or explicit terminal-not-accepted predicate.
 
@@ -209,15 +209,15 @@ Commit: `eval: enforce r5.2-f02 one-shot terminal consumption`
 - CI compiles every Gate 3 module and runs only the read-only authorization auditor while the result root remains logically empty.
 - The validation record distinguishes local evidence from the later exact-HEAD remote run.
 
-- [ ] **Step 1: Run compile, focused, full, replay, package, Skill, history, and authorization gates**
+- [x] **Step 1: Run compile, focused, full, replay, package, Skill, history, and authorization gates**
 
 Require zero failures, unchanged M1/M2/M3 replay outputs, empty historical diffs, exact zero counters, one zero-byte `.gitkeep`, `ready_for_one_shot_fresh_execution`, and no callback or side effect.
 
-- [ ] **Step 2: Write the authorization evidence and status**
+- [x] **Step 2: Write the authorization evidence and status**
 
 Record Gate 2 HEAD/run, new authorization receipt/control hashes, local counts, current surface recheck, exact request/message projections, and stopped state `fresh_execution=NOT_RUN`.
 
-- [ ] **Step 3: Commit and push without launching**
+- [x] **Step 3: Commit and push without launching**
 
 Commit: `docs: record r5.2-f02 one-shot authorization readiness`
 
@@ -234,23 +234,23 @@ Push the branch, wait for the pushed exact HEAD, and require all GitHub Actions 
 - The coordinator uses the exact frozen prompt as `create_thread.prompt` and the frozen worktree target from the execution control.
 - The first completed assistant final is encoded as UTF-8 and passed once to `consume_final_once`; no follow-up thread message is permitted.
 
-- [ ] **Step 1: Re-run the read-only preflight immediately before launch**
+- [x] **Step 1: Re-run the read-only preflight immediately before launch**
 
 Require the pushed authorization SHA, green exact-HEAD CI, clean worktree, empty root, zero counters, current no-schema surface, and clean histories.
 
-- [ ] **Step 2: Exclusively claim the launch budget**
+- [x] **Step 2: Exclusively claim the launch budget**
 
 Run the dispatcher `claim` operation. If claim creation fails, stop without calling `create_thread`.
 
-- [ ] **Step 3: Create one fresh task**
+- [x] **Step 3: Create one fresh task**
 
 Call `create_thread` once with project `ff35b25f-4644-41c8-9073-74c697559439`, a worktree from branch `codex/m3.1.1-r5.2-f02-one-shot-fresh-execution`, the exact prompt contents, and no explicit model/thinking. Record the returned task/model identity once.
 
-- [ ] **Step 4: Wait for and capture the first finalization**
+- [x] **Step 4: Wait for and capture the first finalization**
 
 Use bounded task waits/read-only inspection. Do not send a message. When complete, encode the first final exactly as UTF-8, build the observation with exposed metadata and explicit `null/not_exposed` provider fields, then call the consumer once.
 
-- [ ] **Step 5: Stop at the terminal result**
+- [x] **Step 5: Stop at the terminal result**
 
 If accepted, continue only to evidence auditing. If not accepted, freeze the terminal failure and do not retry, repair, or enter Gate 4.
 
@@ -268,15 +268,15 @@ If accepted, continue only to evidence auditing. If not accepted, freeze the ter
 - CI switches from pre-execution authorization audit to terminal audit only after a terminal manifest exists.
 - Status records either accepted `1/1/1/1/0` or terminal-not-accepted with the exact observed counters; M3 remains `IN_PROGRESS` and Gate 4 remains `NOT_STARTED`.
 
-- [ ] **Step 1: Run the independent terminal and immutable-history audits**
+- [x] **Step 1: Run the independent terminal and immutable-history audits**
 
 Require exact raw byte/hash agreement, no unexpected artifacts, no side effects, retry zero, historical r5/r5.1 diffs empty, and terminal semantics matching every receipt and transaction.
 
-- [ ] **Step 2: Run focused/full/replay/package/Skill gates**
+- [x] **Step 2: Run focused/full/replay/package/Skill gates**
 
 Do not weaken or relabel a failing gate. Record exact counts and outputs.
 
-- [ ] **Step 3: Write final Gate 3 evidence and status**
+- [x] **Step 3: Write final Gate 3 evidence and status**
 
 Record the task ID, raw byte count/hash, observation availability, parser/composer/validator outcome, transaction state, exact counters, terminal status, immutable-history checks, and explicit `Gate 4=NOT_STARTED`.
 
