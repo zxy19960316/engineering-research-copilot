@@ -280,6 +280,6 @@ Do not weaken or relabel a failing gate. Record exact counts and outputs.
 
 Record the task ID, raw byte count/hash, observation availability, parser/composer/validator outcome, transaction state, exact counters, terminal status, immutable-history checks, and explicit `Gate 4=NOT_STARTED`.
 
-- [ ] **Step 4: Commit, push, and require terminal exact-HEAD CI**
+- [x] **Step 4: Commit, push, and require terminal exact-HEAD CI**
 
 Commit the terminal evidence without amend/rebase, push the branch, and wait for its exact HEAD CI. A CI failure does not authorize code repair on the consumed result; preserve and report it separately.

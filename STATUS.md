@@ -114,7 +114,7 @@ Gate 3 authorization receipt SHA-256: `84a684c6a5b12ad207f41fea04dfe26bb88d4c2cb
 
 Gate 3 execution-control SHA-256: `98c418aaebea54e148894ab86f791cd060d57cc1ef2ab262bf432d0747b3904e`
 
-Gate 3 terminal evidence exact-HEAD CI: `PENDING`
+Gate 3 terminal evidence exact-HEAD CI: `PASSED` on HEAD `461e833d7ee2bdd3314aa261194963c4497577c7` (GitHub Actions run `31192483833`)
 
 r5.2-f02 fresh execution: `ACCEPTED; TERMINAL`
 
@@ -258,7 +258,7 @@ Local validation passed on implementation HEAD `1b6583b694c0d2263bcf7e12bf62b4a5
 
 ## M3.1.1 r5.2-f02 Gate 3 one-shot fresh execution
 
-Status: `COMPLETE; TERMINAL_ACCEPTED; TERMINAL_EVIDENCE_CI_PENDING`
+Status: `COMPLETE; TERMINAL_ACCEPTED; TERMINAL_EVIDENCE_CI_PASSED`
 
 The external authorization receipt is a separate closed five-field object with `revision=r5.2-f02`, `authorized=true`, the frozen prompt and input-binding SHA-256 values, and `authorized_task_count=1`. Its raw SHA-256 is `84a684c6a5b12ad207f41fea04dfe26bb88d4c2cb233e774ff36fef110e62604`. The execution-control record has raw SHA-256 `98c418aaebea54e148894ab86f791cd060d57cc1ef2ab262bf432d0747b3904e`; it binds Gate 2 delivery HEAD `05e64d9678f9755126b1c1a0bfa4835bd8296e08`, successful run `31184790162`, this branch, the worktree project target, the exact prompt as the sole initial user message, and one-task/one-finalization/one-composer/one-validator/no-retry limits.
 
@@ -269,6 +269,8 @@ Initial authorization delivery HEAD `eb154888cdb43b62ce039b06e9e5dc0027885be2` f
 After that green gate, the exclusive launch claim created exactly one new task, `019fdcb5-14e4-7462-be4f-379b72171a4d`, with one completed turn/finalization, `019fdcb5-1932-7182-a682-ea8bbd4703ab`. No follow-up message, retry, second task, or second finalization was created. The tool-boundary final was frozen as 14,532 UTF-8 bytes with SHA-256 `a8ec9c94fe5b55555dd1907e770054aacb5d396d050175b18d0f8d435c97eac7` before the strict parser ran. Provider request ID, finish reason, input tokens, and output tokens were not exposed and are recorded as `null` / `not_exposed`, not inferred.
 
 The strict parser accepted exactly one JSON object. The production composer and validator were each invoked once; the validator returned `valid` with no errors or evidence gaps, the transaction completed, and the terminal manifest records `accepted=true`. Final counters are `tasks/finalizations/composer/validator/retry=1/1/1/1/0`. The 13-entry result-root allowlist matches exactly, unexpected artifacts and side effects are empty, the fresh task worktree is clean, and historical `forward-r5` and `forward-r5.1-f02` diffs are empty. The independent terminal auditor reproduces the accepted composer/validator outcome without writing or retrying. Gate 4, cross-revision aggregation, M3 final validation, M3 closure, and M4 remain `NOT_STARTED`. See `evals/m3/results/2026-08-07-m3.1.1-r5.2-f02-one-shot-execution-validation.md`.
+
+Terminal-evidence delivery HEAD `461e833d7ee2bdd3314aa261194963c4497577c7` passed GitHub Actions run `31192483833`. The validate job, Ubuntu historical-audit job, and Windows historical-audit job all completed successfully; the validate job explicitly ran the r5.2-f02 terminal auditor against the accepted evidence. This closes Gate 3 only and does not authorize Gate 4.
 
 ## M3 local result
 
