@@ -1,0 +1,159 @@
+{
+  "schema_version": "m3.1-forward-r5.1-f02-one-shot-execution-authorization-v1",
+  "status": "ready_for_one_shot_fresh_execution",
+  "authorization_scope": "one_new_fresh_context_for_m3_f02_only",
+  "authorization_token": "cf656f33434f470fc597fa538ade90b161a328af32cd5e5839f3d10efff01add",
+  "authorized_case_id": "m3-f02",
+  "authorized_revision": "r5.1-f02",
+  "readiness_head": "dae68ebd0d876a4aa2258f12a4a7ad8b4948e5ea",
+  "readiness_ci_run_id": 31144763405,
+  "readiness_ci_conclusion": "success",
+  "readiness_ci_jobs": [
+    "validate",
+    "historical-audit-cross-platform (ubuntu-latest)",
+    "historical-audit-cross-platform (windows-latest)"
+  ],
+  "historical_evidence_head": "1b696bce53ee0a11163bfe4f91a9a49ab3af6f49",
+  "preparation_baseline_head": "bbf54721b090d9d91b269d88e31919ae00fb0a39",
+  "readiness_authorization_manifest": {
+    "path": "evals/m3/forward-inputs-r5.1-f02/authorization-manifest.json",
+    "git_blob_oid": "ca0f4a4634be9385cfbfd5a4149d2053cde2c20e",
+    "raw_sha256": "184ca6c520daccde71e263085be01d6208058c5d932784bdf6f6579d9980cdc1",
+    "canonical_sha256": "30858f708bb081aa19ea7be47267f95b93447dbc20f82e3738d77d59f2d799ef"
+  },
+  "bindings": {
+    "preparation_manifest": {
+      "path": "evals/m3/forward-inputs-r5.1-f02/manifest.json",
+      "git_blob_oid": "5f174a021f778c4e55d58d9f9910c734f8c8e070",
+      "raw_sha256": "2a4c9b559fa69d8ec5bd2ffc1d69d8cf7e088fc239fdfa63b3b7a59089c63a96",
+      "canonical_sha256": "45c792d2408540ba784ba21cbc8b226ac20a4ce376c9d0dcd2a702d2d121b0dc"
+    },
+    "input_binding": {
+      "path": "evals/m3/forward-inputs-r5.1-f02/m3-f02.input-binding.json",
+      "git_blob_oid": "3ef4fcf913196f34468631268eab36b6d42d05be",
+      "raw_sha256": "37dbcfa60f9748c489cbcb41b0f918e33c00f018b47285dfd3ac81b06831eb1d",
+      "canonical_sha256": "908e75b4010756afbcc0c87b7cbc057ce1563c9f10dafcbc20ceb7b6ae519913"
+    },
+    "source_input": {
+      "path": "evals/m3/forward-inputs-r2/m3-f02-route-compatible.bundle.json",
+      "git_blob_oid": "717e2820e9587fc2f9593d0aa0664497987260cf",
+      "raw_sha256": "8db4db7f9173a8d10598af49e8ffd83dca12e34692c2827ec47031a30ab49da1",
+      "canonical_sha256": "fc7301d37737d85bc1bd2f0a3c2d51d842d0fe3fbdf1ded142e2d62f04d40841"
+    },
+    "prompt": {
+      "path": "evals/m3/forward-inputs-r5.1-f02/m3-f02.prompt.txt",
+      "git_blob_oid": "f2e9ab2a35b0f64924eea0f3716117362d996017",
+      "raw_sha256": "4dccc73a442664088594d834805ad5c780674beffc4607309a74fd3f541ccd68"
+    },
+    "replacement_contract": {
+      "path": "evals/m3/forward-inputs-r5.1-f02/m3-model-output-contract.schema.json",
+      "git_blob_oid": "83a28bc2f5cc136e35af6ed1326589bf716b86b1",
+      "raw_sha256": "0ff3e34105da9f734a0a06faae60daede9a3fdb29358fbccad7924f9a408d6f6",
+      "canonical_sha256": "2b226928b48da71debf1d77c8e2754df9a5fe8351da98cd6bb56d6e576382a5d"
+    },
+    "base_contract": {
+      "path": "evals/m3/forward-inputs-r5/m3-model-output-contract.schema.json",
+      "git_blob_oid": "e987a2568619de2a8dcb0595b5e7370580195af2",
+      "raw_sha256": "8f2dc8c2d5bcaccb29f02b1c078ac0ff5076e2d5bf9d2f713a0ce7b876249e21",
+      "canonical_sha256": "c9a80d2ab6aa6b755f555d2e5c96c73bb446268e88a958c2288112c442cd8f1b"
+    },
+    "m2_validation": {
+      "path": "evals/m3/forward-inputs-r4/m3-f02.m2-validation.json",
+      "git_blob_oid": "5a603026cb4e368dd5e260e1f337d70940b22c3d",
+      "raw_sha256": "9d6f4acbbd04392feb9dd65a1eb067bc477fa8a1257349ba332eb7c70ab0fbb7",
+      "canonical_sha256": "cc519ccbfa533ff5522b37c9a8e184dbaa6f0c31ee52489429b460d29bab3ca4",
+      "required_status": "valid"
+    },
+    "eligibility": {
+      "path": "evals/m3/forward-inputs-r4/m3-f02.eligibility.json",
+      "git_blob_oid": "522283301bd6497f1b5f069d74711801b8e2eda5",
+      "raw_sha256": "42c73b8d78b5084a3fc7c1b23e526e353fc65ef152cd705f15ee3c37346a3ef5",
+      "canonical_sha256": "3f484b2c7d43295c09bdd4a8b2e7b13e81afba5ea065b26cfb1ce92a123fc48b",
+      "required_status": "eligible"
+    },
+    "supersession_policy": {
+      "path": "evals/m3/results/diagnostics-r5.1/r5-acceptance-erratum.json",
+      "git_blob_oid": "cab4eff1f473faf2ab1dc3893fa494342af3b3a0",
+      "raw_sha256": "08cdbbe01612c9337c381b69620128a1e58d879b1aa92a561c325ec3104cc1ae",
+      "canonical_sha256": "c195226d65677e27d451603873c58d807c4168cf14716ba339c705b116261418",
+      "policy": "replace_f02_only",
+      "same_task_retry_forbidden": true,
+      "same_output_path_retry_forbidden": true,
+      "cross_revision_aggregate_requires_hash_bound_cross_validation": true
+    },
+    "route_condition_authority": {
+      "source_pointer": "route_output",
+      "condition_fields": [
+        "criterion_type",
+        "metric_id",
+        "operator",
+        "value",
+        "unit"
+      ],
+      "stop_condition_count": 3,
+      "pivot_condition_count": 3,
+      "canonical_sha256": "e5acfe7e96749a9fb8dd63a2d088c4efae907a6eb94d4a94d70cc3370352c2b5"
+    }
+  },
+  "launch_contract": {
+    "path": "evals/m3/forward-inputs-r5.1-f02/m3-f02.launch.schema.json",
+    "git_blob_oid": "1ffcdd2d0f32dfe8452021680813ce2a578c693e",
+    "raw_sha256": "47077fba4ef257b6242ab2590407250ab9316720198acff94cf867edd34151ef",
+    "canonical_sha256": "c1bd543f9ed3348096d37f3bd5ac08ebe7de1508a29cdbcf1a56b0d23759b606"
+  },
+  "result_root": "evals/m3/results/forward-r5.1-f02",
+  "execution_paths": {
+    "launch_attempt_json": "m3-f02.launch-attempt.json",
+    "launch_receipt_json": "m3-f02.launch.json"
+  },
+  "future_paths": {
+    "model_final_json": "m3-f02.model-final.json",
+    "payload_json": "m3-f02.payload.json",
+    "composed_bundle_json": "m3-f02.bundle.json",
+    "outcome_json": "m3-f02.outcome.json",
+    "validation_json": "m3-f02.validation.json",
+    "composer_invocation_receipt_json": "m3-f02.composer-receipt.json",
+    "validator_receipt_json": "m3-f02.validator-receipt.json",
+    "context_finalization_json": "m3-f02.context.json",
+    "case_transaction_json": "m3-f02.transaction.json"
+  },
+  "reserved_task_id": null,
+  "historical_failed_task": {
+    "task_id": "019fd687-5575-7143-8cf3-1ab3069611f5",
+    "result_root": "evals/m3/results/forward-r5",
+    "retry_count": 0,
+    "retry_forbidden": true
+  },
+  "counters": {
+    "tasks_launched": 0,
+    "task_finalizations_observed": 0,
+    "dispatcher_cases_preflighted": 0,
+    "dispatcher_cases_processed": 0,
+    "composer_invocations": 0,
+    "validator_invocations": 0,
+    "accepted_cases": 0,
+    "transaction_failures": 0
+  },
+  "max_fresh_tasks": 1,
+  "max_finalizations": 1,
+  "max_composer_invocations": 1,
+  "max_validator_invocations": 1,
+  "retry_allowed": false,
+  "repair_allowed": false,
+  "second_finalization_allowed": false,
+  "historical_task_reuse_allowed": false,
+  "historical_result_root_reuse_allowed": false,
+  "cross_revision_aggregation_authorized": false,
+  "m3_closure_authorized": false,
+  "m4_authorized": false,
+  "side_effects": [],
+  "does_not_authorize": [
+    "a second fresh task",
+    "a retry or repair",
+    "historical task or result-root reuse",
+    "model-output correction or normalization",
+    "cross-revision aggregate acceptance",
+    "M3 closure",
+    "M4"
+  ]
+}
