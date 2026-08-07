@@ -28,13 +28,27 @@ r5.1 first closure-evidence exact-HEAD CI: `FAILED` on HEAD `92517be9b936b299f1c
 
 r5.1 corrected closure-evidence exact-HEAD CI: `PASSED` on HEAD `c5ca408beedf2c3f20160fb1d06293336eacd725` (GitHub Actions run `31108332769`)
 
-r5.1-f02 replacement preparation: `LOCAL_READY_AWAITING_FRESH_AUTHORIZATION`
+r5.1-f02 replacement preparation: `READY_FOR_FRESH_AUTHORIZATION`
 
 r5.1-f02 preparation implementation HEAD: `df327ec4a1faf5b0b5a5f10804ee33efab24accf`
 
 r5.1-f02 preparation exact-HEAD CI: `PASSED` on HEAD `bbf54721b090d9d91b269d88e31919ae00fb0a39` (GitHub Actions run `31115643290`)
 
 r5.1-f02 fresh-context authorization: `NOT_GRANTED`
+
+r5.1-f02 authorization-readiness implementation: `COMPLETE`
+
+r5.1-f02 authorization-readiness implementation HEAD: `7df109e120f0769e8d5b8dddac50666fb8859bc9`
+
+r5.1-f02 authorization-readiness local gates: `PASSED`
+
+r5.1-f02 authorization-readiness exact-HEAD CI: `NOT_RUN`
+
+r5.1-f02 fresh-context execution: `NOT_RUN`
+
+r5.1-f02 cross-revision aggregate acceptance: `NOT_RUN`
+
+M3 closure: `NOT_RUN`
 
 M3.1 implementation is complete, but M3.1.1 r5 acceptance is not. The consumed r5 evidence remains immutable at `evals/m3/results/forward-r5/`: F01, F03, F04, and F05 were accepted, while F02 failed after its single composer invocation. r5.1 completed only CI compatibility repair, read-only F02 offline diagnosis, acceptance-auditor hardening, and status/evidence cleanup. A separately authorized offline r5.1-f02 preparation is now locally ready, with a new input binding, prompt, contract, manifest, and zero-artifact result root. It does not close M3, accept r5, authorize or launch a new fresh run, retry F02, aggregate cross-revision acceptance, merge, branch M4, or execute an experiment, route, training, download, service, deployment, upload, RRC integration, or platform integration.
 
@@ -64,6 +78,11 @@ Before route-specific method-card instantiation, M3.1.1 must validate the comple
 - [x] Generic route-specific method-card regression rejects drift in authoritative `metric_id`, `criterion_type`, `value`, or `unit`; the existing strict condition-object equality remains the enforcement mechanism.
 - [x] Local r5.1-f02 preparation gates pass at implementation HEAD `df327ec4a1faf5b0b5a5f10804ee33efab24accf`: 395 tests, unchanged replays, empty M2/M3 regeneration diffs, package and Skill audits, expected r5 blocked-state audit, and the new read-only preparation audit.
 - [x] r5.1-f02 preparation exact-HEAD remote CI passed on HEAD `bbf54721b090d9d91b269d88e31919ae00fb0a39` in GitHub Actions run `31115643290`; validate, immutable-evidence preflight, Ubuntu historical audit, and Windows historical audit all succeeded.
+- [x] Authorization readiness adds operator drift to the generic route-card regression and verifies route-specific nuclear-overlay authority drift for metric, operator, value, and unit without changing the validator.
+- [x] The dedicated r5.1-f02 authorization auditor binds preparation HEAD `bbf54721b090d9d91b269d88e31919ae00fb0a39`, evidence HEAD `1b696bce53ee0a11163bfe4f91a9a49ab3af6f49`, source/prompt/contract/receipt identities, the base-contract path/OID/raw/canonical tuple, zero counters, canonical future paths, and an empty result root.
+- [x] The narrow readiness dispatcher is limited to `m3-f02` / `r5.1-f02` and invokes no callback even after a valid readiness preflight because no fresh authorization receipt exists.
+- [x] Local authorization-readiness gates pass at implementation HEAD `7df109e120f0769e8d5b8dddac50666fb8859bc9`: 418 tests, 22 focused authorization/dispatcher tests, unchanged replays, empty M2/M3 regeneration diffs, package and Skill audits, and zero immutable-r5 diff.
+- [ ] Authorization-readiness exact-HEAD remote CI. The current task does not authorize push.
 - [ ] One new r5.1-f02 fresh-context task. Preparation does not grant this separate one-shot authorization.
 
 ## M3.1.1 r5 historical preparation and terminal result
@@ -95,6 +114,16 @@ The replacement preparation is isolated under `evals/m3/forward-inputs-r5.1-f02/
 The preparation manifest keeps every task, finalization, processing, composer, validator, acceptance, and failure counter at zero. `new_fresh_run_authorized` is false, `reserved_task_id` is null, and the new result root contains no result or receipt artifact. The auditor verifies the frozen `replace_f02_only` erratum, rejects reuse of the historical F02 task or result root, binds the four reusable r5 accepted cases to evidence HEAD `1b696bce53ee0a11163bfe4f91a9a49ab3af6f49`, and requires the entire historical `forward-r5` tree to remain unchanged.
 
 Local structural validation passed at implementation HEAD `df327ec4a1faf5b0b5a5f10804ee33efab24accf`; remote exact-HEAD CI, fresh-context launch, one-shot finalization, composition, consumption, cross-revision aggregation, M3 closure, and M4 remain `NOT_RUN`. See `evals/m3/results/2026-08-06-m3.1.1-r5.1-f02-preparation-validation.md`.
+
+## M3.1.1 r5.1-f02 authorization readiness
+
+Status: `READY_FOR_FRESH_AUTHORIZATION`
+
+The independent authorization manifest remains a readiness receipt, not an execution authorization: `new_fresh_run_authorized=false` and `reserved_task_id=null`. The read-only auditor verifies every frozen preparation and historical identity from the declared Git heads, including the replacement contract's complete base-contract dependency tuple. It rejects any preparation/evidence head drift, source or route-authority drift, prompt/contract/receipt drift, historical task or root reuse, nonzero counter, unsafe future path, result artifact, or historical r5 tree change.
+
+The narrow dispatcher exposes no current execution path. A valid readiness audit still returns `callback_invocations=0` with `fresh_run_not_authorized`; no task is created or reserved and no final is consumed. Local validation passed at implementation HEAD `7df109e120f0769e8d5b8dddac50666fb8859bc9`. Exact-HEAD CI is `NOT_RUN` because this task did not authorize push. See `evals/m3/results/2026-08-07-m3.1.1-r5.1-f02-authorization-readiness-validation.md`.
+
+M3 remains `IN_PROGRESS`, historical r5 remains `BLOCKED_NOT_ACCEPTED`, fresh F02 and cross-revision aggregate acceptance remain `NOT_RUN`, M3 closure remains `NOT_RUN`, and M4 remains `NOT_STARTED`.
 
 ## M3 local result
 
