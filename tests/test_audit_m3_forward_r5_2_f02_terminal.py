@@ -72,6 +72,33 @@ class AuditM3ForwardR52F02TerminalTests(unittest.TestCase):
         with mock.patch.object(audit, "_historical_tree_clean", return_value=True):
             return audit.audit_terminal(root)
 
+    def test_repository_terminal_evidence_is_accepted(self):
+        result = audit.audit_terminal(
+            compose_once=audit._production_compose,
+            validate_once=audit._production_validate,
+        )
+        self.assertEqual(result["status"], "accepted")
+        self.assertTrue(result["accepted"])
+        self.assertEqual(
+            result["counters"],
+            {
+                "tasks": 1,
+                "finalizations": 1,
+                "composer": 1,
+                "validator": 1,
+                "retry": 0,
+            },
+        )
+        self.assertEqual(result["raw_output_bytes"], 14532)
+        self.assertEqual(
+            result["raw_output_sha256"],
+            "a8ec9c94fe5b55555dd1907e770054aacb5d396d050175b18d0f8d435c97eac7",
+        )
+        self.assertEqual(result["unexpected_artifacts"], [])
+        self.assertEqual(result["side_effects"], [])
+        self.assertEqual(result["gate_4"], "NOT_STARTED")
+        self.assertEqual(result["errors"], [])
+
     def test_accepts_complete_success_terminal(self):
         raw = b'{"coaching_mode":"route_specific","method_cards":[],"domain_overlays":[]}'
         with tempfile.TemporaryDirectory(dir=REPO_ROOT) as temp_dir:

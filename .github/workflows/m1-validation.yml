@@ -93,8 +93,8 @@ jobs:
         run: python evals/m3/audit_m3_r5_1_ci_state.py
       - name: Audit r5.1-f02 terminal one-shot evidence
         run: python evals/m3/audit_forward_r5_1_f02_terminal.py
-      - name: Audit r5.2-f02 one-shot authorization without execution
-        run: python evals/m3/audit_forward_r5_2_f02_execution_authorization.py
+      - name: Audit r5.2-f02 terminal one-shot evidence
+        run: python evals/m3/audit_forward_r5_2_f02_terminal.py
 
   historical-audit-cross-platform:
     strategy:
@@ -116,3 +116,4 @@ jobs:
           python -X utf8 -m unittest tests.test_audit_m3_forward_inputs -v
           python -X utf8 -m unittest tests.test_audit_m3_forward_r5_2_f02_preparation -v
           python -X utf8 -m unittest tests.test_audit_m3_forward_r5_2_f02_execution_authorization -v
+          python -X utf8 -m unittest tests.test_audit_m3_forward_r5_2_f02_terminal -v

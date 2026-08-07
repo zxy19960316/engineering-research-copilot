@@ -52,16 +52,30 @@ class AuditM3ForwardR52F02PreparationTests(unittest.TestCase):
             reference["canonical_sha256"] = audit.canonical_sha256(value)
 
     def test_accepts_frozen_preparation_without_writes_or_execution(self):
-        before = {
-            path.name: path.read_bytes() for path in audit.RESULT_ROOT.iterdir()
-        }
-
-        with mock.patch.object(
-            audit, "_authorization_instance_absent", return_value=True
-        ):
-            result = audit.audit_preparation(MANIFEST)
-
-        after = {path.name: path.read_bytes() for path in audit.RESULT_ROOT.iterdir()}
+        with tempfile.TemporaryDirectory(dir=REPO_ROOT) as temp_dir:
+            root = Path(temp_dir)
+            result_root = root / "forward-r5.2-f02"
+            result_root.mkdir()
+            (result_root / ".gitkeep").write_bytes(b"")
+            manifest = self._write_manifest(
+                root,
+                lambda value: value.__setitem__(
+                    "result_root", result_root.relative_to(REPO_ROOT).as_posix()
+                ),
+            )
+            before = {
+                path.name: path.read_bytes() for path in result_root.iterdir()
+            }
+            with (
+                mock.patch.object(audit, "RESULT_ROOT", result_root),
+                mock.patch.object(
+                    audit, "_authorization_instance_absent", return_value=True
+                ),
+            ):
+                result = audit.audit_preparation(manifest)
+            after = {
+                path.name: path.read_bytes() for path in result_root.iterdir()
+            }
         self.assertEqual(result["status"], "gate_2_preparation_valid")
         self.assertEqual(result["revision"], "r5.2-f02")
         self.assertFalse(result["new_fresh_run_authorized"])

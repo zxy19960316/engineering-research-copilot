@@ -37,7 +37,10 @@ class AuditM3R52F02RootCauseTests(unittest.TestCase):
             return audit.audit_report(path, **kwargs)
 
     def test_current_report_confirms_root_cause(self):
-        result = audit.audit_report(audit.REPORT)
+        result = audit.audit_report(
+            audit.REPORT,
+            gate2_root_safe_check=lambda: True,
+        )
         self.assertEqual(result["status"], "root_cause_confirmed")
         self.assertEqual(result["errors"], [])
         self.assertEqual(

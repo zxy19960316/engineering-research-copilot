@@ -46,15 +46,18 @@ class AuditM3ForwardR52F02ExecutionAuthorizationTests(unittest.TestCase):
     def test_accepts_one_shot_authorization_without_writes(self):
         before_auth = AUTHORIZATION.read_bytes()
         before_control = CONTROL.read_bytes()
-        before_root = {
-            path.name: path.read_bytes() for path in audit.RESULT_ROOT.iterdir()
-        }
-
-        result = audit.audit_execution_authorization(AUTHORIZATION)
-
-        after_root = {
-            path.name: path.read_bytes() for path in audit.RESULT_ROOT.iterdir()
-        }
+        with tempfile.TemporaryDirectory(dir=REPO_ROOT) as temp_dir:
+            root = Path(temp_dir)
+            (root / ".gitkeep").write_bytes(b"")
+            before_root = {
+                path.name: path.read_bytes() for path in root.iterdir()
+            }
+            result = audit.audit_execution_authorization(
+                AUTHORIZATION, result_root=root
+            )
+            after_root = {
+                path.name: path.read_bytes() for path in root.iterdir()
+            }
         self.assertEqual(result["status"], "ready_for_one_shot_fresh_execution")
         self.assertEqual(result["readiness_head"], audit.GATE_2_HEAD)
         self.assertEqual(result["readiness_ci_run_id"], audit.GATE_2_CI_RUN_ID)

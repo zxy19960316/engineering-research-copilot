@@ -29,10 +29,19 @@ class DispatchForwardR52F02OnceTests(unittest.TestCase):
         return root
 
     def test_preflight_is_read_only(self):
-        result = dispatch.preflight_execution(AUTHORIZATION)
+        with tempfile.TemporaryDirectory(dir=REPO_ROOT) as temp_dir:
+            root = self._root(temp_dir)
+            before = {
+                path.name: path.read_bytes() for path in root.iterdir()
+            }
+            result = dispatch.preflight_execution(AUTHORIZATION, result_root=root)
+            after = {
+                path.name: path.read_bytes() for path in root.iterdir()
+            }
         self.assertEqual(result["status"], "ready_for_one_shot_fresh_execution")
         self.assertEqual(result["callback_invocations"], 0)
         self.assertEqual(result["side_effects"], [])
+        self.assertEqual(after, before)
 
     def test_claim_is_exclusive_and_consumes_attempt_budget(self):
         with tempfile.TemporaryDirectory(dir=REPO_ROOT) as temp_dir:

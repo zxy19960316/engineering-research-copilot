@@ -95,22 +95,23 @@ class M3R5ErratumTests(unittest.TestCase):
         self.assertEqual(diagnostic["retry_count"], 0)
         self.assertFalse(diagnostic["composed_output_created"])
 
-    def test_status_top_preserves_history_during_gate_3_authorization(self):
+    def test_status_top_preserves_history_after_gate_3_acceptance(self):
         text = (REPO_ROOT / "STATUS.md").read_text(encoding="utf-8")
         current = text.split("## M3 checklist", 1)[0]
 
         self.assertIn(
-            "Active revision: `M3.1.1 r5.2-f02 Gate 3 one-shot fresh execution authorization`",
+            "Active revision: `M3.1.1 r5.2-f02 Gate 3 accepted terminal evidence`",
             current,
         )
         self.assertIn(f"Historical r5 evidence HEAD: `{EVIDENCE_HEAD}`", current)
         self.assertIn(
-            "Status: `READY_FOR_ONE_SHOT_FRESH_EXECUTION; EXECUTION_NOT_RUN`",
+            "Status: `GATE_3_COMPLETE; F02_ACCEPTED; GATE_4_NOT_STARTED`",
             current,
         )
         self.assertIn("Historical r5 status: `BLOCKED_NOT_ACCEPTED`", current)
-        self.assertIn("Accepted fresh cases: `F01, F03, F04, F05`", current)
-        self.assertIn("Failed fresh case: `F02`", current)
+        self.assertIn("Historical accepted fresh cases: `F01, F03, F04, F05`", current)
+        self.assertIn("Historical failed fresh case: `F02`", current)
+        self.assertIn("r5.2-f02 replacement: `F02 ACCEPTED; PRE_AGGREGATE`", current)
         self.assertIn("Exact-HEAD CI: `FAILED`", current)
         self.assertIn("M3: `IN_PROGRESS`", current)
         self.assertIn("M4: `NOT_STARTED`", current)
@@ -118,14 +119,15 @@ class M3R5ErratumTests(unittest.TestCase):
         self.assertIn("Gate 2: `COMPLETE; EXACT_HEAD_CI_PASSED`", current)
         self.assertIn("Gate 2 new fresh-run authorization: `false`", current)
         self.assertIn(
-            "Gate 3 one-shot authorization: `LOCAL_READY; EXACT_HEAD_CI_PENDING; NOT_CONSUMED`",
+            "Gate 3 one-shot authorization: `CONSUMED; EXACT_HEAD_CI_PASSED`",
             current,
         )
-        self.assertIn("r5.2-f02 fresh execution: `NOT_RUN`", current)
+        self.assertIn("r5.2-f02 fresh execution: `ACCEPTED; TERMINAL`", current)
         self.assertIn(
-            "r5.2-f02 counters: `tasks=0; finalizations=0; composer=0; validator=0; retry=0`",
+            "r5.2-f02 counters: `tasks=1; finalizations=1; composer=1; validator=1; retry=0`",
             current,
         )
+        self.assertIn("Gate 4: `NOT_STARTED`", current)
         self.assertIn("r5.1-f02 replacement task budget: `CONSUMED`", current)
         self.assertIn(
             "r5.1-f02 authorization token: `CONSUMED / TERMINAL`", current
