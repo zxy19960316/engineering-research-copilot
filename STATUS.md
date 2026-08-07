@@ -4,7 +4,7 @@
 
 `M3 — Engineering method cards`
 
-Active revision: `M3.1.1 r5`
+Active revision: `M3.1.1 r5.1-f02 one-shot execution`
 
 Evidence HEAD: `1b696bce53ee0a11163bfe4f91a9a49ab3af6f49`
 
@@ -28,13 +28,13 @@ r5.1 first closure-evidence exact-HEAD CI: `FAILED` on HEAD `92517be9b936b299f1c
 
 r5.1 corrected closure-evidence exact-HEAD CI: `PASSED` on HEAD `c5ca408beedf2c3f20160fb1d06293336eacd725` (GitHub Actions run `31108332769`)
 
-r5.1-f02 replacement preparation: `READY_FOR_FRESH_AUTHORIZATION`
+r5.1-f02 replacement one-shot fresh execution: `F02_ONE_SHOT_NOT_ACCEPTED`
 
 r5.1-f02 preparation implementation HEAD: `df327ec4a1faf5b0b5a5f10804ee33efab24accf`
 
 r5.1-f02 preparation exact-HEAD CI: `PASSED` on HEAD `bbf54721b090d9d91b269d88e31919ae00fb0a39` (GitHub Actions run `31115643290`)
 
-r5.1-f02 one-shot fresh-context authorization: `PASSED; NOT_CONSUMED`
+r5.1-f02 one-shot fresh-context authorization: `PASSED; CONSUMED`
 
 r5.1-f02 authorization-readiness implementation: `COMPLETE`
 
@@ -50,15 +50,15 @@ r5.1-f02 one-shot execution-authorization implementation HEAD: `69c2e1cbad792a97
 
 r5.1-f02 one-shot execution-authorization local gates: `PASSED`
 
-r5.1-f02 one-shot execution-authorization exact-HEAD CI: `NOT_RUN`
+r5.1-f02 one-shot execution-authorization exact-HEAD CI: `PASSED` on HEAD `85ce824c55a3a40f3f05153a57edb809dc68eee6` (GitHub Actions run `31162936407`)
 
-r5.1-f02 fresh-context execution: `NOT_RUN`
+r5.1-f02 fresh-context execution: `NOT_ACCEPTED` (`processing_failed`; `payload_invalid_json`)
 
 r5.1-f02 cross-revision aggregate acceptance: `NOT_RUN`
 
 M3 closure: `NOT_RUN`
 
-M3.1 implementation is complete, but M3.1.1 r5 acceptance is not. The consumed r5 evidence remains immutable at `evals/m3/results/forward-r5/`: F01, F03, F04, and F05 were accepted, while F02 failed after its single composer invocation. r5.1 completed CI compatibility repair, read-only F02 diagnosis, acceptance-auditor hardening, replacement preparation, readiness verification, and a successor authorization for at most one future fresh F02 task. The successor authorization has not been consumed: no fresh task was created, no callback was invoked, no final was generated or consumed, and the replacement result root still has zero artifacts. This state does not close M3, accept r5, aggregate cross-revision acceptance, merge, branch M4, or execute an experiment, route, training, download, service, deployment, upload, RRC integration, or platform integration.
+M3.1 implementation is complete, but M3.1.1 acceptance is not. The consumed historical r5 evidence remains immutable at `evals/m3/results/forward-r5/`: F01, F03, F04, and F05 were accepted, while historical F02 failed. The separately authorized r5.1-f02 replacement launched exactly one new task, observed exactly one finalization, preserved the 216-byte non-JSON final verbatim, invoked the composer once, and stopped with `processing_failed` / `payload_invalid_json`; the validator was not invoked. No retry or repair is permitted. This state does not close M3, accept fresh F02, aggregate cross-revision acceptance, merge, branch M4, or execute an experiment, route, training, download, service, deployment, upload, RRC integration, or platform integration.
 
 Before route-specific method-card instantiation, M3.1.1 must validate the complete M2.1.1 bundle, require `user_confirmed`, recompute the selected-direction binding, reject every non-empty `approved_constraint_changes` list with `unsupported_approved_constraint_change_provenance`, and rederive claim metrics, claim-specific preconditions, resource ceilings, actual Go/Stop/Pivot coverage, safety-source eligibility, and method-card internal bindings from upstream structures.
 
@@ -94,8 +94,8 @@ Before route-specific method-card instantiation, M3.1.1 must validate the comple
 - [x] A successor execution-authorization receipt binds the readiness HEAD/run, predecessor manifest identity, preparation/source/input/prompt/contracts/receipts/policy/route authority, one-task maxima, no-retry/no-repair rules, and a zero-artifact result root without changing the frozen readiness evidence.
 - [x] The separate once dispatcher uses an exclusive launch-attempt claim and immutable launch receipt; temporary-directory tests prove at-most-one callback, immutable first task binding, terminal callback failure, historical-task rejection, exact raw-final preservation, and no second finalization or overwrite.
 - [x] Local one-shot execution-authorization gates pass at implementation HEAD `69c2e1cbad792a97467bdd2f3f05fc56b4499bc9`: 440 tests, 22 focused tests, unchanged replays, empty M2/M3 regeneration diffs, package and Skill audits, preparation/readiness/execution audits, zero immutable-r5 diff, zero replacement artifacts, zero historical retries, and zero fresh callbacks.
-- [ ] One-shot execution-authorization exact-HEAD remote CI. The current task does not authorize push.
-- [ ] One new r5.1-f02 fresh-context task. The one-shot authorization is ready but remains unconsumed.
+- [x] One-shot execution-authorization exact-HEAD remote CI passed on HEAD `85ce824c55a3a40f3f05153a57edb809dc68eee6` in GitHub Actions run `31162936407`.
+- [x] One new r5.1-f02 fresh-context task was launched and finalized exactly once. The preserved non-JSON final failed composition with `payload_invalid_json`; composer invocation count is one, validator invocation count is zero, accepted is false, and retry is forbidden.
 
 ## M3.1.1 r5 historical preparation and terminal result
 
@@ -137,13 +137,19 @@ The historical narrow dispatcher exposes no execution path. A valid readiness au
 
 ## M3.1.1 r5.1-f02 one-shot execution authorization
 
-Status: `LOCAL_READY_FOR_ONE_SHOT_FRESH_EXECUTION`
+Authorization status: `CONSUMED`
 
 The successor `execution-authorization.json` does not modify or reinterpret the frozen readiness manifest. It binds readiness HEAD `dae68ebd0d876a4aa2258f12a4a7ad8b4948e5ea`, successful run `31144763405`, preparation baseline `bbf54721b090d9d91b269d88e31919ae00fb0a39`, historical evidence HEAD `1b696bce53ee0a11163bfe4f91a9a49ab3af6f49`, and every source, prompt, contract, receipt, policy, and route-authority identity. Its scope is exactly one new `m3-f02` / `r5.1-f02` fresh task, with one finalization, one composer invocation, one validator invocation, and no retry, repair, second finalization, historical reuse, aggregate acceptance, M3 closure, or M4 authority.
 
-The read-only execution auditor reports `ready_for_one_shot_fresh_execution` with all counters zero, result artifact count zero, historical F02 retry count zero, callback invocations zero, and no side effects. The separate once dispatcher leaves the historical readiness dispatcher unchanged; CI calls only the read-only audit path. Local validation passed at implementation HEAD `69c2e1cbad792a97467bdd2f3f05fc56b4499bc9`; this branch was not pushed, so exact-HEAD CI for the implementation/final documentation HEAD is `NOT_RUN`. See `evals/m3/results/2026-08-07-m3.1.1-r5.1-f02-one-shot-execution-authorization-validation.md`.
+Before consumption, the read-only execution auditor reported `ready_for_one_shot_fresh_execution` with all counters zero, result artifact count zero, historical F02 retry count zero, callback invocations zero, and no side effects. The authorization baseline was finalized at exact HEAD `85ce824c55a3a40f3f05153a57edb809dc68eee6`, which passed GitHub Actions run `31162936407`. See `evals/m3/results/2026-08-07-m3.1.1-r5.1-f02-one-shot-execution-authorization-validation.md`.
 
-M3 remains `IN_PROGRESS`, historical r5 remains `BLOCKED_NOT_ACCEPTED`, fresh F02 and cross-revision aggregate acceptance remain `NOT_RUN`, M3 closure remains `NOT_RUN`, and M4 remains `NOT_STARTED`.
+## M3.1.1 r5.1-f02 one-shot fresh execution
+
+Status: `F02_ONE_SHOT_NOT_ACCEPTED`
+
+The one-shot dispatcher bound fresh task `019fdb7c-1728-7a92-b6cf-b0eb631a18b8` with launch count one, callback invocation count one, and no historical task reuse. The only finalization preserved 216 raw bytes with SHA-256 `75b4f9f5f4e2459b2886c0a9654c8cc1bda4015c525869cd154a302a2bc0589a`. The existing composer was invoked once and rejected the non-JSON payload as `payload_invalid_json`; validator invocation count remained zero. The transaction state is `processing_failed`, accepted is false, and retry is forbidden. See `evals/m3/results/2026-08-07-m3.1.1-r5.1-f02-one-shot-execution-validation.md`.
+
+M3 remains `IN_PROGRESS`, historical r5 remains `BLOCKED_NOT_ACCEPTED`, fresh F02 is `NOT_ACCEPTED`, cross-revision aggregate acceptance remains `NOT_RUN`, M3 closure remains `NOT_RUN`, and M4 remains `NOT_STARTED`.
 
 ## M3 local result
 
