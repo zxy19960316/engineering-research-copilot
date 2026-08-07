@@ -1,0 +1,424 @@
+{
+  "schema_version": "m3.1-r5.2-f02-root-cause-v1",
+  "report_status": "root_cause_confirmed",
+  "report_mode": "read_only_no_fresh_execution",
+  "revision": "r5.1-f02",
+  "case_id": "m3-f02",
+  "task_id": "019fdb7c-1728-7a92-b6cf-b0eb631a18b8",
+  "consumed_turn_id": "019fdb7c-201e-7a72-bbed-853b45fbfae9",
+  "late_authorized_turn_id": "019fdb8e-9558-7a22-a7f5-edc52db5f9d9",
+  "gate0_head": "fb5eec44bbf86446cf12bda2bddc76fcb07a7e69",
+  "raw_output_bytes": 216,
+  "raw_output_sha256": "75b4f9f5f4e2459b2886c0a9654c8cc1bda4015c525869cd154a302a2bc0589a",
+  "utf8_valid": true,
+  "json_valid": false,
+  "json_error": {
+    "message": "Expecting value",
+    "line": 1,
+    "column": 1,
+    "byte_offset": 0
+  },
+  "content_classification": "non_json_authorization_deferral_prose",
+  "model_visible_authorization": "absent_in_consumed_turn",
+  "finish_reason": null,
+  "finish_reason_status": "not_recorded",
+  "output_tokens": 102,
+  "request_envelope_sha256": "42614c8fe17f6cf51782c684fec425d536b37e514a87f34008f2fc03e8c829f5",
+  "model_visible_messages_sha256": "2da3fb7701acb7a7c2e0be8d37afce85c52f2dd10fa62156a77a4ff4d534da03",
+  "finalization_sha256": "d112c2622de14edd8f648ca7d13fb4309294664fb5a232f3336979729e8ad007",
+  "context_layers": {
+    "frozen_repository_prompt": {
+      "path": "evals/m3/forward-inputs-r5.1-f02/m3-f02.prompt.txt",
+      "source_head": "85ce824c55a3a40f3f05153a57edb809dc68eee6",
+      "git_blob_oid": "f2e9ab2a35b0f64924eea0f3716117362d996017",
+      "byte_length": 4142,
+      "raw_sha256": "4dccc73a442664088594d834805ad5c780674beffc4607309a74fd3f541ccd68",
+      "embedded_in_delegation_unchanged": true,
+      "contains_future_task_instruction": true,
+      "contains_do_not_execute_instruction": true,
+      "requires_separate_authorization": true,
+      "authorization_grant_present": false
+    },
+    "consumed_turn_model_visible_context": {
+      "session_id": "019fdb7c-1728-7a92-b6cf-b0eb631a18b8",
+      "turn_id": "019fdb7c-201e-7a72-bbed-853b45fbfae9",
+      "model": "gpt-5.6-sol",
+      "reasoning_effort": "xhigh",
+      "authorization_visible": false,
+      "external_authorization_text_embedded": false,
+      "request_envelope_projection": "canonical_json(base_instructions,messages,world_state,turn_context)",
+      "request_envelope_sha256": "42614c8fe17f6cf51782c684fec425d536b37e514a87f34008f2fc03e8c829f5",
+      "model_visible_messages_projection": "canonical_json(system_base_instructions_plus_role_and_content_for_records_3_4_5_6_9)",
+      "model_visible_messages_sha256": "2da3fb7701acb7a7c2e0be8d37afce85c52f2dd10fa62156a77a4ff4d534da03",
+      "observed_context_projection": "canonical_json(full_records_1_3_4_5_6_7_8_9)",
+      "observed_context_sha256": "b85d0f731f4050f9311ac062af373c3a8717db3855e9877d5cd9bb814624d7f2",
+      "base_instructions": {
+        "byte_length": 17766,
+        "raw_sha256": "cbefa6b0bede0e332d957fca70ccacf9f12f4c0ecdf81b819e5cbe1a3b16e265"
+      },
+      "messages": [
+        {
+          "record_number": 3,
+          "role": "developer",
+          "message_id": "msg_019fdb7c-290c-7f62-bb1f-a10d956d53ac",
+          "byte_length": 48188,
+          "raw_sha256": "772a52c49b92de3ba6e1dff5909d7c4562287a1474e04cac38a03d8d9c19f8e6"
+        },
+        {
+          "record_number": 4,
+          "role": "developer",
+          "message_id": "msg_019fdb7c-290c-7f62-bb1f-a1147c09f81a",
+          "byte_length": 2183,
+          "raw_sha256": "61f6bc799a82990ebede5d07532d630a01c40dcdfc55d89e74fdf079e9322636"
+        },
+        {
+          "record_number": 5,
+          "role": "developer",
+          "message_id": "msg_019fdb7c-290c-7f62-bb1f-a124661e259d",
+          "byte_length": 271,
+          "raw_sha256": "6ded806e3cdbb35599ecaf8742574bc5274908472b1729090010c404c2151e8e"
+        },
+        {
+          "record_number": 6,
+          "role": "user",
+          "message_id": "msg_019fdb7c-290c-7f62-bb1f-a13ae8ceb5cd",
+          "byte_length": 4913,
+          "raw_sha256": "5e52ef37940e0f8a26de7cffccef0224e05b232be0042312d99c79fdcb9f1867"
+        },
+        {
+          "record_number": 9,
+          "role": "user",
+          "message_id": "msg_019fdb7c-3b7f-7c81-a881-2e05c4fed94b",
+          "byte_length": 4274,
+          "raw_sha256": "e94df48a53b745bdde8f01b46d2a1af0848b823915699f66b8848799368869ee"
+        }
+      ],
+      "delegation_message": {
+        "record_number": 9,
+        "byte_length": 4274,
+        "raw_sha256": "e94df48a53b745bdde8f01b46d2a1af0848b823915699f66b8848799368869ee",
+        "embedded_prompt_byte_length": 4142,
+        "embedded_prompt_sha256": "4dccc73a442664088594d834805ad5c780674beffc4607309a74fd3f541ccd68"
+      },
+      "dispatcher_create_request_sha256": "f6ac1b238fba344e7d298734787f6c7f7e7031a4a9dea57bb9627719198cd6fa",
+      "child_rollout_prefix": {
+        "session_id": "019fdb7c-1728-7a92-b6cf-b0eb631a18b8",
+        "record_count": 15,
+        "byte_length": 142853,
+        "raw_sha256": "2eacfa682b6999ffb997c4ea5e4ba969b216cb1a1e4626bb663408551346b892",
+        "last_record_type": "task_complete",
+        "completed_at": "2026-08-07T09:09:46.515Z"
+      }
+    },
+    "external_user_authorization": {
+      "present": true,
+      "visible_in_consumed_turn": false,
+      "source_kind": "parent_thread_user_attachment",
+      "attachment_id": "a82080ab-2db8-402e-b136-7bf7bdb95018",
+      "byte_length": 17594,
+      "raw_sha256": "ef0d21b55949e46cc1d4d8498d22b7e117936fae2fbcdd8e936da5387aeecb6d",
+      "authorization_scope": "exactly_one_r5.1_f02_fresh_task_and_finalization",
+      "present_before_child_creation": true
+    },
+    "late_authorized_turn": {
+      "turn_id": "019fdb8e-9558-7a22-a7f5-edc52db5f9d9",
+      "authorization_visible": true,
+      "authorization_text_byte_length": 7,
+      "authorization_text_sha256": "74c693d3f212ff7f7baedc1f7af150bee4012026aef934b76709aebb6a580ce7",
+      "started_at": "2026-08-07T09:29:42.524Z",
+      "completed_at": "2026-08-07T09:34:29.578Z",
+      "occurred_after_consumed_turn_completion": true,
+      "occurred_after_terminal_consumption": true,
+      "not_consumed_by_r5_1_finalizer": true,
+      "late_output_byte_length": 12605,
+      "late_output_sha256": "6bc32fb62507672d7d21a37a828217078443381f6ffb0413c93626e02f53e583",
+      "late_output_json_valid": true,
+      "late_output_evidence_semantics": "post_terminal_observation_only_not_a_retry_or_repair",
+      "child_rollout_segment": {
+        "first_record_number": 16,
+        "last_record_number": 105,
+        "record_count": 90,
+        "byte_length": 294785,
+        "raw_sha256": "03d575a02e4d9deba6881782263ecc52179683d0a3588f102eadd849a20906a3"
+      }
+    }
+  },
+  "platform_observation": {
+    "model": "gpt-5.6-sol",
+    "reasoning_effort": "xhigh",
+    "request_id": null,
+    "request_id_status": "not_recorded",
+    "response_message_id": "msg_02709aec71788f1a016a75a0d80f508195b7d04d369a6fb16c",
+    "finish_reason": null,
+    "finish_reason_status": "not_recorded",
+    "platform_status": "completed",
+    "incomplete_event_observed": false,
+    "started_at_epoch": 1786093772,
+    "completed_at_epoch": 1786093786,
+    "duration_ms": 13666,
+    "time_to_first_token_ms": 11235,
+    "input_tokens": 25105,
+    "cached_input_tokens": 11008,
+    "output_tokens": 102,
+    "reasoning_output_tokens": 52,
+    "total_tokens": 25207,
+    "assistant_final_record": {
+      "record_number": 13,
+      "raw_record_sha256": "a4a9289d9153354a8cb2806a3aaf642a9231594e8693b9c4c4a1b0253562dc2c"
+    },
+    "token_usage_record": {
+      "record_number": 14,
+      "raw_record_sha256": "42e4bb6972f4f5db642ed6471f9a11c7e799da92f788be24f94e6a78d7c00246"
+    },
+    "task_complete_record": {
+      "record_number": 15,
+      "raw_record_sha256": "000fbc9bf49470014158459e486fe0dab295412833b9916862c9428cfa46f5a9"
+    },
+    "finalization_projection": "canonical_json(assistant_final,last_token_usage,task_complete)",
+    "finalization_sha256": "d112c2622de14edd8f648ca7d13fb4309294664fb5a232f3336979729e8ad007",
+    "assistant_final_equals_task_complete_final": true,
+    "assistant_final_equals_frozen_model_final": true
+  },
+  "parser_replay": {
+    "mode": "offline_existing_composer_load_object",
+    "payload_path": "evals/m3/results/forward-r5.1-f02/m3-f02.payload.json",
+    "replay_count": 1,
+    "model_calls": 0,
+    "writes": 0,
+    "retry_count": 0,
+    "utf8_valid": true,
+    "failure_code": "payload_invalid_json",
+    "message": "Expecting value",
+    "line": 1,
+    "column": 1,
+    "position": 0,
+    "byte_offset": 0,
+    "composer_success": false,
+    "validator_invocations": 0,
+    "observation_only": true
+  },
+  "hypotheses": [
+    {
+      "id": "model_did_not_see_authorization",
+      "disposition": "confirmed",
+      "direct_evidence": [
+        "The external authorization attachment is hash-bound and predates child creation.",
+        "The consumed-turn message projection contains the unchanged frozen prompt but not the external authorization grant.",
+        "The first and only consumed user task message says execution requires separate authorization."
+      ]
+    },
+    {
+      "id": "model_followed_do_not_execute_instruction",
+      "disposition": "confirmed",
+      "direct_evidence": [
+        "The frozen prompt explicitly says future task and do not execute without separate authorization.",
+        "The complete 216-byte final is an authorization-deferral acknowledgement that directly follows those instructions."
+      ]
+    },
+    {
+      "id": "output_truncated",
+      "disposition": "ruled_out",
+      "direct_evidence": [
+        "The platform recorded the turn as completed, not incomplete.",
+        "The assistant final and task_complete final are byte-identical coherent prose.",
+        "The turn recorded 102 output tokens and 52 reasoning output tokens."
+      ],
+      "unresolved_observation": "finish_reason_not_recorded"
+    },
+    {
+      "id": "wrong_message_field_saved",
+      "disposition": "ruled_out",
+      "direct_evidence": [
+        "The wait result selected latestAssistantMessage in final_answer phase for the consumed turn.",
+        "Wait output, assistant final, task_complete final, repository model-final, and payload contain the same 216 bytes.",
+        "The later authorized turn began only after the terminal finalization and was outside the consumed window."
+      ]
+    },
+    {
+      "id": "markdown_or_affix_broke_json",
+      "disposition": "ruled_out",
+      "direct_evidence": [
+        "The entire output is plain authorization-deferral prose.",
+        "There is no JSON object, Markdown fence, JSON prefix, or JSON suffix in the 216 bytes."
+      ]
+    },
+    {
+      "id": "composer_path_error",
+      "disposition": "ruled_out",
+      "direct_evidence": [
+        "One offline replay through the existing composer loader reproduced payload_invalid_json at line 1, column 1, byte offset 0.",
+        "The replay used the frozen payload bytes and made zero model calls, writes, or retries."
+      ]
+    }
+  ],
+  "primary_root_cause": {
+    "code": "authorization_not_visible_in_consumed_turn",
+    "confidence": "direct_evidence",
+    "causal_chain": [
+      "The external workflow authorized one r5.1-f02 execution.",
+      "The launcher created the child using the unchanged frozen prompt.",
+      "That prompt described a future task and instructed the model not to execute without separate authorization.",
+      "The external authorization grant was not included in the consumed child turn.",
+      "The model returned a complete authorization-deferral acknowledgement.",
+      "The one-shot consumer correctly finalized that first completed turn.",
+      "The strict composer correctly rejected the resulting non-JSON prose."
+    ],
+    "not_root_causes": [
+      "model_output_truncation",
+      "wrong_final_message_selection",
+      "markdown_fence_or_affix",
+      "composer_parser_defect"
+    ],
+    "late_authorization_effect": "none_on_consumed_r5.1_f02_terminal_evidence"
+  },
+  "protocol_implications": {
+    "dispatcher_preflight": [
+      "Verify execution authorization before task creation.",
+      "Bind exactly one authorized task count to the prompt and input identities.",
+      "Do not rely on an authorization grant that is absent from the model-visible turn."
+    ],
+    "model_visible_execution_context": [
+      "State that the current revision is authorized and must execute now.",
+      "Include that statement in the final prompt or message-envelope hash.",
+      "Exclude future-task and do-not-execute contradictions from an executable prompt."
+    ],
+    "output_boundary": [
+      "Require exactly one JSON object with no Markdown fence or surrounding prose.",
+      "Prefer request-level structured output when the runtime supports it.",
+      "Remain fail-closed and do not auto-repair malformed output."
+    ],
+    "observability": [
+      "Preserve raw response bytes and SHA-256 before parsing.",
+      "Record model, request ID when available, finish reason when available, token usage, finalization identity, timestamps, and model-visible message hash.",
+      "Represent unavailable provider fields as not_recorded rather than inferring them."
+    ],
+    "scope": "design_requirements_only_no_gate2_artifacts_or_execution"
+  },
+  "immutable_evidence": {
+    "prompt": {
+      "path": "evals/m3/forward-inputs-r5.1-f02/m3-f02.prompt.txt",
+      "source_head": "85ce824c55a3a40f3f05153a57edb809dc68eee6",
+      "git_blob_oid": "f2e9ab2a35b0f64924eea0f3716117362d996017",
+      "byte_length": 4142,
+      "raw_sha256": "4dccc73a442664088594d834805ad5c780674beffc4607309a74fd3f541ccd68"
+    },
+    "execution_authorization": {
+      "path": "evals/m3/forward-inputs-r5.1-f02/execution-authorization.json",
+      "source_head": "85ce824c55a3a40f3f05153a57edb809dc68eee6",
+      "git_blob_oid": "d616391ab9ad60c4683fdce6602ad11588d7c60f",
+      "byte_length": 7136,
+      "raw_sha256": "aec40aef8e855cd42464080066f475bf3d05de5ef8a2936d8f12750783af81ff"
+    },
+    "terminal_manifest": {
+      "path": "evals/m3/results/forward-r5.1-f02/terminal-manifest.json",
+      "source_head": "fb5eec44bbf86446cf12bda2bddc76fcb07a7e69",
+      "git_blob_oid": "3b862581be63529012495b8579f29e16dbb6f02b",
+      "byte_length": 8457,
+      "raw_sha256": "c8d8060e781b601b9dc7120b0cdf2615f9a9709fd67d9745a8d31dd682b8f9db"
+    },
+    "model_final": {
+      "path": "evals/m3/results/forward-r5.1-f02/m3-f02.model-final.json",
+      "source_head": "a847b3eaf39a6f4f70353cd669e41e414afc658c",
+      "git_blob_oid": "8c5ed1d1818039600c52e67544b746d34c41a857",
+      "byte_length": 216,
+      "raw_sha256": "75b4f9f5f4e2459b2886c0a9654c8cc1bda4015c525869cd154a302a2bc0589a"
+    },
+    "payload": {
+      "path": "evals/m3/results/forward-r5.1-f02/m3-f02.payload.json",
+      "source_head": "a847b3eaf39a6f4f70353cd669e41e414afc658c",
+      "git_blob_oid": "8c5ed1d1818039600c52e67544b746d34c41a857",
+      "byte_length": 216,
+      "raw_sha256": "75b4f9f5f4e2459b2886c0a9654c8cc1bda4015c525869cd154a302a2bc0589a"
+    },
+    "composer_receipt": {
+      "path": "evals/m3/results/forward-r5.1-f02/m3-f02.composer-receipt.json",
+      "source_head": "a847b3eaf39a6f4f70353cd669e41e414afc658c",
+      "git_blob_oid": "9050810ecf856ab1589d2f8b05e0c3f5a682aaef",
+      "byte_length": 470,
+      "raw_sha256": "befa69fec4d196ff6d76d3c2c2f88d726ff6d69ed9f75844d475f043b8c250e9"
+    },
+    "context": {
+      "path": "evals/m3/results/forward-r5.1-f02/m3-f02.context.json",
+      "source_head": "a847b3eaf39a6f4f70353cd669e41e414afc658c",
+      "git_blob_oid": "19c412d218aebd630fbd840411a980b4fc65a1d2",
+      "byte_length": 426,
+      "raw_sha256": "71babe1b72d5cbb380fbe6d5af9e6fe8d54f60bdfec023cdbb1b95ad3f53320e"
+    },
+    "transaction": {
+      "path": "evals/m3/results/forward-r5.1-f02/m3-f02.transaction.json",
+      "source_head": "a847b3eaf39a6f4f70353cd669e41e414afc658c",
+      "git_blob_oid": "161a2a7fa1730f3aa4be7d377ee221a9a2de49e4",
+      "byte_length": 335,
+      "raw_sha256": "ec6f5985e340176ee90bd5dcf2d52b981c9a818e5ca07934f714a21478206fa3"
+    }
+  },
+  "historical_immutability": {
+    "forward_r5": {
+      "path": "evals/m3/results/forward-r5",
+      "evidence_head": "1b696bce53ee0a11163bfe4f91a9a49ab3af6f49",
+      "diff_status": "empty"
+    },
+    "forward_r5_1_f02": {
+      "path": "evals/m3/results/forward-r5.1-f02",
+      "evidence_head": "fb5eec44bbf86446cf12bda2bddc76fcb07a7e69",
+      "diff_status": "empty"
+    },
+    "source_rollout_terminal_prefix": {
+      "session_id": "019fdb73-3331-7f81-ac65-71dd8500bdf2",
+      "record_count": 453,
+      "byte_length": 959845,
+      "raw_sha256": "75f90a543c08e0dda76dc886028fd4253452c0d1688c64f22deffabb23138798",
+      "terminal_completed_at": "2026-08-07T09:22:43.050Z",
+      "key_record_sha256": {
+        "203": "158604a9cd9f00e46cb47cdcfc2906fd99dcfde51c42e71411eb68b6b1bdb546",
+        "204": "34e34e050f498d93b481100bb1a9f951f83770e85aba783540ddc1f44cec47e9",
+        "303": "5c17b35b322e3bf8f022683184a3da196f838ad42a6a1ad04914d61006bd3664",
+        "304": "0a6d72bf9a2033b811926eb26297c47bc561249d3adcadf88cca5a8243b0fc21",
+        "330": "f8200c33ee772511200cd4010ac5ebb6ab40b8f8af5fecee1b4f5dd9b9c34ccf",
+        "331": "5f28517150cba5635b181f1c2d1d73747c4925ab1e5c6f36a5bfab24f04e6256",
+        "336": "a0949e973db9fe487e0ebce4d173e77f9ddacd6333d01da13ae9d9bab7b52c13",
+        "337": "89b8f4b85cd704e25a97f8d53ff4aa3e998a3c34be955ba18489a8a6235ce414",
+        "453": "2ad807413a3669e4ee160660e7ef78f42727005050920f65a3dbf3c443547761"
+      }
+    }
+  },
+  "gate_state": {
+    "gate1": "COMPLETE",
+    "gate2": "NOT_STARTED",
+    "fresh_execution": "NOT_RUN",
+    "new_fresh_run_authorized": false,
+    "r5_2_task_count": 0,
+    "r5_2_finalization_count": 0,
+    "r5_2_composer_count": 0,
+    "r5_2_validator_count": 0,
+    "r5_2_retry_count": 0,
+    "r5_2_result_root": "ABSENT",
+    "r5_1_f02": "TERMINAL_NOT_ACCEPTED",
+    "r5_1_f02_accepted": false,
+    "historical_r5": "BLOCKED_NOT_ACCEPTED",
+    "m3": "IN_PROGRESS",
+    "cross_revision_aggregate": "NOT_RUN",
+    "m3_closure": "NOT_RUN",
+    "m4": "NOT_STARTED"
+  },
+  "forbidden_actions": [
+    "fresh_task_creation",
+    "fresh_model_execution",
+    "r5_1_retry",
+    "r5_1_repair",
+    "second_finalization",
+    "model_output_rewrite",
+    "automatic_json_repair",
+    "forward_r5_2_result_creation",
+    "cross_revision_aggregation",
+    "m3_closure",
+    "m4_start",
+    "push"
+  ],
+  "limitations": [
+    "The local rollout records expose a completed platform turn and token usage but do not record a provider request ID or finish_reason.",
+    "request_envelope_sha256 is a canonical projection reconstructed from child rollout observations, not a raw provider HTTP request body.",
+    "The late authorized turn and its valid JSON are post-terminal observations only and cannot repair, retry, or relabel r5.1-f02.",
+    "This report prepares protocol requirements only; it does not authorize or execute r5.2-f02."
+  ]
+}
