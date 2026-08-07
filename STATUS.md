@@ -4,13 +4,13 @@
 
 `M3 — Engineering method cards`
 
-Active revision: `M3.1.1 r5.2-f02 Gate 2 execution protocol preparation`
+Active revision: `M3.1.1 r5.2-f02 Gate 3 one-shot fresh execution authorization`
 
 Historical r5 evidence HEAD: `1b696bce53ee0a11163bfe4f91a9a49ab3af6f49`
 
 Execution evidence HEAD: `a847b3eaf39a6f4f70353cd669e41e414afc658c`
 
-Status: `TERMINAL_NOT_ACCEPTED`
+Status: `READY_FOR_ONE_SHOT_FRESH_EXECUTION; EXECUTION_NOT_RUN`
 
 Historical r5 status: `BLOCKED_NOT_ACCEPTED`
 
@@ -82,9 +82,13 @@ Gate 1 late authorization: `POST_TERMINAL_OBSERVATION_ONLY`
 
 Gate 1 offline parser replay: `1; payload_invalid_json; model_calls=0; writes=0; retries=0`
 
-Gate 2: `LOCAL_COMPLETE; EXACT_HEAD_CI_PENDING`
+Gate 2: `COMPLETE; EXACT_HEAD_CI_PASSED`
 
 Gate 2 implementation HEAD: `1b6583b694c0d2263bcf7e12bf62b4a5e6567a47`
+
+Gate 2 delivery HEAD: `05e64d9678f9755126b1c1a0bfa4835bd8296e08`
+
+Gate 2 exact-HEAD CI: `PASSED` (GitHub Actions run `31184790162`)
 
 Gate 2 local gates: `PASSED; focused=32/32; full=518/518`
 
@@ -93,6 +97,16 @@ Gate 2 output mode: `strict_text_json_fail_closed; capability recheck required b
 Gate 2 prompt contradiction lint: `PASSED`
 
 Gate 2 new fresh-run authorization: `false`
+
+Gate 3 one-shot authorization: `LOCAL_READY; EXACT_HEAD_CI_PENDING; NOT_CONSUMED`
+
+Gate 3 authorization implementation HEAD: `8c72151be04a0ab3c6063e1fe86b7e2d565fa377`
+
+Gate 3 authorization receipt SHA-256: `84a684c6a5b12ad207f41fea04dfe26bb88d4c2cb233e774ff36fef110e62604`
+
+Gate 3 execution-control SHA-256: `98c418aaebea54e148894ab86f791cd060d57cc1ef2ab262bf432d0747b3904e`
+
+Gate 3 local gates: `PASSED; focused=77/77; full=546/546`
 
 r5.2-f02 fresh execution: `NOT_RUN`
 
@@ -213,13 +227,23 @@ Local Gate 1 validation passed on implementation HEAD `86a24a4d1895a565ce54ce087
 
 ## M3.1.1 r5.2-f02 Gate 2 execution protocol preparation
 
-Status: `LOCAL_READY_AWAITING_EXACT_HEAD_CI; FRESH_EXECUTION_NOT_RUN`
+Status: `COMPLETE; EXACT_HEAD_CI_PASSED; FRESH_EXECUTION_NOT_RUN`
 
 The model-facing prompt begins with `This is the authorized r5.2-f02 execution.` and `Execute the frozen task now.`; those lines are part of its frozen SHA-256 `815eae213701505755fb7edc4d64d16089bd4e14e14dc6ec1e16c787918ea1df`. Case-insensitive lint rejects `do not execute`, `future task`, and `without separate authorization`. The separate Gate 3 receipt schema binds that prompt hash, input-binding SHA-256 `3d90ed7f02a865eb3cab0fd8f70f0407ce5a80a93e500996686e2fad54c1709d`, `authorized=true`, and exactly one authorized task; no receipt instance or task ID exists in Gate 2.
 
 GPT-5.6 Sol documents native Structured Outputs support, but the current `codex_app.create_thread` request surface exposes no response-format or JSON-Schema parameter. Gate 2 therefore freezes `strict_text_json_fail_closed`, no automatic repair, and a mandatory capability recheck before Gate 3. The text boundary requires one UTF-8 JSON object, first and last non-whitespace bytes `{` and `}`, no BOM, Markdown fence, surrounding prose, comments, duplicate keys, additional JSON values, or non-finite numbers. A separate pre-parser observation schema records raw bytes and SHA-256, byte count, model/task/request/finalization identities, finish reason, token counts, task timestamps, request-envelope hash, and model-visible-message hash; unexposed provider fields remain explicit `null` / `not_exposed` rather than inferred.
 
-Local validation passed on implementation HEAD `1b6583b694c0d2263bcf7e12bf62b4a5e6567a47`: 32 focused Gate 2 tests, 49 combined Gate 1/Gate 2 tests, and 518 full tests; unchanged M1, M2, and M3 replays; empty M2/M3 fixture-regeneration diffs; valid package and standard Skill audits; valid r5 blocked-state, r5.1 terminal, Gate 1 root-cause, Gate 2 preparation, and callback-free dispatcher audits. Historical `forward-r5` and `forward-r5.1-f02` Git trees match their frozen evidence heads. `evals/m3/results/forward-r5.2-f02/` contains only an empty `.gitkeep`; task/finalization/composer/validator/retry counters remain `0/0/0/0/0`; `new_fresh_run_authorized=false`; fresh execution, cross-revision aggregation, M3 closure, and M4 remain `NOT_RUN`. Exact-HEAD remote CI is not pre-claimed by this record. See `evals/m3/results/2026-08-07-m3.1.1-r5.2-f02-protocol-preparation-validation.md`.
+Local validation passed on implementation HEAD `1b6583b694c0d2263bcf7e12bf62b4a5e6567a47`: 32 focused Gate 2 tests, 49 combined Gate 1/Gate 2 tests, and 518 full tests; unchanged M1, M2, and M3 replays; empty M2/M3 fixture-regeneration diffs; valid package and standard Skill audits; valid r5 blocked-state, r5.1 terminal, Gate 1 root-cause, Gate 2 preparation, and callback-free dispatcher audits. Historical `forward-r5` and `forward-r5.1-f02` Git trees match their frozen evidence heads. `evals/m3/results/forward-r5.2-f02/` contains only an empty `.gitkeep`; task/finalization/composer/validator/retry counters remain `0/0/0/0/0`; `new_fresh_run_authorized=false`; fresh execution, cross-revision aggregation, M3 closure, and M4 remain `NOT_RUN`. Delivery HEAD `05e64d9678f9755126b1c1a0bfa4835bd8296e08` passed exact-HEAD GitHub Actions run `31184790162`. See `evals/m3/results/2026-08-07-m3.1.1-r5.2-f02-protocol-preparation-validation.md`.
+
+## M3.1.1 r5.2-f02 Gate 3 one-shot execution authorization
+
+Status: `LOCAL_READY_AWAITING_EXACT_HEAD_CI; AUTHORIZATION_NOT_CONSUMED; FRESH_EXECUTION_NOT_RUN`
+
+The external authorization receipt is a separate closed five-field object with `revision=r5.2-f02`, `authorized=true`, the frozen prompt and input-binding SHA-256 values, and `authorized_task_count=1`. Its raw SHA-256 is `84a684c6a5b12ad207f41fea04dfe26bb88d4c2cb233e774ff36fef110e62604`. The execution-control record has raw SHA-256 `98c418aaebea54e148894ab86f791cd060d57cc1ef2ab262bf432d0747b3904e`; it binds Gate 2 delivery HEAD `05e64d9678f9755126b1c1a0bfa4835bd8296e08`, successful run `31184790162`, this branch, the worktree project target, the exact prompt as the sole initial user message, and one-task/one-finalization/one-composer/one-validator/no-retry limits.
+
+The current `codex_app.create_thread` surface was rechecked and still exposes `model`, `prompt`, `target`, `thinking`, and `title`, with no response-format or JSON-Schema request field. The selected mode therefore remains `strict_text_json_fail_closed`. The frozen request projection omits `model` and `thinking`, has SHA-256 `8617b95e1560632285fd5b08dc114a16a37718f83e7769cc9ff00d79fa92ce1f`, and the initial-user-message projection has SHA-256 `fc3ca3d98bf96c9e3d389df38d49b35e00c636231b2aa47c9d00be72b28e6f49`.
+
+Local validation on implementation HEAD `8c72151be04a0ab3c6063e1fe86b7e2d565fa377` passed 77 focused Gate 1/Gate 2/Gate 3 tests and 546 full tests, unchanged M1/M2/M3 replays, empty M2/M3 fixture regeneration diffs, package and standard Skill validation, the read-only authorization audit, and immutable-history comparisons. The result root still contains only an empty `.gitkeep`; counters remain `tasks/finalizations/composer/validator/retry=0/0/0/0/0`; callback invocations and side effects are zero. No task ID, launch attempt, launch receipt, raw final, observation, payload, bundle, validation, transaction, or terminal manifest exists. Exact-HEAD remote CI for the authorization delivery commit remains pending and the authorization must not be consumed until it is green. See `evals/m3/results/2026-08-07-m3.1.1-r5.2-f02-one-shot-authorization-validation.md`.
 
 ## M3 local result
 
@@ -361,7 +385,7 @@ Evidence is recorded under `evals/m1/`, including preserved failed runs and inde
 ## External state
 
 - Git remote: `https://github.com/zxy19960316/engineering-research-copilot.git`
-- Active local branch: `codex/m3.1.1-r5.2-f02-root-cause-and-protocol-preparation`
+- Active local branch: `codex/m3.1.1-r5.2-f02-one-shot-fresh-execution`
 - External APIs/services configured: none
 - RRC integration: not started
 - Platform integration: not required for the local Skill competition track
