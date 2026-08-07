@@ -100,13 +100,15 @@ Gate 2 new fresh-run authorization: `false`
 
 Gate 3 one-shot authorization: `LOCAL_READY; EXACT_HEAD_CI_PENDING; NOT_CONSUMED`
 
-Gate 3 authorization implementation HEAD: `8c72151be04a0ab3c6063e1fe86b7e2d565fa377`
+Gate 3 authorization implementation HEAD: `765b99afe2b9b0968fbbcbff1f24dd6119fa1da1`
+
+Gate 3 first authorization exact-HEAD CI: `FAILED` on HEAD `eb154888cdb43b62ce039b06e9e5dc0027885be2` (GitHub Actions run `31188398030`; stale Gate 2 status assertion and platform-dependent Gate 2 worktree-byte comparison)
 
 Gate 3 authorization receipt SHA-256: `84a684c6a5b12ad207f41fea04dfe26bb88d4c2cb233e774ff36fef110e62604`
 
 Gate 3 execution-control SHA-256: `98c418aaebea54e148894ab86f791cd060d57cc1ef2ab262bf432d0747b3904e`
 
-Gate 3 local gates: `PASSED; focused=77/77; full=546/546`
+Gate 3 local gates: `PASSED; focused=78/78; full=547/547`
 
 r5.2-f02 fresh execution: `NOT_RUN`
 
@@ -243,7 +245,9 @@ The external authorization receipt is a separate closed five-field object with `
 
 The current `codex_app.create_thread` surface was rechecked and still exposes `model`, `prompt`, `target`, `thinking`, and `title`, with no response-format or JSON-Schema request field. The selected mode therefore remains `strict_text_json_fail_closed`. The frozen request projection omits `model` and `thinking`, has SHA-256 `8617b95e1560632285fd5b08dc114a16a37718f83e7769cc9ff00d79fa92ce1f`, and the initial-user-message projection has SHA-256 `fc3ca3d98bf96c9e3d389df38d49b35e00c636231b2aa47c9d00be72b28e6f49`.
 
-Local validation on implementation HEAD `8c72151be04a0ab3c6063e1fe86b7e2d565fa377` passed 77 focused Gate 1/Gate 2/Gate 3 tests and 546 full tests, unchanged M1/M2/M3 replays, empty M2/M3 fixture regeneration diffs, package and standard Skill validation, the read-only authorization audit, and immutable-history comparisons. The result root still contains only an empty `.gitkeep`; counters remain `tasks/finalizations/composer/validator/retry=0/0/0/0/0`; callback invocations and side effects are zero. No task ID, launch attempt, launch receipt, raw final, observation, payload, bundle, validation, transaction, or terminal manifest exists. Exact-HEAD remote CI for the authorization delivery commit remains pending and the authorization must not be consumed until it is green. See `evals/m3/results/2026-08-07-m3.1.1-r5.2-f02-one-shot-authorization-validation.md`.
+Initial authorization delivery HEAD `eb154888cdb43b62ce039b06e9e5dc0027885be2` failed GitHub Actions run `31188398030` before execution. The failures were confined to a stale status test that still required the Gate 2 heading and an authorization audit that compared non-byte-sensitive Gate 2 source worktree bytes with Git blobs, which failed on Windows CRLF materialization. Fix HEAD `765b99afe2b9b0968fbbcbff1f24dd6119fa1da1` updates the status assertions to the Gate 3 `NOT_RUN/0` truth and compares Gate 2 committed Git blobs with Gate 2 committed Git blobs. No launch claim or task was created during the failed run or fix.
+
+Local validation after the fix passed 78 focused Gate 1/Gate 2/Gate 3 tests and 547 full tests, unchanged M1/M2/M3 replays, empty M2/M3 fixture regeneration diffs, package and standard Skill validation, the read-only authorization audit, and immutable-history comparisons. The result root still contains only an empty `.gitkeep`; counters remain `tasks/finalizations/composer/validator/retry=0/0/0/0/0`; callback invocations and side effects are zero. No task ID, launch attempt, launch receipt, raw final, observation, payload, bundle, validation, transaction, or terminal manifest exists. Exact-HEAD remote CI for the corrected authorization delivery commit remains pending and the authorization must not be consumed until it is green. See `evals/m3/results/2026-08-07-m3.1.1-r5.2-f02-one-shot-authorization-validation.md`.
 
 ## M3 local result
 
