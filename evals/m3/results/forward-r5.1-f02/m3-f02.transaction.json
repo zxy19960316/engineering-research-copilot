@@ -1,0 +1,1 @@
+{"accepted":false,"case_id":"m3-f02","composer_invocations":1,"dispatcher_cases_preflighted":1,"dispatcher_cases_processed":0,"state":"processing_failed","task_finalizations_observed":1,"task_id":"019fdb7c-1728-7a92-b6cf-b0eb631a18b8","tasks_launched":1,"transaction_failures":["composer_invocation_failed"],"validator_invocations":0}
