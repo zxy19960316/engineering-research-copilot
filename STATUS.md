@@ -68,6 +68,28 @@ r5.1-f02 authorization token: `CONSUMED / TERMINAL`
 
 r5.1-f02 cross-revision aggregate acceptance: `NOT_RUN`
 
+Gate 1 root-cause and protocol preparation: `COMPLETE`
+
+Gate 1 implementation HEAD: `86a24a4d1895a565ce54ce087627e32ebbb4c30f`
+
+Gate 1 primary root cause: `authorization_not_visible_in_consumed_turn`
+
+Gate 1 consumed-turn authorization visibility: `ABSENT`
+
+Gate 1 external authorization: `PRESENT; NOT_MODEL_VISIBLE_IN_CONSUMED_TURN`
+
+Gate 1 late authorization: `POST_TERMINAL_OBSERVATION_ONLY`
+
+Gate 1 offline parser replay: `1; payload_invalid_json; model_calls=0; writes=0; retries=0`
+
+Gate 2: `NOT_STARTED`
+
+r5.2-f02 fresh execution: `NOT_RUN`
+
+r5.2-f02 result root: `ABSENT`
+
+r5.2-f02 counters: `tasks=0; finalizations=0; composer=0; validator=0; retry=0`
+
 M3 closure: `NOT_RUN`
 
 M3.1 implementation is complete, but M3.1.1 acceptance is not. The consumed historical r5 evidence remains immutable at `evals/m3/results/forward-r5/`: F01, F03, F04, and F05 were accepted, while historical F02 failed. The separately authorized r5.1-f02 replacement launched exactly one new task, observed exactly one finalization, preserved the 216-byte non-JSON final verbatim, invoked the composer once, and stopped with `processing_failed` / `payload_invalid_json`; the validator was not invoked. No retry or repair is permitted. This state does not close M3, accept fresh F02, aggregate cross-revision acceptance, merge, branch M4, or execute an experiment, route, training, download, service, deployment, upload, RRC integration, or platform integration.
@@ -109,6 +131,9 @@ Before route-specific method-card instantiation, M3.1.1 must validate the comple
 - [x] One-shot execution-authorization exact-HEAD remote CI passed on HEAD `85ce824c55a3a40f3f05153a57edb809dc68eee6` in GitHub Actions run `31162936407`.
 - [x] One new r5.1-f02 fresh-context task was launched and finalized exactly once. The preserved non-JSON final failed composition with `payload_invalid_json`; composer invocation count is one, validator invocation count is zero, accepted is false, and retry is forbidden.
 - [x] The terminal manifest and read-only terminal auditor freeze the consumed task, finalization, malformed payload, composer failure, transaction, predecessor authorization, prompt/input/contracts, and unchanged historical r5 tree. Current CI uses the terminal gate; predecessor preparation/readiness auditors retain their historical semantics.
+- [x] Gate 1 separates and hash-binds the frozen repository prompt, the consumed-turn model-visible message envelope, and the external user authorization. It confirms `authorization_not_visible_in_consumed_turn` with direct evidence and classifies all 216 raw bytes as non-JSON authorization-deferral prose.
+- [x] Gate 1 performs exactly one offline replay through the existing composer loader, reproducing `payload_invalid_json` at line 1, column 1, byte offset 0 with zero model calls, writes, or retries. The late authorized turn remains post-terminal observation only.
+- [ ] Gate 2 implementation and r5.2-f02 execution protocol remain `NOT_STARTED`; no result root, authorization receipt, task, finalization, composer call, validator call, or retry exists for r5.2-f02.
 
 ## M3.1.1 r5 historical preparation and terminal result
 
@@ -165,6 +190,16 @@ The one-shot dispatcher bound fresh task `019fdb7c-1728-7a92-b6cf-b0eb631a18b8` 
 M3 remains `IN_PROGRESS`, historical r5 remains `BLOCKED_NOT_ACCEPTED`, fresh F02 is `NOT_ACCEPTED`, cross-revision aggregate acceptance remains `NOT_RUN`, M3 closure remains `NOT_RUN`, and M4 remains `NOT_STARTED`.
 
 The r5.1-f02 replacement task budget is `CONSUMED`, retry is `FORBIDDEN`, and the one-shot authorization token is `CONSUMED / TERMINAL`. No second task or second finalization is authorized. The terminal closure does not accept F02, aggregate r5 and r5.1 evidence, close M3, or start M4.
+
+## M3.1.1 r5.2-f02 Gate 1 root-cause and protocol preparation
+
+Status: `COMPLETE; GATE_2_NOT_STARTED`
+
+The read-only, hash-bound report at `evals/m3/results/diagnostics-r5.2-f02/root-cause-report.json` distinguishes three contexts that the failed one-shot workflow had treated as interchangeable: the frozen repository prompt, the messages actually visible to the consumed fresh-model turn, and the external user authorization. The external workflow authorization was present before child creation, but it was not included in the consumed turn. The unchanged frozen prompt instead described a future task and instructed the model not to execute without separate authorization. The complete first final followed that instruction and returned 216 bytes of non-JSON authorization-deferral prose.
+
+The primary root cause is `authorization_not_visible_in_consumed_turn`. Output truncation, wrong consumed-message selection, Markdown or prefix/suffix corruption, and a composer-path defect are ruled out by the completed platform state, exact final/task-complete/model-final/payload byte equality, the post-terminal timing of the later authorized turn, and one offline replay of the existing composer loader. Provider `request_id` and `finish_reason` were not recorded and remain explicitly unavailable rather than inferred. The later authorized turn and its valid JSON are observation-only and do not repair, retry, or relabel r5.1-f02.
+
+Local Gate 1 validation passed on implementation HEAD `86a24a4d1895a565ce54ce087627e32ebbb4c30f`: 17 focused tests, 486 full tests, a deep audit of the child rollout, source consumption prefix, and external authorization attachment, the existing terminal auditor, and the CI-state auditor. Historical `forward-r5` and `forward-r5.1-f02` diffs are empty. Gate 2 remains `NOT_STARTED`; `evals/m3/results/forward-r5.2-f02/` is absent, all r5.2 counters are zero, `new_fresh_run_authorized=false`, and no fresh task was created or run. See `evals/m3/results/2026-08-07-m3.1.1-r5.2-f02-root-cause-validation.md`.
 
 ## M3 local result
 
@@ -306,7 +341,7 @@ Evidence is recorded under `evals/m1/`, including preserved failed runs and inde
 ## External state
 
 - Git remote: `https://github.com/zxy19960316/engineering-research-copilot.git`
-- Active local branch: `codex/m3.1.1-r5.1-f02-terminal-evidence-closure`
+- Active local branch: `codex/m3.1.1-r5.2-f02-root-cause-and-protocol-preparation`
 - External APIs/services configured: none
 - RRC integration: not started
 - Platform integration: not required for the local Skill competition track
