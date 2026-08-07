@@ -1,0 +1,43 @@
+{
+  "schema_version": "m3.1-r5.2-f02-output-mode-v1",
+  "revision": "r5.2-f02",
+  "case_id": "m3-f02",
+  "assessed_at": "2026-08-07",
+  "model_capability": {
+    "model": "gpt-5.6-sol",
+    "native_structured_outputs_supported": true,
+    "official_model_documentation": "https://developers.openai.com/api/docs/models/gpt-5.6-sol",
+    "official_structured_outputs_guide": "https://developers.openai.com/api/docs/guides/structured-outputs"
+  },
+  "execution_surface": {
+    "name": "codex_app.create_thread",
+    "request_fields_observed": [
+      "model",
+      "prompt",
+      "target",
+      "thinking",
+      "title"
+    ],
+    "response_format_field_exposed": false,
+    "json_schema_field_exposed": false,
+    "provider_request_id_exposed": false,
+    "finish_reason_exposed": false,
+    "token_usage_exposed": false,
+    "raw_final_text_exposed": true
+  },
+  "decision": {
+    "selected_mode": "strict_text_json_fail_closed",
+    "structured_output_request_config": null,
+    "automatic_repair_allowed": false,
+    "capability_recheck_required_before_gate_3": true,
+    "surface_change_requires_new_hash": true,
+    "direct_api_substitution_authorized": false
+  },
+  "observability_policy": {
+    "capture_tool_boundary_final_as_raw_utf8_bytes": true,
+    "preserve_before_parser": true,
+    "unexposed_provider_fields": "record null with explicit not_exposed status; never infer",
+    "model_visible_message_hash_includes_authorized_execution_prefix": true
+  },
+  "surface_request_contract_canonical_sha256": "3fa6dc2fa2f061b38f91241e89ef07a1c84a643adb5a4cd561c9074ad737c90f"
+}

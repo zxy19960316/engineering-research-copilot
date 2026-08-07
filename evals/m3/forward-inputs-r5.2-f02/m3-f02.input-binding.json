@@ -1,0 +1,92 @@
+{
+  "schema_version": "m3.1-forward-r5.2-f02-input-binding-v1",
+  "revision": "r5.2-f02",
+  "case_id": "m3-f02",
+  "preparation_base_head": "263af3df0d8c075d4cdd9835eabe0708dc4f4163",
+  "historical_evidence_heads": {
+    "forward_r5": "1b696bce53ee0a11163bfe4f91a9a49ab3af6f49",
+    "forward_r5_1_f02": "fb5eec44bbf86446cf12bda2bddc76fcb07a7e69"
+  },
+  "source_input": {
+    "path": "evals/m3/forward-inputs-r2/m3-f02-route-compatible.bundle.json",
+    "git_blob_oid": "717e2820e9587fc2f9593d0aa0664497987260cf",
+    "raw_sha256": "8db4db7f9173a8d10598af49e8ffd83dca12e34692c2827ec47031a30ab49da1",
+    "canonical_sha256": "fc7301d37737d85bc1bd2f0a3c2d51d842d0fe3fbdf1ded142e2d62f04d40841"
+  },
+  "m2_validation": {
+    "path": "evals/m3/forward-inputs-r4/m3-f02.m2-validation.json",
+    "git_blob_oid": "5a603026cb4e368dd5e260e1f337d70940b22c3d",
+    "raw_sha256": "9d6f4acbbd04392feb9dd65a1eb067bc477fa8a1257349ba332eb7c70ab0fbb7",
+    "required_status": "valid"
+  },
+  "eligibility": {
+    "path": "evals/m3/forward-inputs-r4/m3-f02.eligibility.json",
+    "git_blob_oid": "522283301bd6497f1b5f069d74711801b8e2eda5",
+    "raw_sha256": "42c73b8d78b5084a3fc7c1b23e526e353fc65ef152cd705f15ee3c37346a3ef5",
+    "required_status": "eligible"
+  },
+  "route_condition_authority": {
+    "source_pointer": "route_output",
+    "condition_fields": [
+      "criterion_type",
+      "metric_id",
+      "operator",
+      "value",
+      "unit"
+    ],
+    "stop_condition_count": 3,
+    "pivot_condition_count": 3,
+    "canonical_sha256": "e5acfe7e96749a9fb8dd63a2d088c4efae907a6eb94d4a94d70cc3370352c2b5"
+  },
+  "root_cause_report": {
+    "path": "evals/m3/results/diagnostics-r5.2-f02/root-cause-report.json",
+    "source_head": "86a24a4d1895a565ce54ce087627e32ebbb4c30f",
+    "git_blob_oid": "584602f9f79fd091a2c72e211cb965db3363e412",
+    "raw_sha256": "1b5fb4ac7b4c7fee426c01ca458bbf5d7fdbfd03e122f8b828771fff28de9021",
+    "required_status": "root_cause_confirmed",
+    "required_primary_code": "authorization_not_visible_in_consumed_turn"
+  },
+  "historical_failed_tasks": [
+    {
+      "revision": "r5",
+      "task_id": "019fd687-5575-7143-8cf3-1ab3069611f5",
+      "result_root": "evals/m3/results/forward-r5",
+      "retry_forbidden": true
+    },
+    {
+      "revision": "r5.1-f02",
+      "task_id": "019fdb7c-1728-7a92-b6cf-b0eb631a18b8",
+      "result_root": "evals/m3/results/forward-r5.1-f02",
+      "terminal_manifest": {
+        "path": "evals/m3/results/forward-r5.1-f02/terminal-manifest.json",
+        "git_blob_oid": "3b862581be63529012495b8579f29e16dbb6f02b",
+        "raw_sha256": "c8d8060e781b601b9dc7120b0cdf2615f9a9709fd67d9745a8d31dd682b8f9db"
+      },
+      "raw_model_final": {
+        "path": "evals/m3/results/forward-r5.1-f02/m3-f02.model-final.json",
+        "git_blob_oid": "8c5ed1d1818039600c52e67544b746d34c41a857",
+        "byte_length": 216,
+        "raw_sha256": "75b4f9f5f4e2459b2886c0a9654c8cc1bda4015c525869cd154a302a2bc0589a"
+      },
+      "retry_forbidden": true
+    }
+  ],
+  "authorization_context_separation": {
+    "frozen_repository_prompt": "hash-bound model task artifact",
+    "model_visible_execution_context": "must contain the authorized-execution prefix in the final prompt hash",
+    "external_process_authorization": "must be verified before task creation and recorded as a separate five-field receipt",
+    "gate_2_execution_authorized": false
+  },
+  "does_not_authorize": [
+    "task creation",
+    "fresh model execution",
+    "finalization",
+    "composition",
+    "validation consumption",
+    "retry",
+    "historical evidence mutation",
+    "cross-revision aggregation",
+    "M3 closure",
+    "M4"
+  ]
+}

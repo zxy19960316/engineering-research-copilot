@@ -1,0 +1,74 @@
+{
+  "schema_version": "m3.1-r5.2-f02-protocol-regression-cases-v1",
+  "revision": "r5.2-f02",
+  "case_id": "m3-f02",
+  "utf8_bom_policy": "reject",
+  "repair_allowed": false,
+  "cases": [
+    {
+      "case_id": "valid_complete_object",
+      "raw_text": "{\"ok\":true}",
+      "validator_errors": [],
+      "expected_status": "accepted",
+      "expected_reason": "accepted",
+      "expected_counters": {"composer": 1, "validator": 1, "retry": 0}
+    },
+    {
+      "case_id": "markdown_fenced_object",
+      "raw_text": "```json\n{\"ok\":true}\n```",
+      "expected_status": "terminal_not_accepted",
+      "expected_reason": "payload_invalid_json",
+      "expected_counters": {"composer": 1, "validator": 0, "retry": 0}
+    },
+    {
+      "case_id": "leading_prose_object",
+      "raw_text": "Here is the object: {\"ok\":true}",
+      "expected_status": "terminal_not_accepted",
+      "expected_reason": "payload_invalid_json",
+      "expected_counters": {"composer": 1, "validator": 0, "retry": 0}
+    },
+    {
+      "case_id": "truncated_object",
+      "raw_text": "{\"ok\":",
+      "expected_status": "terminal_not_accepted",
+      "expected_reason": "payload_invalid_json",
+      "expected_counters": {"composer": 1, "validator": 0, "retry": 0}
+    },
+    {
+      "case_id": "utf8_bom_object",
+      "raw_hex": "efbbbf7b226f6b223a747275657d",
+      "expected_status": "terminal_not_accepted",
+      "expected_reason": "payload_invalid_json",
+      "expected_counters": {"composer": 1, "validator": 0, "retry": 0}
+    },
+    {
+      "case_id": "duplicate_keys",
+      "raw_text": "{\"key\":1,\"key\":2}",
+      "expected_status": "terminal_not_accepted",
+      "expected_reason": "payload_invalid_json",
+      "expected_counters": {"composer": 1, "validator": 0, "retry": 0}
+    },
+    {
+      "case_id": "empty_output",
+      "raw_text": "",
+      "expected_status": "terminal_not_accepted",
+      "expected_reason": "empty_output_terminal_failure",
+      "expected_counters": {"composer": 1, "validator": 0, "retry": 0}
+    },
+    {
+      "case_id": "authorization_refusal_prose",
+      "raw_text": "I cannot execute this reserved task without separate authorization.",
+      "expected_status": "terminal_not_accepted",
+      "expected_reason": "payload_invalid_json",
+      "expected_counters": {"composer": 1, "validator": 0, "retry": 0}
+    },
+    {
+      "case_id": "valid_json_schema_rejection",
+      "raw_text": "{\"ok\":true}",
+      "validator_errors": ["required_field_missing"],
+      "expected_status": "terminal_not_accepted",
+      "expected_reason": "validator_rejected",
+      "expected_counters": {"composer": 1, "validator": 1, "retry": 0}
+    }
+  ]
+}
