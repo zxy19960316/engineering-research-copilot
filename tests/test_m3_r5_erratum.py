@@ -95,12 +95,12 @@ class M3R5ErratumTests(unittest.TestCase):
         self.assertEqual(diagnostic["retry_count"], 0)
         self.assertFalse(diagnostic["composed_output_created"])
 
-    def test_status_top_reports_current_r5_1_f02_terminal_state(self):
+    def test_status_top_preserves_terminal_state_during_gate_2_preparation(self):
         text = (REPO_ROOT / "STATUS.md").read_text(encoding="utf-8")
         current = text.split("## M3 checklist", 1)[0]
 
         self.assertIn(
-            "Active revision: `M3.1.1 r5.1-f02 terminal evidence closure`",
+            "Active revision: `M3.1.1 r5.2-f02 Gate 2 execution protocol preparation`",
             current,
         )
         self.assertIn(f"Historical r5 evidence HEAD: `{EVIDENCE_HEAD}`", current)
@@ -112,6 +112,8 @@ class M3R5ErratumTests(unittest.TestCase):
         self.assertIn("M3: `IN_PROGRESS`", current)
         self.assertIn("M4: `NOT_STARTED`", current)
         self.assertIn("r5.1-f02 retry: `FORBIDDEN`", current)
+        self.assertIn("Gate 2: `LOCAL_COMPLETE; EXACT_HEAD_CI_PENDING`", current)
+        self.assertIn("Gate 2 new fresh-run authorization: `false`", current)
         self.assertIn("r5.1-f02 replacement task budget: `CONSUMED`", current)
         self.assertIn(
             "r5.1-f02 authorization token: `CONSUMED / TERMINAL`", current

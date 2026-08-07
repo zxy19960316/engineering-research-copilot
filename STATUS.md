@@ -4,7 +4,7 @@
 
 `M3 — Engineering method cards`
 
-Active revision: `M3.1.1 r5.1-f02 terminal evidence closure`
+Active revision: `M3.1.1 r5.2-f02 Gate 2 execution protocol preparation`
 
 Historical r5 evidence HEAD: `1b696bce53ee0a11163bfe4f91a9a49ab3af6f49`
 
@@ -82,11 +82,21 @@ Gate 1 late authorization: `POST_TERMINAL_OBSERVATION_ONLY`
 
 Gate 1 offline parser replay: `1; payload_invalid_json; model_calls=0; writes=0; retries=0`
 
-Gate 2: `NOT_STARTED`
+Gate 2: `LOCAL_COMPLETE; EXACT_HEAD_CI_PENDING`
+
+Gate 2 implementation HEAD: `1b6583b694c0d2263bcf7e12bf62b4a5e6567a47`
+
+Gate 2 local gates: `PASSED; focused=32/32; full=518/518`
+
+Gate 2 output mode: `strict_text_json_fail_closed; capability recheck required before Gate 3`
+
+Gate 2 prompt contradiction lint: `PASSED`
+
+Gate 2 new fresh-run authorization: `false`
 
 r5.2-f02 fresh execution: `NOT_RUN`
 
-r5.2-f02 result root: `ABSENT`
+r5.2-f02 result root: `LOGICALLY_EMPTY; .gitkeep_ONLY; artifact_count=0`
 
 r5.2-f02 counters: `tasks=0; finalizations=0; composer=0; validator=0; retry=0`
 
@@ -133,7 +143,7 @@ Before route-specific method-card instantiation, M3.1.1 must validate the comple
 - [x] The terminal manifest and read-only terminal auditor freeze the consumed task, finalization, malformed payload, composer failure, transaction, predecessor authorization, prompt/input/contracts, and unchanged historical r5 tree. Current CI uses the terminal gate; predecessor preparation/readiness auditors retain their historical semantics.
 - [x] Gate 1 separates and hash-binds the frozen repository prompt, the consumed-turn model-visible message envelope, and the external user authorization. It confirms `authorization_not_visible_in_consumed_turn` with direct evidence and classifies all 216 raw bytes as non-JSON authorization-deferral prose.
 - [x] Gate 1 performs exactly one offline replay through the existing composer loader, reproducing `payload_invalid_json` at line 1, column 1, byte offset 0 with zero model calls, writes, or retries. The late authorized turn remains post-terminal observation only.
-- [ ] Gate 2 implementation and r5.2-f02 execution protocol remain `NOT_STARTED`; no result root, authorization receipt, task, finalization, composer call, validator call, or retry exists for r5.2-f02.
+- [x] Gate 2 locally freezes the contradiction-free r5.2-f02 prompt, hash-bound input and authorization-receipt schema, strict JSON boundary, raw-response observation schema, nine synthetic regression cases, read-only preparation auditor, and callback-free dispatcher. The logical result root contains only an empty `.gitkeep`; no authorization receipt instance, task, finalization, composer call, validator call, or retry exists. Exact-HEAD remote CI remains pending at this record commit.
 
 ## M3.1.1 r5 historical preparation and terminal result
 
@@ -193,13 +203,23 @@ The r5.1-f02 replacement task budget is `CONSUMED`, retry is `FORBIDDEN`, and th
 
 ## M3.1.1 r5.2-f02 Gate 1 root-cause and protocol preparation
 
-Status: `COMPLETE; GATE_2_NOT_STARTED`
+Status: `COMPLETE; GATE_2_LOCAL_COMPLETE`
 
 The read-only, hash-bound report at `evals/m3/results/diagnostics-r5.2-f02/root-cause-report.json` distinguishes three contexts that the failed one-shot workflow had treated as interchangeable: the frozen repository prompt, the messages actually visible to the consumed fresh-model turn, and the external user authorization. The external workflow authorization was present before child creation, but it was not included in the consumed turn. The unchanged frozen prompt instead described a future task and instructed the model not to execute without separate authorization. The complete first final followed that instruction and returned 216 bytes of non-JSON authorization-deferral prose.
 
 The primary root cause is `authorization_not_visible_in_consumed_turn`. Output truncation, wrong consumed-message selection, Markdown or prefix/suffix corruption, and a composer-path defect are ruled out by the completed platform state, exact final/task-complete/model-final/payload byte equality, the post-terminal timing of the later authorized turn, and one offline replay of the existing composer loader. Provider `request_id` and `finish_reason` were not recorded and remain explicitly unavailable rather than inferred. The later authorized turn and its valid JSON are observation-only and do not repair, retry, or relabel r5.1-f02.
 
-Local Gate 1 validation passed on implementation HEAD `86a24a4d1895a565ce54ce087627e32ebbb4c30f`: 17 focused tests, 486 full tests, a deep audit of the child rollout, source consumption prefix, and external authorization attachment, the existing terminal auditor, and the CI-state auditor. Historical `forward-r5` and `forward-r5.1-f02` diffs are empty. Gate 2 remains `NOT_STARTED`; `evals/m3/results/forward-r5.2-f02/` is absent, all r5.2 counters are zero, `new_fresh_run_authorized=false`, and no fresh task was created or run. See `evals/m3/results/2026-08-07-m3.1.1-r5.2-f02-root-cause-validation.md`.
+Local Gate 1 validation passed on implementation HEAD `86a24a4d1895a565ce54ce087627e32ebbb4c30f`: 17 focused tests, 486 full tests, a deep audit of the child rollout, source consumption prefix, and external authorization attachment, the existing terminal auditor, and the CI-state auditor. Historical `forward-r5` and `forward-r5.1-f02` diffs are empty. The immutable Gate 1 report retains its as-recorded `gate2=NOT_STARTED` and `r5_2_result_root=ABSENT` snapshot; the successor Gate 2 preparation now permits only the logical-empty result root marker and does not reinterpret the root-cause findings. See `evals/m3/results/2026-08-07-m3.1.1-r5.2-f02-root-cause-validation.md`.
+
+## M3.1.1 r5.2-f02 Gate 2 execution protocol preparation
+
+Status: `LOCAL_READY_AWAITING_EXACT_HEAD_CI; FRESH_EXECUTION_NOT_RUN`
+
+The model-facing prompt begins with `This is the authorized r5.2-f02 execution.` and `Execute the frozen task now.`; those lines are part of its frozen SHA-256 `815eae213701505755fb7edc4d64d16089bd4e14e14dc6ec1e16c787918ea1df`. Case-insensitive lint rejects `do not execute`, `future task`, and `without separate authorization`. The separate Gate 3 receipt schema binds that prompt hash, input-binding SHA-256 `3d90ed7f02a865eb3cab0fd8f70f0407ce5a80a93e500996686e2fad54c1709d`, `authorized=true`, and exactly one authorized task; no receipt instance or task ID exists in Gate 2.
+
+GPT-5.6 Sol documents native Structured Outputs support, but the current `codex_app.create_thread` request surface exposes no response-format or JSON-Schema parameter. Gate 2 therefore freezes `strict_text_json_fail_closed`, no automatic repair, and a mandatory capability recheck before Gate 3. The text boundary requires one UTF-8 JSON object, first and last non-whitespace bytes `{` and `}`, no BOM, Markdown fence, surrounding prose, comments, duplicate keys, additional JSON values, or non-finite numbers. A separate pre-parser observation schema records raw bytes and SHA-256, byte count, model/task/request/finalization identities, finish reason, token counts, task timestamps, request-envelope hash, and model-visible-message hash; unexposed provider fields remain explicit `null` / `not_exposed` rather than inferred.
+
+Local validation passed on implementation HEAD `1b6583b694c0d2263bcf7e12bf62b4a5e6567a47`: 32 focused Gate 2 tests, 49 combined Gate 1/Gate 2 tests, and 518 full tests; unchanged M1, M2, and M3 replays; empty M2/M3 fixture-regeneration diffs; valid package and standard Skill audits; valid r5 blocked-state, r5.1 terminal, Gate 1 root-cause, Gate 2 preparation, and callback-free dispatcher audits. Historical `forward-r5` and `forward-r5.1-f02` Git trees match their frozen evidence heads. `evals/m3/results/forward-r5.2-f02/` contains only an empty `.gitkeep`; task/finalization/composer/validator/retry counters remain `0/0/0/0/0`; `new_fresh_run_authorized=false`; fresh execution, cross-revision aggregation, M3 closure, and M4 remain `NOT_RUN`. Exact-HEAD remote CI is not pre-claimed by this record. See `evals/m3/results/2026-08-07-m3.1.1-r5.2-f02-protocol-preparation-validation.md`.
 
 ## M3 local result
 
