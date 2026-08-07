@@ -50,6 +50,9 @@ jobs:
             evals/m3/audit_forward_r5_1_f02_preparation.py \
             evals/m3/audit_forward_r5_1_f02_authorization.py \
             evals/m3/dispatch_forward_r5_1_f02.py \
+            evals/m3/r5_1_f02_execution_contract.py \
+            evals/m3/audit_forward_r5_1_f02_execution_authorization.py \
+            evals/m3/dispatch_forward_r5_1_f02_once.py \
             evals/m3/audit_immutable_forward_evidence.py \
             evals/m3/audit_skill_package.py
       - name: Require immutable r5 evidence commit
@@ -82,6 +85,8 @@ jobs:
         run: python evals/m3/audit_forward_r5_1_f02_preparation.py
       - name: Audit r5.1-f02 fresh authorization readiness without consumption
         run: python evals/m3/audit_forward_r5_1_f02_authorization.py
+      - name: Audit r5.1-f02 one-shot execution authorization without launch
+        run: python evals/m3/audit_forward_r5_1_f02_execution_authorization.py
 
   historical-audit-cross-platform:
     strategy:
