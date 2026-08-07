@@ -4,11 +4,15 @@
 
 `M3 — Engineering method cards`
 
-Active revision: `M3.1.1 r5.1-f02 one-shot execution`
+Active revision: `M3.1.1 r5.1-f02 terminal evidence closure`
 
-Evidence HEAD: `1b696bce53ee0a11163bfe4f91a9a49ab3af6f49`
+Historical r5 evidence HEAD: `1b696bce53ee0a11163bfe4f91a9a49ab3af6f49`
 
-Status: `BLOCKED_NOT_ACCEPTED`
+Execution evidence HEAD: `a847b3eaf39a6f4f70353cd669e41e414afc658c`
+
+Status: `TERMINAL_NOT_ACCEPTED`
+
+Historical r5 status: `BLOCKED_NOT_ACCEPTED`
 
 Accepted fresh cases: `F01, F03, F04, F05`
 
@@ -28,7 +32,7 @@ r5.1 first closure-evidence exact-HEAD CI: `FAILED` on HEAD `92517be9b936b299f1c
 
 r5.1 corrected closure-evidence exact-HEAD CI: `PASSED` on HEAD `c5ca408beedf2c3f20160fb1d06293336eacd725` (GitHub Actions run `31108332769`)
 
-r5.1-f02 replacement one-shot fresh execution: `F02_ONE_SHOT_NOT_ACCEPTED`
+r5.1-f02 replacement one-shot fresh execution: `TERMINAL_NOT_ACCEPTED`
 
 r5.1-f02 preparation implementation HEAD: `df327ec4a1faf5b0b5a5f10804ee33efab24accf`
 
@@ -53,6 +57,14 @@ r5.1-f02 one-shot execution-authorization local gates: `PASSED`
 r5.1-f02 one-shot execution-authorization exact-HEAD CI: `PASSED` on HEAD `85ce824c55a3a40f3f05153a57edb809dc68eee6` (GitHub Actions run `31162936407`)
 
 r5.1-f02 fresh-context execution: `NOT_ACCEPTED` (`processing_failed`; `payload_invalid_json`)
+
+r5.1-f02 execution counters: `tasks=1; finalizations=1; composer=1; validator=0; retry=0`
+
+r5.1-f02 retry: `FORBIDDEN`
+
+r5.1-f02 replacement task budget: `CONSUMED`
+
+r5.1-f02 authorization token: `CONSUMED / TERMINAL`
 
 r5.1-f02 cross-revision aggregate acceptance: `NOT_RUN`
 
@@ -96,6 +108,7 @@ Before route-specific method-card instantiation, M3.1.1 must validate the comple
 - [x] Local one-shot execution-authorization gates pass at implementation HEAD `69c2e1cbad792a97467bdd2f3f05fc56b4499bc9`: 440 tests, 22 focused tests, unchanged replays, empty M2/M3 regeneration diffs, package and Skill audits, preparation/readiness/execution audits, zero immutable-r5 diff, zero replacement artifacts, zero historical retries, and zero fresh callbacks.
 - [x] One-shot execution-authorization exact-HEAD remote CI passed on HEAD `85ce824c55a3a40f3f05153a57edb809dc68eee6` in GitHub Actions run `31162936407`.
 - [x] One new r5.1-f02 fresh-context task was launched and finalized exactly once. The preserved non-JSON final failed composition with `payload_invalid_json`; composer invocation count is one, validator invocation count is zero, accepted is false, and retry is forbidden.
+- [x] The terminal manifest and read-only terminal auditor freeze the consumed task, finalization, malformed payload, composer failure, transaction, predecessor authorization, prompt/input/contracts, and unchanged historical r5 tree. Current CI uses the terminal gate; predecessor preparation/readiness auditors retain their historical semantics.
 
 ## M3.1.1 r5 historical preparation and terminal result
 
@@ -145,11 +158,13 @@ Before consumption, the read-only execution auditor reported `ready_for_one_shot
 
 ## M3.1.1 r5.1-f02 one-shot fresh execution
 
-Status: `F02_ONE_SHOT_NOT_ACCEPTED`
+Status: `TERMINAL_NOT_ACCEPTED`
 
 The one-shot dispatcher bound fresh task `019fdb7c-1728-7a92-b6cf-b0eb631a18b8` with launch count one, callback invocation count one, and no historical task reuse. The only finalization preserved 216 raw bytes with SHA-256 `75b4f9f5f4e2459b2886c0a9654c8cc1bda4015c525869cd154a302a2bc0589a`. The existing composer was invoked once and rejected the non-JSON payload as `payload_invalid_json`; validator invocation count remained zero. The transaction state is `processing_failed`, accepted is false, and retry is forbidden. See `evals/m3/results/2026-08-07-m3.1.1-r5.1-f02-one-shot-execution-validation.md`.
 
 M3 remains `IN_PROGRESS`, historical r5 remains `BLOCKED_NOT_ACCEPTED`, fresh F02 is `NOT_ACCEPTED`, cross-revision aggregate acceptance remains `NOT_RUN`, M3 closure remains `NOT_RUN`, and M4 remains `NOT_STARTED`.
+
+The r5.1-f02 replacement task budget is `CONSUMED`, retry is `FORBIDDEN`, and the one-shot authorization token is `CONSUMED / TERMINAL`. No second task or second finalization is authorized. The terminal closure does not accept F02, aggregate r5 and r5.1 evidence, close M3, or start M4.
 
 ## M3 local result
 
@@ -291,7 +306,7 @@ Evidence is recorded under `evals/m1/`, including preserved failed runs and inde
 ## External state
 
 - Git remote: `https://github.com/zxy19960316/engineering-research-copilot.git`
-- Active local branch: `codex/m3.1.1-r5.1-f02-one-shot-execution-authorization`
+- Active local branch: `codex/m3.1.1-r5.1-f02-terminal-evidence-closure`
 - External APIs/services configured: none
 - RRC integration: not started
 - Platform integration: not required for the local Skill competition track
