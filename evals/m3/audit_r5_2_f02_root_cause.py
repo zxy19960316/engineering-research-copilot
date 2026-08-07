@@ -297,6 +297,27 @@ def _gate0_is_ancestor(repo_root: Path) -> bool:
     return result.returncode == 0
 
 
+def _gate2_result_root_safe(repo_root: Path) -> bool:
+    """Allow the Gate 1 absence state or Gate 2's empty tracking marker only."""
+
+    root = repo_root / "evals/m3/results/forward-r5.2-f02"
+    if not root.exists():
+        return True
+    if not root.is_dir() or root.is_symlink():
+        return False
+    try:
+        entries = list(root.iterdir())
+    except OSError:
+        return False
+    marker = root / ".gitkeep"
+    return (
+        entries == [marker]
+        and marker.is_file()
+        and not marker.is_symlink()
+        and marker.read_bytes() == b""
+    )
+
+
 def _text_content(message: dict[str, Any]) -> str:
     content = message.get("content")
     if not isinstance(content, list):
@@ -907,7 +928,7 @@ def audit_report(
     external_authorization: str | Path | None = None,
     historical_r5_check: Callable[[], bool] | None = None,
     historical_r5_1_check: Callable[[], bool] | None = None,
-    gate2_root_absent_check: Callable[[], bool] | None = None,
+    gate2_root_safe_check: Callable[[], bool] | None = None,
 ) -> dict[str, Any]:
     """Audit the report without executing, repairing, retrying, or writing."""
 
@@ -934,13 +955,15 @@ def audit_report(
     )
     if not historical_r5_1_ok:
         _add(errors, "historical_r5_1_f02_changed")
-    gate2_root_absent = (
-        gate2_root_absent_check()
-        if gate2_root_absent_check is not None
-        else not (repo_root / "evals/m3/results/forward-r5.2-f02").exists()
+    gate2_root = repo_root / "evals/m3/results/forward-r5.2-f02"
+    gate2_root_absent = not gate2_root.exists()
+    gate2_root_safe = (
+        gate2_root_safe_check()
+        if gate2_root_safe_check is not None
+        else _gate2_result_root_safe(repo_root)
     )
-    if not gate2_root_absent:
-        _add(errors, "r5_2_result_root_present")
+    if not gate2_root_safe:
+        _add(errors, "r5_2_result_root_not_logically_empty")
 
     child_path = Path(child_rollout) if child_rollout is not None else None
     source_path = Path(source_rollout) if source_rollout is not None else None
@@ -980,6 +1003,7 @@ def audit_report(
         "historical_r5_unchanged": historical_r5_ok,
         "historical_r5_1_f02_unchanged": historical_r5_1_ok,
         "r5_2_result_root_absent": gate2_root_absent,
+        "r5_2_result_root_safe": gate2_root_safe,
         "child_rollout_checked": child_path is not None,
         "source_rollout_checked": source_path is not None,
         "external_authorization_checked": authorization_path is not None,

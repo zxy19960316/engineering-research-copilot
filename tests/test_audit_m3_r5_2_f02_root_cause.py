@@ -46,6 +46,8 @@ class AuditM3R52F02RootCauseTests(unittest.TestCase):
         )
         self.assertIs(result["fresh_execution_authorized"], False)
         self.assertEqual(result["gate2_status"], "NOT_STARTED")
+        self.assertIs(result["r5_2_result_root_absent"], False)
+        self.assertIs(result["r5_2_result_root_safe"], True)
 
     def test_required_scalar_findings_are_exact(self):
         report = self._report()
@@ -188,10 +190,10 @@ class AuditM3R52F02RootCauseTests(unittest.TestCase):
         self.assertEqual(result["status"], "invalid")
         self.assertIn("historical_r5_changed", result["errors"])
 
-    def test_gate2_result_root_must_remain_absent(self):
-        result = audit.audit_report(audit.REPORT, gate2_root_absent_check=lambda: False)
+    def test_gate2_result_root_must_remain_absent_or_logically_empty(self):
+        result = audit.audit_report(audit.REPORT, gate2_root_safe_check=lambda: False)
         self.assertEqual(result["status"], "invalid")
-        self.assertIn("r5_2_result_root_present", result["errors"])
+        self.assertIn("r5_2_result_root_not_logically_empty", result["errors"])
 
     def test_fresh_execution_authorization_is_forbidden(self):
         result = self._audit_mutation(
