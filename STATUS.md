@@ -32,7 +32,7 @@ r5.1-f02 replacement preparation: `LOCAL_READY_AWAITING_FRESH_AUTHORIZATION`
 
 r5.1-f02 preparation implementation HEAD: `df327ec4a1faf5b0b5a5f10804ee33efab24accf`
 
-r5.1-f02 preparation exact-HEAD CI: `NOT_RUN`
+r5.1-f02 preparation exact-HEAD CI: `PASSED` on HEAD `bbf54721b090d9d91b269d88e31919ae00fb0a39` (GitHub Actions run `31115643290`)
 
 r5.1-f02 fresh-context authorization: `NOT_GRANTED`
 
@@ -63,7 +63,7 @@ Before route-specific method-card instantiation, M3.1.1 must validate the comple
 - [x] r5.1-f02 offline replacement preparation freezes a new F02 input binding, authority-explicit prompt and contract, one-case manifest, all-zero counters, and a zero-artifact result root without changing frozen r5 evidence.
 - [x] Generic route-specific method-card regression rejects drift in authoritative `metric_id`, `criterion_type`, `value`, or `unit`; the existing strict condition-object equality remains the enforcement mechanism.
 - [x] Local r5.1-f02 preparation gates pass at implementation HEAD `df327ec4a1faf5b0b5a5f10804ee33efab24accf`: 395 tests, unchanged replays, empty M2/M3 regeneration diffs, package and Skill audits, expected r5 blocked-state audit, and the new read-only preparation audit.
-- [ ] r5.1-f02 preparation exact-HEAD remote CI. No push or remote run has been authorized or performed for the preparation branch.
+- [x] r5.1-f02 preparation exact-HEAD remote CI passed on HEAD `bbf54721b090d9d91b269d88e31919ae00fb0a39` in GitHub Actions run `31115643290`; validate, immutable-evidence preflight, Ubuntu historical audit, and Windows historical audit all succeeded.
 - [ ] One new r5.1-f02 fresh-context task. Preparation does not grant this separate one-shot authorization.
 
 ## M3.1.1 r5 historical preparation and terminal result

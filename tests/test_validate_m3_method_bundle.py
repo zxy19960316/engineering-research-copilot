@@ -399,6 +399,7 @@ class ValidateM3MethodBundleTests(unittest.TestCase):
         mutations = {
             "metric_id": "M-NOT-AUTHORITATIVE",
             "criterion_type": "pivot",
+            "operator": ">=",
             "value": 0.51,
             "unit": "percent",
         }
@@ -411,6 +412,34 @@ class ValidateM3MethodBundleTests(unittest.TestCase):
                 self.assertEqual(result["status"], "invalid")
                 self.assertIn(
                     "method_card_stop_condition_not_authoritative",
+                    result["errors"],
+                )
+
+    def test_route_nuclear_overlay_rejects_any_authoritative_stop_condition_field_drift(self):
+        mutations = {
+            "metric_id": "M-NOT-AUTHORITATIVE",
+            "operator": ">=",
+            "value": 0.51,
+            "unit": "percent",
+        }
+        for field, replacement in mutations.items():
+            with self.subTest(field=field):
+                bundle = make_valid_m3_bundle("route_specific")
+                overlay = _nuclear_overlay()
+                overlay["additional_stop_conditions"] = [
+                    copy.deepcopy(
+                        bundle["source_m2_bundle"]["route_output"][
+                            "stop_conditions"
+                        ][0]
+                    )
+                ]
+                overlay["additional_stop_conditions"][0][field] = replacement
+                bundle["domain_overlays"] = [overlay]
+                result = validate_m3_bundle(bundle)
+
+                self.assertEqual(result["status"], "invalid")
+                self.assertIn(
+                    "nuclear_overlay_stop_condition_not_authoritative",
                     result["errors"],
                 )
 
