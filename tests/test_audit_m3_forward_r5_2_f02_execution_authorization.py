@@ -145,6 +145,19 @@ class AuditM3ForwardR52F02ExecutionAuthorizationTests(unittest.TestCase):
             result = audit.audit_execution_authorization(AUTHORIZATION)
         self.assertIn("gate_2_frozen_blob_changed:manifest.json", result["errors"])
 
+    def test_gate_2_snapshot_compares_git_blobs_not_platform_worktree_bytes(self):
+        completed = mock.Mock(returncode=0)
+        with (
+            mock.patch.object(audit.subprocess, "run", return_value=completed),
+            mock.patch.object(audit, "_git_blob", return_value=b"frozen-git-bytes"),
+            mock.patch.object(
+                Path,
+                "read_bytes",
+                side_effect=AssertionError("worktree bytes must not define Git identity"),
+            ),
+        ):
+            self.assertEqual(audit._gate_2_snapshot_errors(), [])
+
     def test_rejects_historical_tree_drift(self):
         with mock.patch.object(
             audit,

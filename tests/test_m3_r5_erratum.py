@@ -95,16 +95,19 @@ class M3R5ErratumTests(unittest.TestCase):
         self.assertEqual(diagnostic["retry_count"], 0)
         self.assertFalse(diagnostic["composed_output_created"])
 
-    def test_status_top_preserves_terminal_state_during_gate_2_preparation(self):
+    def test_status_top_preserves_history_during_gate_3_authorization(self):
         text = (REPO_ROOT / "STATUS.md").read_text(encoding="utf-8")
         current = text.split("## M3 checklist", 1)[0]
 
         self.assertIn(
-            "Active revision: `M3.1.1 r5.2-f02 Gate 2 execution protocol preparation`",
+            "Active revision: `M3.1.1 r5.2-f02 Gate 3 one-shot fresh execution authorization`",
             current,
         )
         self.assertIn(f"Historical r5 evidence HEAD: `{EVIDENCE_HEAD}`", current)
-        self.assertIn("Status: `TERMINAL_NOT_ACCEPTED`", current)
+        self.assertIn(
+            "Status: `READY_FOR_ONE_SHOT_FRESH_EXECUTION; EXECUTION_NOT_RUN`",
+            current,
+        )
         self.assertIn("Historical r5 status: `BLOCKED_NOT_ACCEPTED`", current)
         self.assertIn("Accepted fresh cases: `F01, F03, F04, F05`", current)
         self.assertIn("Failed fresh case: `F02`", current)
@@ -112,8 +115,17 @@ class M3R5ErratumTests(unittest.TestCase):
         self.assertIn("M3: `IN_PROGRESS`", current)
         self.assertIn("M4: `NOT_STARTED`", current)
         self.assertIn("r5.1-f02 retry: `FORBIDDEN`", current)
-        self.assertIn("Gate 2: `LOCAL_COMPLETE; EXACT_HEAD_CI_PENDING`", current)
+        self.assertIn("Gate 2: `COMPLETE; EXACT_HEAD_CI_PASSED`", current)
         self.assertIn("Gate 2 new fresh-run authorization: `false`", current)
+        self.assertIn(
+            "Gate 3 one-shot authorization: `LOCAL_READY; EXACT_HEAD_CI_PENDING; NOT_CONSUMED`",
+            current,
+        )
+        self.assertIn("r5.2-f02 fresh execution: `NOT_RUN`", current)
+        self.assertIn(
+            "r5.2-f02 counters: `tasks=0; finalizations=0; composer=0; validator=0; retry=0`",
+            current,
+        )
         self.assertIn("r5.1-f02 replacement task budget: `CONSUMED`", current)
         self.assertIn(
             "r5.1-f02 authorization token: `CONSUMED / TERMINAL`", current

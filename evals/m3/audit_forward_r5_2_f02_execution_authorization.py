@@ -100,10 +100,9 @@ def _gate_2_snapshot_errors() -> list[str]:
         if frozen is None:
             _add(errors, f"gate_2_frozen_blob_unavailable:{relative}")
             continue
-        try:
-            current = (REPO_ROOT / relative).read_bytes()
-        except OSError:
-            _add(errors, f"gate_2_frozen_file_unavailable:{relative}")
+        current = _git_blob("HEAD", relative)
+        if current is None:
+            _add(errors, f"gate_2_current_blob_unavailable:{relative}")
             continue
         if current != frozen:
             _add(errors, f"gate_2_frozen_blob_changed:{relative}")
