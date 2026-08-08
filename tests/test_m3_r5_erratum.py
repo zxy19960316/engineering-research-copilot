@@ -13,6 +13,7 @@ ERRATUM = REPO_ROOT / "evals" / "m3" / "results" / "diagnostics-r5.1" / "r5-acce
 OFFLINE_DIAGNOSTIC = REPO_ROOT / "evals" / "m3" / "results" / "diagnostics-r5.1" / "m3-f02.offline-diagnostic.json"
 R5_1_TERMINAL = REPO_ROOT / "evals" / "m3" / "results" / "forward-r5.1-f02" / "terminal-manifest.json"
 R5_2_TERMINAL = REPO_ROOT / "evals" / "m3" / "results" / "forward-r5.2-f02" / "terminal-manifest.json"
+CLOSURE_MANIFEST = REPO_ROOT / "evals" / "m3" / "results" / "forward-r5.2-aggregate" / "m3-closure-manifest.json"
 
 
 class M3R5ErratumTests(unittest.TestCase):
@@ -97,12 +98,12 @@ class M3R5ErratumTests(unittest.TestCase):
         self.assertEqual(diagnostic["retry_count"], 0)
         self.assertFalse(diagnostic["composed_output_created"])
 
-    def test_status_top_preserves_terminal_history_at_gate_4_candidate(self):
+    def test_status_top_preserves_terminal_history_after_m3_closure(self):
         text = (REPO_ROOT / "STATUS.md").read_text(encoding="utf-8")
         current = text.split("## M3 checklist", 1)[0]
 
         self.assertIn(
-            "Active revision: `M3.1.1 r5+r5.2 Gate 4 cross-revision aggregate candidate`",
+            "Active revision: `M3.1.1 r5+r5.2 cross-revision aggregate and M3 closure`",
             current,
         )
         self.assertIn(f"Historical r5 evidence HEAD: `{EVIDENCE_HEAD}`", current)
@@ -118,7 +119,7 @@ class M3R5ErratumTests(unittest.TestCase):
         )
         self.assertIn(
             "Status: `GATE_4_COMPLETE; CROSS_REVISION_AGGREGATE_ACCEPTED; "
-            "M3_CLOSURE_PENDING`",
+            "M3_CLOSED; M4_NOT_STARTED`",
             current,
         )
         self.assertIn("Historical r5 status: `BLOCKED_NOT_ACCEPTED`", current)
@@ -145,9 +146,14 @@ class M3R5ErratumTests(unittest.TestCase):
             "accepted=5; failed=2; retry=0`",
             current,
         )
-        self.assertIn("Current aggregate candidate exact-HEAD CI: `PENDING`", current)
+        self.assertIn(
+            "Aggregate candidate exact-HEAD CI: `PASSED` on HEAD "
+            "`3be04218b038bac7a55da10a553a5ce05be4652c` "
+            "(GitHub Actions run `31233356741`)",
+            current,
+        )
         self.assertIn("Historical immutable-r5 exact-HEAD CI: `FAILED`", current)
-        self.assertIn("M3: `IN_PROGRESS`", current)
+        self.assertIn("M3: `CLOSED`", current)
         self.assertIn("M4: `NOT_STARTED`", current)
         self.assertIn("r5.1-f02 retry: `FORBIDDEN`", current)
         self.assertIn("Gate 2: `COMPLETE; EXACT_HEAD_CI_PASSED`", current)
@@ -163,16 +169,17 @@ class M3R5ErratumTests(unittest.TestCase):
         )
         self.assertIn(
             "Gate 4: `COMPLETE; CROSS_REVISION_AGGREGATE_ACCEPTED; "
-            "EXACT_HEAD_CI_PENDING`",
+            "EXACT_HEAD_CI_PASSED`",
             current,
         )
         self.assertIn(
-            "M3 final validation: `LOCAL_COMPLETE; "
-            "REMOTE_EXACT_HEAD_CI_PENDING`",
+            "M3 final validation: `PASSED; "
+            "AGGREGATE_CANDIDATE_EXACT_HEAD_CI_PASSED`",
             current,
         )
         self.assertIn(
-            "M3 closure: `PENDING_AGGREGATE_CANDIDATE_EXACT_HEAD_CI`",
+            "M3 closure: `CLOSED; CLOSURE_AUDIT_PASSED; "
+            "DELIVERY_EXACT_HEAD_CI_PENDING`",
             current,
         )
         self.assertIn("r5.1-f02 replacement task budget: `CONSUMED`", current)
@@ -194,6 +201,12 @@ class M3R5ErratumTests(unittest.TestCase):
         self.assertEqual(r5_2_terminal["gate_state"]["gate_4"], "NOT_STARTED")
         self.assertEqual(r5_2_terminal["gate_state"]["m3_closure"], "NOT_RUN")
         self.assertEqual(r5_2_terminal["gate_state"]["m4"], "NOT_STARTED")
+
+        closure = json.loads(CLOSURE_MANIFEST.read_text(encoding="utf-8"))
+        self.assertEqual(closure["milestone"], "M3")
+        self.assertEqual(closure["status"], "CLOSED")
+        self.assertEqual(closure["m4_status"], "NOT_STARTED")
+        self.assertFalse(closure["scope_limits"]["m4_started"])
 
 
 if __name__ == "__main__":

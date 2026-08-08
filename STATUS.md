@@ -4,7 +4,7 @@
 
 `M3 — Engineering method cards`
 
-Active revision: `M3.1.1 r5+r5.2 Gate 4 cross-revision aggregate candidate`
+Active revision: `M3.1.1 r5+r5.2 cross-revision aggregate and M3 closure`
 
 Historical r5 evidence HEAD: `1b696bce53ee0a11163bfe4f91a9a49ab3af6f49`
 
@@ -12,7 +12,7 @@ Gate 3 accepted evidence baseline HEAD: `ea8a7bbb8b365aded89f9ddb5c784f6e95a51d3
 
 Gate 3 accepted evidence baseline exact-HEAD CI: `PASSED` (GitHub Actions run `31192712555`)
 
-Status: `GATE_4_COMPLETE; CROSS_REVISION_AGGREGATE_ACCEPTED; M3_CLOSURE_PENDING`
+Status: `GATE_4_COMPLETE; CROSS_REVISION_AGGREGATE_ACCEPTED; M3_CLOSED; M4_NOT_STARTED`
 
 Historical r5 status: `BLOCKED_NOT_ACCEPTED`
 
@@ -30,11 +30,11 @@ Preserved historical-attempt counters: `tasks=7; finalizations=7; composer=6; va
 
 Excluded immutable F02 attempts: `r5 processing_failed; r5.1-f02 terminal_not_accepted`
 
-Current aggregate candidate exact-HEAD CI: `PENDING`
+Aggregate candidate exact-HEAD CI: `PASSED` on HEAD `3be04218b038bac7a55da10a553a5ce05be4652c` (GitHub Actions run `31233356741`)
 
 Historical immutable-r5 exact-HEAD CI: `FAILED` (GitHub Actions run `31096079186`)
 
-M3: `IN_PROGRESS`
+M3: `CLOSED`
 
 M4: `NOT_STARTED`
 
@@ -142,13 +142,13 @@ r5.2-f02 counters: `tasks=1; finalizations=1; composer=1; validator=1; retry=0`
 
 r5.2-f02 retry: `FORBIDDEN`
 
-Gate 4: `COMPLETE; CROSS_REVISION_AGGREGATE_ACCEPTED; EXACT_HEAD_CI_PENDING`
+Gate 4: `COMPLETE; CROSS_REVISION_AGGREGATE_ACCEPTED; EXACT_HEAD_CI_PASSED`
 
-M3 final validation: `LOCAL_COMPLETE; REMOTE_EXACT_HEAD_CI_PENDING`
+M3 final validation: `PASSED; AGGREGATE_CANDIDATE_EXACT_HEAD_CI_PASSED`
 
-M3 closure: `PENDING_AGGREGATE_CANDIDATE_EXACT_HEAD_CI`
+M3 closure: `CLOSED; CLOSURE_AUDIT_PASSED; DELIVERY_EXACT_HEAD_CI_PENDING`
 
-Gate 4 selects the immutable accepted r5 evidence for F01, F03, F04, and F05 together with the separately accepted r5.2-f02 F02 evidence. The historical r5 F02 `processing_failed` result and the 216-byte r5.1-f02 `terminal_not_accepted` result remain excluded immutable attempts; neither is relabeled, repaired, retried, or deleted. The cross-revision aggregate is locally accepted, while M3 remains `IN_PROGRESS` until this aggregate candidate passes its own exact-HEAD remote CI and a successor closure manifest passes the closure audit. M4 remains `NOT_STARTED`.
+Gate 4 selects the immutable accepted r5 evidence for F01, F03, F04, and F05 together with the separately accepted r5.2-f02 F02 evidence. The historical r5 F02 `processing_failed` result and the 216-byte r5.1-f02 `terminal_not_accepted` result remain excluded immutable attempts; neither is relabeled, repaired, retried, or deleted. Aggregate candidate HEAD `3be04218b038bac7a55da10a553a5ce05be4652c` passed exact-HEAD run `31233356741`, and the successor closure manifest binds that green candidate and passes the read-only closure audit. M3 is `CLOSED`; the closure delivery HEAD still requires its own exact-HEAD CI, and M4 remains `NOT_STARTED`.
 
 Before route-specific method-card instantiation, M3.1.1 must validate the complete M2.1.1 bundle, require `user_confirmed`, recompute the selected-direction binding, reject every non-empty `approved_constraint_changes` list with `unsupported_approved_constraint_change_provenance`, and rederive claim metrics, claim-specific preconditions, resource ceilings, actual Go/Stop/Pivot coverage, safety-source eligibility, and method-card internal bindings from upstream structures.
 
@@ -195,7 +195,9 @@ Before route-specific method-card instantiation, M3.1.1 must validate the comple
 - [x] The r5.2-f02 terminal manifest and independent production replay auditor report `accepted`, exact `1/1/1/1/0` counters, an exact result-root allowlist, no unexpected artifacts or side effects, unchanged historical r5 and r5.1 evidence, and `Gate 4 = NOT_STARTED`.
 - [x] Gate 4 preserves that terminal manifest as a historical snapshot and selects exactly F01/F03/F04/F05 from immutable r5 plus F02 from immutable r5.2-f02; r5 and r5.1-f02 F02 remain excluded failed attempts.
 - [x] The local cross-revision aggregate audit accepts selected counters `5/5/4/5/5/0/0` and separately preserves historical-attempt counters `7/7/6/5/5/2/0`, with zero retries and no M4 authority.
-- [ ] The aggregate candidate exact-HEAD remote CI must pass before an M3 closure manifest can be created; M3 remains `IN_PROGRESS` and M4 remains `NOT_STARTED`.
+- [x] Aggregate candidate HEAD `3be04218b038bac7a55da10a553a5ce05be4652c` passed exact-HEAD GitHub Actions run `31233356741`; validate, Ubuntu, and Windows jobs all succeeded.
+- [x] The successor closure manifest binds the green candidate and its aggregate manifest, aggregate audit, and final-validation Git blobs; the read-only closure audit reports `closed`, M3 is `CLOSED`, and M4 remains `NOT_STARTED`.
+- [ ] The closure delivery HEAD must pass its own exact-HEAD remote CI; no follow-up commit is used solely to record that external run.
 
 ## M3.1.1 r5 historical preparation and terminal result
 

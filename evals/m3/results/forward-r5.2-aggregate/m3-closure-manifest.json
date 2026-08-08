@@ -1,0 +1,95 @@
+{
+  "schema_version": "m3.1-cross-revision-closure-v1",
+  "milestone": "M3",
+  "status": "CLOSED",
+  "result_root": "evals/m3/results/forward-r5.2-aggregate",
+  "result_root_allowlist": [
+    "aggregate-audit.json",
+    "aggregate-manifest.json",
+    "m3-closure-manifest.json",
+    "m3-final-validation.json",
+    "supersession-manifest.json"
+  ],
+  "aggregate_status": "accepted",
+  "aggregate_candidate": {
+    "head_sha": "3be04218b038bac7a55da10a553a5ce05be4652c",
+    "workflow": ".github/workflows/m1-validation.yml",
+    "run_id": 31233356741
+  },
+  "aggregate_candidate_ci": {
+    "head_sha": "3be04218b038bac7a55da10a553a5ce05be4652c",
+    "workflow": ".github/workflows/m1-validation.yml",
+    "run_id": 31233356741,
+    "status": "completed",
+    "conclusion": "success",
+    "jobs": {
+      "validate": "success",
+      "ubuntu": "success",
+      "windows": "success"
+    }
+  },
+  "artifacts": {
+    "aggregate_manifest": {
+      "path": "evals/m3/results/forward-r5.2-aggregate/aggregate-manifest.json",
+      "source_head": "3be04218b038bac7a55da10a553a5ce05be4652c",
+      "git_blob_oid": "ec9a4a18c8c1e866a5ac97cc204f212c6a07aa9a",
+      "byte_length": 8181,
+      "raw_sha256": "53c5bdec15c6df835600f6e5364895dcc68e1fbb4b464efdc5d6a98888ae1890",
+      "json_status": "valid",
+      "canonical_sha256": "143a0f40ad22da09dcca0174b553fbfce626e60e8b4b78237c368b144985ff0d"
+    },
+    "aggregate_audit": {
+      "path": "evals/m3/results/forward-r5.2-aggregate/aggregate-audit.json",
+      "source_head": "3be04218b038bac7a55da10a553a5ce05be4652c",
+      "git_blob_oid": "205a5b2003078c04f3d40e44110f7d29c1b16899",
+      "byte_length": 5529,
+      "raw_sha256": "b7723ab266ce0a3de2ab0ab03a6437d157cff69436dc152402839584a9cc51df",
+      "json_status": "valid",
+      "canonical_sha256": "7af3c3eb80390b750255ecea50bc6f4d5eca1b74d9d8f9d3c7be742f8eae4e35"
+    },
+    "final_validation": {
+      "path": "evals/m3/results/forward-r5.2-aggregate/m3-final-validation.json",
+      "source_head": "3be04218b038bac7a55da10a553a5ce05be4652c",
+      "git_blob_oid": "186d73b0e731d1800ee8e0f852734485cdd7e0a6",
+      "byte_length": 5262,
+      "raw_sha256": "5aaa507035041948ed130a3af01da4375cf8a61e08554d984b59bd636259549b",
+      "json_status": "valid",
+      "canonical_sha256": "2ddb75ffe91707b8add3e1031eb87359421415e25d471d5e5b0656a86b920aa8"
+    }
+  },
+  "required_gates": {
+    "gate_0_terminal_evidence_complete": true,
+    "gate_1_root_cause_complete": true,
+    "gate_2_protocol_preparation_complete": true,
+    "gate_3_f02_accepted": true,
+    "gate_4_cross_revision_aggregate_accepted": true,
+    "aggregate_audit_passed": true,
+    "final_validation_passed": true,
+    "aggregate_candidate_ci_green": true,
+    "historical_evidence_immutable": true
+  },
+  "historical_diffs": {
+    "forward_r5": [],
+    "forward_r5_1_f02": [],
+    "forward_r5_2_f02": []
+  },
+  "worktree": {
+    "before_closure_edits": "clean",
+    "unexpected_artifacts": []
+  },
+  "m4_status": "NOT_STARTED",
+  "scope_limits": {
+    "fresh_execution_authorized": false,
+    "retry_authorized": false,
+    "same_task_retry_authorized": false,
+    "repair_authorized": false,
+    "m4_started": false,
+    "m4_execution_authorized": false,
+    "empirical_claim": false
+  },
+  "side_effects": [],
+  "does_not_prove": [
+    "M3 closure is structural acceptance evidence, not an empirical or safety claim.",
+    "M3 closure does not authorize M4 or another fresh execution."
+  ]
+}
