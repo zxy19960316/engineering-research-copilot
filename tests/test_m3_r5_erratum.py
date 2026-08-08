@@ -98,12 +98,12 @@ class M3R5ErratumTests(unittest.TestCase):
         self.assertEqual(diagnostic["retry_count"], 0)
         self.assertFalse(diagnostic["composed_output_created"])
 
-    def test_status_top_preserves_terminal_history_during_m4_execution_closeout(self):
+    def test_status_top_preserves_terminal_history_during_m4_1_preparation(self):
         text = (REPO_ROOT / "STATUS.md").read_text(encoding="utf-8")
         current = text.split("## M3 checklist", 1)[0]
 
         self.assertIn(
-            "Active revision: `M4.0 Gate IV pre-dispatch failure closeout`",
+            "Active revision: `M4.1 PREPARATION_ONLY`",
             current,
         )
         self.assertIn(f"Historical r5 evidence HEAD: `{EVIDENCE_HEAD}`", current)
@@ -118,8 +118,8 @@ class M3R5ErratumTests(unittest.TestCase):
             current,
         )
         self.assertIn(
-            "Status: `M3_CLOSED; M4_0_PRE_DISPATCH_FAILED; "
-            "M4_FRESH_RESULTS_NOT_RUN; M4_1_SUCCESSOR_REVISION_REQUIRED`",
+            "Status: `M3_CLOSED; M4_0_PRE_DISPATCH_FAILED_PRESERVED; "
+            "M4_1_PREPARATION_ONLY; M4_FRESH_RESULTS_NOT_RUN`",
             current,
         )
         self.assertIn("Historical r5 status: `BLOCKED_NOT_ACCEPTED`", current)
@@ -154,10 +154,10 @@ class M3R5ErratumTests(unittest.TestCase):
         )
         self.assertIn("Historical immutable-r5 exact-HEAD CI: `FAILED`", current)
         self.assertIn("M3: `CLOSED`", current)
-        self.assertIn("M4: `M4_0_PRE_DISPATCH_FAILED_PRESERVED`", current)
+        self.assertIn("M4: `M4_1_PREPARATION_ONLY`", current)
         self.assertIn(
-            "M4 fresh tasks authorized: `false; M4.0 authorization consumed; "
-            "successor authorization required`",
+            "M4 fresh tasks authorized: `false; M4.0 authorization consumed "
+            "and terminal; M4.1 authorization not issued`",
             current,
         )
         self.assertIn(
@@ -168,6 +168,48 @@ class M3R5ErratumTests(unittest.TestCase):
         self.assertIn(
             "M4.0 fresh result state: `NOT_RUN; result_roots=0; "
             "results_manifest=ABSENT`",
+            current,
+        )
+        self.assertIn(
+            "compatibility-fix exact-HEAD CI=PASSED on "
+            "f48ab8d7e835e9a57e65b75458faa786d696316d "
+            "(GitHub Actions run 31246286753)",
+            current,
+        )
+        self.assertIn(
+            "M4.1 successor state: `PREPARATION_ONLY; OFFLINE_ONLY`",
+            current,
+        )
+        self.assertIn(
+            "M4.1 predecessor terminal baseline: "
+            "`f48ab8d7e835e9a57e65b75458faa786d696316d` "
+            "(GitHub Actions run `31246286753`; `success`)",
+            current,
+        )
+        self.assertIn(
+            "M4.1 task identity state: `60 new task IDs; 0 reused; "
+            "blind IDs=M4-J061..M4-J120; 6 new batch IDs`",
+            current,
+        )
+        self.assertIn(
+            "M4.1 fresh execution authorized: `false; separate Gate IV review "
+            "and authorization required after green preparation exact-HEAD CI`",
+            current,
+        )
+        self.assertIn(
+            "M4.1 preparation counters: `authorized=0; contexts=0; "
+            "dispatched=0; finalizations=0; results=0; judge_scores=0; "
+            "retries=0; repairs=0; unauthorized_side_effects=0`",
+            current,
+        )
+        self.assertIn(
+            "M4.1 result state: `NOT_RUN; launch_claim=ABSENT; "
+            "result_roots=0; results_manifest=ABSENT`",
+            current,
+        )
+        self.assertIn(
+            "M4.1 preparation exact-HEAD CI: `NOT_RUN; this preparation "
+            "commit does not pre-claim success`",
             current,
         )
         self.assertIn("r5.1-f02 retry: `FORBIDDEN`", current)

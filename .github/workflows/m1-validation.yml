@@ -74,11 +74,17 @@ jobs:
             evals/m4/audit_results.py \
             evals/m4/authorization/build_authorization.py \
             evals/m4/authorization/audit_authorization.py \
-            evals/m4/execution/audit_m4_0.py
+            evals/m4/execution/audit_m4_0.py \
+            evals/m4/build_m4_1_preparation.py \
+            evals/m4/audit_m4_1_preparation.py
       - name: Require immutable r5 evidence commit
         run: |
           git cat-file -e 1b696bce53ee0a11163bfe4f91a9a49ab3af6f49^{commit}
           git cat-file -e 1b696bce53ee0a11163bfe4f91a9a49ab3af6f49:evals/m3/results/forward-r5/acceptance-manifest-consumed.json
+      - name: Require green M4.0 terminal baseline to be an ancestor
+        run: |
+          git cat-file -e 'f48ab8d7e835e9a57e65b75458faa786d696316d^{commit}'
+          git merge-base --is-ancestor f48ab8d7e835e9a57e65b75458faa786d696316d HEAD
       - name: Unit tests
         run: python -m unittest discover -s tests -p "test_*.py" -v
       - name: Replay fixtures
@@ -115,10 +121,22 @@ jobs:
         run: python -X utf8 evals/m4/build_preparation.py --check
       - name: Audit M4 preparation
         run: python -X utf8 evals/m4/audit_preparation.py
+      - name: Require shared and M4.0 terminal artifacts to remain unchanged
+        run: git diff --raw --exit-code f48ab8d7e835e9a57e65b75458faa786d696316d HEAD -- evals/m3 skills/engineering-research-copilot evals/m4/cases evals/m4/variants evals/m4/schemas evals/m4/preparation-manifest.json evals/m4/build_preparation.py evals/m4/audit_preparation.py evals/m4/audit_results.py evals/m4/task-protocol.md evals/m4/judge-rubric.json tests/test_m4_preparation.py tests/test_m4_results.py evals/m4/authorization/gate-iv-review.json evals/m4/authorization/execution-authorization.json evals/m4/authorization/execution-control.json evals/m4/authorization/build_authorization.py evals/m4/authorization/audit_authorization.py evals/m4/authorization/execution-authorization.schema.json evals/m4/authorization/execution-control.schema.json tests/test_m4_authorization.py evals/m4/execution/m4.0/launch-claim.json evals/m4/execution/m4.0/pre-dispatch-failure.json evals/m4/execution/audit_m4_0.py tests/test_m4_execution.py
       - name: Require consumed M4 authorization artifacts to remain unchanged
         run: git diff --exit-code e3542201f96218f340a09f77458661822c98d876 HEAD -- evals/m4/authorization/gate-iv-review.json evals/m4/authorization/execution-authorization.json evals/m4/authorization/execution-control.json
       - name: Audit M4.0 pre-dispatch failure is preserved
         run: python -X utf8 evals/m4/execution/audit_m4_0.py
+      - name: Validate M4.1 successor preparation
+        run: |
+          python -X utf8 -m unittest tests.test_m4_1_preparation -v
+          python -X utf8 evals/m4/build_m4_1_preparation.py --check
+          python -X utf8 evals/m4/audit_m4_1_preparation.py
+      - name: Verify M4.1 request preflight with PowerShell 7
+        shell: pwsh
+        run: |
+          ./evals/m4/execution/prepare_m4_1_request_bundles.ps1 -SelfTest
+          ./evals/m4/execution/prepare_m4_1_request_bundles.ps1 -CheckAll
       - name: Assert M4 results remain not run
         run: python -X utf8 evals/m4/audit_results.py --expect-not-run
 
@@ -145,8 +163,26 @@ jobs:
           python -X utf8 -m unittest tests.test_audit_m3_forward_r5_2_f02_terminal -v
           python -X utf8 -m unittest tests.test_audit_m3_forward_r5_2_aggregate -v
           python -X utf8 -m unittest tests.test_audit_m3_closure -v
-          python -X utf8 -m unittest tests.test_m4_preparation tests.test_m4_results tests.test_m4_authorization tests.test_m4_execution -v
+          python -X utf8 -m unittest tests.test_m4_preparation tests.test_m4_results tests.test_m4_authorization tests.test_m4_execution tests.test_m4_1_preparation -v
+          git cat-file -e 'f48ab8d7e835e9a57e65b75458faa786d696316d^{commit}'
+          git merge-base --is-ancestor f48ab8d7e835e9a57e65b75458faa786d696316d HEAD
           python -X utf8 evals/m4/audit_preparation.py
+          git diff --raw --exit-code f48ab8d7e835e9a57e65b75458faa786d696316d HEAD -- evals/m3 skills/engineering-research-copilot evals/m4/cases evals/m4/variants evals/m4/schemas evals/m4/preparation-manifest.json evals/m4/build_preparation.py evals/m4/audit_preparation.py evals/m4/audit_results.py evals/m4/task-protocol.md evals/m4/judge-rubric.json tests/test_m4_preparation.py tests/test_m4_results.py evals/m4/authorization/gate-iv-review.json evals/m4/authorization/execution-authorization.json evals/m4/authorization/execution-control.json evals/m4/authorization/build_authorization.py evals/m4/authorization/audit_authorization.py evals/m4/authorization/execution-authorization.schema.json evals/m4/authorization/execution-control.schema.json tests/test_m4_authorization.py evals/m4/execution/m4.0/launch-claim.json evals/m4/execution/m4.0/pre-dispatch-failure.json evals/m4/execution/audit_m4_0.py tests/test_m4_execution.py
           git diff --exit-code e3542201f96218f340a09f77458661822c98d876 HEAD -- evals/m4/authorization/gate-iv-review.json evals/m4/authorization/execution-authorization.json evals/m4/authorization/execution-control.json
           python -X utf8 evals/m4/execution/audit_m4_0.py
+          python -X utf8 evals/m4/build_m4_1_preparation.py --check
+          python -X utf8 evals/m4/audit_m4_1_preparation.py
           python -X utf8 evals/m4/audit_results.py --expect-not-run
+      - name: Verify M4.1 request preflight with PowerShell 7
+        if: runner.os == 'Linux'
+        shell: pwsh
+        run: |
+          ./evals/m4/execution/prepare_m4_1_request_bundles.ps1 -SelfTest
+          ./evals/m4/execution/prepare_m4_1_request_bundles.ps1 -CheckAll
+      - name: Verify M4.1 request preflight with Windows PowerShell 5.1
+        if: runner.os == 'Windows'
+        shell: powershell
+        run: |
+          if ($PSVersionTable.PSVersion.Major -ne 5) { throw 'expected_windows_powershell_5_1' }
+          .\evals\m4\execution\prepare_m4_1_request_bundles.ps1 -SelfTest
+          .\evals\m4\execution\prepare_m4_1_request_bundles.ps1 -CheckAll
