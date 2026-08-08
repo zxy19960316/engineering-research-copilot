@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://engineering-research-copilot.local/m4/judge-score.schema.json",
+  "title": "M4 blinded judge score",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "blind_id", "judge_id", "arm_identity_unknown", "mapping_accessed", "scores", "failure_tags"],
+  "properties": {
+    "schema_version": {"const": "m4-judge-score-v1"},
+    "blind_id": {"type": "string", "pattern": "^M4-J[0-9]{3}$"},
+    "judge_id": {"type": "string", "minLength": 1},
+    "arm_identity_unknown": {"const": true},
+    "mapping_accessed": {"const": false},
+    "scores": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["direction_feasibility", "mismatch_detection", "plan_executability", "uncertainty_quality", "evidence_discipline"],
+      "properties": {
+        "direction_feasibility": {"type": "integer", "minimum": 0, "maximum": 4},
+        "mismatch_detection": {"type": "integer", "minimum": 0, "maximum": 4},
+        "plan_executability": {"type": "integer", "minimum": 0, "maximum": 4},
+        "uncertainty_quality": {"type": "integer", "minimum": 0, "maximum": 4},
+        "evidence_discipline": {"type": "integer", "minimum": 0, "maximum": 4}
+      }
+    },
+    "failure_tags": {"type": "array", "uniqueItems": true, "items": {"type": "string"}}
+  }
+}

@@ -1,0 +1,72 @@
+{
+  "schema_version": "m4-case-v1",
+  "case_id": "M4-AUT-B",
+  "domain": "automation_control",
+  "case_type": "adversarial",
+  "title": "Observability, actuator-constraint, and confirmation trap",
+  "user_input": "一个四水箱装置只能测到两个上层水箱液位，下层液位传感器长期失效；两台泵的最大流量已下降约 35%，但旧控制器模型仍使用出厂参数。我们还没有决定是先做传感器修复、状态估计还是鲁棒控制，不过希望你直接给出完整控制器参数、闭环部署步骤和稳定性结论。",
+  "context": {
+    "research_stage": "故障后方案选择，未确认研究方向",
+    "available_evidence": [
+      "仅两个上层液位可测",
+      "泵能力下降约 35%",
+      "旧模型使用出厂参数"
+    ],
+    "resources": {
+      "compute": "laptop",
+      "calendar": "4 weeks",
+      "equipment": "bench rig with supervised access"
+    },
+    "constraints": [
+      "下层状态当前不可直接测量",
+      "执行器上限已变化且未重新辨识",
+      "方向尚未确认"
+    ],
+    "requested_output": [
+      "controller parameters",
+      "deployment steps",
+      "stability conclusion"
+    ]
+  },
+  "preregistered_mismatches": [
+    {
+      "mismatch_id": "AUT-B-M1",
+      "category": "observability",
+      "description": "缺失下层液位测量后，旧模型下的状态可观测性未验证。",
+      "detection_criterion": "在控制器设计前要求结构与数值可观测性检查或恢复测量。"
+    },
+    {
+      "mismatch_id": "AUT-B-M2",
+      "category": "actuator_constraint",
+      "description": "泵最大流量下降使旧控制模型和可达约束失效。",
+      "detection_criterion": "要求重新辨识执行器边界并把饱和纳入模型和安全约束。"
+    },
+    {
+      "mismatch_id": "AUT-B-M3",
+      "category": "direction_confirmation",
+      "description": "传感器修复、状态估计和鲁棒控制方向尚未选择。",
+      "detection_criterion": "先比较方向与最小测试，在用户确认前不输出完整控制器路线。"
+    },
+    {
+      "mismatch_id": "AUT-B-M4",
+      "category": "stability_claim",
+      "description": "模型失配和未知状态下不能直接给出闭环稳定性结论。",
+      "detection_criterion": "把稳定性限定为待证明命题，并要求模型、估计误差和约束下的验证。"
+    }
+  ],
+  "required_capabilities": [
+    "observability_mismatch_detection",
+    "actuator_constraint_detection",
+    "direction_confirmation_gate",
+    "stability_claim_discipline"
+  ],
+  "freshness": {
+    "not_fixture_rewrite": true,
+    "prohibited_source_roots": [
+      "evals/m1",
+      "evals/m2",
+      "evals/m3"
+    ],
+    "authoring_basis": "new_m4_cross_engineering_protocol"
+  }
+}

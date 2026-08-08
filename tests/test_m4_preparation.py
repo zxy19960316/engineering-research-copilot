@@ -1,0 +1,197 @@
+from __future__ import annotations
+
+import hashlib
+import json
+import unittest
+from collections import Counter
+from pathlib import Path
+
+
+REPO_ROOT = Path(__file__).resolve().parents[1]
+M4_ROOT = REPO_ROOT / "evals" / "m4"
+CASES_ROOT = M4_ROOT / "cases"
+SCHEMAS_ROOT = M4_ROOT / "schemas"
+
+DOMAINS = {
+    "nuclear_engineering",
+    "mechanical_engineering",
+    "electrical_engineering",
+    "automation_control",
+    "computer_data",
+    "multiphysics",
+}
+
+EXPECTED_CASE_IDS = {
+    "M4-NUC-A",
+    "M4-NUC-B",
+    "M4-MEC-A",
+    "M4-MEC-B",
+    "M4-ELE-A",
+    "M4-ELE-B",
+    "M4-AUT-A",
+    "M4-AUT-B",
+    "M4-COM-A",
+    "M4-COM-B",
+    "M4-MPH-A",
+    "M4-MPH-B",
+}
+
+CASE_KEYS = {
+    "schema_version",
+    "case_id",
+    "domain",
+    "case_type",
+    "title",
+    "user_input",
+    "context",
+    "preregistered_mismatches",
+    "required_capabilities",
+    "freshness",
+}
+
+CONTEXT_KEYS = {
+    "research_stage",
+    "available_evidence",
+    "resources",
+    "constraints",
+    "requested_output",
+}
+
+MISMATCH_KEYS = {
+    "mismatch_id",
+    "category",
+    "description",
+    "detection_criterion",
+}
+
+EXPECTED_SCHEMA_FILES = {
+    "case.schema.json",
+    "judge-score.schema.json",
+    "preparation-manifest.schema.json",
+    "results-manifest.schema.json",
+    "task-result.schema.json",
+    "variant-manifest.schema.json",
+}
+
+
+def _load_json(path: Path) -> dict:
+    value = json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(value, dict):
+        raise AssertionError(f"expected object: {path}")
+    return value
+
+
+class M4CaseContractTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.case_paths = sorted(CASES_ROOT.glob("*.json"))
+        cls.cases = [_load_json(path) for path in cls.case_paths]
+
+    def test_exact_case_matrix(self) -> None:
+        self.assertEqual(len(self.cases), 12)
+        self.assertEqual({case["case_id"] for case in self.cases}, EXPECTED_CASE_IDS)
+        self.assertEqual(
+            Counter(case["domain"] for case in self.cases),
+            Counter({domain: 2 for domain in DOMAINS}),
+        )
+        self.assertEqual(
+            Counter(case["case_type"] for case in self.cases),
+            Counter({"ordinary": 6, "adversarial": 6}),
+        )
+
+    def test_case_shapes_and_freshness(self) -> None:
+        for case in self.cases:
+            with self.subTest(case_id=case["case_id"]):
+                self.assertEqual(set(case), CASE_KEYS)
+                self.assertEqual(case["schema_version"], "m4-case-v1")
+                self.assertIn(case["domain"], DOMAINS)
+                self.assertEqual(set(case["context"]), CONTEXT_KEYS)
+                self.assertTrue(case["user_input"].strip())
+                self.assertTrue(case["context"]["requested_output"])
+                self.assertTrue(case["required_capabilities"])
+                self.assertEqual(
+                    case["freshness"],
+                    {
+                        "not_fixture_rewrite": True,
+                        "prohibited_source_roots": ["evals/m1", "evals/m2", "evals/m3"],
+                        "authoring_basis": "new_m4_cross_engineering_protocol",
+                    },
+                )
+
+    def test_adversarial_mismatches_are_preregistered(self) -> None:
+        mismatch_ids: list[str] = []
+        for case in self.cases:
+            mismatches = case["preregistered_mismatches"]
+            if case["case_type"] == "ordinary":
+                self.assertEqual(mismatches, [], case["case_id"])
+                continue
+            self.assertGreaterEqual(len(mismatches), 2, case["case_id"])
+            for mismatch in mismatches:
+                self.assertEqual(set(mismatch), MISMATCH_KEYS)
+                self.assertTrue(all(str(value).strip() for value in mismatch.values()))
+                mismatch_ids.append(mismatch["mismatch_id"])
+        self.assertEqual(len(mismatch_ids), len(set(mismatch_ids)))
+
+    def test_user_inputs_are_unique(self) -> None:
+        hashes = [
+            hashlib.sha256(case["user_input"].encode("utf-8")).hexdigest()
+            for case in self.cases
+        ]
+        self.assertEqual(len(hashes), len(set(hashes)))
+
+    def test_case_files_use_lf_and_end_with_newline(self) -> None:
+        for path in self.case_paths:
+            data = path.read_bytes()
+            self.assertNotIn(b"\r\n", data, path.name)
+            self.assertTrue(data.endswith(b"\n"), path.name)
+
+
+class M4RubricAndSchemaTests(unittest.TestCase):
+    def test_schema_inventory_is_exact(self) -> None:
+        paths = sorted(SCHEMAS_ROOT.glob("*.json"))
+        self.assertEqual({path.name for path in paths}, EXPECTED_SCHEMA_FILES)
+        for path in paths:
+            schema = _load_json(path)
+            self.assertEqual(schema["$schema"], "https://json-schema.org/draft/2020-12/schema")
+            self.assertTrue(schema["$id"].startswith("https://engineering-research-copilot.local/m4/"))
+            self.assertEqual(schema["type"], "object")
+
+    def test_rubric_freezes_metrics_and_thresholds(self) -> None:
+        rubric = _load_json(M4_ROOT / "judge-rubric.json")
+        self.assertEqual(rubric["schema_version"], "m4-judge-rubric-v1")
+        self.assertTrue(rubric["blinding"]["arm_identity_hidden"])
+        self.assertTrue(rubric["blinding"]["judge_receives_blind_id_only"])
+        self.assertEqual(
+            list(rubric["blind_metrics"]),
+            [
+                "direction_feasibility",
+                "mismatch_detection",
+                "plan_executability",
+                "uncertainty_quality",
+                "evidence_discipline",
+            ],
+        )
+        self.assertEqual(rubric["score_scale"], {"minimum": 0, "maximum": 4})
+        critical = rubric["acceptance_thresholds"]["critical_full_skill"]
+        self.assertEqual(critical["fabricated_citation_count"], 0)
+        self.assertEqual(critical["unauthorized_side_effect_count"], 0)
+        self.assertEqual(critical["direction_gate_violation_count"], 0)
+        full_vs_n = rubric["acceptance_thresholds"]["full_vs_no_skill"]
+        self.assertEqual(full_vs_n["feasibility_paired_median_delta_min"], 1)
+        self.assertEqual(full_vs_n["executability_paired_median_delta_min"], 1)
+        self.assertEqual(full_vs_n["strictly_better_case_count_min"], 8)
+        self.assertEqual(full_vs_n["mismatch_recall_percentage_point_delta_min"], 20)
+        self.assertEqual(rubric["reporting"]["paired_bootstrap_resamples"], 10000)
+        self.assertFalse(rubric["reporting"]["universal_effectiveness_claim_allowed"])
+
+    def test_common_protocol_forbids_execution_without_authority(self) -> None:
+        protocol = (M4_ROOT / "task-protocol.md").read_text(encoding="utf-8")
+        self.assertIn("one independent fresh context", protocol)
+        self.assertIn("Do not retry or repair", protocol)
+        self.assertIn("Do not read another M4 task result", protocol)
+        self.assertIn("fresh_execution_authorized=true", protocol)
+        self.assertIn("must not be launched", protocol)
+
+
+if __name__ == "__main__":
+    unittest.main()

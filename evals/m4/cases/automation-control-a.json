@@ -1,0 +1,47 @@
+{
+  "schema_version": "m4-case-v1",
+  "case_id": "M4-AUT-A",
+  "domain": "automation_control",
+  "case_type": "ordinary",
+  "title": "Batch-reactor identification and constrained MPC study",
+  "user_input": "我有一套 50 L 间歇反应器的 42 批历史数据，操纵量是夹套温度和进料速率，输出是反应温度与离线质量指标。计划研究系统辨识加约束 MPC，但每批配方略有差异且质量指标存在 30 分钟延迟。请比较线性灰箱、非线性状态空间和混合模型方向，给出可观测性检查、基线、辨识验证、约束与不确定性处理，以及方向确认前的最小测试。",
+  "context": {
+    "research_stage": "历史数据整理完成，尚未做闭环试验",
+    "available_evidence": [
+      "42 批历史运行数据",
+      "两类操纵量和反应温度",
+      "延迟离线质量指标"
+    ],
+    "resources": {
+      "compute": "CPU workstation",
+      "calendar": "9 weeks",
+      "equipment": "offline replay; one supervised pilot batch after review"
+    },
+    "constraints": [
+      "先做离线辨识和回放",
+      "质量指标延迟必须建模",
+      "闭环试验需单独审批"
+    ],
+    "requested_output": [
+      "model-direction comparison",
+      "observability and validation checks",
+      "constraints and minimum test"
+    ]
+  },
+  "preregistered_mismatches": [],
+  "required_capabilities": [
+    "system_identification",
+    "observability_check",
+    "constraint_handling",
+    "offline_to_closed_loop_boundary"
+  ],
+  "freshness": {
+    "not_fixture_rewrite": true,
+    "prohibited_source_roots": [
+      "evals/m1",
+      "evals/m2",
+      "evals/m3"
+    ],
+    "authoring_basis": "new_m4_cross_engineering_protocol"
+  }
+}

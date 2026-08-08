@@ -36,3 +36,6 @@
 /evals/m3/results/forward-r5.2-aggregate/** text eol=lf
 /evals/m3/results/2026-08-08-m3.1.1-cross-revision-aggregate-validation.md text eol=lf
 /evals/m3/results/2026-08-08-m3.1.1-closure-validation.md text eol=lf
+
+# Preserve byte-sensitive M4 cases, variants, schemas, manifests, and protocols.
+/evals/m4/** text eol=lf

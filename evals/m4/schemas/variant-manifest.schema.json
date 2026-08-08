@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://engineering-research-copilot.local/m4/variant-manifest.schema.json",
+  "title": "M4 variant manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "source_root", "source_files", "arms"],
+  "properties": {
+    "schema_version": {"const": "m4-variant-manifest-v1"},
+    "source_root": {"const": "skills/engineering-research-copilot"},
+    "source_files": {"type": "object", "minProperties": 1, "additionalProperties": {"type": "string", "pattern": "^[0-9a-f]{64}$"}},
+    "arms": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["N", "F", "A1", "A2", "A3"],
+      "properties": {
+        "N": {"$ref": "#/$defs/arm"},
+        "F": {"$ref": "#/$defs/arm"},
+        "A1": {"$ref": "#/$defs/arm"},
+        "A2": {"$ref": "#/$defs/arm"},
+        "A3": {"$ref": "#/$defs/arm"}
+      }
+    }
+  },
+  "$defs": {
+    "arm": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["label", "instruction_path", "instruction_sha256", "instruction_bytes", "included_source_files", "excluded_source_files", "dropped_sections", "removed_capabilities"],
+      "properties": {
+        "label": {"type": "string", "minLength": 1},
+        "instruction_path": {"type": ["string", "null"]},
+        "instruction_sha256": {"type": ["string", "null"]},
+        "instruction_bytes": {"type": "integer", "minimum": 0},
+        "included_source_files": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+        "excluded_source_files": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+        "dropped_sections": {"type": "object"},
+        "removed_capabilities": {"type": "array", "uniqueItems": true, "items": {"type": "string"}}
+      }
+    }
+  }
+}

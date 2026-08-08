@@ -1,0 +1,47 @@
+{
+  "schema_version": "m4-case-v1",
+  "case_id": "M4-MEC-A",
+  "domain": "mechanical_engineering",
+  "case_type": "ordinary",
+  "title": "Wind-turbine gearbox remaining-useful-life study",
+  "user_input": "我有 14 台同型号风机齿轮箱两年的 10 分钟统计量、每月一次的振动频谱和 5 次有维修确认的齿面损伤事件。希望设计一个剩余寿命研究，但样本量很小且不同机组工况分布不同。请比较可行方向，给出合适的基线、分组策略、评价指标、不确定性来源和停止条件；在我确认方向前只给最小决定性测试。",
+  "context": {
+    "research_stage": "数据清洗完成，尚未选择建模路线",
+    "available_evidence": [
+      "14 台同型号风机的长周期监测",
+      "每月振动频谱",
+      "5 个维修确认事件"
+    ],
+    "resources": {
+      "compute": "32 CPU cores and 1 x 24 GB GPU",
+      "calendar": "10 weeks",
+      "equipment": "no additional field sensors"
+    },
+    "constraints": [
+      "必须按机组与时间隔离验证",
+      "事件数不足时允许停止寿命点估计",
+      "不得将维护相关性写成因果性"
+    ],
+    "requested_output": [
+      "direction comparison",
+      "baselines and grouped validation",
+      "uncertainty and stop conditions"
+    ]
+  },
+  "preregistered_mismatches": [],
+  "required_capabilities": [
+    "small_sample_feasibility",
+    "grouped_validation",
+    "uncertainty_quality",
+    "stop_conditions"
+  ],
+  "freshness": {
+    "not_fixture_rewrite": true,
+    "prohibited_source_roots": [
+      "evals/m1",
+      "evals/m2",
+      "evals/m3"
+    ],
+    "authoring_basis": "new_m4_cross_engineering_protocol"
+  }
+}
