@@ -1,0 +1,190 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://engineering-research-copilot.local/m4/execution-authorization.schema.json",
+  "title": "M4 Gate IV one-shot execution authorization",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "milestone",
+    "revision",
+    "status",
+    "preparation_baseline",
+    "review",
+    "model_binding",
+    "execution_surface",
+    "authority",
+    "batch_policy",
+    "prelaunch_counters",
+    "consumption",
+    "does_not_authorize",
+    "authorization_token"
+  ],
+  "properties": {
+    "schema_version": {"const": "m4-execution-authorization-v1"},
+    "milestone": {"const": "M4"},
+    "revision": {"const": "M4.0"},
+    "status": {"const": "AUTHORIZED_UNCONSUMED"},
+    "preparation_baseline": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "head",
+        "ci_run_id",
+        "ci_conclusion",
+        "manifest_path",
+        "manifest_git_blob_oid",
+        "manifest_raw_sha256"
+      ],
+      "properties": {
+        "head": {"const": "c56c3c1ab384f65e51a70e9582672c6320d19121"},
+        "ci_run_id": {"const": 31237480839},
+        "ci_conclusion": {"const": "success"},
+        "manifest_path": {"const": "evals/m4/preparation-manifest.json"},
+        "manifest_git_blob_oid": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+        "manifest_raw_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      }
+    },
+    "review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "raw_sha256", "status"],
+      "properties": {
+        "path": {"const": "evals/m4/authorization/gate-iv-review.json"},
+        "raw_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "status": {"const": "PASSED"}
+      }
+    },
+    "model_binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "exact_model_id",
+        "reasoning_effort",
+        "configured_default_required",
+        "model_argument_policy",
+        "thinking_argument_policy",
+        "official_model_reference",
+        "model_context_window_tokens",
+        "model_max_output_tokens"
+      ],
+      "properties": {
+        "exact_model_id": {"const": "gpt-5.6-sol"},
+        "reasoning_effort": {"const": "max"},
+        "configured_default_required": {"const": true},
+        "model_argument_policy": {"const": "OMIT_AND_VERIFY_CONFIGURED_DEFAULT"},
+        "thinking_argument_policy": {"const": "OMIT_AND_VERIFY_CONFIGURED_DEFAULT"},
+        "official_model_reference": {"const": "https://developers.openai.com/api/docs/models/gpt-5.6-sol"},
+        "model_context_window_tokens": {"const": 1050000},
+        "model_max_output_tokens": {"const": 128000}
+      }
+    },
+    "execution_surface": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "tool",
+        "project_id",
+        "project_label",
+        "project_is_git_repository",
+        "environment",
+        "starting_branch",
+        "task_context_isolation",
+        "cross_task_result_visibility"
+      ],
+      "properties": {
+        "tool": {"const": "codex_app.create_thread"},
+        "project_id": {"const": "ff35b25f-4644-41c8-9073-74c697559439"},
+        "project_label": {"const": "engineering-research-copilot"},
+        "project_is_git_repository": {"const": true},
+        "environment": {"const": "worktree"},
+        "starting_branch": {"const": "codex/m4-cross-engineering-forward-evaluation-one-shot-authorization"},
+        "task_context_isolation": {"const": "ONE_NEW_THREAD_PER_TASK_ID"},
+        "cross_task_result_visibility": {"const": false}
+      }
+    },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "fresh_execution_authorized",
+        "authorized_task_ids",
+        "authorized_task_count",
+        "authorized_batch_ids",
+        "authorized_batch_count",
+        "fresh_contexts_authorized",
+        "independent_finalizations_authorized",
+        "attempts_per_task_id",
+        "result_writes_authorized",
+        "result_write_root_prefix",
+        "retry_authorized",
+        "repair_authorized",
+        "judge_execution_authorized",
+        "blind_mapping_access_authorized",
+        "aggregation_authorized",
+        "closure_authorized"
+      ],
+      "properties": {
+        "fresh_execution_authorized": {"const": true},
+        "authorized_task_ids": {"type": "array", "minItems": 60, "maxItems": 60, "uniqueItems": true, "items": {"type": "string"}},
+        "authorized_task_count": {"const": 60},
+        "authorized_batch_ids": {"type": "array", "minItems": 6, "maxItems": 6, "uniqueItems": true, "items": {"type": "string"}},
+        "authorized_batch_count": {"const": 6},
+        "fresh_contexts_authorized": {"const": 60},
+        "independent_finalizations_authorized": {"const": 60},
+        "attempts_per_task_id": {"const": 1},
+        "result_writes_authorized": {"const": true},
+        "result_write_root_prefix": {"const": "evals/m4/results/m4.0"},
+        "retry_authorized": {"const": false},
+        "repair_authorized": {"const": false},
+        "judge_execution_authorized": {"const": false},
+        "blind_mapping_access_authorized": {"const": false},
+        "aggregation_authorized": {"const": false},
+        "closure_authorized": {"const": false}
+      }
+    },
+    "batch_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "batch_order",
+        "tasks_per_batch",
+        "stop_current_batch_on_infrastructure_or_protocol_failure",
+        "later_batches_mutable_after_observation",
+        "failure_preservation_required",
+        "successor_revision_required_after_failure"
+      ],
+      "properties": {
+        "batch_order": {"type": "array", "minItems": 6, "maxItems": 6, "uniqueItems": true, "items": {"type": "string"}},
+        "tasks_per_batch": {"const": 10},
+        "stop_current_batch_on_infrastructure_or_protocol_failure": {"const": true},
+        "later_batches_mutable_after_observation": {"const": false},
+        "failure_preservation_required": {"const": true},
+        "successor_revision_required_after_failure": {"const": true}
+      }
+    },
+    "prelaunch_counters": {"type": "object"},
+    "consumption": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "authorization_token_status",
+        "claim_count",
+        "launch_claim_path",
+        "launch_claim_must_be_absent",
+        "claim_consumes_entire_matrix_authorization",
+        "partial_or_failed_matrix_requires_new_revision"
+      ],
+      "properties": {
+        "authorization_token_status": {"const": "UNCONSUMED"},
+        "claim_count": {"const": 0},
+        "launch_claim_path": {"const": "evals/m4/execution/m4.0/launch-claim.json"},
+        "launch_claim_must_be_absent": {"const": true},
+        "claim_consumes_entire_matrix_authorization": {"const": true},
+        "partial_or_failed_matrix_requires_new_revision": {"const": true}
+      }
+    },
+    "does_not_authorize": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+    "authorization_token": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"}
+  }
+}
