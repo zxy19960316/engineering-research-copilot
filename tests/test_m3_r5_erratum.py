@@ -98,12 +98,12 @@ class M3R5ErratumTests(unittest.TestCase):
         self.assertEqual(diagnostic["retry_count"], 0)
         self.assertFalse(diagnostic["composed_output_created"])
 
-    def test_status_top_preserves_terminal_history_during_m4_1_protocol_freeze(self):
+    def test_status_top_preserves_terminal_history_during_m4_1_launch_readiness(self):
         text = (REPO_ROOT / "STATUS.md").read_text(encoding="utf-8")
         current = text.split("## M3 checklist", 1)[0]
 
         self.assertIn(
-            "Active revision: `M4.1 GATE_IV_A_EXECUTION_PROTOCOL_LOCAL_READY`",
+            "Active revision: `M4.1 GATE_IV_B_LAUNCH_READINESS_LOCAL_READY`",
             current,
         )
         self.assertIn(f"Historical r5 evidence HEAD: `{EVIDENCE_HEAD}`", current)
@@ -119,7 +119,8 @@ class M3R5ErratumTests(unittest.TestCase):
         )
         self.assertIn(
             "Status: `M3_CLOSED; M4_0_PRE_DISPATCH_FAILED_PRESERVED; "
-            "M4_1_GATE_IV_A_EXECUTION_PROTOCOL_LOCAL_READY; "
+            "M4_1_GATE_IV_A_EXACT_HEAD_CI_PASSED; "
+            "M4_1_GATE_IV_B_LAUNCH_READINESS_LOCAL_READY; "
             "M4_1_AUTHORIZATION_UNCONSUMED; M4_FRESH_RESULTS_NOT_RUN`",
             current,
         )
@@ -156,7 +157,7 @@ class M3R5ErratumTests(unittest.TestCase):
         self.assertIn("Historical immutable-r5 exact-HEAD CI: `FAILED`", current)
         self.assertIn("M3: `CLOSED`", current)
         self.assertIn(
-            "M4: `M4_1_GATE_IV_A_EXECUTION_PROTOCOL_LOCAL_READY; "
+            "M4: `M4_1_GATE_IV_B_LAUNCH_READINESS_LOCAL_READY; "
             "AUTHORIZATION_UNCONSUMED`",
             current,
         )
@@ -241,6 +242,29 @@ class M3R5ErratumTests(unittest.TestCase):
             "M4.1 authorization and fresh execution: `AUTHORIZED_UNCONSUMED; "
             "execution=NOT_RUN; launch_claim=ABSENT; result_roots=0; "
             "results_manifest=ABSENT`",
+            current,
+        )
+        self.assertIn(
+            "M4.1 Gate IV-A execution-protocol exact-HEAD CI: `PASSED` on HEAD "
+            "`bb1b8a5e4bab46d625c637d564d8132dc69a21ab` "
+            "(GitHub Actions run `31255966197`; validate job `93099235968` "
+            "success; ubuntu job `93099235987` success; windows job "
+            "`93099235994` success)",
+            current,
+        )
+        self.assertIn(
+            "M4.1 Gate IV-B readiness audit: `READY_FOR_ATOMIC_CLAIM; "
+            "focused=18/18; combined=67/67; full=693/693; "
+            "protocol_review=PASSED; "
+            "authorization_audit=READY_UNCONSUMED; "
+            "execution_audit=READY_UNCLAIMED; writer_check=DETERMINISTIC`",
+            current,
+        )
+        self.assertIn(
+            "M4.1 Gate IV-B zero state: `authorization token=UNCONSUMED; "
+            "launch claim=ABSENT; terminal=ABSENT; platform observations=ABSENT; "
+            "result root=ABSENT; results manifest=ABSENT; tasks=0; "
+            "finalizations=0`",
             current,
         )
         self.assertIn("r5.1-f02 retry: `FORBIDDEN`", current)

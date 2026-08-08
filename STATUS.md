@@ -4,7 +4,7 @@
 
 `M4 — Cross-engineering forward evaluation`
 
-Active revision: `M4.1 GATE_IV_A_EXECUTION_PROTOCOL_LOCAL_READY`
+Active revision: `M4.1 GATE_IV_B_LAUNCH_READINESS_LOCAL_READY`
 
 Historical r5 evidence HEAD: `1b696bce53ee0a11163bfe4f91a9a49ab3af6f49`
 
@@ -12,7 +12,7 @@ Gate 3 accepted evidence baseline HEAD: `ea8a7bbb8b365aded89f9ddb5c784f6e95a51d3
 
 Gate 3 accepted evidence baseline exact-HEAD CI: `PASSED` (GitHub Actions run `31192712555`)
 
-Status: `M3_CLOSED; M4_0_PRE_DISPATCH_FAILED_PRESERVED; M4_1_GATE_IV_A_EXECUTION_PROTOCOL_LOCAL_READY; M4_1_AUTHORIZATION_UNCONSUMED; M4_FRESH_RESULTS_NOT_RUN`
+Status: `M3_CLOSED; M4_0_PRE_DISPATCH_FAILED_PRESERVED; M4_1_GATE_IV_A_EXACT_HEAD_CI_PASSED; M4_1_GATE_IV_B_LAUNCH_READINESS_LOCAL_READY; M4_1_AUTHORIZATION_UNCONSUMED; M4_FRESH_RESULTS_NOT_RUN`
 
 Historical r5 status: `BLOCKED_NOT_ACCEPTED`
 
@@ -36,7 +36,7 @@ Historical immutable-r5 exact-HEAD CI: `FAILED` (GitHub Actions run `31096079186
 
 M3: `CLOSED`
 
-M4: `M4_1_GATE_IV_A_EXECUTION_PROTOCOL_LOCAL_READY; AUTHORIZATION_UNCONSUMED`
+M4: `M4_1_GATE_IV_B_LAUNCH_READINESS_LOCAL_READY; AUTHORIZATION_UNCONSUMED`
 
 M4 fresh tasks authorized: `true for M4.1 only; execution-protocol freeze precedes claim; M4.0 authorization consumed and terminal; M4.1 execution remains NOT_RUN`
 
@@ -132,7 +132,7 @@ M4.1 Gate IV judge and later gates: `judge_execution=false; blind_mapping_access
 
 M4.1 authorization and fresh execution: `AUTHORIZED_UNCONSUMED; execution=NOT_RUN; launch_claim=ABSENT; result_roots=0; results_manifest=ABSENT`
 
-M4.1 Gate IV-A execution protocol: `LOCAL_READY; authorization token remains UNCONSUMED`
+M4.1 Gate IV-A execution protocol: `COMPLETE; EXACT_HEAD_CI_PASSED; authorization token remains UNCONSUMED`
 
 M4.1 Gate IV-A plan: `docs/superpowers/plans/2026-08-08-m4.1-gate-iv-fresh-execution.md`
 
@@ -148,13 +148,27 @@ M4.1 Gate IV-A local gates: `PASSED; focused=16/16; combined=49/49; full=675/675
 
 M4.1 Gate IV-A local PowerShell 7 preflight: `NOT_RUN; pwsh runtime absent locally; exact-HEAD Ubuntu CI remains required`
 
-M4.1 Gate IV-A execution-protocol exact-HEAD CI: `NOT_RUN; local protocol freeze snapshot before push`
+M4.1 Gate IV-A execution-protocol exact-HEAD CI: `PASSED` on HEAD `bb1b8a5e4bab46d625c637d564d8132dc69a21ab` (GitHub Actions run `31255966197`; validate job `93099235968` success; ubuntu job `93099235987` success; windows job `93099235994` success)
 
 M4.1 Gate IV-A first execution-protocol exact-HEAD CI: `FAILED` on HEAD `002baa1b63bd7ecd39aa0e441df254d9228dc711` (GitHub Actions run `31255315866`; validate job `93097717126` failed on stale STATUS assertion; ubuntu job `93097717142` success; windows job `93097717149` success)
 
-M4.1 Gate IV-A corrected execution-protocol exact-HEAD CI: `NOT_RUN; independent repair commit snapshot before push`
+M4.1 Gate IV-A corrected execution-protocol exact-HEAD CI: `PASSED` on HEAD `bb1b8a5e4bab46d625c637d564d8132dc69a21ab` (GitHub Actions run `31255966197`)
 
-M4.1 Gate IV-B/C/D/E: `NOT_RUN; no claim, thread, finalization, result root, judge call, aggregation call, threshold decision, or closure action`
+M4.1 Gate IV-B plan: `docs/superpowers/plans/2026-08-08-m4.1-gate-iv-b-launch-readiness.md`
+
+M4.1 Gate IV-B review: `PASSED; evals/m4/execution/m4.1/gate-iv-b-review.json; authorization branch protection absent; active repository rulesets=0; immutable-start-equivalent-v1 established`
+
+M4.1 Gate IV-B production writers: `build_m4_1_launch_claim.py; record_m4_1_execution_evidence.py; default=--check; real writes require explicit --consume; O_CREAT|O_EXCL; overwrite/delete/rollback=false`
+
+M4.1 Gate IV-B raw evidence policy: `create-thread response exact bytes plus raw/canonical SHA-256 preserved; exposed resolved checkout SHA must equal ae1ad43cca52ae450e146e952e3b108792b2b665; raw final exact bytes preserved`
+
+M4.1 Gate IV-B readiness audit: `READY_FOR_ATOMIC_CLAIM; focused=18/18; combined=67/67; full=693/693; protocol_review=PASSED; authorization_audit=READY_UNCONSUMED; execution_audit=READY_UNCLAIMED; writer_check=DETERMINISTIC`
+
+M4.1 Gate IV-B zero state: `authorization token=UNCONSUMED; launch claim=ABSENT; terminal=ABSENT; platform observations=ABSENT; result root=ABSENT; results manifest=ABSENT; tasks=0; finalizations=0`
+
+M4.1 Gate IV-B exact-HEAD CI: `NOT_RUN; local launch-readiness commit snapshot before push`
+
+M4.1 Gate IV-C/D/E and Gate V: `NOT_RUN; no claim, thread, finalization, result root, judge call, aggregation call, threshold decision, closure action, or M5 action`
 
 M4.1 later authorization state: `judge=false; unblinding=false; aggregation=false; threshold=false; closure=false; M5=NOT_STARTED`
 
@@ -549,13 +563,13 @@ Evidence is recorded under `evals/m1/`, including preserved failed runs and inde
 
 - M2: `M2.1 COMPLETE; M2.1.1 COMPLETE`
 - M3: `CLOSED`
-- M4: `M4.0 PRE_DISPATCH_FAILED_PRESERVED; M4.1 GATE_IV_A_EXECUTION_PROTOCOL_LOCAL_READY; AUTHORIZATION_UNCONSUMED; FRESH_RESULTS_NOT_RUN`
+- M4: `M4.0 PRE_DISPATCH_FAILED_PRESERVED; M4.1 GATE_IV_A_EXACT_HEAD_CI_PASSED; M4.1 GATE_IV_B_LAUNCH_READINESS_LOCAL_READY; AUTHORIZATION_UNCONSUMED; FRESH_RESULTS_NOT_RUN`
 - M5: `NOT_STARTED`
 
 ## External state
 
 - Git remote: `https://github.com/zxy19960316/engineering-research-copilot.git`
-- Active local branch: `codex/m4-cross-engineering-forward-evaluation-m4.1-one-shot-execution`
+- Active local branch: `codex/m4-cross-engineering-forward-evaluation-m4.1-launch-readiness`
 - External APIs/services configured: none
 - RRC integration: not started
 - Platform integration: not required for the local Skill competition track
