@@ -4,7 +4,7 @@
 
 `M4 — Cross-engineering forward evaluation`
 
-Active revision: `M4 preparation only`
+Active revision: `M4 Gate IV one-shot authorization`
 
 Historical r5 evidence HEAD: `1b696bce53ee0a11163bfe4f91a9a49ab3af6f49`
 
@@ -12,7 +12,7 @@ Gate 3 accepted evidence baseline HEAD: `ea8a7bbb8b365aded89f9ddb5c784f6e95a51d3
 
 Gate 3 accepted evidence baseline exact-HEAD CI: `PASSED` (GitHub Actions run `31192712555`)
 
-Status: `M3_CLOSED; M4_PREPARATION_ONLY; M4_FRESH_TASKS_AUTHORIZED_FALSE`
+Status: `M3_CLOSED; M4_GATE_IV_AUTHORIZED_UNCONSUMED; M4_FRESH_TASKS_NOT_STARTED`
 
 Historical r5 status: `BLOCKED_NOT_ACCEPTED`
 
@@ -36,9 +36,9 @@ Historical immutable-r5 exact-HEAD CI: `FAILED` (GitHub Actions run `31096079186
 
 M3: `CLOSED`
 
-M4: `PREPARATION_ONLY`
+M4: `GATE_IV_AUTHORIZED_UNCONSUMED`
 
-M4 fresh tasks authorized: `false`
+M4 fresh tasks authorized: `true`
 
 M4 preparation protocol: `COMPLETE; OFFLINE_ONLY`
 
@@ -52,7 +52,31 @@ M4 result state: `NOT_RUN`
 
 M4 preparation local gates: `PASSED; focused=27/27; full=606/606; preparation_audit=PASSED; results_audit=NOT_RUN`
 
-M4 separate fresh-execution authorization: `REQUIRED; NOT_PRESENT`
+M4 Gate IV independent review: `PASSED; findings=0`
+
+M4 Gate IV preparation baseline: `c56c3c1ab384f65e51a70e9582672c6320d19121` (GitHub Actions run `31237480839`; `success`)
+
+M4 Gate IV authorization artifact: `evals/m4/authorization/execution-authorization.json`
+
+M4 Gate IV execution control: `evals/m4/authorization/execution-control.json`
+
+M4 Gate IV model binding: `gpt-5.6-sol; reasoning_effort=max; configured defaults must match`
+
+M4 Gate IV authorized roster: `60 task IDs; 60 fresh contexts maximum; 60 independent finalizations maximum; 6 domain batches; 1 attempt/task`
+
+M4 Gate IV authorization token: `sha256:09c940955104f2ae9278b55d155bc43a47d43a0eb9e80e4f90d7425eb3c0e292`
+
+M4 Gate IV authorization token status: `UNCONSUMED; claim_count=0`
+
+M4 Gate IV launch claim: `ABSENT; REQUIRED_BEFORE_FIRST_TASK`
+
+M4 Gate IV observed counters: `contexts=0; dispatched=0; finalizations=0; results=0; retries=0; repairs=0; judge_scores=0; unauthorized_side_effects=0`
+
+M4 Gate IV authorization local gates: `PASSED; focused=42/42; full=618/618; authorization_audit=READY_UNCONSUMED; configured_default_check=MATCHED; results_audit=NOT_RUN`
+
+M4 Gate IV judge and later gates: `judge_execution=false; blind_mapping_access=false; aggregation=false; closure=false`
+
+M4 separate fresh-execution authorization: `PRESENT; UNCONSUMED; EXACT_HEAD_CI_REQUIRED_BEFORE_CONSUMPTION`
 
 r5.1 CI and acceptance hardening implementation: `COMPLETE`
 
