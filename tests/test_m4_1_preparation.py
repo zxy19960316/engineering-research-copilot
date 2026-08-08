@@ -1,6 +1,9 @@
 from __future__ import annotations
 
+import hashlib
 import json
+import shutil
+import subprocess
 import unittest
 from pathlib import Path
 
@@ -11,6 +14,7 @@ from evals.m4.build_m4_1_preparation import (
     TERMINAL_CI_RUN_ID,
     TERMINAL_HEAD,
     build_preparation,
+    request_binding_sha256,
 )
 
 
@@ -23,6 +27,7 @@ SCHEMA_PATH = REVISION_ROOT / "preparation-manifest.schema.json"
 CLAIM_PATH = M4_ROOT / "execution" / "m4.0" / "launch-claim.json"
 FAILURE_PATH = M4_ROOT / "execution" / "m4.0" / "pre-dispatch-failure.json"
 M4_1_CLAIM_PATH = M4_ROOT / "execution" / "m4.1" / "launch-claim.json"
+HELPER_PATH = M4_ROOT / "execution" / "prepare_m4_1_request_bundles.ps1"
 
 COUNTER_NAMES = {
     "authorized_tasks",
@@ -82,6 +87,10 @@ class M41PreparationContractTests(unittest.TestCase):
         self.assertEqual(len(new_task_ids), len(set(new_task_ids)))
         self.assertTrue(set(new_task_ids).isdisjoint(old_task_ids))
         self.assertEqual(
+            new_task_ids,
+            ["M4.1-" + task_id.removeprefix("M4-") for task_id in old_task_ids],
+        )
+        self.assertEqual(
             [task["blind_id"] for task in tasks],
             [f"M4-J{index:03d}" for index in range(61, 121)],
         )
@@ -101,6 +110,13 @@ class M41PreparationContractTests(unittest.TestCase):
             {batch["batch_id"] for batch in batches}.isdisjoint(
                 batch["batch_id"] for batch in self.base["matrix"]["batches"]
             )
+        )
+        self.assertEqual(
+            [batch["batch_id"] for batch in batches],
+            [
+                "M4.1-BATCH-" + batch["batch_id"].removeprefix("M4-BATCH-")
+                for batch in self.base["matrix"]["batches"]
+            ],
         )
 
     def test_predecessor_evidence_and_authority_are_closed(self) -> None:
@@ -146,6 +162,98 @@ class M41PreparationContractTests(unittest.TestCase):
         )
         self.assertFalse(M4_1_CLAIM_PATH.exists())
         self.assertFalse((M4_ROOT / "results-manifest.json").exists())
+
+        first = tasks[0]
+        framed = "\n".join(
+            (
+                "m4.1-request-binding-v1",
+                first["task_id"],
+                first["source_task_id"],
+                first["blind_id"],
+                first["case_sha256"],
+                first["user_input_sha256"],
+                first["task_protocol_sha256"],
+                first["variant_instruction_sha256"] or "NONE",
+                first["rubric_sha256"],
+                first["execution_constraints_sha256"],
+            )
+        ) + "\n"
+        self.assertEqual(
+            first["request_binding_sha256"],
+            hashlib.sha256(framed.encode("utf-8")).hexdigest(),
+        )
+        self.assertEqual(
+            first["request_binding_sha256"], request_binding_sha256(first)
+        )
+
+    def test_powershell_helper_is_hash_bound_and_uses_legacy_compatible_apis(self) -> None:
+        source_bytes = HELPER_PATH.read_bytes()
+        source = source_bytes.decode("utf-8")
+        helper = self.manifest["execution_helper"]
+        self.assertEqual(helper["raw_sha256"], hashlib.sha256(source_bytes).hexdigest())
+        self.assertIn("[System.Security.Cryptography.SHA256]::Create()", source)
+        self.assertIn("[System.BitConverter]::ToString", source)
+        self.assertNotIn("[Convert]::ToHexString", source)
+        self.assertNotIn("SHA256]::HashData", source)
+        for write_api in ("Set-Content", "Out-File", "New-Item", "WriteAllBytes"):
+            self.assertNotIn(write_api, source)
+
+    def test_powershell_helper_self_test_all_and_single_task_are_read_only(self) -> None:
+        engine = shutil.which("powershell.exe") or shutil.which("pwsh")
+        if engine is None:
+            self.skipTest("PowerShell is unavailable")
+
+        before = {
+            "claim": CLAIM_PATH.read_bytes(),
+            "failure": FAILURE_PATH.read_bytes(),
+            "manifest": MANIFEST_PATH.read_bytes(),
+        }
+
+        def run(*arguments: str) -> dict:
+            completed = subprocess.run(
+                [
+                    engine,
+                    "-NoLogo",
+                    "-NoProfile",
+                    "-ExecutionPolicy",
+                    "Bypass",
+                    "-File",
+                    str(HELPER_PATH),
+                    *arguments,
+                ],
+                cwd=REPO_ROOT,
+                check=False,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True,
+                encoding="utf-8-sig",
+            )
+            self.assertEqual(completed.returncode, 0, completed.stderr)
+            value = json.loads(completed.stdout.strip())
+            self.assertIsInstance(value, dict)
+            self.assertEqual(value["mismatches"], [])
+            self.assertEqual(value["side_effects"], [])
+            return value
+
+        self_test = run("-SelfTest")
+        self.assertEqual(self_test["status"], "SELF_TEST_PASSED")
+        self.assertEqual(self_test["checked_task_count"], 0)
+
+        checked = run("-CheckAll")
+        self.assertEqual(checked["status"], "VERIFIED")
+        self.assertEqual(checked["checked_task_count"], 60)
+
+        single = run("-TaskId", self.manifest["tasks"][0]["task_id"])
+        self.assertEqual(single["status"], "VERIFIED")
+        self.assertEqual(single["checked_task_count"], 1)
+        self.assertEqual(
+            {
+                "claim": CLAIM_PATH.read_bytes(),
+                "failure": FAILURE_PATH.read_bytes(),
+                "manifest": MANIFEST_PATH.read_bytes(),
+            },
+            before,
+        )
 
     def test_schema_is_closed_and_manifest_regenerates_exactly(self) -> None:
         schema = load_object(SCHEMA_PATH)
