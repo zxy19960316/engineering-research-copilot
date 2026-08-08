@@ -4,6 +4,7 @@ import hashlib
 import json
 import shutil
 import subprocess
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -286,6 +287,61 @@ class M41PreparationContractTests(unittest.TestCase):
             },
             before,
         )
+
+    def _audit_mutation(self, mutate) -> dict[str, object]:
+        value = json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
+        mutate(value)
+        with tempfile.TemporaryDirectory(dir=REPO_ROOT) as temp_dir:
+            changed = Path(temp_dir) / "preparation-manifest.json"
+            changed.write_text(
+                json.dumps(value, ensure_ascii=False, indent=2) + "\n",
+                encoding="utf-8",
+                newline="\n",
+            )
+            return audit_preparation(
+                REPO_ROOT, manifest_path=changed, verify_git=False
+            )
+
+    def test_rejects_reused_task_id(self) -> None:
+        result = self._audit_mutation(
+            lambda value: value["tasks"][0].__setitem__(
+                "task_id", value["tasks"][0]["source_task_id"]
+            )
+        )
+        self.assertEqual(result["status"], "INVALID")
+        self.assertIn("task_id_reused", result["errors"])
+
+    def test_rejects_task_order_drift(self) -> None:
+        result = self._audit_mutation(lambda value: value["tasks"].reverse())
+        self.assertEqual(result["status"], "INVALID")
+        self.assertIn("task_order_changed", result["errors"])
+
+    def test_rejects_request_binding_drift(self) -> None:
+        result = self._audit_mutation(
+            lambda value: value["tasks"][0].__setitem__(
+                "request_binding_sha256", "0" * 64
+            )
+        )
+        self.assertEqual(result["status"], "INVALID")
+        self.assertIn("request_binding_mismatch", result["errors"])
+
+    def test_rejects_nonzero_execution_counter(self) -> None:
+        result = self._audit_mutation(
+            lambda value: value["counters"].__setitem__("created_contexts", 1)
+        )
+        self.assertEqual(result["status"], "INVALID")
+        self.assertIn("execution_counter_nonzero", result["errors"])
+
+    def test_rejects_even_empty_results_revision_root(self) -> None:
+        with tempfile.TemporaryDirectory(dir=REPO_ROOT) as temp_dir:
+            results_root = Path(temp_dir) / "m4.1"
+            results_root.mkdir()
+            result = audit_preparation(
+                REPO_ROOT, results_base=results_root, verify_git=False
+            )
+        self.assertEqual(result["status"], "INVALID")
+        self.assertIn("result_root_present", result["errors"])
+        self.assertEqual(result["existing_result_root_count"], 1)
 
 
 if __name__ == "__main__":

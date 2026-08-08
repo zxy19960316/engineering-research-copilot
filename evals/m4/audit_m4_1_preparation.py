@@ -25,6 +25,7 @@ HELPER_RELATIVE = M4_ROOT / "execution/prepare_m4_1_request_bundles.ps1"
 M4_0_CLAIM_RELATIVE = M4_ROOT / "execution/m4.0/launch-claim.json"
 M4_0_FAILURE_RELATIVE = M4_ROOT / "execution/m4.0/pre-dispatch-failure.json"
 M4_1_CLAIM_RELATIVE = M4_ROOT / "execution/m4.1/launch-claim.json"
+RESULTS_ROOT_RELATIVE = M4_ROOT / "results"
 RESULTS_MANIFEST_RELATIVE = M4_ROOT / "results-manifest.json"
 
 FROZEN_M3_AND_SKILL_PATHS = (
@@ -36,17 +37,29 @@ FROZEN_BASE_PREPARATION_PATHS = (
     "evals/m4/variants",
     "evals/m4/schemas",
     "evals/m4/preparation-manifest.json",
+    "evals/m4/build_preparation.py",
+    "evals/m4/audit_preparation.py",
+    "evals/m4/audit_results.py",
     "evals/m4/task-protocol.md",
     "evals/m4/judge-rubric.json",
+    "tests/test_m4_preparation.py",
+    "tests/test_m4_results.py",
 )
 FROZEN_ROOT_AUTHORIZATION_PATHS = (
     "evals/m4/authorization/gate-iv-review.json",
     "evals/m4/authorization/execution-authorization.json",
     "evals/m4/authorization/execution-control.json",
+    "evals/m4/authorization/build_authorization.py",
+    "evals/m4/authorization/audit_authorization.py",
+    "evals/m4/authorization/execution-authorization.schema.json",
+    "evals/m4/authorization/execution-control.schema.json",
+    "tests/test_m4_authorization.py",
 )
 FROZEN_M4_0_EVIDENCE_PATHS = (
     "evals/m4/execution/m4.0/launch-claim.json",
     "evals/m4/execution/m4.0/pre-dispatch-failure.json",
+    "evals/m4/execution/audit_m4_0.py",
+    "tests/test_m4_execution.py",
 )
 
 TOP_LEVEL_KEYS = {
@@ -548,6 +561,11 @@ def audit_preparation(
             _add(errors, "base_preparation_hash_mismatch")
 
     existing_result_roots: list[str] = []
+    results_root = results_base if results_base is not None else (
+        repo_root / RESULTS_ROOT_RELATIVE
+    )
+    if results_root.exists():
+        existing_result_roots.append("__results_root__")
     base_tasks = base.get("tasks") if isinstance(base.get("tasks"), list) else []
     for task in base_tasks:
         if not isinstance(task, dict):
