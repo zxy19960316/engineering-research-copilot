@@ -4,7 +4,7 @@
 
 `M4 — Cross-engineering forward evaluation`
 
-Active revision: `M4 Gate IV one-shot authorization`
+Active revision: `M4.0 Gate IV pre-dispatch failure closeout`
 
 Historical r5 evidence HEAD: `1b696bce53ee0a11163bfe4f91a9a49ab3af6f49`
 
@@ -12,7 +12,7 @@ Gate 3 accepted evidence baseline HEAD: `ea8a7bbb8b365aded89f9ddb5c784f6e95a51d3
 
 Gate 3 accepted evidence baseline exact-HEAD CI: `PASSED` (GitHub Actions run `31192712555`)
 
-Status: `M3_CLOSED; M4_GATE_IV_AUTHORIZED_UNCONSUMED; M4_FRESH_TASKS_NOT_STARTED`
+Status: `M3_CLOSED; M4_0_PRE_DISPATCH_FAILED; M4_FRESH_RESULTS_NOT_RUN; M4_1_SUCCESSOR_REVISION_REQUIRED`
 
 Historical r5 status: `BLOCKED_NOT_ACCEPTED`
 
@@ -36,9 +36,9 @@ Historical immutable-r5 exact-HEAD CI: `FAILED` (GitHub Actions run `31096079186
 
 M3: `CLOSED`
 
-M4: `GATE_IV_AUTHORIZED_UNCONSUMED`
+M4: `M4_0_PRE_DISPATCH_FAILED_PRESERVED`
 
-M4 fresh tasks authorized: `true`
+M4 fresh tasks authorized: `false; M4.0 authorization consumed; successor authorization required`
 
 M4 preparation protocol: `COMPLETE; OFFLINE_ONLY`
 
@@ -66,17 +66,27 @@ M4 Gate IV authorized roster: `60 task IDs; 60 fresh contexts maximum; 60 indepe
 
 M4 Gate IV authorization token: `sha256:09c940955104f2ae9278b55d155bc43a47d43a0eb9e80e4f90d7425eb3c0e292`
 
-M4 Gate IV authorization token status: `UNCONSUMED; claim_count=0`
+M4 Gate IV authorization token status: `CONSUMED; claim_count=1; terminal for M4.0`
 
-M4 Gate IV launch claim: `ABSENT; REQUIRED_BEFORE_FIRST_TASK`
+M4 Gate IV launch claim: `PRESENT; claim_id=507b5fef-c05f-4ede-ad06-b6694203cfe1; sha256=5690177383c44a30e808533ebdfe0b504c6da2abf8e61a1d0303d4c439c3ecec`
 
-M4 Gate IV observed counters: `contexts=0; dispatched=0; finalizations=0; results=0; retries=0; repairs=0; judge_scores=0; unauthorized_side_effects=0`
+M4 Gate IV observed counters: `create_thread_calls=0; contexts=0; dispatched=0; finalizations=0; results=0; retries=0; repairs=0; followups=0; judge_scores=0; unauthorized_side_effects=0`
 
-M4 Gate IV authorization local gates: `PASSED; focused=42/42; full=618/618; authorization_audit=READY_UNCONSUMED; configured_default_check=MATCHED; results_audit=NOT_RUN`
+M4 Gate IV authorization local gates before claim: `PASSED; focused=42/42; full=618/618; authorization_audit=READY_UNCONSUMED; configured_default_check=MATCHED; results_audit=NOT_RUN`
 
 M4 Gate IV judge and later gates: `judge_execution=false; blind_mapping_access=false; aggregation=false; closure=false`
 
-M4 separate fresh-execution authorization: `PRESENT; UNCONSUMED; EXACT_HEAD_CI_REQUIRED_BEFORE_CONSUMPTION`
+M4 separate fresh-execution authorization: `CONSUMED; SAME_REVISION_CONTINUATION_FORBIDDEN`
+
+M4.0 pre-dispatch failure: `PRESERVED; failed_stage=frozen_request_bundle_hash_verification; batch=M4-BATCH-NUC; task_id=null; System.Convert.ToHexString unavailable on PowerShell 5.1 / CLR 4.0`
+
+M4.0 failure evidence: `evals/m4/execution/m4.0/pre-dispatch-failure.json; sha256=8ef9487ce617aeafefc6d665a981581ffc046b541cf426f22d434be689f007ff`
+
+M4.0 fresh result state: `NOT_RUN; result_roots=0; results_manifest=ABSENT`
+
+M4.0 terminal local gate: `PASSED; focused=5/5; execution_audit=PRE_DISPATCH_FAILED_PRESERVED; exact-HEAD CI=NOT_RUN`
+
+M4.1 successor state: `REQUIRED; preparation/fix/authorization/fresh execution=NOT_STARTED`
 
 r5.1 CI and acceptance hardening implementation: `COMPLETE`
 
@@ -469,13 +479,13 @@ Evidence is recorded under `evals/m1/`, including preserved failed runs and inde
 
 - M2: `M2.1 COMPLETE; M2.1.1 COMPLETE`
 - M3: `CLOSED`
-- M4: `PREPARATION_ONLY; FRESH_TASKS_AUTHORIZED_FALSE`
+- M4: `M4.0 PRE_DISPATCH_FAILED; SUCCESSOR_REVISION_REQUIRED; FRESH_TASKS_AUTHORIZED_FALSE`
 - M5: `NOT_STARTED`
 
 ## External state
 
 - Git remote: `https://github.com/zxy19960316/engineering-research-copilot.git`
-- Active local branch: `codex/m4-cross-engineering-forward-evaluation-preparation`
+- Active local branch: `codex/m4-cross-engineering-forward-evaluation-m4.0-execution`
 - External APIs/services configured: none
 - RRC integration: not started
 - Platform integration: not required for the local Skill competition track

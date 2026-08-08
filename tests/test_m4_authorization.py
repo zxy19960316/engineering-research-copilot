@@ -4,6 +4,7 @@ import json
 import sys
 import tempfile
 import unittest
+from contextlib import contextmanager
 from pathlib import Path
 from unittest import mock
 
@@ -52,27 +53,51 @@ class M4AuthorizationContractTests(unittest.TestCase):
                 REPO_ROOT, verify_git=False, **kwargs
             )
 
-    def test_repository_authorization_is_ready_unconsumed_and_read_only(self) -> None:
+    @contextmanager
+    def _historical_preclaim_view(self):
+        claim_path = (REPO_ROOT / build.LAUNCH_CLAIM_RELATIVE).resolve()
+        original_exists = Path.exists
+
+        def historical_exists(path: Path) -> bool:
+            if path.resolve() == claim_path:
+                return False
+            return original_exists(path)
+
+        with mock.patch.object(Path, "exists", historical_exists):
+            yield
+
+    def test_repository_authorization_is_consumed_and_historical_gate_is_read_only(
+        self,
+    ) -> None:
         before = self._snapshot()
         self.assertFalse((REPO_ROOT / "evals" / "m4" / "results").exists())
-        self.assertFalse((REPO_ROOT / "evals" / "m4" / "execution").exists())
+        self.assertTrue(
+            (REPO_ROOT / "evals" / "m4" / "execution" / "m4.0" / "launch-claim.json").is_file()
+        )
         result = audit.audit_authorization(REPO_ROOT)
-        self.assertEqual(result["status"], "READY_UNCONSUMED")
-        self.assertEqual(result["authorized_task_count"], 60)
-        self.assertEqual(result["authorized_batch_count"], 6)
+        self.assertEqual(result["status"], "INVALID")
+        self.assertIn("authorization_already_claimed", result["errors"])
         self.assertEqual(result["existing_result_root_count"], 0)
         self.assertEqual(result["execution_counters"], build.ZERO_COUNTERS)
         self.assertEqual(result["authorization_token_status"], "UNCONSUMED")
         self.assertEqual(result["result_state"], "NOT_RUN")
-        self.assertFalse(result["launch_claim_present"])
+        self.assertTrue(result["launch_claim_present"])
         self.assertEqual(result["callback_invocations"], 0)
         self.assertEqual(result["network_calls"], 0)
         self.assertEqual(result["side_effects"], [])
-        self.assertEqual(result["errors"], [])
         self.assertEqual(self._snapshot(), before)
 
+        with self._historical_preclaim_view():
+            historical = audit.audit_authorization(REPO_ROOT)
+        self.assertEqual(historical["status"], "READY_UNCONSUMED")
+        self.assertEqual(historical["authorized_task_count"], 60)
+        self.assertEqual(historical["authorized_batch_count"], 6)
+        self.assertFalse(historical["launch_claim_present"])
+        self.assertEqual(historical["errors"], [])
+
     def test_generated_artifacts_are_byte_stable(self) -> None:
-        expected = build.build_artifacts(REPO_ROOT)
+        with self._historical_preclaim_view():
+            expected = build.build_artifacts(REPO_ROOT)
         self.assertEqual(expected[REVIEW_PATH], REVIEW_PATH.read_bytes())
         self.assertEqual(expected[AUTHORIZATION_PATH], AUTHORIZATION_PATH.read_bytes())
         self.assertEqual(expected[CONTROL_PATH], CONTROL_PATH.read_bytes())
@@ -112,19 +137,21 @@ class M4AuthorizationContractTests(unittest.TestCase):
         self.assertEqual(value["authorization_token"], build.authorization_token(value))
 
     def test_configured_defaults_match_and_drift_fail_closed(self) -> None:
-        matched = audit.audit_authorization(
-            REPO_ROOT,
-            configured_model="gpt-5.6-sol",
-            configured_reasoning_effort="max",
-        )
+        with self._historical_preclaim_view():
+            matched = audit.audit_authorization(
+                REPO_ROOT,
+                configured_model="gpt-5.6-sol",
+                configured_reasoning_effort="max",
+            )
         self.assertEqual(matched["status"], "READY_UNCONSUMED")
         self.assertEqual(matched["configured_default_check"], "MATCHED")
-        drifted = audit.audit_authorization(
-            REPO_ROOT,
-            configured_model="gpt-5.6-terra",
-            configured_reasoning_effort="high",
-            verify_git=False,
-        )
+        with self._historical_preclaim_view():
+            drifted = audit.audit_authorization(
+                REPO_ROOT,
+                configured_model="gpt-5.6-terra",
+                configured_reasoning_effort="high",
+                verify_git=False,
+            )
         self.assertIn("configured_model_mismatch", drifted["errors"])
         self.assertIn("configured_reasoning_effort_mismatch", drifted["errors"])
 
@@ -184,12 +211,13 @@ class M4AuthorizationContractTests(unittest.TestCase):
             claim.write_bytes(b"{}\n")
             result_base = root / "results" / "m4.0"
             (result_base / "M4-ELE-B-A2").mkdir(parents=True)
-            result = audit.audit_authorization(
-                REPO_ROOT,
-                launch_claim_path=claim,
-                results_base=result_base,
-                verify_git=False,
-            )
+            with self._historical_preclaim_view():
+                result = audit.audit_authorization(
+                    REPO_ROOT,
+                    launch_claim_path=claim,
+                    results_base=result_base,
+                    verify_git=False,
+                )
         self.assertIn("authorization_already_claimed", result["errors"])
         self.assertIn("result_root_present_before_launch", result["errors"])
 

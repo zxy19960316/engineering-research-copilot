@@ -98,12 +98,12 @@ class M3R5ErratumTests(unittest.TestCase):
         self.assertEqual(diagnostic["retry_count"], 0)
         self.assertFalse(diagnostic["composed_output_created"])
 
-    def test_status_top_preserves_terminal_history_during_m4_authorization(self):
+    def test_status_top_preserves_terminal_history_during_m4_execution_closeout(self):
         text = (REPO_ROOT / "STATUS.md").read_text(encoding="utf-8")
         current = text.split("## M3 checklist", 1)[0]
 
         self.assertIn(
-            "Active revision: `M4 Gate IV one-shot authorization`",
+            "Active revision: `M4.0 Gate IV pre-dispatch failure closeout`",
             current,
         )
         self.assertIn(f"Historical r5 evidence HEAD: `{EVIDENCE_HEAD}`", current)
@@ -118,8 +118,8 @@ class M3R5ErratumTests(unittest.TestCase):
             current,
         )
         self.assertIn(
-            "Status: `M3_CLOSED; M4_GATE_IV_AUTHORIZED_UNCONSUMED; "
-            "M4_FRESH_TASKS_NOT_STARTED`",
+            "Status: `M3_CLOSED; M4_0_PRE_DISPATCH_FAILED; "
+            "M4_FRESH_RESULTS_NOT_RUN; M4_1_SUCCESSOR_REVISION_REQUIRED`",
             current,
         )
         self.assertIn("Historical r5 status: `BLOCKED_NOT_ACCEPTED`", current)
@@ -154,10 +154,20 @@ class M3R5ErratumTests(unittest.TestCase):
         )
         self.assertIn("Historical immutable-r5 exact-HEAD CI: `FAILED`", current)
         self.assertIn("M3: `CLOSED`", current)
-        self.assertIn("M4: `GATE_IV_AUTHORIZED_UNCONSUMED`", current)
-        self.assertIn("M4 fresh tasks authorized: `true`", current)
+        self.assertIn("M4: `M4_0_PRE_DISPATCH_FAILED_PRESERVED`", current)
         self.assertIn(
-            "M4 Gate IV authorization token status: `UNCONSUMED; claim_count=0`",
+            "M4 fresh tasks authorized: `false; M4.0 authorization consumed; "
+            "successor authorization required`",
+            current,
+        )
+        self.assertIn(
+            "M4 Gate IV authorization token status: `CONSUMED; claim_count=1; "
+            "terminal for M4.0`",
+            current,
+        )
+        self.assertIn(
+            "M4.0 fresh result state: `NOT_RUN; result_roots=0; "
+            "results_manifest=ABSENT`",
             current,
         )
         self.assertIn("r5.1-f02 retry: `FORBIDDEN`", current)
