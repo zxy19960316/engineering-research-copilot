@@ -1,0 +1,188 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://engineering-research-copilot.local/m4/authorization/m4.1/execution-control.schema.json",
+  "title": "M4.1 Gate IV execution control",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "milestone", "revision", "status", "authorization", "preparation",
+    "execution_helper", "task_protocol", "request_policy", "execution_constraints", "batch_order",
+    "batches", "tasks", "launch_claim", "permissions", "prelaunch_counters", "does_not_authorize"
+  ],
+  "properties": {
+    "schema_version": {"const": "m4.1-execution-control-v1"},
+    "milestone": {"const": "M4"},
+    "revision": {"const": "M4.1"},
+    "status": {"const": "READY_UNCONSUMED"},
+    "authorization": {
+      "type": "object", "additionalProperties": false,
+      "required": ["path", "raw_sha256", "authorization_token"],
+      "properties": {
+        "path": {"const": "evals/m4/authorization/m4.1/execution-authorization.json"},
+        "raw_sha256": {"$ref": "#/$defs/sha256"},
+        "authorization_token": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"}
+      }
+    },
+    "preparation": {
+      "type": "object", "additionalProperties": false,
+      "required": ["path", "head", "ci_run_id", "git_blob_oid", "raw_sha256", "request_binding_count"],
+      "properties": {
+        "path": {"const": "evals/m4/revisions/m4.1/preparation-manifest.json"},
+        "head": {"const": "fedc5cdeebd7a2943afeb6767d39841305c55444"},
+        "ci_run_id": {"const": 31248424046},
+        "git_blob_oid": {"$ref": "#/$defs/git_oid"},
+        "raw_sha256": {"$ref": "#/$defs/sha256"},
+        "request_binding_count": {"const": 60}
+      }
+    },
+    "execution_helper": {
+      "type": "object", "additionalProperties": false,
+      "required": ["path", "git_blob_oid", "raw_sha256", "minimum_windows_powershell_version", "modes", "request_binding_count", "read_only"],
+      "properties": {
+        "path": {"const": "evals/m4/execution/prepare_m4_1_request_bundles.ps1"},
+        "git_blob_oid": {"$ref": "#/$defs/git_oid"},
+        "raw_sha256": {"$ref": "#/$defs/sha256"},
+        "minimum_windows_powershell_version": {"const": "5.1"},
+        "modes": {"const": ["SelfTest", "CheckAll", "TaskId"]},
+        "request_binding_count": {"const": 60},
+        "read_only": {"const": true}
+      }
+    },
+    "task_protocol": {
+      "type": "object", "additionalProperties": false,
+      "required": ["path", "raw_sha256"],
+      "properties": {
+        "path": {"const": "evals/m4/task-protocol.md"},
+        "raw_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "request_policy": {
+      "type": "object", "additionalProperties": false,
+      "required": ["surface", "target_type", "project_id", "environment_type", "starting_branch", "model_field", "thinking_field", "configured_default_model_required", "configured_default_reasoning_effort_required", "one_new_thread_per_task_id", "one_independent_finalization_per_task_id"],
+      "properties": {
+        "surface": {"const": "codex_app.create_thread"},
+        "target_type": {"const": "project"},
+        "project_id": {"const": "ff35b25f-4644-41c8-9073-74c697559439"},
+        "environment_type": {"const": "worktree"},
+        "starting_branch": {"const": "codex/m4-cross-engineering-forward-evaluation-m4.1-one-shot-authorization"},
+        "model_field": {"const": "OMITTED"},
+        "thinking_field": {"const": "OMITTED"},
+        "configured_default_model_required": {"const": "gpt-5.6-sol"},
+        "configured_default_reasoning_effort_required": {"const": "max"},
+        "one_new_thread_per_task_id": {"const": true},
+        "one_independent_finalization_per_task_id": {"const": true}
+      }
+    },
+    "execution_constraints": {
+      "type": "object", "additionalProperties": false,
+      "required": ["exact_model_id", "model_binding_status", "reasoning_effort", "same_model_across_arms", "tool_profile_id", "allowed_tool_capabilities", "forbidden_actions", "search_query_budget", "input_context_token_ceiling", "output_token_ceiling", "wall_clock_minutes", "same_user_input_across_arms", "same_scoring_contract_across_arms", "one_independent_context_per_task", "one_independent_finalization_per_task", "cross_task_result_visibility", "same_task_retry_count"],
+      "properties": {
+        "exact_model_id": {"const": "gpt-5.6-sol"},
+        "model_binding_status": {"const": "BOUND_BY_M4_1_GATE_IV_AUTHORIZATION"},
+        "reasoning_effort": {"const": "max"},
+        "same_model_across_arms": {"const": true},
+        "tool_profile_id": {"const": "M4-READONLY-RESEARCH-V1"},
+        "allowed_tool_capabilities": {"type": "array", "minItems": 3, "maxItems": 3, "uniqueItems": true, "items": {"type": "string"}},
+        "forbidden_actions": {"type": "array", "minItems": 7, "maxItems": 7, "uniqueItems": true, "items": {"type": "string"}},
+        "search_query_budget": {"const": 12},
+        "input_context_token_ceiling": {"const": 32000},
+        "output_token_ceiling": {"const": 8000},
+        "wall_clock_minutes": {"const": 20},
+        "same_user_input_across_arms": {"const": true},
+        "same_scoring_contract_across_arms": {"const": true},
+        "one_independent_context_per_task": {"const": true},
+        "one_independent_finalization_per_task": {"const": true},
+        "cross_task_result_visibility": {"const": false},
+        "same_task_retry_count": {"const": 0}
+      }
+    },
+    "batch_order": {"type": "array", "minItems": 6, "maxItems": 6, "uniqueItems": true, "items": {"type": "string", "pattern": "^M4\\.1-BATCH-"}},
+    "batches": {"type": "array", "minItems": 6, "maxItems": 6, "items": {"$ref": "#/$defs/batch"}},
+    "tasks": {"type": "array", "minItems": 60, "maxItems": 60, "items": {"$ref": "#/$defs/task"}},
+    "launch_claim": {
+      "type": "object", "additionalProperties": false,
+      "required": ["path", "must_be_absent_before_execution", "claim_count_before_execution", "claim_consumes_authorization_token", "must_be_created_before_first_task"],
+      "properties": {
+        "path": {"const": "evals/m4/execution/m4.1/launch-claim.json"},
+        "must_be_absent_before_execution": {"const": true},
+        "claim_count_before_execution": {"const": 0},
+        "claim_consumes_authorization_token": {"const": true},
+        "must_be_created_before_first_task": {"const": true}
+      }
+    },
+    "permissions": {
+      "type": "object", "additionalProperties": false,
+      "required": ["fresh_task_creation", "result_writes_below_frozen_roots", "retry", "repair", "followup_message", "cross_task_result_read", "judge_execution", "blind_mapping_access", "aggregation", "threshold_claim", "m4_closure"],
+      "properties": {
+        "fresh_task_creation": {"const": true},
+        "result_writes_below_frozen_roots": {"const": true},
+        "retry": {"const": false}, "repair": {"const": false},
+        "followup_message": {"const": false}, "cross_task_result_read": {"const": false},
+        "judge_execution": {"const": false}, "blind_mapping_access": {"const": false},
+        "aggregation": {"const": false}, "threshold_claim": {"const": false},
+        "m4_closure": {"const": false}
+      }
+    },
+    "prelaunch_counters": {"$ref": "#/$defs/zero_counters"},
+    "does_not_authorize": {"type": "array", "minItems": 8, "maxItems": 8, "uniqueItems": true, "items": {"type": "string"}}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "git_oid": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "zero_counters": {
+      "type": "object", "additionalProperties": false,
+      "required": ["authorized_tasks", "created_contexts", "dispatched_tasks", "finalizations", "results_observed", "judge_scores", "retries", "repairs", "unauthorized_side_effects"],
+      "properties": {
+        "authorized_tasks": {"const": 0}, "created_contexts": {"const": 0},
+        "dispatched_tasks": {"const": 0}, "finalizations": {"const": 0},
+        "results_observed": {"const": 0}, "judge_scores": {"const": 0},
+        "retries": {"const": 0}, "repairs": {"const": 0}, "unauthorized_side_effects": {"const": 0}
+      }
+    },
+    "batch": {
+      "type": "object", "additionalProperties": false,
+      "required": ["batch_id", "source_batch_id", "domain", "task_ids", "source_task_ids", "planned_task_count", "stop_on_infrastructure_or_protocol_failure", "later_batches_mutable_after_observation"],
+      "properties": {
+        "batch_id": {"type": "string", "pattern": "^M4\\.1-BATCH-"},
+        "source_batch_id": {"type": "string", "pattern": "^M4-BATCH-"},
+        "domain": {"type": "string"},
+        "task_ids": {"type": "array", "minItems": 10, "maxItems": 10, "uniqueItems": true, "items": {"type": "string"}},
+        "source_task_ids": {"type": "array", "minItems": 10, "maxItems": 10, "uniqueItems": true, "items": {"type": "string"}},
+        "planned_task_count": {"const": 10},
+        "stop_on_infrastructure_or_protocol_failure": {"const": true},
+        "later_batches_mutable_after_observation": {"const": false}
+      }
+    },
+    "task": {
+      "type": "object", "additionalProperties": false,
+      "required": ["task_id", "source_task_id", "blind_id", "source_blind_id", "case_id", "domain", "case_type", "arm_id", "batch_id", "source_batch_id", "case_path", "case_sha256", "user_input_sha256", "task_protocol_sha256", "variant_instruction_path", "variant_instruction_sha256", "rubric_sha256", "execution_constraints_sha256", "result_root", "result_root_must_be_absent", "request_binding_sha256", "allowed_context_paths", "forbidden_context_roots", "attempt_limit", "independent_finalization_required", "cross_task_result_visibility"],
+      "properties": {
+        "task_id": {"type": "string", "pattern": "^M4\\.1-"},
+        "source_task_id": {"type": "string", "pattern": "^M4-(?!BATCH-)"},
+        "blind_id": {"type": "string", "pattern": "^M4-J"},
+        "source_blind_id": {"type": "string", "pattern": "^M4-J"},
+        "case_id": {"type": "string"}, "domain": {"type": "string"},
+        "case_type": {"enum": ["ordinary", "adversarial"]},
+        "arm_id": {"enum": ["N", "F", "A1", "A2", "A3"]},
+        "batch_id": {"type": "string", "pattern": "^M4\\.1-BATCH-"},
+        "source_batch_id": {"type": "string", "pattern": "^M4-BATCH-"},
+        "case_path": {"type": "string"},
+        "case_sha256": {"$ref": "#/$defs/sha256"},
+        "user_input_sha256": {"$ref": "#/$defs/sha256"},
+        "task_protocol_sha256": {"$ref": "#/$defs/sha256"},
+        "variant_instruction_path": {"type": ["string", "null"]},
+        "variant_instruction_sha256": {"anyOf": [{"$ref": "#/$defs/sha256"}, {"type": "null"}]},
+        "rubric_sha256": {"$ref": "#/$defs/sha256"},
+        "execution_constraints_sha256": {"$ref": "#/$defs/sha256"},
+        "result_root": {"type": "string", "pattern": "^evals/m4/results/m4\\.1/"},
+        "result_root_must_be_absent": {"const": true},
+        "request_binding_sha256": {"$ref": "#/$defs/sha256"},
+        "allowed_context_paths": {"type": "array", "minItems": 2, "maxItems": 3, "uniqueItems": true, "items": {"type": "string"}},
+        "forbidden_context_roots": {"const": ["evals/m4/results", "evals/m4/execution"]},
+        "attempt_limit": {"const": 1},
+        "independent_finalization_required": {"const": true},
+        "cross_task_result_visibility": {"const": false}
+      }
+    }
+  }
+}
