@@ -315,12 +315,17 @@ def audit_execution(
         ancestry = _git("merge-base", "--is-ancestor", PREPARATION_HEAD, "HEAD")
         if ancestry.returncode != 0:
             _add(errors, "preparation_head_not_ancestor")
-        authorization_ref = _git("rev-parse", AUTHORIZATION_BRANCH)
-        if (
-            authorization_ref.returncode != 0
-            or authorization_ref.stdout.strip() != AUTHORIZATION_HEAD
-        ):
-            _add(errors, "authorization_branch_head_invalid")
+        authorization_commit = _git(
+            "cat-file", "-e", f"{AUTHORIZATION_HEAD}^{{commit}}"
+        )
+        if authorization_commit.returncode != 0:
+            _add(errors, "authorization_head_unavailable")
+        else:
+            authorization_ancestry = _git(
+                "merge-base", "--is-ancestor", AUTHORIZATION_HEAD, "HEAD"
+            )
+            if authorization_ancestry.returncode != 0:
+                _add(errors, "authorization_head_not_ancestor")
         m3_changed_paths = _changed_paths(PREPARATION_HEAD, FROZEN_M3_PATHS)
         preparation_changed_paths = _changed_paths(
             PREPARATION_HEAD, FROZEN_PREPARATION_PATHS

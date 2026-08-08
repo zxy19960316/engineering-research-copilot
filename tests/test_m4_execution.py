@@ -1,10 +1,13 @@
 from __future__ import annotations
 
 import json
+import subprocess
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
+from evals.m4.execution import audit_m4_0 as execution_audit
 from evals.m4.execution.audit_m4_0 import audit_execution
 
 
@@ -39,6 +42,104 @@ def snapshot_guarded_paths() -> dict[str, bytes]:
 
 
 class M4ExecutionTerminalTests(unittest.TestCase):
+    def test_accepts_single_branch_checkout_without_authorization_branch_ref(
+        self,
+    ) -> None:
+        real_git = execution_audit._git
+        calls: list[tuple[str, ...]] = []
+
+        def single_branch_git(*arguments: str) -> subprocess.CompletedProcess[str]:
+            calls.append(arguments)
+            if arguments == (
+                "rev-parse",
+                execution_audit.AUTHORIZATION_BRANCH,
+            ):
+                return subprocess.CompletedProcess(
+                    ["git", *arguments],
+                    returncode=128,
+                    stdout="",
+                    stderr="unknown revision",
+                )
+            return real_git(*arguments)
+
+        with mock.patch.object(execution_audit, "_git", side_effect=single_branch_git):
+            result = audit_execution(REPO_ROOT)
+
+        self.assertEqual(result["status"], "PRE_DISPATCH_FAILED_PRESERVED")
+        self.assertEqual(result["errors"], [])
+        self.assertNotIn(
+            ("rev-parse", execution_audit.AUTHORIZATION_BRANCH), calls
+        )
+        self.assertIn(
+            (
+                "cat-file",
+                "-e",
+                f"{execution_audit.AUTHORIZATION_HEAD}^{{commit}}",
+            ),
+            calls,
+        )
+        self.assertIn(
+            (
+                "merge-base",
+                "--is-ancestor",
+                execution_audit.AUTHORIZATION_HEAD,
+                "HEAD",
+            ),
+            calls,
+        )
+
+    def test_rejects_missing_authorization_commit(self) -> None:
+        real_git = execution_audit._git
+
+        def missing_commit_git(
+            *arguments: str,
+        ) -> subprocess.CompletedProcess[str]:
+            if arguments == (
+                "cat-file",
+                "-e",
+                f"{execution_audit.AUTHORIZATION_HEAD}^{{commit}}",
+            ):
+                return subprocess.CompletedProcess(
+                    ["git", *arguments],
+                    returncode=1,
+                    stdout="",
+                    stderr="missing object",
+                )
+            return real_git(*arguments)
+
+        with mock.patch.object(execution_audit, "_git", side_effect=missing_commit_git):
+            result = audit_execution(REPO_ROOT)
+
+        self.assertEqual(result["status"], "INVALID")
+        self.assertIn("authorization_head_unavailable", result["errors"])
+        self.assertNotIn("authorization_head_not_ancestor", result["errors"])
+
+    def test_rejects_authorization_commit_outside_head_ancestry(self) -> None:
+        real_git = execution_audit._git
+
+        def nonancestor_git(
+            *arguments: str,
+        ) -> subprocess.CompletedProcess[str]:
+            if arguments == (
+                "merge-base",
+                "--is-ancestor",
+                execution_audit.AUTHORIZATION_HEAD,
+                "HEAD",
+            ):
+                return subprocess.CompletedProcess(
+                    ["git", *arguments],
+                    returncode=1,
+                    stdout="",
+                    stderr="not an ancestor",
+                )
+            return real_git(*arguments)
+
+        with mock.patch.object(execution_audit, "_git", side_effect=nonancestor_git):
+            result = audit_execution(REPO_ROOT)
+
+        self.assertEqual(result["status"], "INVALID")
+        self.assertIn("authorization_head_not_ancestor", result["errors"])
+
     def test_repository_pre_dispatch_failure_is_preserved_read_only(self) -> None:
         before = snapshot_guarded_paths()
         result = audit_execution(REPO_ROOT)

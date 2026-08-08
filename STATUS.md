@@ -84,7 +84,7 @@ M4.0 failure evidence: `evals/m4/execution/m4.0/pre-dispatch-failure.json; sha25
 
 M4.0 fresh result state: `NOT_RUN; result_roots=0; results_manifest=ABSENT`
 
-M4.0 terminal local gate: `PASSED; focused=5/5; execution_audit=PRE_DISPATCH_FAILED_PRESERVED; exact-HEAD CI=NOT_RUN`
+M4.0 terminal local gate: `PASSED; focused=8/8; execution_audit=PRE_DISPATCH_FAILED_PRESERVED; first exact-HEAD CI=FAILED on c5c25c5a4e8439bf3b54e16e6e65237911ed99b4 (GitHub Actions run 31244970922; Linux single-branch authorization ref lookup); compatibility-fix exact-HEAD CI=NOT_RUN`
 
 M4.1 successor state: `REQUIRED; preparation/fix/authorization/fresh execution=NOT_STARTED`
 
