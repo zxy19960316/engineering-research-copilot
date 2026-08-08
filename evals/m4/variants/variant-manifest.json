@@ -1,0 +1,193 @@
+{
+  "schema_version": "m4-variant-manifest-v1",
+  "source_baseline_commit": "eb0f2ebc3d0c0a02802ee1cc395c1e705f8ade42",
+  "source_tree_git_oid": "28fbe2bab9be312d022a9102a76952d29657d696",
+  "source_root": "skills/engineering-research-copilot",
+  "source_files": {
+    "SKILL.md": "3d53432d11963ee7b7532526b72236ed1a72cfda66c66feafadaa725b73bac44",
+    "references/core-citation-integrity.md": "2332b60ac90d3f9decf68548f74d661c4ce14974a37d007d3cdad398c4ebb4be",
+    "references/core-direction-decision.md": "206c4f8d0f8c639bdd74e62845bbf768b6f096c2ce4cf5e996502e4bd34f95de",
+    "references/core-feedback-rollback.md": "083f5d7fd3b2fd7cec3d7049cc63f5a5794002129c62c18191e56061b1960fda",
+    "references/core-method-coaching.md": "0229429edcc98837362711099d9c7502fb4bd81def929a501c4c207f91fad2e8",
+    "references/core-paper-calibration.md": "b32803c3d15fd44fd9255bbb438f52ffcddde05378b4f2d545a55e654c6e1bac",
+    "references/core-paper-map.md": "f9ea829896d0436c5d85f633af94de472eabb9cfa82c438778210fa2c10a179b",
+    "references/domain-nuclear-ml.md": "52cfc31f15dac1240235136b9f1c402e8e9d39069789a17d4b5468bba065727f",
+    "references/method-control-optimization-identification.md": "d118b2baec078b9b991619b3fb75de24b4df54866e2329e893092a6a005a7805",
+    "references/method-data-ml-hybrid.md": "3740fdf7223d63d36355f6ba04ba920ca905f058c3041b06180236244e4b1da8",
+    "references/method-experiment-measurement-uq.md": "5bea276a78d044f5a15349c932ee152e45800c61ae6b43e03fe4f67cd7fb92ec",
+    "references/method-modeling-simulation-vvuq.md": "848dbb654055a3030920ad1304bc0d251ce4a84fddf49efea42ab47d4cb92ce5",
+    "references/method-reliability-safety-risk.md": "bfe6a022c0f7e5ad74f0d3a822055613cf6760930fc6f853562c6b843f947839",
+    "references/method-signal-diagnostics.md": "97ed8870abd7ff549d095d4c8839c9b549e20e8a4de5a605597638dc93990b2b"
+  },
+  "arms": {
+    "N": {
+      "label": "No-Skill control",
+      "instruction_path": null,
+      "instruction_sha256": null,
+      "instruction_bytes": 0,
+      "included_source_files": [],
+      "excluded_source_files": [
+        "SKILL.md",
+        "references/core-citation-integrity.md",
+        "references/core-direction-decision.md",
+        "references/core-feedback-rollback.md",
+        "references/core-method-coaching.md",
+        "references/core-paper-calibration.md",
+        "references/core-paper-map.md",
+        "references/domain-nuclear-ml.md",
+        "references/method-control-optimization-identification.md",
+        "references/method-data-ml-hybrid.md",
+        "references/method-experiment-measurement-uq.md",
+        "references/method-modeling-simulation-vvuq.md",
+        "references/method-reliability-safety-risk.md",
+        "references/method-signal-diagnostics.md"
+      ],
+      "dropped_sections": {},
+      "removed_capabilities": [
+        "all_skill_instructions"
+      ]
+    },
+    "F": {
+      "label": "Frozen full M3-closed Skill",
+      "instruction_path": "evals/m4/variants/F/instructions.md",
+      "instruction_sha256": "79a88447dcab4023267764bfe88d5e2a877e09fe7dd53a9c7242a7076cbef04e",
+      "instruction_bytes": 148331,
+      "included_source_files": [
+        "SKILL.md",
+        "references/core-citation-integrity.md",
+        "references/core-direction-decision.md",
+        "references/core-feedback-rollback.md",
+        "references/core-method-coaching.md",
+        "references/core-paper-calibration.md",
+        "references/core-paper-map.md",
+        "references/domain-nuclear-ml.md",
+        "references/method-control-optimization-identification.md",
+        "references/method-data-ml-hybrid.md",
+        "references/method-experiment-measurement-uq.md",
+        "references/method-modeling-simulation-vvuq.md",
+        "references/method-reliability-safety-risk.md",
+        "references/method-signal-diagnostics.md"
+      ],
+      "excluded_source_files": [],
+      "dropped_sections": {},
+      "removed_capabilities": []
+    },
+    "A1": {
+      "label": "Citation-verification and evidence-integrity ablation",
+      "instruction_path": "evals/m4/variants/A1/instructions.md",
+      "instruction_sha256": "271a4389f6b07286fd57b64b51c30862e30b2f6fd742dbd77d4fbbfb1c4e7018",
+      "instruction_bytes": 131008,
+      "included_source_files": [
+        "SKILL.md",
+        "references/core-direction-decision.md",
+        "references/core-feedback-rollback.md",
+        "references/core-method-coaching.md",
+        "references/core-paper-calibration.md",
+        "references/core-paper-map.md",
+        "references/domain-nuclear-ml.md",
+        "references/method-control-optimization-identification.md",
+        "references/method-data-ml-hybrid.md",
+        "references/method-experiment-measurement-uq.md",
+        "references/method-modeling-simulation-vvuq.md",
+        "references/method-reliability-safety-risk.md",
+        "references/method-signal-diagnostics.md"
+      ],
+      "excluded_source_files": [
+        "references/core-citation-integrity.md"
+      ],
+      "dropped_sections": {},
+      "removed_capabilities": [
+        "citation_verification",
+        "evidence_integrity"
+      ]
+    },
+    "A2": {
+      "label": "Direction-confirmation and route-binding ablation",
+      "instruction_path": "evals/m4/variants/A2/instructions.md",
+      "instruction_sha256": "37ba950aa17bece479189aee6abaebc625845c136361b4a6d82ae0e14516cb2d",
+      "instruction_bytes": 138705,
+      "included_source_files": [
+        "SKILL.md",
+        "references/core-citation-integrity.md",
+        "references/core-direction-decision.md",
+        "references/core-feedback-rollback.md",
+        "references/core-method-coaching.md",
+        "references/core-paper-calibration.md",
+        "references/core-paper-map.md",
+        "references/domain-nuclear-ml.md",
+        "references/method-control-optimization-identification.md",
+        "references/method-data-ml-hybrid.md",
+        "references/method-experiment-measurement-uq.md",
+        "references/method-modeling-simulation-vvuq.md",
+        "references/method-reliability-safety-risk.md",
+        "references/method-signal-diagnostics.md"
+      ],
+      "excluded_source_files": [],
+      "dropped_sections": {
+        "SKILL.md": [
+          "## Enforce the direction gate"
+        ],
+        "references/core-direction-decision.md": [
+          "## Contents",
+          "## Require user confirmation",
+          "## Validate post-confirmation route output"
+        ],
+        "references/core-method-coaching.md": [
+          "## Choose the coaching mode",
+          "## Contents",
+          "## Derive the trusted M2 context",
+          "## Follow the M3 state flow"
+        ]
+      },
+      "removed_capabilities": [
+        "direction_confirmation",
+        "route_binding"
+      ]
+    },
+    "A3": {
+      "label": "Method-card, uncertainty, stop-pivot, and safety-boundary ablation",
+      "instruction_path": "evals/m4/variants/A3/instructions.md",
+      "instruction_sha256": "eb2994a357d7db20faca66ed323223927e7f8700291349a6ec55d2be27c2c8c6",
+      "instruction_bytes": 73637,
+      "included_source_files": [
+        "SKILL.md",
+        "references/core-citation-integrity.md",
+        "references/core-direction-decision.md",
+        "references/core-feedback-rollback.md",
+        "references/core-paper-calibration.md",
+        "references/core-paper-map.md"
+      ],
+      "excluded_source_files": [
+        "references/core-method-coaching.md",
+        "references/domain-nuclear-ml.md",
+        "references/method-control-optimization-identification.md",
+        "references/method-data-ml-hybrid.md",
+        "references/method-experiment-measurement-uq.md",
+        "references/method-modeling-simulation-vvuq.md",
+        "references/method-reliability-safety-risk.md",
+        "references/method-signal-diagnostics.md"
+      ],
+      "dropped_sections": {
+        "SKILL.md": [
+          "## Coach methods with bounded claims"
+        ],
+        "references/core-citation-integrity.md": [
+          "## Apply the preprint contract",
+          "## Contents"
+        ],
+        "references/core-direction-decision.md": [
+          "## Contents",
+          "## Define a minimum decisive test",
+          "## Enforce preprint support policy",
+          "## Validate post-confirmation route output"
+        ]
+      },
+      "removed_capabilities": [
+        "method_cards",
+        "uncertainty",
+        "stop_pivot",
+        "safety_boundary"
+      ]
+    }
+  }
+}

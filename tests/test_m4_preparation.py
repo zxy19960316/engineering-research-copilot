@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import hashlib
+import importlib.util
 import json
 import unittest
 from collections import Counter
@@ -11,6 +12,7 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 M4_ROOT = REPO_ROOT / "evals" / "m4"
 CASES_ROOT = M4_ROOT / "cases"
 SCHEMAS_ROOT = M4_ROOT / "schemas"
+VARIANTS_ROOT = M4_ROOT / "variants"
 
 DOMAINS = {
     "nuclear_engineering",
@@ -79,6 +81,15 @@ def _load_json(path: Path) -> dict:
     if not isinstance(value, dict):
         raise AssertionError(f"expected object: {path}")
     return value
+
+
+def _load_module(path: Path, module_name: str):
+    spec = importlib.util.spec_from_file_location(module_name, path)
+    if spec is None or spec.loader is None:
+        raise AssertionError(f"cannot import {path}")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
 
 
 class M4CaseContractTests(unittest.TestCase):
@@ -191,6 +202,81 @@ class M4RubricAndSchemaTests(unittest.TestCase):
         self.assertIn("Do not read another M4 task result", protocol)
         self.assertIn("fresh_execution_authorized=true", protocol)
         self.assertIn("must not be launched", protocol)
+
+
+class M4VariantContractTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.manifest = _load_json(VARIANTS_ROOT / "variant-manifest.json")
+
+    def test_exact_arm_contracts(self) -> None:
+        manifest = self.manifest
+        self.assertEqual(manifest["schema_version"], "m4-variant-manifest-v1")
+        self.assertEqual(
+            manifest["source_baseline_commit"],
+            "eb0f2ebc3d0c0a02802ee1cc395c1e705f8ade42",
+        )
+        self.assertRegex(manifest["source_tree_git_oid"], r"^[0-9a-f]{40}$")
+        self.assertEqual(set(manifest["arms"]), {"N", "F", "A1", "A2", "A3"})
+        self.assertIsNone(manifest["arms"]["N"]["instruction_path"])
+        self.assertIsNone(manifest["arms"]["N"]["instruction_sha256"])
+        self.assertEqual(manifest["arms"]["N"]["instruction_bytes"], 0)
+        self.assertEqual(manifest["arms"]["F"]["removed_capabilities"], [])
+        self.assertEqual(
+            manifest["arms"]["A1"]["removed_capabilities"],
+            ["citation_verification", "evidence_integrity"],
+        )
+        self.assertEqual(
+            manifest["arms"]["A2"]["removed_capabilities"],
+            ["direction_confirmation", "route_binding"],
+        )
+        self.assertEqual(
+            manifest["arms"]["A3"]["removed_capabilities"],
+            ["method_cards", "uncertainty", "stop_pivot", "safety_boundary"],
+        )
+
+    def test_instruction_hashes_and_lf_bytes(self) -> None:
+        for arm_id in ("F", "A1", "A2", "A3"):
+            with self.subTest(arm_id=arm_id):
+                arm = self.manifest["arms"][arm_id]
+                path = REPO_ROOT / arm["instruction_path"]
+                data = path.read_bytes()
+                self.assertEqual(hashlib.sha256(data).hexdigest(), arm["instruction_sha256"])
+                self.assertEqual(len(data), arm["instruction_bytes"])
+                self.assertNotIn(b"\r\n", data)
+                self.assertTrue(data.endswith(b"\n"))
+
+    def test_full_arm_contains_every_frozen_source(self) -> None:
+        full = (VARIANTS_ROOT / "F" / "instructions.md").read_text(encoding="utf-8")
+        for source_path in self.manifest["source_files"]:
+            self.assertIn(f"source: {source_path}", full)
+        self.assertIn("# Engineering Research Copilot", full)
+        self.assertIn("# Citation Integrity", full)
+        self.assertIn("# Method Coaching", full)
+
+    def test_ablated_content_is_absent(self) -> None:
+        a1 = (VARIANTS_ROOT / "A1" / "instructions.md").read_text(encoding="utf-8")
+        self.assertNotIn("references/core-citation-integrity.md", a1)
+        self.assertNotIn("# Citation Integrity", a1)
+
+        a2 = (VARIANTS_ROOT / "A2" / "instructions.md").read_text(encoding="utf-8")
+        self.assertNotIn("## Enforce the direction gate", a2)
+        self.assertNotIn("## Require user confirmation", a2)
+        self.assertNotIn("## Validate post-confirmation route output", a2)
+        self.assertNotIn("## Follow the M3 state flow", a2)
+
+        a3 = (VARIANTS_ROOT / "A3" / "instructions.md").read_text(encoding="utf-8")
+        self.assertNotIn("# Method Coaching", a3)
+        self.assertNotIn("method-experiment-measurement-uq.md", a3)
+        self.assertNotIn("domain-nuclear-ml.md", a3)
+        self.assertNotIn("## Define a minimum decisive test", a3)
+        self.assertNotIn("## Apply the preprint contract", a3)
+
+    def test_builder_check_mode_is_clean(self) -> None:
+        builder = _load_module(VARIANTS_ROOT / "build_variants.py", "m4_build_variants")
+        result = builder.check_variants(REPO_ROOT)
+        self.assertEqual(result["status"], "valid")
+        self.assertEqual(result["mismatches"], [])
 
 
 if __name__ == "__main__":

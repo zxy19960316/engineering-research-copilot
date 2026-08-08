@@ -4,9 +4,11 @@
   "title": "M4 variant manifest",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_version", "source_root", "source_files", "arms"],
+  "required": ["schema_version", "source_baseline_commit", "source_tree_git_oid", "source_root", "source_files", "arms"],
   "properties": {
     "schema_version": {"const": "m4-variant-manifest-v1"},
+    "source_baseline_commit": {"const": "eb0f2ebc3d0c0a02802ee1cc395c1e705f8ade42"},
+    "source_tree_git_oid": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
     "source_root": {"const": "skills/engineering-research-copilot"},
     "source_files": {"type": "object", "minProperties": 1, "additionalProperties": {"type": "string", "pattern": "^[0-9a-f]{64}$"}},
     "arms": {
