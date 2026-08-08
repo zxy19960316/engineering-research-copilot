@@ -150,6 +150,10 @@ M4.1 Gate IV-A local PowerShell 7 preflight: `NOT_RUN; pwsh runtime absent local
 
 M4.1 Gate IV-A execution-protocol exact-HEAD CI: `NOT_RUN; local protocol freeze snapshot before push`
 
+M4.1 Gate IV-A first execution-protocol exact-HEAD CI: `FAILED` on HEAD `002baa1b63bd7ecd39aa0e441df254d9228dc711` (GitHub Actions run `31255315866`; validate job `93097717126` failed on stale STATUS assertion; ubuntu job `93097717142` success; windows job `93097717149` success)
+
+M4.1 Gate IV-A corrected execution-protocol exact-HEAD CI: `NOT_RUN; independent repair commit snapshot before push`
+
 M4.1 Gate IV-B/C/D/E: `NOT_RUN; no claim, thread, finalization, result root, judge call, aggregation call, threshold decision, or closure action`
 
 M4.1 later authorization state: `judge=false; unblinding=false; aggregation=false; threshold=false; closure=false; M5=NOT_STARTED`
