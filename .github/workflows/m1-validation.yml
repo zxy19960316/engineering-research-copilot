@@ -101,6 +101,22 @@ jobs:
           git cat-file -e fedc5cdeebd7a2943afeb6767d39841305c55444:tests/test_m4_1_preparation.py
           git diff --raw --exit-code fedc5cdeebd7a2943afeb6767d39841305c55444 HEAD -- evals/m4/build_m4_1_preparation.py evals/m4/audit_m4_1_preparation.py evals/m4/execution/prepare_m4_1_request_bundles.ps1 evals/m4/revisions/m4.1/preparation-manifest.json evals/m4/revisions/m4.1/preparation-manifest.schema.json tests/test_m4_1_preparation.py
           git diff --exit-code fedc5cdeebd7a2943afeb6767d39841305c55444 HEAD -- evals/m4/build_m4_1_preparation.py evals/m4/audit_m4_1_preparation.py evals/m4/execution/prepare_m4_1_request_bundles.ps1 evals/m4/revisions/m4.1/preparation-manifest.json evals/m4/revisions/m4.1/preparation-manifest.schema.json tests/test_m4_1_preparation.py
+      - name: Require independent M4.1 review to remain blob-identical
+        run: |
+          git cat-file -e '4fe3785ffd4db9cbf966d8c7ec1451079717da24^{commit}'
+          git merge-base --is-ancestor 4fe3785ffd4db9cbf966d8c7ec1451079717da24 HEAD
+          git cat-file -e 'e38f3fc2305efefb070e3be20413c55156e8b186^{blob}'
+          git cat-file -e 4fe3785ffd4db9cbf966d8c7ec1451079717da24:evals/m4/authorization/m4.1/gate-iv-review.json
+          git diff --raw --exit-code 4fe3785ffd4db9cbf966d8c7ec1451079717da24 HEAD -- evals/m4/authorization/m4.1/gate-iv-review.json
+          git diff --exit-code 4fe3785ffd4db9cbf966d8c7ec1451079717da24 HEAD -- evals/m4/authorization/m4.1/gate-iv-review.json
+      - name: Require M4.1 authorization schemas to remain blob-identical
+        run: |
+          git cat-file -e '5d781ea352e67ab44631844c37cf9b6552cfce77^{commit}'
+          git merge-base --is-ancestor 5d781ea352e67ab44631844c37cf9b6552cfce77 HEAD
+          git cat-file -e 5d781ea352e67ab44631844c37cf9b6552cfce77:evals/m4/authorization/m4.1/execution-authorization.schema.json
+          git cat-file -e 5d781ea352e67ab44631844c37cf9b6552cfce77:evals/m4/authorization/m4.1/execution-control.schema.json
+          git diff --raw --exit-code 5d781ea352e67ab44631844c37cf9b6552cfce77 HEAD -- evals/m4/authorization/m4.1/execution-authorization.schema.json evals/m4/authorization/m4.1/execution-control.schema.json
+          git diff --exit-code 5d781ea352e67ab44631844c37cf9b6552cfce77 HEAD -- evals/m4/authorization/m4.1/execution-authorization.schema.json evals/m4/authorization/m4.1/execution-control.schema.json
       - name: Unit tests
         run: python -m unittest discover -s tests -p "test_*.py" -v
       - name: Replay fixtures
@@ -199,6 +215,18 @@ jobs:
           git cat-file -e fedc5cdeebd7a2943afeb6767d39841305c55444:tests/test_m4_1_preparation.py
           git diff --raw --exit-code fedc5cdeebd7a2943afeb6767d39841305c55444 HEAD -- evals/m4/build_m4_1_preparation.py evals/m4/audit_m4_1_preparation.py evals/m4/execution/prepare_m4_1_request_bundles.ps1 evals/m4/revisions/m4.1/preparation-manifest.json evals/m4/revisions/m4.1/preparation-manifest.schema.json tests/test_m4_1_preparation.py
           git diff --exit-code fedc5cdeebd7a2943afeb6767d39841305c55444 HEAD -- evals/m4/build_m4_1_preparation.py evals/m4/audit_m4_1_preparation.py evals/m4/execution/prepare_m4_1_request_bundles.ps1 evals/m4/revisions/m4.1/preparation-manifest.json evals/m4/revisions/m4.1/preparation-manifest.schema.json tests/test_m4_1_preparation.py
+          git cat-file -e '4fe3785ffd4db9cbf966d8c7ec1451079717da24^{commit}'
+          git merge-base --is-ancestor 4fe3785ffd4db9cbf966d8c7ec1451079717da24 HEAD
+          git cat-file -e 'e38f3fc2305efefb070e3be20413c55156e8b186^{blob}'
+          git cat-file -e 4fe3785ffd4db9cbf966d8c7ec1451079717da24:evals/m4/authorization/m4.1/gate-iv-review.json
+          git diff --raw --exit-code 4fe3785ffd4db9cbf966d8c7ec1451079717da24 HEAD -- evals/m4/authorization/m4.1/gate-iv-review.json
+          git diff --exit-code 4fe3785ffd4db9cbf966d8c7ec1451079717da24 HEAD -- evals/m4/authorization/m4.1/gate-iv-review.json
+          git cat-file -e '5d781ea352e67ab44631844c37cf9b6552cfce77^{commit}'
+          git merge-base --is-ancestor 5d781ea352e67ab44631844c37cf9b6552cfce77 HEAD
+          git cat-file -e 5d781ea352e67ab44631844c37cf9b6552cfce77:evals/m4/authorization/m4.1/execution-authorization.schema.json
+          git cat-file -e 5d781ea352e67ab44631844c37cf9b6552cfce77:evals/m4/authorization/m4.1/execution-control.schema.json
+          git diff --raw --exit-code 5d781ea352e67ab44631844c37cf9b6552cfce77 HEAD -- evals/m4/authorization/m4.1/execution-authorization.schema.json evals/m4/authorization/m4.1/execution-control.schema.json
+          git diff --exit-code 5d781ea352e67ab44631844c37cf9b6552cfce77 HEAD -- evals/m4/authorization/m4.1/execution-authorization.schema.json evals/m4/authorization/m4.1/execution-control.schema.json
           python -X utf8 evals/m4/audit_preparation.py
           git diff --raw --exit-code f48ab8d7e835e9a57e65b75458faa786d696316d HEAD -- evals/m3 skills/engineering-research-copilot evals/m4/cases evals/m4/variants evals/m4/schemas evals/m4/preparation-manifest.json evals/m4/build_preparation.py evals/m4/audit_preparation.py evals/m4/audit_results.py evals/m4/task-protocol.md evals/m4/judge-rubric.json tests/test_m4_preparation.py tests/test_m4_results.py evals/m4/authorization/gate-iv-review.json evals/m4/authorization/execution-authorization.json evals/m4/authorization/execution-control.json evals/m4/authorization/build_authorization.py evals/m4/authorization/audit_authorization.py evals/m4/authorization/execution-authorization.schema.json evals/m4/authorization/execution-control.schema.json tests/test_m4_authorization.py evals/m4/execution/m4.0/launch-claim.json evals/m4/execution/m4.0/pre-dispatch-failure.json evals/m4/execution/audit_m4_0.py tests/test_m4_execution.py
           git diff --exit-code e3542201f96218f340a09f77458661822c98d876 HEAD -- evals/m4/authorization/gate-iv-review.json evals/m4/authorization/execution-authorization.json evals/m4/authorization/execution-control.json
