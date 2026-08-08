@@ -4,7 +4,7 @@
 
 `M4 — Cross-engineering forward evaluation`
 
-Active revision: `M4.1 PREPARATION_ONLY`
+Active revision: `M4.1 GATE_IV_AUTHORIZED_UNCONSUMED`
 
 Historical r5 evidence HEAD: `1b696bce53ee0a11163bfe4f91a9a49ab3af6f49`
 
@@ -12,7 +12,7 @@ Gate 3 accepted evidence baseline HEAD: `ea8a7bbb8b365aded89f9ddb5c784f6e95a51d3
 
 Gate 3 accepted evidence baseline exact-HEAD CI: `PASSED` (GitHub Actions run `31192712555`)
 
-Status: `M3_CLOSED; M4_0_PRE_DISPATCH_FAILED_PRESERVED; M4_1_PREPARATION_ONLY; M4_FRESH_RESULTS_NOT_RUN`
+Status: `M3_CLOSED; M4_0_PRE_DISPATCH_FAILED_PRESERVED; M4_1_GATE_IV_AUTHORIZED_UNCONSUMED; M4_FRESH_RESULTS_NOT_RUN`
 
 Historical r5 status: `BLOCKED_NOT_ACCEPTED`
 
@@ -36,9 +36,9 @@ Historical immutable-r5 exact-HEAD CI: `FAILED` (GitHub Actions run `31096079186
 
 M3: `CLOSED`
 
-M4: `M4_1_PREPARATION_ONLY`
+M4: `M4_1_GATE_IV_AUTHORIZED_UNCONSUMED`
 
-M4 fresh tasks authorized: `false; M4.0 authorization consumed and terminal; M4.1 authorization not issued`
+M4 fresh tasks authorized: `true for M4.1 only; M4.0 authorization consumed and terminal; M4.1 execution remains NOT_RUN`
 
 M4 preparation protocol: `COMPLETE; OFFLINE_ONLY`
 
@@ -86,7 +86,7 @@ M4.0 fresh result state: `NOT_RUN; result_roots=0; results_manifest=ABSENT`
 
 M4.0 terminal local gate: `PASSED; focused=8/8; execution_audit=PRE_DISPATCH_FAILED_PRESERVED; first exact-HEAD CI=FAILED on c5c25c5a4e8439bf3b54e16e6e65237911ed99b4 (GitHub Actions run 31244970922; Linux single-branch authorization ref lookup); compatibility-fix exact-HEAD CI=PASSED on f48ab8d7e835e9a57e65b75458faa786d696316d (GitHub Actions run 31246286753)`
 
-M4.1 successor state: `PREPARATION_ONLY; OFFLINE_ONLY`
+M4.1 successor state: `GATE_IV_AUTHORIZED_UNCONSUMED; OFFLINE_PREPARATION_COMPLETE`
 
 M4.1 predecessor terminal baseline: `f48ab8d7e835e9a57e65b75458faa786d696316d` (GitHub Actions run `31246286753`; `success`)
 
@@ -96,7 +96,7 @@ M4.1 preparation matrix: `12 cases; 5 arms; 60 planned tasks; 6 domain batches`
 
 M4.1 task identity state: `60 new task IDs; 0 reused; blind IDs=M4-J061..M4-J120; 6 new batch IDs`
 
-M4.1 fresh execution authorized: `false; separate Gate IV review and authorization required after green preparation exact-HEAD CI`
+M4.1 fresh execution authorized: `true; one-shot 60-task matrix only; launch claim absent; execution NOT_RUN`
 
 M4.1 preparation counters: `authorized=0; contexts=0; dispatched=0; finalizations=0; results=0; judge_scores=0; retries=0; repairs=0; unauthorized_side_effects=0`
 
@@ -104,9 +104,33 @@ M4.1 result state: `NOT_RUN; launch_claim=ABSENT; result_roots=0; results_manife
 
 M4.1 preparation local gates: `PASSED; focused=12/12; combined=62/62; full=638/638; preparation_audit=PREPARED_NOT_AUTHORIZED; PowerShell 5.1 self-test=PASSED; request_bindings=60/60; Skill validator=PASSED; workflow_yaml=VALID`
 
-M4.1 preparation exact-HEAD CI: `NOT_RUN; this preparation commit does not pre-claim success`
+M4.1 preparation exact-HEAD CI: `PASSED` on HEAD `fedc5cdeebd7a2943afeb6767d39841305c55444` (GitHub Actions run `31248424046`; validate job `93080747550` success; ubuntu job `93080747506` success; windows job `93080747504` success)
 
-M4.1 authorization and fresh execution: `NOT_STARTED`
+M4.1 Gate IV independent review: `PASSED; findings=0; decision=AUTHORIZE_M4_1_GATE_IV_ONE_SHOT_MATRIX`
+
+M4.1 Gate IV review artifact: `evals/m4/authorization/m4.1/gate-iv-review.json`
+
+M4.1 Gate IV authorization artifact: `evals/m4/authorization/m4.1/execution-authorization.json`
+
+M4.1 Gate IV execution control: `evals/m4/authorization/m4.1/execution-control.json`
+
+M4.1 Gate IV model binding: `gpt-5.6-sol; reasoning_effort=max; configured defaults must match`
+
+M4.1 Gate IV authorized roster: `60 new task IDs; 60 fresh contexts maximum; 60 independent finalizations maximum; 6 domain batches; 1 attempt/task`
+
+M4.1 Gate IV authorization token: `sha256:b5fe4ee85f59935a32d6b1a93cf7a5ec64fdbb51348fab624d83c4292f646109`
+
+M4.1 Gate IV authorization token status: `AUTHORIZED_UNCONSUMED; claim_count=0`
+
+M4.1 Gate IV execution counters: `authorized_tasks=0; created_contexts=0; dispatched_tasks=0; finalizations=0; results_observed=0; retries=0; repairs=0; judge_scores=0; unauthorized_side_effects=0`
+
+M4.1 Gate IV local gates: `PASSED; focused=16/16; full=654/654; authorization_builder=VALID; authorization_audit=READY_UNCONSUMED; configured_default_check=MATCHED; results_audit=NOT_RUN`
+
+M4.1 Gate IV exact-HEAD CI: `NOT_RUN; this authorization commit does not pre-claim success`
+
+M4.1 Gate IV judge and later gates: `judge_execution=false; blind_mapping_access=false; aggregation=false; closure=false`
+
+M4.1 authorization and fresh execution: `AUTHORIZED_UNCONSUMED; execution=NOT_RUN; launch_claim=ABSENT; result_roots=0; results_manifest=ABSENT`
 
 r5.1 CI and acceptance hardening implementation: `COMPLETE`
 
@@ -499,13 +523,13 @@ Evidence is recorded under `evals/m1/`, including preserved failed runs and inde
 
 - M2: `M2.1 COMPLETE; M2.1.1 COMPLETE`
 - M3: `CLOSED`
-- M4: `M4.0 PRE_DISPATCH_FAILED_PRESERVED; M4.1 PREPARATION_ONLY; FRESH_TASKS_AUTHORIZED_FALSE`
+- M4: `M4.0 PRE_DISPATCH_FAILED_PRESERVED; M4.1 GATE_IV_AUTHORIZED_UNCONSUMED; FRESH_RESULTS_NOT_RUN`
 - M5: `NOT_STARTED`
 
 ## External state
 
 - Git remote: `https://github.com/zxy19960316/engineering-research-copilot.git`
-- Active local branch: `codex/m4-cross-engineering-forward-evaluation-m4.1-preparation`
+- Active local branch: `codex/m4-cross-engineering-forward-evaluation-m4.1-one-shot-authorization`
 - External APIs/services configured: none
 - RRC integration: not started
 - Platform integration: not required for the local Skill competition track

@@ -98,12 +98,12 @@ class M3R5ErratumTests(unittest.TestCase):
         self.assertEqual(diagnostic["retry_count"], 0)
         self.assertFalse(diagnostic["composed_output_created"])
 
-    def test_status_top_preserves_terminal_history_during_m4_1_preparation(self):
+    def test_status_top_preserves_terminal_history_during_m4_1_authorization(self):
         text = (REPO_ROOT / "STATUS.md").read_text(encoding="utf-8")
         current = text.split("## M3 checklist", 1)[0]
 
         self.assertIn(
-            "Active revision: `M4.1 PREPARATION_ONLY`",
+            "Active revision: `M4.1 GATE_IV_AUTHORIZED_UNCONSUMED`",
             current,
         )
         self.assertIn(f"Historical r5 evidence HEAD: `{EVIDENCE_HEAD}`", current)
@@ -119,7 +119,7 @@ class M3R5ErratumTests(unittest.TestCase):
         )
         self.assertIn(
             "Status: `M3_CLOSED; M4_0_PRE_DISPATCH_FAILED_PRESERVED; "
-            "M4_1_PREPARATION_ONLY; M4_FRESH_RESULTS_NOT_RUN`",
+            "M4_1_GATE_IV_AUTHORIZED_UNCONSUMED; M4_FRESH_RESULTS_NOT_RUN`",
             current,
         )
         self.assertIn("Historical r5 status: `BLOCKED_NOT_ACCEPTED`", current)
@@ -154,10 +154,10 @@ class M3R5ErratumTests(unittest.TestCase):
         )
         self.assertIn("Historical immutable-r5 exact-HEAD CI: `FAILED`", current)
         self.assertIn("M3: `CLOSED`", current)
-        self.assertIn("M4: `M4_1_PREPARATION_ONLY`", current)
+        self.assertIn("M4: `M4_1_GATE_IV_AUTHORIZED_UNCONSUMED`", current)
         self.assertIn(
-            "M4 fresh tasks authorized: `false; M4.0 authorization consumed "
-            "and terminal; M4.1 authorization not issued`",
+            "M4 fresh tasks authorized: `true for M4.1 only; M4.0 "
+            "authorization consumed and terminal; M4.1 execution remains NOT_RUN`",
             current,
         )
         self.assertIn(
@@ -177,7 +177,8 @@ class M3R5ErratumTests(unittest.TestCase):
             current,
         )
         self.assertIn(
-            "M4.1 successor state: `PREPARATION_ONLY; OFFLINE_ONLY`",
+            "M4.1 successor state: `GATE_IV_AUTHORIZED_UNCONSUMED; "
+            "OFFLINE_PREPARATION_COMPLETE`",
             current,
         )
         self.assertIn(
@@ -192,8 +193,8 @@ class M3R5ErratumTests(unittest.TestCase):
             current,
         )
         self.assertIn(
-            "M4.1 fresh execution authorized: `false; separate Gate IV review "
-            "and authorization required after green preparation exact-HEAD CI`",
+            "M4.1 fresh execution authorized: `true; one-shot 60-task matrix only; "
+            "launch claim absent; execution NOT_RUN`",
             current,
         )
         self.assertIn(
@@ -208,8 +209,32 @@ class M3R5ErratumTests(unittest.TestCase):
             current,
         )
         self.assertIn(
-            "M4.1 preparation exact-HEAD CI: `NOT_RUN; this preparation "
+            "M4.1 preparation exact-HEAD CI: `PASSED` on HEAD "
+            "`fedc5cdeebd7a2943afeb6767d39841305c55444` "
+            "(GitHub Actions run `31248424046`; validate job `93080747550` "
+            "success; ubuntu job `93080747506` success; windows job "
+            "`93080747504` success)",
+            current,
+        )
+        self.assertIn(
+            "M4.1 Gate IV independent review: `PASSED; findings=0; "
+            "decision=AUTHORIZE_M4_1_GATE_IV_ONE_SHOT_MATRIX`",
+            current,
+        )
+        self.assertIn(
+            "M4.1 Gate IV authorization token status: "
+            "`AUTHORIZED_UNCONSUMED; claim_count=0`",
+            current,
+        )
+        self.assertIn(
+            "M4.1 Gate IV exact-HEAD CI: `NOT_RUN; this authorization "
             "commit does not pre-claim success`",
+            current,
+        )
+        self.assertIn(
+            "M4.1 authorization and fresh execution: `AUTHORIZED_UNCONSUMED; "
+            "execution=NOT_RUN; launch_claim=ABSENT; result_roots=0; "
+            "results_manifest=ABSENT`",
             current,
         )
         self.assertIn("r5.1-f02 retry: `FORBIDDEN`", current)
