@@ -26,12 +26,8 @@ REPO_ROOT = build.REPO_ROOT
 REVIEW_PATH = build.REVIEW_PATH
 AUTHORIZATION_PATH = build.AUTHORIZATION_PATH
 CONTROL_PATH = build.CONTROL_PATH
-AUTHORIZATION_SCHEMA_PATH = build.AUTHORIZATION_ROOT / "m4.1" / (
-    "execution-authorization.schema.json"
-)
-CONTROL_SCHEMA_PATH = build.AUTHORIZATION_ROOT / "m4.1" / (
-    "execution-control.schema.json"
-)
+AUTHORIZATION_SCHEMA_PATH = build.AUTHORIZATION_SCHEMA_PATH
+CONTROL_SCHEMA_PATH = build.CONTROL_SCHEMA_PATH
 ZERO_COUNTERS = build.ZERO_COUNTERS
 
 REVIEW_KEYS = {
@@ -156,6 +152,113 @@ def _schema_errors(
     properties = value.get("properties")
     if not isinstance(properties, dict) or set(properties) != expected_keys:
         _add(errors, f"{label}_properties_invalid")
+    return errors
+
+
+def _bound_path_snapshot_errors(
+    repo_root: Path,
+    *,
+    source_head: str,
+    relative: str,
+    worktree_path: Path,
+    expected_blob: str,
+    expected_raw_sha256: str,
+    label: str,
+    verify_git: bool,
+) -> list[str]:
+    errors: list[str] = []
+    try:
+        raw = worktree_path.read_bytes()
+    except OSError:
+        return [f"{label}_worktree_unavailable"]
+    if _sha256(raw) != expected_raw_sha256:
+        _add(errors, f"{label}_raw_sha256_mismatch")
+    if not verify_git:
+        return errors
+
+    returncode, _ = _git_text(
+        repo_root, "cat-file", "-e", f"{source_head}^{{commit}}"
+    )
+    if returncode != 0:
+        _add(errors, f"{label}_source_head_unavailable")
+        return errors
+    returncode, _ = _git_text(
+        repo_root, "merge-base", "--is-ancestor", source_head, "HEAD"
+    )
+    if returncode != 0:
+        _add(errors, f"{label}_source_head_not_ancestor")
+    for revision, suffix in ((source_head, "source"), ("HEAD", "head")):
+        returncode, blob = _git_text(
+            repo_root, "rev-parse", f"{revision}:{relative}"
+        )
+        if returncode != 0 or blob != expected_blob:
+            _add(errors, f"{label}_{suffix}_blob_mismatch")
+    for arguments in (
+        ("diff", "--name-only", source_head, "HEAD", "--", relative),
+        ("diff", "--name-only", "--", relative),
+        ("diff", "--cached", "--name-only", "--", relative),
+    ):
+        returncode, changed = _git_text(repo_root, *arguments)
+        if returncode != 0:
+            _add(errors, f"{label}_diff_failed")
+        elif changed:
+            _add(errors, f"{label}_diff_present")
+    return errors
+
+
+def _review_snapshot_errors(
+    repo_root: Path = REPO_ROOT,
+    *,
+    review_path: Path = REVIEW_PATH,
+    verify_git: bool = True,
+) -> list[str]:
+    return _bound_path_snapshot_errors(
+        repo_root,
+        source_head=build.REVIEW_HEAD,
+        relative=build.REVIEW_RELATIVE,
+        worktree_path=review_path,
+        expected_blob=build.REVIEW_BLOB_OID,
+        expected_raw_sha256=build.REVIEW_RAW_SHA256,
+        label="review",
+        verify_git=verify_git,
+    )
+
+
+def _schema_snapshot_errors(
+    repo_root: Path = REPO_ROOT,
+    *,
+    authorization_schema_path: Path = AUTHORIZATION_SCHEMA_PATH,
+    control_schema_path: Path = CONTROL_SCHEMA_PATH,
+    verify_git: bool = True,
+) -> list[str]:
+    errors: list[str] = []
+    for relative, path, expected_blob, expected_raw, label in (
+        (
+            build.AUTHORIZATION_SCHEMA_RELATIVE,
+            authorization_schema_path,
+            build.AUTHORIZATION_SCHEMA_BLOB_OID,
+            build.AUTHORIZATION_SCHEMA_RAW_SHA256,
+            "authorization_schema",
+        ),
+        (
+            build.CONTROL_SCHEMA_RELATIVE,
+            control_schema_path,
+            build.CONTROL_SCHEMA_BLOB_OID,
+            build.CONTROL_SCHEMA_RAW_SHA256,
+            "control_schema",
+        ),
+    ):
+        for code in _bound_path_snapshot_errors(
+            repo_root,
+            source_head=build.SCHEMA_HEAD,
+            relative=relative,
+            worktree_path=path,
+            expected_blob=expected_blob,
+            expected_raw_sha256=expected_raw,
+            label=label,
+            verify_git=verify_git,
+        ):
+            _add(errors, code)
     return errors
 
 
@@ -757,6 +860,12 @@ def audit_authorization(
     ):
         _add(errors, code)
     for code in _schema_errors(CONTROL_SCHEMA_PATH, CONTROL_KEYS, "control_schema"):
+        _add(errors, code)
+    for code in _review_snapshot_errors(
+        repo_root, review_path=review_path, verify_git=verify_git
+    ):
+        _add(errors, code)
+    for code in _schema_snapshot_errors(repo_root, verify_git=verify_git):
         _add(errors, code)
     for path, actual, code in (
         (

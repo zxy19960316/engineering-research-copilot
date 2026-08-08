@@ -28,11 +28,33 @@ AUTHORIZATION_RELATIVE = "evals/m4/authorization/m4.1/execution-authorization.js
 AUTHORIZATION_PATH = REPO_ROOT / AUTHORIZATION_RELATIVE
 CONTROL_RELATIVE = "evals/m4/authorization/m4.1/execution-control.json"
 CONTROL_PATH = REPO_ROOT / CONTROL_RELATIVE
+AUTHORIZATION_SCHEMA_RELATIVE = (
+    "evals/m4/authorization/m4.1/execution-authorization.schema.json"
+)
+AUTHORIZATION_SCHEMA_PATH = REPO_ROOT / AUTHORIZATION_SCHEMA_RELATIVE
+CONTROL_SCHEMA_RELATIVE = (
+    "evals/m4/authorization/m4.1/execution-control.schema.json"
+)
+CONTROL_SCHEMA_PATH = REPO_ROOT / CONTROL_SCHEMA_RELATIVE
 M4_0_AUTHORIZATION_PATH = AUTHORIZATION_ROOT / "execution-authorization.json"
 
 PREPARATION_HEAD = "fedc5cdeebd7a2943afeb6767d39841305c55444"
 PREPARATION_CI_RUN_ID = 31248424046
 PREPARATION_CI_CONCLUSION = "success"
+REVIEW_HEAD = "4fe3785ffd4db9cbf966d8c7ec1451079717da24"
+REVIEW_RAW_SHA256 = (
+    "5eb1279ae08c8d8fd8f0f7feb0f3207607b8b8c4cbad7155c844bff6fb4aa3b0"
+)
+REVIEW_BLOB_OID = "e38f3fc2305efefb070e3be20413c55156e8b186"
+SCHEMA_HEAD = "5d781ea352e67ab44631844c37cf9b6552cfce77"
+AUTHORIZATION_SCHEMA_RAW_SHA256 = (
+    "af5d578dfd2f559453f2b86269a90e57cfcb4aeaee3736a2d12ee54f61ce47c0"
+)
+AUTHORIZATION_SCHEMA_BLOB_OID = "cc20e968e94135a3e94d8807c302b558f512b446"
+CONTROL_SCHEMA_RAW_SHA256 = (
+    "c2d8c2737adaf45f51ddde363d613b131b67cea50de7a12ed4d9f5a94292e000"
+)
+CONTROL_SCHEMA_BLOB_OID = "3ff5a850989c519624264935ba0267c27b6bfdc6"
 REVISION = "M4.1"
 MODEL_ID = "gpt-5.6-sol"
 REASONING_EFFORT = "max"
@@ -196,6 +218,85 @@ def git_blob_oid(head: str, relative: str) -> str:
     return _git_output("rev-parse", f"{head}:{relative}")
 
 
+def _assert_commit_ancestor(commit: str, label: str) -> None:
+    available = subprocess.run(
+        ["git", "cat-file", "-e", f"{commit}^{{commit}}"],
+        cwd=REPO_ROOT,
+        capture_output=True,
+        check=False,
+    )
+    if available.returncode != 0:
+        raise ValueError(f"{label}_unavailable")
+    ancestor = subprocess.run(
+        ["git", "merge-base", "--is-ancestor", commit, "HEAD"],
+        cwd=REPO_ROOT,
+        capture_output=True,
+        check=False,
+    )
+    if ancestor.returncode != 0:
+        raise ValueError(f"{label}_not_ancestor")
+
+
+def _assert_path_snapshot(
+    *,
+    source_head: str,
+    relative: str,
+    expected_blob: str,
+    expected_raw_sha256: str,
+    label: str,
+) -> None:
+    if git_blob_oid(source_head, relative) != expected_blob:
+        raise ValueError(f"{label}_source_blob_mismatch")
+    if git_blob_oid("HEAD", relative) != expected_blob:
+        raise ValueError(f"{label}_head_blob_mismatch")
+    try:
+        raw = (REPO_ROOT / relative).read_bytes()
+    except OSError as error:
+        raise ValueError(f"{label}_worktree_unavailable") from error
+    if sha256(raw) != expected_raw_sha256:
+        raise ValueError(f"{label}_raw_sha256_mismatch")
+    committed_diff = _git_output(
+        "diff", "--name-only", source_head, "HEAD", "--", relative
+    )
+    worktree_diff = _git_output("diff", "--name-only", "--", relative)
+    index_diff = _git_output("diff", "--cached", "--name-only", "--", relative)
+    if committed_diff or worktree_diff or index_diff:
+        raise ValueError(f"{label}_diff_present")
+
+
+def _assert_review_and_schema_snapshots() -> None:
+    _assert_commit_ancestor(REVIEW_HEAD, "review_head")
+    _assert_path_snapshot(
+        source_head=REVIEW_HEAD,
+        relative=REVIEW_RELATIVE,
+        expected_blob=REVIEW_BLOB_OID,
+        expected_raw_sha256=REVIEW_RAW_SHA256,
+        label="review",
+    )
+    _assert_commit_ancestor(SCHEMA_HEAD, "schema_head")
+    for relative, expected_blob, expected_raw, label in (
+        (
+            AUTHORIZATION_SCHEMA_RELATIVE,
+            AUTHORIZATION_SCHEMA_BLOB_OID,
+            AUTHORIZATION_SCHEMA_RAW_SHA256,
+            "authorization_schema",
+        ),
+        (
+            CONTROL_SCHEMA_RELATIVE,
+            CONTROL_SCHEMA_BLOB_OID,
+            CONTROL_SCHEMA_RAW_SHA256,
+            "control_schema",
+        ),
+    ):
+        _assert_path_snapshot(
+            source_head=SCHEMA_HEAD,
+            relative=relative,
+            expected_blob=expected_blob,
+            expected_raw_sha256=expected_raw,
+            label=label,
+        )
+
+
 def request_binding_sha256(task: Mapping[str, object]) -> str:
     fields = (
         "m4.1-request-binding-v1",
@@ -213,17 +314,11 @@ def request_binding_sha256(task: Mapping[str, object]) -> str:
 
 
 def _assert_git_baseline() -> None:
-    ancestor = subprocess.run(
-        ["git", "merge-base", "--is-ancestor", PREPARATION_HEAD, "HEAD"],
-        cwd=REPO_ROOT,
-        capture_output=True,
-        check=False,
-    )
-    if ancestor.returncode != 0:
-        raise ValueError("preparation_head_not_ancestor")
+    _assert_commit_ancestor(PREPARATION_HEAD, "preparation_head")
     changed = _git_output("diff", "--name-only", PREPARATION_HEAD, "--", *FROZEN_PATHS)
     if changed:
         raise ValueError("frozen_preparation_paths_changed:" + changed.replace("\n", ","))
+    _assert_review_and_schema_snapshots()
 
 
 def _require_file_hash(relative: str, expected: object, error: str) -> bytes:
@@ -402,7 +497,13 @@ def _preparation_values(preparation: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def validate_review(review: Mapping[str, object], preparation: Mapping[str, object]) -> None:
+def validate_review(
+    review: Mapping[str, object],
+    preparation: Mapping[str, object],
+    review_raw: bytes | None = None,
+) -> None:
+    if review_raw is not None and sha256(review_raw) != REVIEW_RAW_SHA256:
+        raise ValueError("review_raw_sha256_mismatch")
     if review.get("schema_version") != "m4.1-gate-iv-independent-review-v1":
         raise ValueError("review_schema_invalid")
     if review.get("status") != "PASSED":
@@ -482,6 +583,8 @@ def validate_review(review: Mapping[str, object], preparation: Mapping[str, obje
 def build_authorization(
     preparation: dict[str, Any], values: dict[str, Any], review_raw: bytes
 ) -> dict[str, Any]:
+    if sha256(review_raw) != REVIEW_RAW_SHA256:
+        raise ValueError("review_raw_sha256_mismatch")
     task_ids = values["task_ids"]
     batch_ids = values["batch_ids"]
     helper = values["helper"]
@@ -501,8 +604,8 @@ def build_authorization(
         },
         "review": {
             "path": REVIEW_RELATIVE,
-            "git_blob_oid": git_blob_oid("HEAD", REVIEW_RELATIVE),
-            "raw_sha256": sha256(review_raw),
+            "git_blob_oid": git_blob_oid(REVIEW_HEAD, REVIEW_RELATIVE),
+            "raw_sha256": REVIEW_RAW_SHA256,
             "schema_version": "m4.1-gate-iv-independent-review-v1",
             "status": "PASSED",
             "decision": "AUTHORIZE_M4_1_GATE_IV_ONE_SHOT_MATRIX",
@@ -708,7 +811,7 @@ def build_artifacts(repo_root: Path = REPO_ROOT) -> dict[Path, bytes]:
     values = _preparation_values(preparation)
     review_raw = REVIEW_PATH.read_bytes()
     review = parse_json_object(review_raw)
-    validate_review(review, preparation)
+    validate_review(review, preparation, review_raw)
     authorization = build_authorization(preparation, values, review_raw)
     authorization_raw = json_bytes(authorization)
     control = build_control(preparation, values, authorization_raw)

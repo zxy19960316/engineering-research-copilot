@@ -140,10 +140,44 @@ class M41AuthorizationBuilderContractTests(unittest.TestCase):
     def test_review_is_validated_but_never_generated(self) -> None:
         review = json.loads(REVIEW_PATH.read_text(encoding="utf-8"))
         preparation = json.loads(build.PREPARATION_PATH.read_text(encoding="utf-8"))
-        build.validate_review(review, preparation)
+        review_raw = REVIEW_PATH.read_bytes()
+        build.validate_review(review, preparation, review_raw)
         review["findings"] = [{"severity": "blocking"}]
         with self.assertRaisesRegex(ValueError, "review_findings_nonempty"):
             build.validate_review(review, preparation)
+
+    def test_review_commit_and_schema_bytes_are_immutable_trust_roots(self) -> None:
+        build._assert_review_and_schema_snapshots()
+        authorization = json.loads(AUTHORIZATION_PATH.read_text(encoding="utf-8"))
+        self.assertEqual(
+            authorization["review"]["git_blob_oid"], build.REVIEW_BLOB_OID
+        )
+        self.assertEqual(
+            authorization["review"]["raw_sha256"], build.REVIEW_RAW_SHA256
+        )
+        self.assertEqual(
+            build.git_blob_oid(build.REVIEW_HEAD, build.REVIEW_RELATIVE),
+            build.REVIEW_BLOB_OID,
+        )
+        for path, expected in (
+            (build.AUTHORIZATION_SCHEMA_PATH, build.AUTHORIZATION_SCHEMA_RAW_SHA256),
+            (build.CONTROL_SCHEMA_PATH, build.CONTROL_SCHEMA_RAW_SHA256),
+        ):
+            self.assertEqual(build.sha256(path.read_bytes()), expected)
+
+    def test_semantically_valid_review_rewrite_is_rejected_by_raw_lock(self) -> None:
+        review = json.loads(REVIEW_PATH.read_text(encoding="utf-8"))
+        preparation = json.loads(build.PREPARATION_PATH.read_text(encoding="utf-8"))
+        review["limitations"].append("coherent rewrite")
+        tampered_raw = build.json_bytes(review)
+        with self.assertRaisesRegex(ValueError, "review_raw_sha256_mismatch"):
+            build.validate_review(review, preparation, tampered_raw)
+        with self.assertRaisesRegex(ValueError, "review_raw_sha256_mismatch"):
+            build.build_authorization(
+                preparation,
+                build._preparation_values(preparation),
+                tampered_raw,
+            )
 
     def test_builder_source_has_no_task_launch_or_network_api(self) -> None:
         source = (AUTHORIZATION_ROOT / "build_m4_1_authorization.py").read_text(

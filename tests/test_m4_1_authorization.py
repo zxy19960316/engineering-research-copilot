@@ -67,6 +67,46 @@ class M41AuthorizationAuditTests(unittest.TestCase):
                 **kwargs,
             )
 
+    def _audit_coherent_review_rewrite(self) -> dict[str, object]:
+        review = json.loads(REVIEW_PATH.read_text(encoding="utf-8"))
+        authorization = json.loads(AUTHORIZATION_PATH.read_text(encoding="utf-8"))
+        control = json.loads(CONTROL_PATH.read_text(encoding="utf-8"))
+        review["limitations"].append("coherent rewrite")
+        review_raw = build.json_bytes(review)
+        review_blob = subprocess.run(
+            ["git", "hash-object", "--stdin"],
+            cwd=REPO_ROOT,
+            input=review_raw,
+            capture_output=True,
+            check=True,
+        ).stdout.decode("ascii").strip()
+        authorization["review"]["raw_sha256"] = build.sha256(review_raw)
+        authorization["review"]["git_blob_oid"] = review_blob
+        authorization["authorization_token"] = build.authorization_token(authorization)
+        authorization_raw = build.json_bytes(authorization)
+        control["authorization"]["raw_sha256"] = build.sha256(authorization_raw)
+        control["authorization"]["authorization_token"] = authorization[
+            "authorization_token"
+        ]
+        control_raw = build.json_bytes(control)
+        with tempfile.TemporaryDirectory(dir=REPO_ROOT) as temp_dir:
+            root = Path(temp_dir)
+            review_path = root / REVIEW_PATH.name
+            authorization_path = root / AUTHORIZATION_PATH.name
+            control_path = root / CONTROL_PATH.name
+            review_path.write_bytes(review_raw)
+            authorization_path.write_bytes(authorization_raw)
+            control_path.write_bytes(control_raw)
+            return audit.audit_authorization(
+                REPO_ROOT,
+                review_path=review_path,
+                authorization_path=authorization_path,
+                control_path=control_path,
+                configured_model=build.MODEL_ID,
+                configured_reasoning_effort=build.REASONING_EFFORT,
+                verify_git=False,
+            )
+
     def test_repository_authorization_is_ready_unconsumed_and_read_only(self) -> None:
         before = self._snapshot()
         self.assertFalse((REPO_ROOT / "evals/m4/results").exists())
@@ -119,6 +159,37 @@ class M41AuthorizationAuditTests(unittest.TestCase):
             lambda value: value.__setitem__("preparation_ci_run_id", 0),
         )
         self.assertIn("review_field_invalid:preparation_ci_run_id", run["errors"])
+
+    def test_coherent_review_and_authorization_rewrite_still_fails_closed(self) -> None:
+        result = self._audit_coherent_review_rewrite()
+        self.assertEqual(result["status"], "INVALID")
+        self.assertIn("review_raw_sha256_mismatch", result["errors"])
+        self.assertIn("authorization_regeneration_mismatch", result["errors"])
+
+    def test_review_commit_and_schema_source_snapshots_are_exact(self) -> None:
+        self.assertEqual(audit._review_snapshot_errors(REPO_ROOT), [])
+        self.assertEqual(audit._schema_snapshot_errors(REPO_ROOT), [])
+
+    def test_nested_schema_drift_is_rejected_by_raw_hash(self) -> None:
+        schema = json.loads(
+            audit.AUTHORIZATION_SCHEMA_PATH.read_text(encoding="utf-8")
+        )
+        schema["properties"]["authority"]["description"] = "nested drift"
+        with tempfile.TemporaryDirectory(dir=REPO_ROOT) as temp_dir:
+            changed = Path(temp_dir) / "execution-authorization.schema.json"
+            changed.write_bytes(build.json_bytes(schema))
+            self.assertEqual(
+                audit._schema_errors(
+                    changed, audit.AUTHORIZATION_KEYS, "authorization_schema"
+                ),
+                [],
+            )
+            errors = audit._schema_snapshot_errors(
+                REPO_ROOT,
+                authorization_schema_path=changed,
+                verify_git=False,
+            )
+        self.assertIn("authorization_schema_raw_sha256_mismatch", errors)
 
     def test_rejects_token_model_or_helper_binding_tampering(self) -> None:
         token = self._audit_mutation(
