@@ -1,0 +1,304 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:engineering-research-copilot:m4.1:execution-terminal",
+  "title": "M4.1 execution-only terminal evidence",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "milestone",
+    "revision",
+    "terminal_state",
+    "recorded_at_utc",
+    "launch_claim",
+    "execution_protocol",
+    "batch_order",
+    "last_completed_batch",
+    "failed_batch",
+    "failed_task_id",
+    "failed_stage",
+    "attempted_task_ids",
+    "dispatch_receipts",
+    "raw_finals",
+    "counts",
+    "failure_evidence",
+    "later_batches_not_started",
+    "successor_revision_required",
+    "coordinator_observation_policy",
+    "permissions_still_closed",
+    "later_gates"
+  ],
+  "properties": {
+    "schema_version": {"const": "m4.1-execution-terminal-v1"},
+    "milestone": {"const": "M4"},
+    "revision": {"const": "M4.1"},
+    "terminal_state": {
+      "enum": [
+        "COMPLETE_UNJUDGED",
+        "STOPPED_PROTOCOL_OR_INFRASTRUCTURE_FAILURE"
+      ]
+    },
+    "recorded_at_utc": {"$ref": "#/$defs/timestamp"},
+    "launch_claim": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["claim_id", "path", "raw_sha256"],
+      "properties": {
+        "claim_id": {"type": "string", "minLength": 1},
+        "path": {"const": "evals/m4/execution/m4.1/launch-claim.json"},
+        "raw_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "execution_protocol": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["head", "ci_run_id"],
+      "properties": {
+        "head": {"$ref": "#/$defs/gitCommit"},
+        "ci_run_id": {"type": "integer", "minimum": 1}
+      }
+    },
+    "batch_order": {
+      "const": [
+        "M4.1-BATCH-NUC",
+        "M4.1-BATCH-MEC",
+        "M4.1-BATCH-ELE",
+        "M4.1-BATCH-AUT",
+        "M4.1-BATCH-COM",
+        "M4.1-BATCH-MPH"
+      ]
+    },
+    "last_completed_batch": {
+      "type": ["string", "null"],
+      "enum": [
+        null,
+        "M4.1-BATCH-NUC",
+        "M4.1-BATCH-MEC",
+        "M4.1-BATCH-ELE",
+        "M4.1-BATCH-AUT",
+        "M4.1-BATCH-COM",
+        "M4.1-BATCH-MPH"
+      ]
+    },
+    "failed_batch": {
+      "type": ["string", "null"],
+      "enum": [
+        null,
+        "M4.1-BATCH-NUC",
+        "M4.1-BATCH-MEC",
+        "M4.1-BATCH-ELE",
+        "M4.1-BATCH-AUT",
+        "M4.1-BATCH-COM",
+        "M4.1-BATCH-MPH"
+      ]
+    },
+    "failed_task_id": {"type": ["string", "null"], "minLength": 1},
+    "failed_stage": {"type": ["string", "null"], "minLength": 1},
+    "attempted_task_ids": {
+      "type": "array",
+      "maxItems": 60,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "dispatch_receipts": {
+      "type": "array",
+      "maxItems": 60,
+      "items": {"$ref": "#/$defs/receiptRef"}
+    },
+    "raw_finals": {
+      "type": "array",
+      "maxItems": 60,
+      "items": {"$ref": "#/$defs/rawFinalRef"}
+    },
+    "counts": {"$ref": "#/$defs/counts"},
+    "failure_evidence": {
+      "oneOf": [
+        {"type": "null"},
+        {"$ref": "#/$defs/failureEvidence"}
+      ]
+    },
+    "later_batches_not_started": {
+      "type": "array",
+      "maxItems": 5,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "successor_revision_required": {"type": "boolean"},
+    "coordinator_observation_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "allowed_observations",
+        "research_content_analysis",
+        "arm_comparison",
+        "later_prompt_adjustment"
+      ],
+      "properties": {
+        "allowed_observations": {
+          "const": [
+            "creation_status",
+            "finalization_status",
+            "identifiers",
+            "protocol_validity"
+          ]
+        },
+        "research_content_analysis": {"const": false},
+        "arm_comparison": {"const": false},
+        "later_prompt_adjustment": {"const": false}
+      }
+    },
+    "permissions_still_closed": {
+      "type": "array",
+      "minItems": 8,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "later_gates": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "judge",
+        "unblinding_and_aggregation",
+        "threshold_decision",
+        "m4_closure",
+        "m5"
+      ],
+      "properties": {
+        "judge": {"const": "NOT_RUN"},
+        "unblinding_and_aggregation": {"const": "NOT_RUN"},
+        "threshold_decision": {"const": "NOT_RUN"},
+        "m4_closure": {"const": "NOT_RUN"},
+        "m5": {"const": "NOT_STARTED"}
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"terminal_state": {"const": "COMPLETE_UNJUDGED"}}},
+      "then": {
+        "properties": {
+          "last_completed_batch": {"const": "M4.1-BATCH-MPH"},
+          "failed_batch": {"const": null},
+          "failed_task_id": {"const": null},
+          "failed_stage": {"const": null},
+          "attempted_task_ids": {"minItems": 60, "maxItems": 60},
+          "dispatch_receipts": {"minItems": 60, "maxItems": 60},
+          "raw_finals": {"minItems": 60, "maxItems": 60},
+          "counts": {
+            "properties": {
+              "tasks": {"const": 60},
+              "threads": {"const": 60},
+              "finalizations": {"const": 60},
+              "attempts": {"const": 60},
+              "retries": {"const": 0},
+              "repairs": {"const": 0},
+              "followups": {"const": 0},
+              "results": {"const": 60},
+              "judge_calls": {"const": 0},
+              "aggregation_calls": {"const": 0},
+              "side_effects": {"const": 0}
+            }
+          },
+          "failure_evidence": {"const": null},
+          "later_batches_not_started": {"const": []},
+          "successor_revision_required": {"const": false}
+        }
+      }
+    },
+    {
+      "if": {"properties": {"terminal_state": {"const": "STOPPED_PROTOCOL_OR_INFRASTRUCTURE_FAILURE"}}},
+      "then": {
+        "properties": {
+          "failed_batch": {"type": "string", "minLength": 1},
+          "failed_stage": {"type": "string", "minLength": 1},
+          "failure_evidence": {"$ref": "#/$defs/failureEvidence"},
+          "successor_revision_required": {"const": true}
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "gitCommit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "timestamp": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?Z$"
+    },
+    "receiptRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["task_id", "thread_id", "path", "raw_sha256"],
+      "properties": {
+        "task_id": {"type": "string", "minLength": 1},
+        "thread_id": {"type": "string", "minLength": 1},
+        "path": {"type": "string", "pattern": "^evals/m4/results/m4\\.1/.+/dispatch-receipt\\.json$"},
+        "raw_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "rawFinalRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "task_id",
+        "finalization_id",
+        "path",
+        "byte_length",
+        "raw_sha256",
+        "protocol_validation",
+        "observed_at_utc"
+      ],
+      "properties": {
+        "task_id": {"type": "string", "minLength": 1},
+        "finalization_id": {"type": "string", "minLength": 1},
+        "path": {"type": "string", "pattern": "^evals/m4/results/m4\\.1/.+/raw-final\\.txt$"},
+        "byte_length": {"type": "integer", "minimum": 0},
+        "raw_sha256": {"$ref": "#/$defs/sha256"},
+        "protocol_validation": {"enum": ["VALID", "INVALID"]},
+        "observed_at_utc": {"$ref": "#/$defs/timestamp"}
+      }
+    },
+    "counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "tasks",
+        "threads",
+        "finalizations",
+        "attempts",
+        "retries",
+        "repairs",
+        "followups",
+        "results",
+        "judge_calls",
+        "aggregation_calls",
+        "side_effects"
+      ],
+      "properties": {
+        "tasks": {"type": "integer", "minimum": 0, "maximum": 60},
+        "threads": {"type": "integer", "minimum": 0, "maximum": 60},
+        "finalizations": {"type": "integer", "minimum": 0, "maximum": 60},
+        "attempts": {"type": "integer", "minimum": 0, "maximum": 60},
+        "retries": {"const": 0},
+        "repairs": {"const": 0},
+        "followups": {"const": 0},
+        "results": {"type": "integer", "minimum": 0, "maximum": 60},
+        "judge_calls": {"const": 0},
+        "aggregation_calls": {"const": 0},
+        "side_effects": {"const": 0}
+      }
+    },
+    "failureEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["failure_class", "raw_evidence", "raw_evidence_sha256"],
+      "properties": {
+        "failure_class": {"enum": ["PROTOCOL_FAILURE", "INFRASTRUCTURE_FAILURE"]},
+        "raw_evidence": {"type": "string", "minLength": 1},
+        "raw_evidence_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    }
+  },
+  "x-write-mode": "exclusive-create-only",
+  "x-content-judging-authorized": false,
+  "x-real-instance-allowed-in-gate-iv-a": false
+}

@@ -78,7 +78,8 @@ jobs:
             evals/m4/build_m4_1_preparation.py \
             evals/m4/audit_m4_1_preparation.py \
             evals/m4/authorization/build_m4_1_authorization.py \
-            evals/m4/authorization/audit_m4_1_authorization.py
+            evals/m4/authorization/audit_m4_1_authorization.py \
+            evals/m4/execution/audit_m4_1.py
       - name: Require immutable r5 evidence commit
         run: |
           git cat-file -e 1b696bce53ee0a11163bfe4f91a9a49ab3af6f49^{commit}
@@ -117,6 +118,12 @@ jobs:
           git cat-file -e 5d781ea352e67ab44631844c37cf9b6552cfce77:evals/m4/authorization/m4.1/execution-control.schema.json
           git diff --raw --exit-code 5d781ea352e67ab44631844c37cf9b6552cfce77 HEAD -- evals/m4/authorization/m4.1/execution-authorization.schema.json evals/m4/authorization/m4.1/execution-control.schema.json
           git diff --exit-code 5d781ea352e67ab44631844c37cf9b6552cfce77 HEAD -- evals/m4/authorization/m4.1/execution-authorization.schema.json evals/m4/authorization/m4.1/execution-control.schema.json
+      - name: Require M4.1 authorization delivery HEAD and artifacts to remain preserved
+        run: |
+          git cat-file -e 'ae1ad43cca52ae450e146e952e3b108792b2b665^{commit}'
+          git merge-base --is-ancestor ae1ad43cca52ae450e146e952e3b108792b2b665 HEAD
+          git diff --raw --exit-code ae1ad43cca52ae450e146e952e3b108792b2b665 HEAD -- evals/m4/authorization/m4.1/gate-iv-review.json evals/m4/authorization/m4.1/execution-authorization.schema.json evals/m4/authorization/m4.1/execution-control.schema.json evals/m4/authorization/m4.1/execution-authorization.json evals/m4/authorization/m4.1/execution-control.json evals/m4/authorization/build_m4_1_authorization.py evals/m4/authorization/audit_m4_1_authorization.py tests/test_m4_1_authorization_builder.py tests/test_m4_1_authorization.py
+          git diff --exit-code ae1ad43cca52ae450e146e952e3b108792b2b665 HEAD -- evals/m4/authorization/m4.1/gate-iv-review.json evals/m4/authorization/m4.1/execution-authorization.schema.json evals/m4/authorization/m4.1/execution-control.schema.json evals/m4/authorization/m4.1/execution-authorization.json evals/m4/authorization/m4.1/execution-control.json evals/m4/authorization/build_m4_1_authorization.py evals/m4/authorization/audit_m4_1_authorization.py tests/test_m4_1_authorization_builder.py tests/test_m4_1_authorization.py
       - name: Unit tests
         run: python -m unittest discover -s tests -p "test_*.py" -v
       - name: Replay fixtures
@@ -169,8 +176,12 @@ jobs:
           python -X utf8 -m unittest tests.test_m4_1_authorization_builder tests.test_m4_1_authorization -v
           python -X utf8 evals/m4/authorization/build_m4_1_authorization.py --check
           python -X utf8 evals/m4/authorization/audit_m4_1_authorization.py --configured-model gpt-5.6-sol --configured-reasoning-effort max --require-configured-defaults
-      - name: Assert M4.1 authorization remains unconsumed
-        run: python -X utf8 -c "from pathlib import Path; forbidden = [Path('evals/m4/execution/m4.1/launch-claim.json'), Path('evals/m4/results'), Path('evals/m4/results-manifest.json')]; present = [path.as_posix() for path in forbidden if path.exists()]; assert not present, present"
+      - name: Validate M4.1 execution protocol without consuming authorization
+        run: |
+          python -X utf8 -m unittest tests.test_m4_1_execution -v
+          python -X utf8 evals/m4/execution/audit_m4_1.py
+      - name: Assert M4.1 authorization remains unconsumed and result roots remain absent
+        run: python -X utf8 -c "from pathlib import Path; forbidden = [Path('evals/m4/execution/m4.1/launch-claim.json'), Path('evals/m4/execution/m4.1/execution-terminal.json'), Path('evals/m4/results/m4.1'), Path('evals/m4/results-manifest.json')]; present = [path.as_posix() for path in forbidden if path.exists()]; assert not present, present"
       - name: Verify M4.1 request preflight with PowerShell 7
         shell: pwsh
         run: |
@@ -202,7 +213,7 @@ jobs:
           python -X utf8 -m unittest tests.test_audit_m3_forward_r5_2_f02_terminal -v
           python -X utf8 -m unittest tests.test_audit_m3_forward_r5_2_aggregate -v
           python -X utf8 -m unittest tests.test_audit_m3_closure -v
-          python -X utf8 -m unittest tests.test_m4_preparation tests.test_m4_results tests.test_m4_authorization tests.test_m4_execution tests.test_m4_1_preparation tests.test_m4_1_authorization_builder tests.test_m4_1_authorization -v
+          python -X utf8 -m unittest tests.test_m4_preparation tests.test_m4_results tests.test_m4_authorization tests.test_m4_execution tests.test_m4_1_preparation tests.test_m4_1_authorization_builder tests.test_m4_1_authorization tests.test_m4_1_execution -v
           git cat-file -e 'f48ab8d7e835e9a57e65b75458faa786d696316d^{commit}'
           git merge-base --is-ancestor f48ab8d7e835e9a57e65b75458faa786d696316d HEAD
           git cat-file -e 'fedc5cdeebd7a2943afeb6767d39841305c55444^{commit}'
@@ -227,6 +238,10 @@ jobs:
           git cat-file -e 5d781ea352e67ab44631844c37cf9b6552cfce77:evals/m4/authorization/m4.1/execution-control.schema.json
           git diff --raw --exit-code 5d781ea352e67ab44631844c37cf9b6552cfce77 HEAD -- evals/m4/authorization/m4.1/execution-authorization.schema.json evals/m4/authorization/m4.1/execution-control.schema.json
           git diff --exit-code 5d781ea352e67ab44631844c37cf9b6552cfce77 HEAD -- evals/m4/authorization/m4.1/execution-authorization.schema.json evals/m4/authorization/m4.1/execution-control.schema.json
+          git cat-file -e 'ae1ad43cca52ae450e146e952e3b108792b2b665^{commit}'
+          git merge-base --is-ancestor ae1ad43cca52ae450e146e952e3b108792b2b665 HEAD
+          git diff --raw --exit-code ae1ad43cca52ae450e146e952e3b108792b2b665 HEAD -- evals/m4/authorization/m4.1/gate-iv-review.json evals/m4/authorization/m4.1/execution-authorization.schema.json evals/m4/authorization/m4.1/execution-control.schema.json evals/m4/authorization/m4.1/execution-authorization.json evals/m4/authorization/m4.1/execution-control.json evals/m4/authorization/build_m4_1_authorization.py evals/m4/authorization/audit_m4_1_authorization.py tests/test_m4_1_authorization_builder.py tests/test_m4_1_authorization.py
+          git diff --exit-code ae1ad43cca52ae450e146e952e3b108792b2b665 HEAD -- evals/m4/authorization/m4.1/gate-iv-review.json evals/m4/authorization/m4.1/execution-authorization.schema.json evals/m4/authorization/m4.1/execution-control.schema.json evals/m4/authorization/m4.1/execution-authorization.json evals/m4/authorization/m4.1/execution-control.json evals/m4/authorization/build_m4_1_authorization.py evals/m4/authorization/audit_m4_1_authorization.py tests/test_m4_1_authorization_builder.py tests/test_m4_1_authorization.py
           python -X utf8 evals/m4/audit_preparation.py
           git diff --raw --exit-code f48ab8d7e835e9a57e65b75458faa786d696316d HEAD -- evals/m3 skills/engineering-research-copilot evals/m4/cases evals/m4/variants evals/m4/schemas evals/m4/preparation-manifest.json evals/m4/build_preparation.py evals/m4/audit_preparation.py evals/m4/audit_results.py evals/m4/task-protocol.md evals/m4/judge-rubric.json tests/test_m4_preparation.py tests/test_m4_results.py evals/m4/authorization/gate-iv-review.json evals/m4/authorization/execution-authorization.json evals/m4/authorization/execution-control.json evals/m4/authorization/build_authorization.py evals/m4/authorization/audit_authorization.py evals/m4/authorization/execution-authorization.schema.json evals/m4/authorization/execution-control.schema.json tests/test_m4_authorization.py evals/m4/execution/m4.0/launch-claim.json evals/m4/execution/m4.0/pre-dispatch-failure.json evals/m4/execution/audit_m4_0.py tests/test_m4_execution.py
           git diff --exit-code e3542201f96218f340a09f77458661822c98d876 HEAD -- evals/m4/authorization/gate-iv-review.json evals/m4/authorization/execution-authorization.json evals/m4/authorization/execution-control.json
@@ -235,7 +250,8 @@ jobs:
           python -X utf8 evals/m4/audit_m4_1_preparation.py
           python -X utf8 evals/m4/authorization/build_m4_1_authorization.py --check
           python -X utf8 evals/m4/authorization/audit_m4_1_authorization.py --configured-model gpt-5.6-sol --configured-reasoning-effort max --require-configured-defaults
-          python -X utf8 -c "from pathlib import Path; forbidden = [Path('evals/m4/execution/m4.1/launch-claim.json'), Path('evals/m4/results'), Path('evals/m4/results-manifest.json')]; present = [path.as_posix() for path in forbidden if path.exists()]; assert not present, present"
+          python -X utf8 evals/m4/execution/audit_m4_1.py
+          python -X utf8 -c "from pathlib import Path; forbidden = [Path('evals/m4/execution/m4.1/launch-claim.json'), Path('evals/m4/execution/m4.1/execution-terminal.json'), Path('evals/m4/results/m4.1'), Path('evals/m4/results-manifest.json')]; present = [path.as_posix() for path in forbidden if path.exists()]; assert not present, present"
           python -X utf8 evals/m4/audit_results.py --expect-not-run
       - name: Verify M4.1 request preflight with PowerShell 7
         if: runner.os == 'Linux'
