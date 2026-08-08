@@ -4,13 +4,15 @@
 
 `M3 — Engineering method cards`
 
-Active revision: `M3.1.1 r5.2-f02 Gate 3 accepted terminal evidence`
+Active revision: `M3.1.1 r5+r5.2 Gate 4 cross-revision aggregate candidate`
 
 Historical r5 evidence HEAD: `1b696bce53ee0a11163bfe4f91a9a49ab3af6f49`
 
-Execution evidence HEAD: `a847b3eaf39a6f4f70353cd669e41e414afc658c`
+Gate 3 accepted evidence baseline HEAD: `ea8a7bbb8b365aded89f9ddb5c784f6e95a51d3d`
 
-Status: `GATE_3_COMPLETE; F02_ACCEPTED; GATE_4_NOT_STARTED`
+Gate 3 accepted evidence baseline exact-HEAD CI: `PASSED` (GitHub Actions run `31192712555`)
+
+Status: `GATE_4_COMPLETE; CROSS_REVISION_AGGREGATE_ACCEPTED; M3_CLOSURE_PENDING`
 
 Historical r5 status: `BLOCKED_NOT_ACCEPTED`
 
@@ -18,9 +20,19 @@ Historical accepted fresh cases: `F01, F03, F04, F05`
 
 Historical failed fresh case: `F02`
 
-r5.2-f02 replacement: `F02 ACCEPTED; PRE_AGGREGATE`
+r5.2-f02 replacement: `F02 ACCEPTED; SELECTED_FOR_AGGREGATE`
 
-Exact-HEAD CI: `FAILED` for the immutable r5 acceptance state (GitHub Actions run `31096079186`)
+Selected aggregate revisions: `F01=r5; F02=r5.2-f02; F03=r5; F04=r5; F05=r5`
+
+Selected aggregate counters: `tasks=5; finalizations=5; composer=4; validator=5; accepted=5; failed=0; retry=0`
+
+Preserved historical-attempt counters: `tasks=7; finalizations=7; composer=6; validator=5; accepted=5; failed=2; retry=0`
+
+Excluded immutable F02 attempts: `r5 processing_failed; r5.1-f02 terminal_not_accepted`
+
+Current aggregate candidate exact-HEAD CI: `PENDING`
+
+Historical immutable-r5 exact-HEAD CI: `FAILED` (GitHub Actions run `31096079186`)
 
 M3: `IN_PROGRESS`
 
@@ -68,7 +80,7 @@ r5.1-f02 replacement task budget: `CONSUMED`
 
 r5.1-f02 authorization token: `CONSUMED / TERMINAL`
 
-r5.1-f02 cross-revision aggregate acceptance: `NOT_RUN`
+r5.1-f02 aggregate role: `EXCLUDED_IMMUTABLE_FAILED_ATTEMPT`
 
 Gate 1 root-cause and protocol preparation: `COMPLETE`
 
@@ -130,11 +142,13 @@ r5.2-f02 counters: `tasks=1; finalizations=1; composer=1; validator=1; retry=0`
 
 r5.2-f02 retry: `FORBIDDEN`
 
-Gate 4: `NOT_STARTED`
+Gate 4: `COMPLETE; CROSS_REVISION_AGGREGATE_ACCEPTED; EXACT_HEAD_CI_PENDING`
 
-M3 closure: `NOT_RUN`
+M3 final validation: `LOCAL_COMPLETE; REMOTE_EXACT_HEAD_CI_PENDING`
 
-M3.1 implementation is complete, but M3 closure has not run. The consumed historical r5 evidence remains immutable at `evals/m3/results/forward-r5/`: F01, F03, F04, and F05 were accepted, while historical F02 failed. The r5.1-f02 replacement remains an immutable 216-byte `terminal_not_accepted` result. The separately authorized r5.2-f02 execution created one new task, observed one finalization, froze 14,532 raw bytes before parsing, invoked composer and validator exactly once, and reached `accepted` with retry zero. Gate 4 cross-revision aggregation, M3 final validation, M3 closure, and M4 remain unstarted.
+M3 closure: `PENDING_AGGREGATE_CANDIDATE_EXACT_HEAD_CI`
+
+Gate 4 selects the immutable accepted r5 evidence for F01, F03, F04, and F05 together with the separately accepted r5.2-f02 F02 evidence. The historical r5 F02 `processing_failed` result and the 216-byte r5.1-f02 `terminal_not_accepted` result remain excluded immutable attempts; neither is relabeled, repaired, retried, or deleted. The cross-revision aggregate is locally accepted, while M3 remains `IN_PROGRESS` until this aggregate candidate passes its own exact-HEAD remote CI and a successor closure manifest passes the closure audit. M4 remains `NOT_STARTED`.
 
 Before route-specific method-card instantiation, M3.1.1 must validate the complete M2.1.1 bundle, require `user_confirmed`, recompute the selected-direction binding, reject every non-empty `approved_constraint_changes` list with `unsupported_approved_constraint_change_provenance`, and rederive claim metrics, claim-specific preconditions, resource ceilings, actual Go/Stop/Pivot coverage, safety-source eligibility, and method-card internal bindings from upstream structures.
 
@@ -179,6 +193,9 @@ Before route-specific method-card instantiation, M3.1.1 must validate the comple
 - [x] Gate 3 authorization baseline HEAD `0a6bb7876148a8990934c88cd0fe11aebc0cad7d` passed exact-HEAD GitHub Actions run `31189442896` before the exclusive launch claim was consumed.
 - [x] Gate 3 created exactly one new r5.2-f02 task and consumed exactly one finalization. The 14,532-byte raw final is frozen before parsing with SHA-256 `a8ec9c94fe5b55555dd1907e770054aacb5d396d050175b18d0f8d435c97eac7`; composer and validator counts are one, retry is zero, and the result is accepted.
 - [x] The r5.2-f02 terminal manifest and independent production replay auditor report `accepted`, exact `1/1/1/1/0` counters, an exact result-root allowlist, no unexpected artifacts or side effects, unchanged historical r5 and r5.1 evidence, and `Gate 4 = NOT_STARTED`.
+- [x] Gate 4 preserves that terminal manifest as a historical snapshot and selects exactly F01/F03/F04/F05 from immutable r5 plus F02 from immutable r5.2-f02; r5 and r5.1-f02 F02 remain excluded failed attempts.
+- [x] The local cross-revision aggregate audit accepts selected counters `5/5/4/5/5/0/0` and separately preserves historical-attempt counters `7/7/6/5/5/2/0`, with zero retries and no M4 authority.
+- [ ] The aggregate candidate exact-HEAD remote CI must pass before an M3 closure manifest can be created; M3 remains `IN_PROGRESS` and M4 remains `NOT_STARTED`.
 
 ## M3.1.1 r5 historical preparation and terminal result
 
@@ -272,9 +289,9 @@ The strict parser accepted exactly one JSON object. The production composer and 
 
 Terminal-evidence delivery HEAD `461e833d7ee2bdd3314aa261194963c4497577c7` passed GitHub Actions run `31192483833`. The validate job, Ubuntu historical-audit job, and Windows historical-audit job all completed successfully; the validate job explicitly ran the r5.2-f02 terminal auditor against the accepted evidence. This closes Gate 3 only and does not authorize Gate 4.
 
-## M3 local result
+## Historical M3 local result before Gate 4
 
-Status: `M3.1.1 R5_BLOCKED_NOT_ACCEPTED; R4_BLOCKED_NOT_ACCEPTED; R3_ACCEPTANCE_NOT_ACCEPTED; R2_ACCEPTANCE_BLOCKED`
+Historical status: `M3.1.1 R5_BLOCKED_NOT_ACCEPTED; R4_BLOCKED_NOT_ACCEPTED; R3_ACCEPTANCE_NOT_ACCEPTED; R2_ACCEPTANCE_BLOCKED`
 
 Fresh-worktree r4 preparation was green at readiness HEAD `058b93d944d67b9e5c862ab5e1e74bb86d652512`. The immutable byte audit reported 66 files, zero filesystem/Git-blob mismatches, and zero errors; the r4 preparation auditor reported five eligible cases, `prompts_frozen=true`, `fresh_contexts_consumed=0`, and no future result or receipt paths. Focused r4 gates passed 29/29, the full unit suite passed 334/334 after the committed fixture LF materialization rule, M1 and M2 replays were valid, the M3 replay matched all 20 frozen cases, the package audit reported 99 Skill lines and 13 linked references with no errors, and the standard Skill validator reported `Skill is valid!`. Five fresh task worktrees were created from the frozen readiness state, but the first coordinator consumption (F03) ended as `consumed_with_callback_failure` after one accepted-expected-block outcome validation; its exact final and failure record are preserved. No remaining fresh case was dispatched or validated, no exact-HEAD remote CI is claimed, and no local closure gate ran. The terminal acceptance record is `evals/m3/results/forward-r4/acceptance-manifest.json`; the preparation record is `evals/m3/results/2026-08-06-m3.1.1-r4-preparation-validation-fresh-worktree.md`.
 
@@ -412,7 +429,7 @@ Evidence is recorded under `evals/m1/`, including preserved failed runs and inde
 ## External state
 
 - Git remote: `https://github.com/zxy19960316/engineering-research-copilot.git`
-- Active local branch: `codex/m3.1.1-r5.2-f02-one-shot-fresh-execution`
+- Active local branch: `codex/m3.1.1-r5-r5.2-cross-revision-aggregate-and-closure`
 - External APIs/services configured: none
 - RRC integration: not started
 - Platform integration: not required for the local Skill competition track

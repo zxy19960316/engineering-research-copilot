@@ -11,6 +11,8 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 EVIDENCE_HEAD = "1b696bce53ee0a11163bfe4f91a9a49ab3af6f49"
 ERRATUM = REPO_ROOT / "evals" / "m3" / "results" / "diagnostics-r5.1" / "r5-acceptance-erratum.json"
 OFFLINE_DIAGNOSTIC = REPO_ROOT / "evals" / "m3" / "results" / "diagnostics-r5.1" / "m3-f02.offline-diagnostic.json"
+R5_1_TERMINAL = REPO_ROOT / "evals" / "m3" / "results" / "forward-r5.1-f02" / "terminal-manifest.json"
+R5_2_TERMINAL = REPO_ROOT / "evals" / "m3" / "results" / "forward-r5.2-f02" / "terminal-manifest.json"
 
 
 class M3R5ErratumTests(unittest.TestCase):
@@ -95,24 +97,56 @@ class M3R5ErratumTests(unittest.TestCase):
         self.assertEqual(diagnostic["retry_count"], 0)
         self.assertFalse(diagnostic["composed_output_created"])
 
-    def test_status_top_preserves_history_after_gate_3_acceptance(self):
+    def test_status_top_preserves_terminal_history_at_gate_4_candidate(self):
         text = (REPO_ROOT / "STATUS.md").read_text(encoding="utf-8")
         current = text.split("## M3 checklist", 1)[0]
 
         self.assertIn(
-            "Active revision: `M3.1.1 r5.2-f02 Gate 3 accepted terminal evidence`",
+            "Active revision: `M3.1.1 r5+r5.2 Gate 4 cross-revision aggregate candidate`",
             current,
         )
         self.assertIn(f"Historical r5 evidence HEAD: `{EVIDENCE_HEAD}`", current)
         self.assertIn(
-            "Status: `GATE_3_COMPLETE; F02_ACCEPTED; GATE_4_NOT_STARTED`",
+            "Gate 3 accepted evidence baseline HEAD: "
+            "`ea8a7bbb8b365aded89f9ddb5c784f6e95a51d3d`",
+            current,
+        )
+        self.assertIn(
+            "Gate 3 accepted evidence baseline exact-HEAD CI: `PASSED` "
+            "(GitHub Actions run `31192712555`)",
+            current,
+        )
+        self.assertIn(
+            "Status: `GATE_4_COMPLETE; CROSS_REVISION_AGGREGATE_ACCEPTED; "
+            "M3_CLOSURE_PENDING`",
             current,
         )
         self.assertIn("Historical r5 status: `BLOCKED_NOT_ACCEPTED`", current)
         self.assertIn("Historical accepted fresh cases: `F01, F03, F04, F05`", current)
         self.assertIn("Historical failed fresh case: `F02`", current)
-        self.assertIn("r5.2-f02 replacement: `F02 ACCEPTED; PRE_AGGREGATE`", current)
-        self.assertIn("Exact-HEAD CI: `FAILED`", current)
+        self.assertIn(
+            "r5.2-f02 replacement: `F02 ACCEPTED; SELECTED_FOR_AGGREGATE`",
+            current,
+        )
+        self.assertIn(
+            "Selected aggregate revisions: "
+            "`F01=r5; F02=r5.2-f02; F03=r5; F04=r5; F05=r5`",
+            current,
+        )
+        self.assertIn(
+            "Selected aggregate counters: "
+            "`tasks=5; finalizations=5; composer=4; validator=5; "
+            "accepted=5; failed=0; retry=0`",
+            current,
+        )
+        self.assertIn(
+            "Preserved historical-attempt counters: "
+            "`tasks=7; finalizations=7; composer=6; validator=5; "
+            "accepted=5; failed=2; retry=0`",
+            current,
+        )
+        self.assertIn("Current aggregate candidate exact-HEAD CI: `PENDING`", current)
+        self.assertIn("Historical immutable-r5 exact-HEAD CI: `FAILED`", current)
         self.assertIn("M3: `IN_PROGRESS`", current)
         self.assertIn("M4: `NOT_STARTED`", current)
         self.assertIn("r5.1-f02 retry: `FORBIDDEN`", current)
@@ -127,12 +161,39 @@ class M3R5ErratumTests(unittest.TestCase):
             "r5.2-f02 counters: `tasks=1; finalizations=1; composer=1; validator=1; retry=0`",
             current,
         )
-        self.assertIn("Gate 4: `NOT_STARTED`", current)
+        self.assertIn(
+            "Gate 4: `COMPLETE; CROSS_REVISION_AGGREGATE_ACCEPTED; "
+            "EXACT_HEAD_CI_PENDING`",
+            current,
+        )
+        self.assertIn(
+            "M3 final validation: `LOCAL_COMPLETE; "
+            "REMOTE_EXACT_HEAD_CI_PENDING`",
+            current,
+        )
+        self.assertIn(
+            "M3 closure: `PENDING_AGGREGATE_CANDIDATE_EXACT_HEAD_CI`",
+            current,
+        )
         self.assertIn("r5.1-f02 replacement task budget: `CONSUMED`", current)
         self.assertIn(
             "r5.1-f02 authorization token: `CONSUMED / TERMINAL`", current
         )
         self.assertNotIn("READY_FOR_AUTHORIZED_R5_FRESH_CONTEXTS", current)
+
+        r5_1_terminal = json.loads(R5_1_TERMINAL.read_text(encoding="utf-8"))
+        self.assertEqual(r5_1_terminal["status"], "terminal_not_accepted")
+        self.assertFalse(r5_1_terminal["accepted"])
+        self.assertFalse(r5_1_terminal["cross_revision_aggregation_authorized"])
+        self.assertEqual(r5_1_terminal["m3_status"], "IN_PROGRESS")
+        self.assertEqual(r5_1_terminal["m4_status"], "NOT_STARTED")
+
+        r5_2_terminal = json.loads(R5_2_TERMINAL.read_text(encoding="utf-8"))
+        self.assertEqual(r5_2_terminal["status"], "accepted")
+        self.assertTrue(r5_2_terminal["accepted"])
+        self.assertEqual(r5_2_terminal["gate_state"]["gate_4"], "NOT_STARTED")
+        self.assertEqual(r5_2_terminal["gate_state"]["m3_closure"], "NOT_RUN")
+        self.assertEqual(r5_2_terminal["gate_state"]["m4"], "NOT_STARTED")
 
 
 if __name__ == "__main__":

@@ -1,0 +1,171 @@
+{
+  "schema_version": "m3.1-cross-revision-final-validation-v1",
+  "revision": "r5+r5.2-f02",
+  "status": "passed",
+  "gate_state": {
+    "gate_4": "COMPLETE",
+    "m3": "IN_PROGRESS",
+    "m3_closure": "PENDING_AGGREGATE_CANDIDATE_EXACT_HEAD_CI",
+    "m4": "NOT_STARTED"
+  },
+  "checks": [
+    {
+      "name": "python_compile",
+      "command": "python -X utf8 -m py_compile <M1/M2/M3 validators, replay builders, and Gate 4 auditors>",
+      "status": "passed"
+    },
+    {
+      "name": "gate_4_focused_tests",
+      "command": "python -X utf8 -m unittest tests.test_audit_m3_forward_r5_2_aggregate tests.test_audit_m3_closure tests.test_m3_r5_erratum -v",
+      "status": "passed",
+      "tests_run": 34
+    },
+    {
+      "name": "full_unit_suite",
+      "command": "python -X utf8 -m unittest discover -s tests -p test_*.py -v",
+      "status": "passed",
+      "tests_run": 579,
+      "duration_seconds": 471.593
+    },
+    {
+      "name": "m1_offline_replay",
+      "command": "python -X utf8 evals/m1/replay_offline_results.py",
+      "status": "valid",
+      "mismatches": []
+    },
+    {
+      "name": "m1_machine_artifact_replay",
+      "command": "python -X utf8 evals/m1/replay_machine_artifacts.py",
+      "status": "valid",
+      "case_statuses": [
+        "valid",
+        "evidence_incomplete",
+        "valid"
+      ],
+      "mismatches": []
+    },
+    {
+      "name": "m2_fixture_regeneration_and_replay",
+      "command": "python -X utf8 evals/m2/build_fixtures.py; git diff --exit-code -- evals/m2/adversarial-cases.json evals/m2/fixtures; python -X utf8 evals/m2/replay_offline_results.py",
+      "status": "valid",
+      "case_count": 34,
+      "all_matched": true,
+      "matched_frozen_record": true,
+      "regeneration_diff": "empty"
+    },
+    {
+      "name": "m3_fixture_regeneration_and_replay",
+      "command": "python -X utf8 evals/m3/build_fixtures.py; git diff --exit-code -- evals/m3/adversarial-cases.json evals/m3/fixtures; python -X utf8 evals/m3/replay_offline_results.py",
+      "status": "valid",
+      "case_count": 20,
+      "all_matched": true,
+      "matched_frozen_record": true,
+      "regeneration_diff": "empty"
+    },
+    {
+      "name": "skill_package_audit",
+      "command": "python -X utf8 evals/m3/audit_skill_package.py",
+      "status": "valid",
+      "skill_lines": 99,
+      "direct_link_count": 13,
+      "reference_count": 13,
+      "errors": []
+    },
+    {
+      "name": "standard_skill_validator",
+      "command": "python -X utf8 C:/Users/94310/.codex/skills/.system/skill-creator/scripts/quick_validate.py skills/engineering-research-copilot",
+      "status": "passed",
+      "result": "Skill is valid!"
+    },
+    {
+      "name": "historical_r5_state_audit",
+      "command": "python -X utf8 evals/m3/audit_m3_r5_1_ci_state.py",
+      "status": "valid",
+      "r5_acceptance_status": "blocked_not_accepted",
+      "errors": []
+    },
+    {
+      "name": "historical_r5_acceptance_audit",
+      "command": "python -X utf8 evals/m3/audit_forward_r5_acceptance.py evals/m3/results/forward-r5/acceptance-manifest-consumed.json",
+      "status": "expected_blocked_not_accepted",
+      "expected_exit_code": 1,
+      "errors": [
+        "acceptance_requirements_unmet"
+      ]
+    },
+    {
+      "name": "historical_r5_1_f02_terminal_audit",
+      "command": "python -X utf8 evals/m3/audit_forward_r5_1_f02_terminal.py",
+      "status": "terminal_not_accepted",
+      "accepted": false,
+      "errors": [],
+      "retry_count": 0
+    },
+    {
+      "name": "selected_r5_2_f02_terminal_audit",
+      "command": "python -X utf8 evals/m3/audit_forward_r5_2_f02_terminal.py",
+      "status": "accepted",
+      "accepted": true,
+      "counters": {
+        "tasks": 1,
+        "finalizations": 1,
+        "composer": 1,
+        "validator": 1,
+        "retry": 0
+      },
+      "errors": []
+    },
+    {
+      "name": "cross_revision_aggregate_audit",
+      "command": "python -X utf8 evals/m3/audit_forward_r5_2_aggregate.py",
+      "status": "accepted",
+      "selected_counters": {
+        "tasks": 5,
+        "finalizations": 5,
+        "composer": 4,
+        "validator": 5,
+        "accepted": 5,
+        "failed": 0,
+        "retry": 0
+      },
+      "historical_counters": {
+        "tasks": 7,
+        "finalizations": 7,
+        "composer": 6,
+        "validator": 5,
+        "accepted": 5,
+        "failed": 2,
+        "retry": 0
+      },
+      "errors": [],
+      "evidence_gaps": [],
+      "side_effects": []
+    },
+    {
+      "name": "immutable_evidence_trees",
+      "command": "git diff --exit-code <fixed-head> -- <result-root>",
+      "status": "passed",
+      "forward_r5": "empty",
+      "forward_r5_1_f02": "empty",
+      "forward_r5_2_f02": "empty"
+    },
+    {
+      "name": "patch_whitespace",
+      "command": "git diff --check",
+      "status": "passed"
+    }
+  ],
+  "remote_ci": {
+    "status": "PENDING",
+    "exact_head": null,
+    "run_id": null
+  },
+  "unexpected_artifacts": [],
+  "side_effects": [],
+  "errors": [],
+  "does_not_prove": [
+    "A failed historical F02 attempt was repaired, retried, or relabeled.",
+    "M3 closure has completed or M4 has started.",
+    "Any experiment, simulation, training, deployment, target-domain performance, or safety claim."
+  ]
+}
