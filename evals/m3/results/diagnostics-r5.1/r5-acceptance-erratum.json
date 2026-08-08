@@ -1,0 +1,73 @@
+{
+  "schema_version": "m3.1-r5.1-acceptance-erratum-v1",
+  "evidence_class": "acceptance_erratum",
+  "active_revision": "M3.1.1 r5",
+  "evidence_head": "1b696bce53ee0a11163bfe4f91a9a49ab3af6f49",
+  "status": "BLOCKED_NOT_ACCEPTED",
+  "m3_status": "IN_PROGRESS",
+  "m4_status": "NOT_STARTED",
+  "supersedes_notes_only": true,
+  "preserves_historical_evidence": true,
+  "historical_consumed_manifest": {
+    "path": "evals/m3/results/forward-r5/acceptance-manifest-consumed.json",
+    "git_blob_oid": "5282b4b0a821a14d2a7f243f4e18c9fcd18bcf3d",
+    "raw_sha256": "dc36f9f86517adfbe1997a2ea0119b040b9ee5c1565016f3086f287e9a4fc410",
+    "immutable": true
+  },
+  "exact_head_ci": {
+    "head_sha": "1b696bce53ee0a11163bfe4f91a9a49ab3af6f49",
+    "run_id": 31096079186,
+    "status": "completed",
+    "conclusion": "failure",
+    "failed_test_count": 3,
+    "failure_class": "cross_platform_historical_source_identity"
+  },
+  "accepted_fresh_cases": {
+    "m3-f01": {
+      "transaction": ["evals/m3/results/forward-r5/m3-f01.transaction.json", "dfc1ea62704f30aea53329cf64dec4d64458dc4f", "8faab5d51a34830e50624631762e6b1baa595c68f22eb21da9aa0089cd5fc01b"],
+      "validation": ["evals/m3/results/forward-r5/m3-f01.validation.json", "19b4b251fd7fc99ed38155d7db58a067590d2b16", "e49b6f59b4bdfd9f363a40492a5899e4d716449c4b320f563380923a9ccd8460"],
+      "bundle": ["evals/m3/results/forward-r5/m3-f01.bundle.json", "7d02ec4cd8245674a6c9da81f7def48c1713391a", "6489aac5a042e8d3403241918e7a5e6a5963a6e95451dc06ade1c9d62fc44adc"]
+    },
+    "m3-f03": {
+      "transaction": ["evals/m3/results/forward-r5/m3-f03.transaction.json", "d287c3d24116bc9731d52608d855a93332fb28a8", "15c944b40c5726a065b9e46be7b450a5297f195abc67ece4e05a2dd0b3ef56e7"],
+      "validation": ["evals/m3/results/forward-r5/m3-f03.validation.json", "8d2e0a01e3081a673a365b69591d1a8980b8e309", "746e3147f06d3aea78ce8c505efd1eed41738e8215d284afc79fe0ba9e5221c2"]
+    },
+    "m3-f04": {
+      "transaction": ["evals/m3/results/forward-r5/m3-f04.transaction.json", "8fb719f9d7d9b6d3be5e61ec1a11dbe4959274c5", "5fe6a12b07fdafe22e808d8a74a776c26a41eebee3f6fcff54465b68c5f89a86"],
+      "validation": ["evals/m3/results/forward-r5/m3-f04.validation.json", "19b4b251fd7fc99ed38155d7db58a067590d2b16", "e49b6f59b4bdfd9f363a40492a5899e4d716449c4b320f563380923a9ccd8460"],
+      "bundle": ["evals/m3/results/forward-r5/m3-f04.bundle.json", "4650617510d381ccc75e40898cb69b9742661755", "1c4a13486790c60e4ac73238af5faec811c2e53c9077b8100e471035d08dd275"]
+    },
+    "m3-f05": {
+      "transaction": ["evals/m3/results/forward-r5/m3-f05.transaction.json", "7f24ce8f6d969c283a03b115ff550cba9a33cbd9", "4940905c0eda4aa4fc319319d199fa45ae0ae2b72c06e45d6199d3413ce754ac"],
+      "validation": ["evals/m3/results/forward-r5/m3-f05.validation.json", "19b4b251fd7fc99ed38155d7db58a067590d2b16", "e49b6f59b4bdfd9f363a40492a5899e4d716449c4b320f563380923a9ccd8460"],
+      "bundle": ["evals/m3/results/forward-r5/m3-f05.bundle.json", "0b34ecd76e577bd518e1e97239a786f996e0d7e1", "731c85343ffde25fdb8435278dddc6756768ef780578f94375995ce8852cd415"]
+    }
+  },
+  "failed_fresh_case": {
+    "case_id": "m3-f02",
+    "failure_stage": "composition",
+    "historical_failure_code": "composer_invocation_failed",
+    "transaction": ["evals/m3/results/forward-r5/m3-f02.transaction.json", "3612e0749912e919f92321cfbf0cd4f4a34fb5af", "32eed93057362d336db246dc0cda7a7be409cec2bba09fa66ba2ab2951809f1e"],
+    "composer_receipt": ["evals/m3/results/forward-r5/m3-f02.composer-receipt.json", "51ce4727f3d1fe415b881ee1081c89646215ee27", "c65e82c804d38d984b4bbc220b58ce026745503c881728041d815b8b44ac7a1a"],
+    "model_final": ["evals/m3/results/forward-r5/m3-f02.model-final.json", "182cad048d39f52cda5b05f74f4c0f6834fbfb97", "72b0aaef8fdabb3456d1226ba4ef93705512d60c74cccf5c29da2f0278b154a2"],
+    "offline_diagnostic": "evals/m3/results/diagnostics-r5.1/m3-f02.offline-diagnostic.json"
+  },
+  "supersession_policy": {
+    "policy": "replace_f02_only",
+    "frozen": true,
+    "reusable_immutable_cases": ["m3-f01", "m3-f03", "m3-f04", "m3-f05"],
+    "replacement_case": "m3-f02",
+    "replacement_revision": "r5.1-f02",
+    "replacement_result_root": "evals/m3/results/forward-r5.1-f02",
+    "same_task_retry_forbidden": true,
+    "same_output_path_retry_forbidden": true,
+    "cross_revision_aggregate_requires_hash_bound_cross_validation": true,
+    "new_fresh_run_authorized": false,
+    "fallback_if_cross_revision_reuse_is_rejected": "run_five_independent_r6_cases_in_a_new_root"
+  },
+  "does_not_prove": [
+    "This erratum does not modify, replace, or erase the consumed r5 artifacts.",
+    "The F02 offline diagnostic is not fresh acceptance evidence.",
+    "No M3 closure, merge, push, M4 branch, or M4 development is authorized or claimed."
+  ]
+}

@@ -1,0 +1,116 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "m3.1-forward-r5.1-f02-launch-receipt-v1",
+  "title": "M3.1 r5.1-f02 one-shot launch receipt",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "case_id",
+    "revision",
+    "execution_authorization",
+    "fresh_task_id",
+    "launch_count",
+    "historical_task_reused",
+    "launch_status",
+    "no_retry",
+    "errors"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "m3.1-forward-r5.1-f02-launch-receipt-v1"
+    },
+    "case_id": {
+      "const": "m3-f02"
+    },
+    "revision": {
+      "const": "r5.1-f02"
+    },
+    "execution_authorization": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "raw_sha256",
+        "authorization_token"
+      ],
+      "properties": {
+        "path": {
+          "const": "evals/m3/forward-inputs-r5.1-f02/execution-authorization.json"
+        },
+        "raw_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "authorization_token": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
+    },
+    "fresh_task_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "launch_count": {
+      "const": 1
+    },
+    "historical_task_reused": {
+      "const": false
+    },
+    "launch_status": {
+      "enum": [
+        "launched",
+        "launch_failed"
+      ]
+    },
+    "no_retry": {
+      "const": true
+    },
+    "errors": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "launch_status": {
+            "const": "launched"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "fresh_task_id": {
+            "type": "string",
+            "minLength": 1,
+            "not": {
+              "const": "019fd687-5575-7143-8cf3-1ab3069611f5"
+            }
+          },
+          "errors": {
+            "maxItems": 0
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "fresh_task_id": {
+            "type": "null"
+          },
+          "errors": {
+            "minItems": 1
+          }
+        }
+      }
+    }
+  ]
+}

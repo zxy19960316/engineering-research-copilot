@@ -1,0 +1,108 @@
+{
+  "schema_version": "m3.1-forward-inputs-r3-preparation-v1",
+  "status": "fresh_contexts_consumed_not_accepted",
+  "branch": "codex/m3.1.1-r3-acceptance-repair",
+  "r2_frozen_head": "6ec576a47a804300e2a95e6bddfff1d00c5270a3",
+  "r2_freeze_diagnostic": {
+    "path": "evals/m3/results/forward-r3/r2-freeze-diagnostic.json",
+    "raw_sha256": "177d459a3ebe3f116f79d0f0b5dac5d2e79bedfc5caa563b3af2e83e95f86416"
+  },
+  "supersedes_for_acceptance": {
+    "path": "evals/m3/results/forward-r2/acceptance-manifest.json",
+    "raw_sha256": "e674e156a203642caab4fa001c6aef670498fafcf274268e9e31f813daea1bc4",
+    "historical_status": "not_accepted",
+    "activation_condition": "All five r3 case inputs must be eligible and all five one-shot r3 outcomes must be accepted; r2 remains immutable historical evidence."
+  },
+  "cases": [
+    {
+      "case_id": "m3-f01",
+      "input_path": "evals/m3/forward-inputs-r2/m3-f01-bounded-confirmed.bundle.json",
+      "input_raw_sha256": "b0c47b0135d9a2340eb37cd3bb661fff7f4c9bee8738676c4b0976dd6796d091",
+      "input_canonical_sha256": "34cb98223d920587b1d4e54ad0722d94ff91c3826ccc19f52bc799de011884d4",
+      "m2_validation_path": "evals/m3/forward-inputs-r3/m3-f01.m2-validation.json",
+      "m2_validation_raw_sha256": "ec0ff6991c6dfe0840930278801e986c053360f92f9196cee23d4321206d0930",
+      "eligibility_path": "evals/m3/forward-inputs-r3/m3-f01.eligibility.json",
+      "eligibility_raw_sha256": "1880965a47d951e2febd3afec55e544e101a4e73dc6078fe3fbeed4ef9c0b6b8",
+      "eligibility_status": "eligible",
+      "coaching_mode": "bounded",
+      "prompt_path": "evals/m3/results/forward-r3/prompts/m3-f01.prompt.txt",
+      "prompt_raw_sha256": "59363d61a2015f894b35ee18a8c499a866e85e8d7735ba294f524d03430ad735"
+    },
+    {
+      "case_id": "m3-f02",
+      "input_path": "evals/m3/forward-inputs-r2/m3-f02-route-compatible.bundle.json",
+      "input_raw_sha256": "8db4db7f9173a8d10598af49e8ffd83dca12e34692c2827ec47031a30ab49da1",
+      "input_canonical_sha256": "fc7301d37737d85bc1bd2f0a3c2d51d842d0fe3fbdf1ded142e2d62f04d40841",
+      "m2_validation_path": "evals/m3/forward-inputs-r3/m3-f02.m2-validation.json",
+      "m2_validation_raw_sha256": "0896a70530efe55bb5307c723cbacab35c57b3de154419fe4ea01212e7ec0e53",
+      "eligibility_path": "evals/m3/forward-inputs-r3/m3-f02.eligibility.json",
+      "eligibility_raw_sha256": "42c73b8d78b5084a3fc7c1b23e526e353fc65ef152cd705f15ee3c37346a3ef5",
+      "eligibility_status": "eligible",
+      "coaching_mode": "route_specific",
+      "prompt_path": "evals/m3/results/forward-r3/prompts/m3-f02.prompt.txt",
+      "prompt_raw_sha256": "34c7f8dcb7bb9642dd9f86530e59fadebf750c63fe02ee7eb483aea5b82f3c01"
+    },
+    {
+      "case_id": "m3-f03",
+      "input_path": "evals/m3/forward-inputs-r2/m3-f03-approved-change.bundle.json",
+      "input_raw_sha256": "eb20714de4ef2b6897e69a20169d29c4f38e6f9587d0091994dad6e3e8daafe4",
+      "input_canonical_sha256": "72f0d522610f159c4bf39ba404f850dd9f86796fc7217e536614f6c44bdbee21",
+      "m2_validation_path": "evals/m3/forward-inputs-r3/m3-f03.m2-validation.json",
+      "m2_validation_raw_sha256": "cdf679a65f1780a5b37ec3f8247297b57849edac4207f44874a180e87d43c2aa",
+      "eligibility_path": "evals/m3/forward-inputs-r3/m3-f03.eligibility.json",
+      "eligibility_raw_sha256": "889823e0e705390c4be765b6a62f9b30a7fbccca57bdaba845e06391be8decdd",
+      "eligibility_status": "eligible",
+      "coaching_mode": null,
+      "prompt_path": "evals/m3/results/forward-r3/prompts/m3-f03.prompt.txt",
+      "prompt_raw_sha256": "8024f39c60b966e28c3a6545ce225f65e7574cbb3024a99327b38e0a2179703b"
+    },
+    {
+      "case_id": "m3-f04",
+      "input_path": "evals/f04-upstream/m2/f04-m2-confirmed.bundle.json",
+      "input_raw_sha256": "dbc1e778e0b53ea5c8724bcaea39803d13d524a67f8e72a24a046a380ff574e4",
+      "input_canonical_sha256": "9601cfc01609dd8aae6b76073caf66928e4aa67d9dac3fd7fe52e922cdb66526",
+      "m2_validation_path": "evals/m3/forward-inputs-r3/m3-f04.m2-validation.json",
+      "m2_validation_raw_sha256": "19c89bf9750491da28674ef6a7b870a33840f0e7c2e0c86a58a15724e71bc914",
+      "eligibility_path": "evals/m3/forward-inputs-r3/m3-f04.eligibility.json",
+      "eligibility_raw_sha256": "a110e77e791bb78a0b63c421ff8c91b34282f8eee85f2739d7e10b0e667cdfeb",
+      "eligibility_status": "eligible",
+      "coaching_mode": "bounded",
+      "upstream_acceptance_path": "evals/m3/forward-inputs-r3/f04-upstream/acceptance-manifest.json",
+      "upstream_acceptance_raw_sha256": "ba8ba8a8b3d10b80fae740e9d05e2b6957ff4ad8f1f312c15c9399bf2497a3cb",
+      "selected_direction_id": "F04-D01",
+      "prompt_path": "evals/m3/results/forward-r3/prompts/m3-f04.prompt.txt",
+      "prompt_raw_sha256": "d963dc6534e658d61d188d99683cb022aac9910abdc0e746828decfac2b3f4cf"
+    },
+    {
+      "case_id": "m3-f05",
+      "input_path": "evals/m3/forward-inputs-r2/m3-f02-route-compatible.bundle.json",
+      "input_raw_sha256": "8db4db7f9173a8d10598af49e8ffd83dca12e34692c2827ec47031a30ab49da1",
+      "input_canonical_sha256": "fc7301d37737d85bc1bd2f0a3c2d51d842d0fe3fbdf1ded142e2d62f04d40841",
+      "m2_validation_path": "evals/m3/forward-inputs-r3/m3-f05.m2-validation.json",
+      "m2_validation_raw_sha256": "3444ae5281fb455d4228117ed2bb5ef83fd184318da6f6efc1fd1ae6c8da8f93",
+      "eligibility_path": "evals/m3/forward-inputs-r3/m3-f05.eligibility.json",
+      "eligibility_raw_sha256": "46893a54bfab0c9edba09f98a2873175024ed6ad7299247781e5875aa572fd99",
+      "eligibility_status": "eligible",
+      "coaching_mode": "route_specific",
+      "reused_input_from_case": "m3-f02",
+      "required_model_boundaries": [
+        "non_preprint_safety_support_is_claim_limited",
+        "specialist_review_required",
+        "no_operational_or_safety_credit",
+        "transfer_status_hypothesis"
+      ],
+      "prompt_path": "evals/m3/results/forward-r3/prompts/m3-f05.prompt.txt",
+      "prompt_raw_sha256": "860ab750373b491b6d9e242173897dec417aa08ce5c0efbdd4d34fa09ebcf1f1"
+    }
+  ],
+  "fresh_contexts_consumed": 5,
+  "prompts_frozen": true,
+  "notes": [
+    "F01, F02, F03, F04, and revised route-specific F05 pass the r3 pre-prompt eligibility audit.",
+    "The old route-free r2 F05 input remains M2-valid but is not eligible for revised r3 F05.",
+    "F04-D01 has an independently reviewed, route-free, user-confirmed non-nuclear M1/M2 lineage. The initial raw-byte review remains preserved as invalid and the later LF-bound fresh-worktree review supersedes it for input acceptance only.",
+    "All five prompts and immutable inputs were frozen by raw SHA-256 before any r3 fresh context was consumed.",
+    "All five authorized r3 fresh contexts were consumed exactly once. F05 was accepted; F01, F02, F03, and F04 remain invalid and were not repaired or retried.",
+    "M3 remains IN_PROGRESS. M4 and M5 remain NOT_STARTED."
+  ]
+}

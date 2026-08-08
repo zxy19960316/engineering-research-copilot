@@ -1,0 +1,1 @@
+{"accepted":true,"case_id":"m3-f02","counters":{"composer":1,"finalizations":1,"retry":0,"tasks":1,"validator":1},"failure_code":null,"failure_stage":null,"retry_count":0,"retry_forbidden":true,"revision":"r5.2-f02","schema_version":"m3.1-r5.2-f02-transaction-v1","side_effects":[],"state":"completed","task_id":"019fdcb5-14e4-7462-be4f-379b72171a4d","unexpected_artifacts":[]}

@@ -1,0 +1,279 @@
+{
+  "coaching_mode": "bounded",
+  "method_cards": [
+    {
+      "schema_version": "m3.1",
+      "card_id": "card:experiment_measurement_uq:1",
+      "method_family": "experiment_measurement_uq",
+      "applicability": {
+        "supported_claim_types": [
+          "data_availability",
+          "uncertainty_quality"
+        ],
+        "required_inputs": [
+          "Measurand: vibration amplitude/time-series response for each declared channel, with physical units and frequency band.",
+          "Sensor and DAQ provenance: sensor/transducer identity, channel mapping, sampling rate, acquisition path, and version/date when available.",
+          "Calibration trace: reference identity, certificate/version/date, corrections, valid range, calibration uncertainty, and applicability limits.",
+          "Operating-condition strata: speed, load, fault state, sensor position/mounting, rig geometry, record duration, and sampling rate.",
+          "Defined experimental unit and repeatability unit: an independent repeated acquisition under unchanged bearing, sensor/DAQ, mounting, and operating-condition state.",
+          "Reproducibility factors: operator, instrument/DAQ, refit or mounting, batch, site/rig, and time, with each factor marked present or missing.",
+          "Measurement model from measurand through sensor/DAQ, calibration, acquisition, processing, and reported quantity, preserving units at every stage.",
+          "Uncertainty budget with random/systematic components, distributions or bounds, correlations, calibration, resolution, drift, sampling, and model-form contributions.",
+          "Missingness ledger for absent or ambiguous units, provenance, calibration, repeatability, reproducibility, and UQ components; do not impute evidence.",
+          "Unit-consistency and frequency-band compatibility checks before any comparison.",
+          "Metric bindings: M1 measurement-metadata completeness fraction and M2 95% interval coverage for repeated-condition summaries, both in fraction [0,1].",
+          "Control definition and a declared blocking or randomization decision that preserves independent experimental units."
+        ],
+        "incompatible_conditions": [
+          "Missing, ambiguous, or invalid measurand units, channel semantics, or frequency-band definition.",
+          "Missing or invalid sensor/transducer or DAQ provenance, including unknown sampling rate when needed for comparability.",
+          "Missing calibration identity, valid range, or calibration uncertainty, or calibration used outside its valid range.",
+          "Unresolved operating-condition strata or missing labels that prevent the declared experimental unit or repeated-condition grouping.",
+          "Repeatability or reproducibility factors required for the claimed interpretation are absent without an explicit missing-evidence result.",
+          "An uncertainty budget is missing or contains unsupported components for the claimed interval.",
+          "Unit inconsistency, unverified conversion, or cross-dataset comparability treated as established.",
+          "Missing control definition, unresolved nuisance-factor blocking/randomization decision, or pseudo-replication risk.",
+          "Unavailable qualified specialist or facility approval for any later hazardous, destructive, human, radiation, pressure, high-voltage, biological, or regulated measurement."
+        ]
+      },
+      "assumptions": [
+        "The measurand is the declared vibration amplitude/time-series response; its physical unit and frequency band are record-specific and must not be inferred.",
+        "Operating range is limited to each record's declared sensor, calibration, speed, load, and fault range; no out-of-range extrapolation is assumed.",
+        "The experimental unit is an independent repeated condition-run or record; individual time samples are not independent replicates.",
+        "The response quantities are M1 measurement-metadata completeness fraction and M2 95% interval coverage for repeated-condition summaries.",
+        "Measurement-chain stability, traceability, and sensitivity to the minimum meaningful effect are hypotheses requiring checks; no empirical calibration, repeatability, reproducibility, or UQ success is assumed.",
+        "Random and systematic components and their dependence structure are either supported by evidence or explicitly marked missing before interval interpretation.",
+        "Repeatability means unchanged-condition measurement; reproducibility varies declared operator, instrument/DAQ, mounting/refit, batch/site/rig, or time factors as available.",
+        "Cross-dataset comparability and transfer remain hypothetical until target-domain decisive evidence satisfies the upstream criteria.",
+        "Any later intervention comparison must isolate the measurement-provenance, calibration, R&R, or UQ screening step; this bounded card authorizes no intervention."
+      ],
+      "minimum_resources": [
+        {
+          "resource": "offline_analysis_wall_clock",
+          "required_value": 1,
+          "unit": "h",
+          "source_constraint_id": "RL-hours"
+        },
+        {
+          "resource": "public_dataset_records_considered",
+          "required_value": 1,
+          "unit": "datasets",
+          "source_constraint_id": "RL-datasets"
+        },
+        {
+          "resource": "dataset_or_model_download_volume",
+          "required_value": 0,
+          "unit": "GB",
+          "source_constraint_id": "RL-download"
+        },
+        {
+          "resource": "equipment_control_sessions",
+          "required_value": 0,
+          "unit": "sessions",
+          "source_constraint_id": "RL-equipment"
+        }
+      ],
+      "inherited_constraints": [
+        {
+          "constraint_id": "RL-hours",
+          "resource": "offline_analysis_wall_clock",
+          "operator": "<=",
+          "value": 16,
+          "unit": "h"
+        },
+        {
+          "constraint_id": "RL-datasets",
+          "resource": "public_dataset_records_considered",
+          "operator": "<=",
+          "value": 6,
+          "unit": "datasets"
+        },
+        {
+          "constraint_id": "RL-download",
+          "resource": "dataset_or_model_download_volume",
+          "operator": "<=",
+          "value": 0,
+          "unit": "GB"
+        },
+        {
+          "constraint_id": "RL-equipment",
+          "resource": "equipment_control_sessions",
+          "operator": "<=",
+          "value": 0,
+          "unit": "sessions"
+        }
+      ],
+      "baselines": [
+        "Metadata-only reuse without an explicit calibration, R&R, and UQ screening step.",
+        "Do not interpret classifier accuracy or pooled signal summaries as measurement validity."
+      ],
+      "controls": [
+        "Use a declared reference record or condition with its existing metadata only as a field-extraction control; it is not proof of calibration.",
+        "Block by speed, load, fault state, sensor position/mounting, and rig when available, and state any omitted factor.",
+        "Preserve independent condition-runs or records as the analysis unit; do not use time samples as replicate controls.",
+        "Preserve natural order unless a separately authorized design justifies randomization or counterbalancing; no data collection is authorized here."
+      ],
+      "procedure_outline": [
+        "Define the record-specific measurand, units, frequency band, experimental unit, and repeatability unit.",
+        "Audit existing declared sensor/DAQ provenance, operating-condition strata, and calibration trace; log missing, invalid, and out-of-range items without repair.",
+        "Separate within-condition repeatability from reproducibility across declared operator, instrument/DAQ, mounting, batch/site/rig, and time factors; emit missing-evidence status when absent.",
+        "Assess M1 and, only when supported by a declared uncertainty budget and repeated-condition summaries, M2 95% interval coverage; keep the upstream stop and pivot thresholds unchanged.",
+        "Keep this bounded outline advisory: do not collect data, download records, operate equipment, or claim calibration, repeatability, reproducibility, or UQ success."
+      ],
+      "primary_metrics": [
+        "M1",
+        "M2"
+      ],
+      "uncertainty_handling": [
+        "Construct the measurement model from the vibration measurand through sensor/transducer, DAQ, calibration, processing, and reported quantity, preserving units.",
+        "Budget random and systematic components with distributions or bounds, correlations, calibration contribution, resolution, drift, sampling, and model-form terms.",
+        "Separate aleatory variability from epistemic uncertainty and identify dominant components affecting M1 and M2; do not fill missing components.",
+        "Propagate only supported components and state 95% interval coverage semantics for repeated-condition summaries; no empirical coverage success is claimed.",
+        "Report calibration residuals, repeatability variation, reproducibility variation, missingness, and control drift alongside the metrics when available.",
+        "Model-based uncertainty does not substitute for sensor calibration, repeatability, reproducibility, or traceability; cross-dataset transfer remains hypothetical."
+      ],
+      "validation_checks": [
+        "Verify measurand, units, channel semantics, frequency band, and unit consistency at each measurement-model stage.",
+        "Check sensor/DAQ provenance, sampling rate, operating-condition strata, record duration, and mounting.",
+        "Check calibration identity, valid range, corrections, residuals, and uncertainty; reject extrapolation.",
+        "Check control behavior and the declared blocking or randomization decision while preserving the independent experimental unit.",
+        "Check repeatability under unchanged conditions and reproducibility across declared factors; record missing evidence.",
+        "Check missingness and missing-not-at-random risk; do not treat absent metadata as zero evidence or success.",
+        "Verify M1 and M2 estimands, aggregation, interval-coverage semantics, and exact units; do not substitute sample count for independent replication.",
+        "Treat structural bundle validation as offline deterministic contract evidence only, not apparatus, calibration, or experiment confirmation."
+      ],
+      "failure_modes": [
+        "Saturation or range violation can invalidate the measurand and reduce the defensible completeness or coverage assessment.",
+        "Drift or hysteresis can widen systematic uncertainty and reduce M2; preserve the unresolved component.",
+        "Contamination, batch effects, or mounting/refit changes can masquerade as operating-condition effects and corrupt repeatability or reproducibility.",
+        "Confounding by speed, load, fault state, sensor position, or rig can make pooled comparisons non-identifiable.",
+        "Pseudo-replication from treating time samples as independent can understate uncertainty and inflate M2.",
+        "Failed blinding or uncontrolled analysis choices can bias coverage; preserve control and analysis decisions.",
+        "Missing-not-at-random metadata or repeated-run records can bias M1 and make M2 uncomputable; report missingness.",
+        "Calibration extrapolation or unsupported model-form components can invalidate the uncertainty budget; do not claim traceability or coverage.",
+        "Cross-dataset unit, sensor-sensitivity, frequency-band, or rig mismatch can invalidate transfer; keep comparability hypothetical."
+      ],
+      "stop_conditions": [
+        {
+          "criterion_type": "stop",
+          "metric_id": "M1",
+          "operator": "<",
+          "value": 0.6,
+          "unit": "fraction [0,1]"
+        },
+        {
+          "criterion_type": "stop",
+          "metric_id": "M2",
+          "operator": "<",
+          "value": 0.8,
+          "unit": "fraction [0,1]"
+        }
+      ],
+      "pivot_conditions": [
+        {
+          "criterion_type": "pivot",
+          "metric_id": "M1",
+          "operator": ">=",
+          "value": 0.6,
+          "unit": "fraction [0,1]"
+        },
+        {
+          "criterion_type": "pivot",
+          "metric_id": "M2",
+          "operator": ">=",
+          "value": 0.8,
+          "unit": "fraction [0,1]"
+        }
+      ],
+      "safety_boundaries": [
+        "This bounded card authorizes no equipment control, specimen handling, data collection, downloading, service, upload, deployment, or model training.",
+        "Require qualified specialist, facility, legal, ethical, and regulatory review before hazardous materials, radiation, pressure, high voltage, biological exposure, human participants, destructive testing, or regulated measurement.",
+        "Do not infer safety, calibration validity, repeatability, reproducibility, transfer, or measurement success from public records or structural validation.",
+        "Apply the stricter facility or domain boundary and keep any physical measurement or safety determination outside this card."
+      ],
+      "source_ledger": [
+        {
+          "source_id": "source:F04-P04",
+          "candidate_id": "F04-P04",
+          "basis_level": "abstract",
+          "support_types": [
+            "result"
+          ],
+          "supports": [
+            "Public raw vibration signals span bearing types, defect combinations, loads, duration, and sampling rate."
+          ],
+          "does_not_support": [
+            "Dataset construction alone does not prove sensor calibration or repeated mounting stability.",
+            "It does not establish repeatability, reproducibility, or cross-dataset comparability."
+          ],
+          "limitations": [
+            "Abstract-level evidence only; a dataset description is not a traceable measurement-chain record.",
+            "No universal unit, calibration, or UQ conclusion may be inferred from this record."
+          ]
+        },
+        {
+          "source_id": "source:F04-P14",
+          "candidate_id": "F04-P14",
+          "basis_level": "abstract",
+          "support_types": [
+            "method",
+            "result"
+          ],
+          "supports": [
+            "The paper applies standard uncertainty to rolling-bearing vibration time series and relates uncertainty variation to failure diameter."
+          ],
+          "does_not_support": [
+            "Its narrower venue and scope do not establish a general public-data calibration protocol.",
+            "It does not establish traceability, repeatability, reproducibility, or transfer for the selected public records."
+          ],
+          "limitations": [
+            "Abstract-level evidence with narrower scope; it does not provide a target-record calibration trace.",
+            "Reported uncertainty treatment is not empirical calibration or proof of UQ success for this direction."
+          ]
+        },
+        {
+          "source_id": "source:F04-P13",
+          "candidate_id": "F04-P13",
+          "basis_level": "abstract",
+          "support_types": [
+            "method",
+            "result"
+          ],
+          "supports": [
+            "The Gage R&R study makes low repeatability/reproducibility and lack of reference bearings an explicit measurement-system limitation."
+          ],
+          "does_not_support": [
+            "It does not quantify uncertainty for any one public dataset or justify universal limits.",
+            "It does not establish cross-dataset equivalence or target-domain measurement success."
+          ],
+          "limitations": [
+            "Abstract-level evidence; the reported measurement-system limitation cannot be transferred automatically to the selected records.",
+            "No target-record calibration trace or matched repeat-run evidence is established here."
+          ]
+        },
+        {
+          "source_id": "source:F04-P15",
+          "candidate_id": "F04-P15",
+          "basis_level": "abstract",
+          "support_types": [
+            "method",
+            "result",
+            "transfer"
+          ],
+          "supports": [
+            "The study estimates time-varying intervals for rolling-bearing vibration performance and checks interval coverage against a confidence level."
+          ],
+          "does_not_support": [
+            "Model-based uncertainty is not a substitute for sensor calibration or repeatability evidence.",
+            "It does not establish target-domain transfer, cross-dataset comparability, or empirical M2 success."
+          ],
+          "limitations": [
+            "Abstract-level evidence; interval construction and coverage do not establish a traceable target measurement chain.",
+            "Any transfer to public records is only a method-level hypothesis conditioned on units, provenance, operating strata, and supported assumptions."
+          ]
+        }
+      ]
+    }
+  ],
+  "domain_overlays": []
+}

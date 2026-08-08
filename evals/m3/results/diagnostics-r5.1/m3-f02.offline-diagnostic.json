@@ -1,0 +1,32 @@
+{
+  "schema_version": "m3.1-r5.1-offline-diagnostic-v1",
+  "evidence_class": "offline_diagnostic",
+  "case_id": "m3-f02",
+  "failure_stage": "m3_validation",
+  "failure_code": "invalid_composed_m3_bundle",
+  "contract_errors": [],
+  "validator_errors": [
+    "method_card_pivot_condition_not_authoritative",
+    "method_card_stop_condition_not_authoritative"
+  ],
+  "evidence_gaps": [],
+  "source_sha256": "8db4db7f9173a8d10598af49e8ffd83dca12e34692c2827ec47031a30ab49da1",
+  "model_final_sha256": "f04338359921ce1e8189667c549f44a3d6b82891a4df24ed38f5845a1d8443d7",
+  "payload_sha256": "f04338359921ce1e8189667c549f44a3d6b82891a4df24ed38f5845a1d8443d7",
+  "source_canonical_sha256": "fc7301d37737d85bc1bd2f0a3c2d51d842d0fe3fbdf1ded142e2d62f04d40841",
+  "model_final_canonical_sha256": "b6edbca51ee15b194441eab52eff5425eb08142526fed47df678f878393a7ba0",
+  "source_git_blob_oid": "717e2820e9587fc2f9593d0aa0664497987260cf",
+  "model_final_git_blob_oid": "182cad048d39f52cda5b05f74f4c0f6834fbfb97",
+  "model_final_git_blob_sha256": "72b0aaef8fdabb3456d1226ba4ef93705512d60c74cccf5c29da2f0278b154a2",
+  "worktree_eol_observation": "model_final_has_one_crlf_while_the_immutable_git_blob_has_lf",
+  "composer_exit_code": 1,
+  "composer_stderr_nonempty": false,
+  "composed_output_created": false,
+  "diagnostic_invocation_count": 1,
+  "retry_count": 0,
+  "does_not_prove": [
+    "This offline reconstruction is not a fresh-context acceptance case.",
+    "This diagnostic does not replace, repair, retry, or overwrite the immutable r5 F02 transaction or receipt.",
+    "No experiment, simulation, training, route execution, deployment, transfer result, or safety conclusion is established."
+  ]
+}

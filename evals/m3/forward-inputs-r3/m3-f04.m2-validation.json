@@ -1,0 +1,22 @@
+{
+  "schema_version": "m3.1-r3-m2-validation-receipt-v1",
+  "case_id": "m3-f04",
+  "status": "valid",
+  "errors": [],
+  "evidence_gaps": [],
+  "invocation_count": 1,
+  "validator": "skills/engineering-research-copilot/scripts/validate_m2_direction_bundle.py",
+  "validator_exit_code": 0,
+  "validator_output": {
+    "status": "valid",
+    "errors": [],
+    "evidence_gaps": []
+  },
+  "input_path": "evals/f04-upstream/m2/f04-m2-confirmed.bundle.json",
+  "input_raw_sha256": "dbc1e778e0b53ea5c8724bcaea39803d13d524a67f8e72a24a046a380ff574e4",
+  "input_canonical_sha256": "9601cfc01609dd8aae6b76073caf66928e4aa67d9dac3fd7fe52e922cdb66526",
+  "source_m1_acceptance_status": "complete",
+  "constructed_by_context": "codex-task:019fd467-790b-7551-9157-ddd3b2222ca1",
+  "reviewed_by_context": "codex-task:019fd562-79ce-7b50-8271-bcf72e5e9620",
+  "reviewed_head": "738f337b2dd645fc5e0c8c159fd42d02b67defc5"
+}

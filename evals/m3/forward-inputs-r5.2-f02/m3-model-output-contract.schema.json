@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "m3.1-forward-r5.2-f02-model-output-contract-v1",
+  "title": "M3.1 r5.2-f02 model output",
+  "description": "A closed M3 payload with exact upstream condition authority and a fail-closed raw text boundary.",
+  "allOf": [
+    {
+      "$ref": "../forward-inputs-r5/m3-model-output-contract.schema.json"
+    }
+  ],
+  "x-output-boundary": {
+    "encoding": "UTF-8",
+    "utf8_bom": "reject",
+    "first_non_whitespace_byte": "{",
+    "last_non_whitespace_byte": "}",
+    "exactly_one_json_object": true,
+    "markdown_fences_allowed": false,
+    "leading_or_trailing_prose_allowed": false,
+    "comments_allowed": false,
+    "duplicate_object_keys_allowed": false,
+    "non_finite_numbers_allowed": false,
+    "automatic_repair_allowed": false
+  },
+  "x-authority-inheritance": {
+    "source": "source_m2_bundle.route_output",
+    "condition_fields": [
+      "criterion_type",
+      "metric_id",
+      "operator",
+      "value",
+      "unit"
+    ],
+    "rule": "Every emitted stop_conditions or pivot_conditions object, including overlay additional_stop_conditions, must be an exact JSON-semantic copy of one authoritative object from the matching route_output array. Do not synthesize, normalize, convert, round, paraphrase, or combine any field.",
+    "fail_closed": "If an exact authoritative object cannot be copied, emit no invented replacement and do not claim a valid method payload."
+  },
+  "x-base-contract-binding": {
+    "path": "evals/m3/forward-inputs-r5/m3-model-output-contract.schema.json",
+    "git_blob_oid": "e987a2568619de2a8dcb0595b5e7370580195af2",
+    "git_blob_sha256": "8f2dc8c2d5bcaccb29f02b1c078ac0ff5076e2d5bf9d2f713a0ce7b876249e21",
+    "canonical_sha256": "c9a80d2ab6aa6b755f555d2e5c96c73bb446268e88a958c2288112c442cd8f1b"
+  },
+  "x-request-constraint": {
+    "selected_mode": "strict_text_json_fail_closed",
+    "native_structured_output_model_support": true,
+    "current_execution_surface_exposes_schema_parameter": false,
+    "capability_recheck_required_before_gate_3": true,
+    "request_level_schema_config_sha256": null
+  }
+}

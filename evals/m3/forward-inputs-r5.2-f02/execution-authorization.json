@@ -1,0 +1,7 @@
+{
+  "revision": "r5.2-f02",
+  "authorized": true,
+  "prompt_sha256": "815eae213701505755fb7edc4d64d16089bd4e14e14dc6ec1e16c787918ea1df",
+  "input_binding_sha256": "3d90ed7f02a865eb3cab0fd8f70f0407ce5a80a93e500996686e2fad54c1709d",
+  "authorized_task_count": 1
+}

@@ -1,0 +1,23 @@
+{
+  "schema_version": "m3.1-forward-dispatch-failure-r4-v1",
+  "case_id": "m3-f03",
+  "dispatch_status": "consumed_with_callback_failure",
+  "failure_codes": [
+    "consumable_callback_failed",
+    "missing_future_path_key:receipt_validator_receipt_json"
+  ],
+  "fresh_context_id": "019fd626-8d87-7020-adcc-b42e03f77729",
+  "finalization_count": 1,
+  "composer_invocation_count": 0,
+  "validator_invocation_count": 1,
+  "model_final_path": "evals/m3/results/forward-r4/m3-f03.outcome.json",
+  "model_final_raw_sha256": "e7b0e4a8c8f657a358422d4838e0d45f7fe1a70505f9c8ca67f6166156af87f4",
+  "model_final_byte_length": 615,
+  "validation_path": "evals/m3/results/forward-r4/m3-f03.validation.json",
+  "validation_raw_sha256": "3c425e8fb187d6fd76e5483918b5c06de8de75eac15cf15dceb6f62560ed33c1",
+  "validator_exit_code": 0,
+  "validator_status": "accepted_expected_block",
+  "retry_performed": false,
+  "repair_performed": false,
+  "note": "The model final and one-shot outcome-validation receipt were written before the consumable callback failed while writing its invocation receipt. No second dispatcher, composer, or validator call was made. The r4 gate is not accepted because the authorized one-shot consumer closed with a callback failure."
+}

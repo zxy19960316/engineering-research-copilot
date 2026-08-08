@@ -1,0 +1,60 @@
+{
+  "schema_version": "m3.1-historical-json-identities-v1",
+  "evidence_head": "1b696bce53ee0a11163bfe4f91a9a49ab3af6f49",
+  "artifacts": [
+    {
+      "path": "evals/m3/forward-inputs-r2/m3-f01-bounded-confirmed.bundle.json",
+      "legacy_raw_sha256": "b0c47b0135d9a2340eb37cd3bb661fff7f4c9bee8738676c4b0976dd6796d091",
+      "git_blob_oid": "47f26d30cebadeaa919553440bc77ae2d20fc3ec",
+      "canonical_sha256": "34cb98223d920587b1d4e54ad0722d94ff91c3826ccc19f52bc799de011884d4"
+    },
+    {
+      "path": "evals/m1/results/2026-08-04-pwr-sb-loca-rerun.bundle.json",
+      "legacy_raw_sha256": "ff6d4eed792358049213b114dbca3d3850c1c95caad68bb0e50cfb6f5b802529",
+      "git_blob_oid": "978b60bc305b70495411e8fe29b916c5afdcb7a4",
+      "canonical_sha256": "667fcae265e6ac01699bf6b7f328ca6ef4bbcbb0ede2d508a9970d5c8474e376"
+    },
+    {
+      "path": "evals/m3/forward-inputs-r2/m3-f02-route-compatible.bundle.json",
+      "legacy_raw_sha256": "8db4db7f9173a8d10598af49e8ffd83dca12e34692c2827ec47031a30ab49da1",
+      "git_blob_oid": "717e2820e9587fc2f9593d0aa0664497987260cf",
+      "canonical_sha256": "fc7301d37737d85bc1bd2f0a3c2d51d842d0fe3fbdf1ded142e2d62f04d40841"
+    },
+    {
+      "path": "evals/m3/forward-inputs-r2/m3-f03-approved-change.bundle.json",
+      "legacy_raw_sha256": "eb20714de4ef2b6897e69a20169d29c4f38e6f9587d0091994dad6e3e8daafe4",
+      "git_blob_oid": "1b8948d0cb179ec99228831440baeaeec80bda21",
+      "canonical_sha256": "72f0d522610f159c4bf39ba404f850dd9f86796fc7217e536614f6c44bdbee21"
+    },
+    {
+      "path": "evals/m1/results/2026-08-04-bearing-fault-rerun-2.bundle.json",
+      "legacy_raw_sha256": "bee8c0f739647512298d180eb68c934e96dd55054a4aec851ddead7b8e846173",
+      "git_blob_oid": "e6e3143c112a9a4fc39ac97fd3c94812487165ee",
+      "canonical_sha256": "4901188127d76809c563a539147a3f74e8e45564fc323955df02baf166050df1"
+    },
+    {
+      "path": "evals/m3/forward-inputs-r2/m3-f05-nuclear-ml.bundle.json",
+      "legacy_raw_sha256": "ff0a68409b50123d800c895ab0e8d6ee46374549cc9ffc7e490d7db89b126377",
+      "git_blob_oid": "b3a92e1f0fbee1545a01ea38fb11f31c7b388905",
+      "canonical_sha256": "34cb98223d920587b1d4e54ad0722d94ff91c3826ccc19f52bc799de011884d4"
+    },
+    {
+      "path": "evals/m3/forward-inputs/m3-f02-route-compatible.bundle.json",
+      "legacy_raw_sha256": "73d8dd1c2c3aac56ee865dc9b9465b5a16a967d4b5ff9eb3d78b2afb722bad4e",
+      "git_blob_oid": "c1043ec8b72daecdc24a1dc9c32db1dff95eec03",
+      "canonical_sha256": "ea7193d83e3d5d894a7939edd79de59470d67bbc48f3d4e6e32758dbcc360343"
+    },
+    {
+      "path": "evals/m3/forward-inputs/m3-f03-approved-change.bundle.json",
+      "legacy_raw_sha256": "58d7b2724f414cb1c5c7a831284ec12ba2bcd8c34b929e7efd1a18d1c7e68c9c",
+      "git_blob_oid": "acdbbeeafb8010ad9d112af955b57d8d7b4a8bda",
+      "canonical_sha256": "052a5417f3e3e86c050f51d8bd2ccbf6344b53ca61330cb19b969baf3d494a8e"
+    },
+    {
+      "path": "evals/m3/forward-inputs/m3-f05-nuclear-ml.bundle.json",
+      "legacy_raw_sha256": "10275a834ed6cc29265da63f649ddfd0250fa32b28700a52416a0f0e9f7c7cf4",
+      "git_blob_oid": "7534cc3bd6220b9b7a547d4300f373e21aae7936",
+      "canonical_sha256": "1b2a1c24bcf688c812d477c375aa40af00eee1c177e67fe13fa9dc8ec93b0251"
+    }
+  ]
+}

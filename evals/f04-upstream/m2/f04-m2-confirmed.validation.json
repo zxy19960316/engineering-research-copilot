@@ -1,0 +1,27 @@
+{
+  "schema_version": "f04-m2.1.1-confirmation-validation-v1",
+  "artifact": "evals/f04-upstream/m2/f04-m2-confirmed.bundle.json",
+  "validator": "skills/engineering-research-copilot/scripts/validate_m2_direction_bundle.py",
+  "command": "python -X utf8 skills/engineering-research-copilot/scripts/validate_m2_direction_bundle.py evals/f04-upstream/m2/f04-m2-confirmed.bundle.json",
+  "executed_at": "2026-08-06T12:28:18+08:00",
+  "exit_code": 0,
+  "invocation_count": 1,
+  "input_raw_sha256": "dbc1e778e0b53ea5c8724bcaea39803d13d524a67f8e72a24a046a380ff574e4",
+  "input_canonical_sha256": "9601cfc01609dd8aae6b76073caf66928e4aa67d9dac3fd7fe52e922cdb66526",
+  "validator_output": {
+    "status": "valid",
+    "errors": [],
+    "evidence_gaps": []
+  },
+  "validator_stdout": "{\"status\":\"valid\",\"errors\":[],\"evidence_gaps\":[]}",
+  "constructed_by_context": "codex-task:019fd467-790b-7551-9157-ddd3b2222ca1",
+  "proves": [
+    "The route-free F04-D01 successor satisfies the M2.1.1 structural contract.",
+    "The exact user excerpt is bound to F04-D01 and the immutable pre-confirmation bundle hash."
+  ],
+  "does_not_prove": [
+    "Route execution, experiment, simulation, training, or deployment.",
+    "Empirical bearing-dataset comparability or calibration traceability.",
+    "M3 eligibility or fresh-context acceptance."
+  ]
+}

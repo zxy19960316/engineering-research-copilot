@@ -1,0 +1,127 @@
+{
+  "schema_version": "m3.1-r5.2-f02-execution-control-v1",
+  "status": "ready_for_one_shot_fresh_execution",
+  "revision": "r5.2-f02",
+  "case_id": "m3-f02",
+  "branch": "codex/m3.1.1-r5.2-f02-one-shot-fresh-execution",
+  "gate_2": {
+    "head": "05e64d9678f9755126b1c1a0bfa4835bd8296e08",
+    "ci_run_id": 31184790162,
+    "ci_conclusion": "success"
+  },
+  "authorization_receipt": {
+    "path": "evals/m3/forward-inputs-r5.2-f02/execution-authorization.json",
+    "raw_sha256": "84a684c6a5b12ad207f41fea04dfe26bb88d4c2cb233e774ff36fef110e62604"
+  },
+  "prompt": {
+    "path": "evals/m3/forward-inputs-r5.2-f02/m3-f02.prompt.txt",
+    "raw_sha256": "815eae213701505755fb7edc4d64d16089bd4e14e14dc6ec1e16c787918ea1df"
+  },
+  "input_binding": {
+    "path": "evals/m3/forward-inputs-r5.2-f02/m3-f02.input-binding.json",
+    "raw_sha256": "3d90ed7f02a865eb3cab0fd8f70f0407ce5a80a93e500996686e2fad54c1709d"
+  },
+  "output_mode": {
+    "path": "evals/m3/forward-inputs-r5.2-f02/m3-f02.output-mode.json",
+    "raw_sha256": "77bfe5b562ed5c0fa5a2b889b6a235ec101a590f3cdce21a333f4754c292950e",
+    "selected_mode": "strict_text_json_fail_closed",
+    "structured_output_request_config": null,
+    "capability_rechecked_at": "2026-08-07",
+    "request_fields_observed": [
+      "model",
+      "prompt",
+      "target",
+      "thinking",
+      "title"
+    ],
+    "response_format_field_exposed": false,
+    "json_schema_field_exposed": false
+  },
+  "task_request": {
+    "surface": "codex_app.create_thread",
+    "create_thread_arguments": {
+      "prompt": "This is the authorized r5.2-f02 execution.\nExecute the frozen task now.\nRead only AGENTS.md, skills/engineering-research-copilot/SKILL.md, skills/engineering-research-copilot/references/core-method-coaching.md, skills/engineering-research-copilot/references/method-data-ml-hybrid.md, skills/engineering-research-copilot/references/domain-nuclear-ml.md, evals/m3/forward-inputs-r5/m3-model-output-contract.schema.json, evals/m3/forward-inputs-r5.2-f02/m3-model-output-contract.schema.json, this prompt, and evals/m3/forward-inputs-r2/m3-f02-route-compatible.bundle.json. Do not read tests, fixtures, validators, composers, manifests, diagnostics, historical results, or other cases. Do not use network access or write files.\n\nTreat the M2 JSON as immutable. Require route_output to be present, approved_constraint_changes to be exactly empty, and every route trace to match the selected claim metrics and required preconditions. Derive actual Go, Stop, and Pivot metric coverage from the route arrays. If any compatibility condition does not hold, preserve the closed contract and do not repair the input.\n\nBefore drafting any card, build an internal authority checklist directly from route_output.stop_conditions and route_output.pivot_conditions. For every condition you intend to emit, compare all five fields: criterion_type, metric_id, operator, value, and unit. Copy one complete authoritative object exactly. Do not synthesize a threshold, change criterion type, substitute a metric, convert a unit, round a number, or paraphrase a condition. Apply the same exact-copy rule to overlay additional_stop_conditions. If an exact match is unavailable, stop closed instead of inventing a condition.\n\nFinalize exactly once. Return exactly one JSON object. The first non-whitespace byte must be {. The last non-whitespace byte must be }. Use no Markdown fences, no prose before or after the object, no comments, and no duplicate object keys. Emit no second JSON value. The UTF-8 BOM is forbidden. Never repair, rewrite, or retry an invalid final response.\n\nRead both frozen output-contract schemas. Derive coaching_mode from the immutable input: bounded requires route_output to be null; route_specific requires route_output to be present and compatible. Use metric IDs as strings in primary_metrics; use criterion objects only in stop_conditions and pivot_conditions.\n\nThe object must contain exactly coaching_mode, method_cards, and domain_overlays. Set coaching_mode to route_specific. Create at least one closed data_ml_hybrid method card and one nuclear_engineering_ml overlay bound to its base card.\n\nEvery card must contain exactly schema_version, card_id, method_family, applicability, assumptions, minimum_resources, inherited_constraints, baselines, controls, procedure_outline, primary_metrics, uncertainty_handling, validation_checks, failure_modes, stop_conditions, pivot_conditions, safety_boundaries, and source_ledger. Applicability contains exactly supported_claim_types, required_inputs, and incompatible_conditions. Copy inherited_constraints exactly from the selected direction. Bind minimum resources within exact inherited ceilings. Use only selected-direction claim types and route metric IDs. Keep every required list non-empty.\n\nThe overlay must contain exactly schema_version, overlay_id, domain, base_card_ids, additional_assumptions, additional_failure_modes, additional_validation_checks, additional_stop_conditions, specialist_review_boundaries, transfer_status, and source_ledger. Use domain nuclear_engineering_ml and transfer_status hypothesis. Copy one applicable authoritative route stop condition exactly into additional_stop_conditions. Require specialist review and keep code verification, solution verification, validation, UQ, ML evaluation, target-domain transfer, operational qualification, and safety credit separate. State that offline contract validation is not nuclear-safety validation.\n\nUse only eligible verified round-two candidates. Map basis levels exactly. Metadata supports only bibliographic_identity. The overlay ledger must include at least one eligible non-preprint abstract- or full-text-level source with safety support, limited to the exact recorded safety boundary. Do not run the route or claim empirical, operational, licensing, protection, or safety success.\n",
+      "target": {
+        "type": "project",
+        "projectId": "ff35b25f-4644-41c8-9073-74c697559439",
+        "environment": {
+          "type": "worktree",
+          "startingState": {
+            "type": "branch",
+            "branchName": "codex/m3.1.1-r5.2-f02-one-shot-fresh-execution"
+          }
+        }
+      },
+      "title": "M3 r5.2-f02 authorized one-shot execution"
+    },
+    "model_field": "omitted",
+    "thinking_field": "omitted",
+    "request_envelope_sha256": "8617b95e1560632285fd5b08dc114a16a37718f83e7769cc9ff00d79fa92ce1f",
+    "model_visible_messages_projection": "initial_user_message_only",
+    "model_visible_messages_sha256": "fc3ca3d98bf96c9e3d389df38d49b35e00c636231b2aa47c9d00be72b28e6f49"
+  },
+  "result_root": "evals/m3/results/forward-r5.2-f02",
+  "future_paths": {
+    "launch_attempt_json": "m3-f02.launch-attempt.json",
+    "launch_receipt_json": "m3-f02.launch.json",
+    "raw_model_final": "m3-f02.model-final.raw",
+    "raw_response_observation_json": "m3-f02.raw-response-observation.json",
+    "context_finalization_json": "m3-f02.context.json",
+    "payload_json": "m3-f02.payload.json",
+    "composer_invocation_receipt_json": "m3-f02.composer-receipt.json",
+    "composed_bundle_json": "m3-f02.bundle.json",
+    "validator_receipt_json": "m3-f02.validator-receipt.json",
+    "validation_json": "m3-f02.validation.json",
+    "case_transaction_json": "m3-f02.transaction.json",
+    "terminal_manifest_json": "terminal-manifest.json"
+  },
+  "limits": {
+    "tasks": 1,
+    "finalizations": 1,
+    "composer": 1,
+    "validator": 1,
+    "retry": 0
+  },
+  "prelaunch_counters": {
+    "tasks": 0,
+    "finalizations": 0,
+    "composer": 0,
+    "validator": 0,
+    "retry": 0
+  },
+  "permissions": {
+    "retry_allowed": false,
+    "repair_allowed": false,
+    "followup_message_allowed": false,
+    "second_task_allowed": false,
+    "second_finalization_allowed": false,
+    "historical_task_reuse_allowed": false,
+    "historical_result_mutation_allowed": false,
+    "cross_revision_aggregation_authorized": false,
+    "m3_closure_authorized": false,
+    "gate_4_authorized": false,
+    "direct_api_substitution_authorized": false
+  },
+  "historical_evidence": {
+    "forward_r5": {
+      "head": "1b696bce53ee0a11163bfe4f91a9a49ab3af6f49",
+      "path": "evals/m3/results/forward-r5",
+      "required_diff": "empty"
+    },
+    "forward_r5_1_f02": {
+      "head": "fb5eec44bbf86446cf12bda2bddc76fcb07a7e69",
+      "path": "evals/m3/results/forward-r5.1-f02",
+      "required_diff": "empty",
+      "task_id": "019fdb7c-1728-7a92-b6cf-b0eb631a18b8",
+      "retry_forbidden": true
+    }
+  },
+  "does_not_authorize": [
+    "a second task or second finalization",
+    "a retry, repair, or follow-up message",
+    "historical evidence mutation",
+    "cross-revision aggregation",
+    "M3 closure",
+    "Gate 4 or M4"
+  ]
+}

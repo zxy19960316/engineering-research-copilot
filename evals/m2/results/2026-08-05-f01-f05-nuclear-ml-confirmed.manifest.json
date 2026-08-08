@@ -1,0 +1,32 @@
+{
+  "manifest_kind": "m2.1.1_confirmed_bundle",
+  "status": "user_confirmed",
+  "baseline_commit": "d0f5e9017044ba35d0ac4559591028228f3b22d8",
+  "upstream_preconfirmation_bundle": "evals/m2/results/2026-08-05-f01-f05-nuclear-ml-pre-confirmation.bundle.json",
+  "preconfirmation_bundle_canonical_sha256": "6ab5d3d67f5450794214b2199d2f2e9ca3ed301e2773c763cff2adbfcb49dd8c",
+  "bundle_path": "evals/m2/results/2026-08-05-f01-f05-nuclear-ml-confirmed.bundle.json",
+  "bundle_file_sha256": "b0c47b0135d9a2340eb37cd3bb661fff7f4c9bee8738676c4b0976dd6796d091",
+  "bundle_canonical_sha256": "34cb98223d920587b1d4e54ad0722d94ff91c3826ccc19f52bc799de011884d4",
+  "selected_direction_id": "NEML-F01-D1",
+  "confirmation_event": {
+    "actor_role": "user",
+    "selected_direction_id": "NEML-F01-D1",
+    "source_message_id": "codex:2026-08-05:m3.1.1:forward-confirmation:neml-f01-d1",
+    "source_message_excerpt": "我确认正式方向<NEML-F01-D1>。",
+    "source_message_sha256": "b6dce1f8a66dd9fe477d7e5ca6e0cdc455feadb45992c6f33d2bff5f45678895",
+    "previous_bundle_hash": "6ab5d3d67f5450794214b2199d2f2e9ca3ed301e2773c763cff2adbfcb49dd8c"
+  },
+  "validator": {
+    "script": "skills/engineering-research-copilot/scripts/validate_m2_direction_bundle.py",
+    "scope": "M2.1.1 structural contract only",
+    "result": "valid",
+    "exit_code": 0,
+    "receipt_path": "evals/m2/results/2026-08-05-f01-f05-nuclear-ml-confirmed.validation.json",
+    "raw_output": "{\"status\":\"valid\",\"errors\":[],\"evidence_gaps\":[]}"
+  },
+  "does_not_prove": [
+    "empirical target-domain performance",
+    "nuclear safety or plant deployment",
+    "route execution, experiment, simulation, training, or resource allocation"
+  ]
+}

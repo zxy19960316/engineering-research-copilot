@@ -1,0 +1,102 @@
+{
+  "cases": [
+    {
+      "canonical_sha256": null,
+      "case_id": "m3-f01",
+      "constructed_by_context": "m2-input-preparation-context-2026-08-05:m3-f01",
+      "does_not_prove": [
+        "No M3 bundle was constructed",
+        "No empirical method performance or route execution",
+        "No user confirmation was inferred for a modified M2 artifact"
+      ],
+      "input_path": null,
+      "m2_validation_errors": [],
+      "m2_validation_evidence_gaps": [
+        "no independently accepted user_confirmed no-route M2.1.1 input with upstream numeric stop/pivot criteria"
+      ],
+      "m2_validation_status": "NOT_RUN",
+      "raw_sha256": null,
+      "reviewed_by_context": "m2-input-preparation-context-2026-08-05:m3-f01:validator-recheck",
+      "source_m1_artifact": "evals/m1/results/2026-08-04-pwr-sb-loca-rerun.bundle.json",
+      "source_m1_raw_sha256": "ff6d4eed792358049213b114dbca3d3850c1c95caad68bb0e50cfb6f5b802529"
+    },
+    {
+      "canonical_sha256": "ea7193d83e3d5d894a7939edd79de59470d67bbc48f3d4e6e32758dbcc360343",
+      "case_id": "m3-f02",
+      "constructed_by_context": "m2-input-preparation-context-2026-08-05:m3-f02",
+      "does_not_prove": [
+        "M2 structural validity does not prove route feasibility",
+        "No route step, experiment, simulation, training, or resource allocation ran"
+      ],
+      "input_path": "evals/m3/forward-inputs/m3-f02-route-compatible.bundle.json",
+      "m2_validation_errors": [],
+      "m2_validation_evidence_gaps": [],
+      "m2_validation_status": "valid",
+      "raw_sha256": "73d8dd1c2c3aac56ee865dc9b9465b5a16a967d4b5ff9eb3d78b2afb722bad4e",
+      "reviewed_by_context": "m2-input-preparation-context-2026-08-05:m3-f02:validator-recheck",
+      "source_m1_artifact": "evals/m1/results/2026-08-04-pwr-sb-loca-rerun.bundle.json",
+      "source_m1_raw_sha256": "ff6d4eed792358049213b114dbca3d3850c1c95caad68bb0e50cfb6f5b802529"
+    },
+    {
+      "canonical_sha256": "052a5417f3e3e86c050f51d8bd2ccbf6344b53ca61330cb19b969baf3d494a8e",
+      "case_id": "m3-f03",
+      "constructed_by_context": "m2-input-preparation-context-2026-08-05:m3-f03",
+      "does_not_prove": [
+        "The change record is preserved but does not authenticate approver identity",
+        "M3 must apply none of the proposed resource expansion",
+        "No empirical method performance or route execution"
+      ],
+      "input_path": "evals/m3/forward-inputs/m3-f03-approved-change.bundle.json",
+      "m2_validation_errors": [],
+      "m2_validation_evidence_gaps": [],
+      "m2_validation_status": "valid",
+      "raw_sha256": "58d7b2724f414cb1c5c7a831284ec12ba2bcd8c34b929e7efd1a18d1c7e68c9c",
+      "reviewed_by_context": "m2-input-preparation-context-2026-08-05:m3-f03:validator-recheck",
+      "source_m1_artifact": "evals/m1/results/2026-08-04-pwr-sb-loca-rerun.bundle.json",
+      "source_m1_raw_sha256": "ff6d4eed792358049213b114dbca3d3850c1c95caad68bb0e50cfb6f5b802529"
+    },
+    {
+      "canonical_sha256": null,
+      "case_id": "m3-f04",
+      "constructed_by_context": "019fd1cd-e259-72f3-9a47-b8570dd11d46",
+      "does_not_prove": [
+        "M1 stopped evidence_incomplete before M2",
+        "No M2 bundle or M3 card was constructed",
+        "No measurement, calibration, experiment, or route execution"
+      ],
+      "input_path": null,
+      "m2_validation_errors": [],
+      "m2_validation_evidence_gaps": [
+        "no independently accepted complete non-nuclear M1/M2 input",
+        "round2_selection_below_target",
+        "round2_reported_evidence_gap"
+      ],
+      "m2_validation_status": "NOT_RUN",
+      "raw_sha256": null,
+      "reviewed_by_context": "019fd1cd-e259-72f3-9a47-b8570dd11d46:completed",
+      "source_m1_artifact": "evals/m1/results/2026-08-04-bearing-fault-rerun-2.bundle.json",
+      "source_m1_raw_sha256": "bee8c0f739647512298d180eb68c934e96dd55054a4aec851ddead7b8e846173"
+    },
+    {
+      "canonical_sha256": "1b2a1c24bcf688c812d477c375aa40af00eee1c177e67fe13fa9dc8ec93b0251",
+      "case_id": "m3-f05",
+      "constructed_by_context": "m2-input-preparation-context-2026-08-05:m3-f05",
+      "does_not_prove": [
+        "Structural M2 validity does not prove nuclear transfer",
+        "Safety support remains limited to exact embedded source basis",
+        "No plant data, simulator, training, deployment, licensing, or safety conclusion"
+      ],
+      "input_path": "evals/m3/forward-inputs/m3-f05-nuclear-ml.bundle.json",
+      "m2_validation_errors": [],
+      "m2_validation_evidence_gaps": [],
+      "m2_validation_status": "valid",
+      "raw_sha256": "10275a834ed6cc29265da63f649ddfd0250fa32b28700a52416a0f0e9f7c7cf4",
+      "reviewed_by_context": "m2-input-preparation-context-2026-08-05:m3-f05:validator-recheck",
+      "source_m1_artifact": "evals/m1/results/2026-08-04-pwr-sb-loca-rerun.bundle.json",
+      "source_m1_raw_sha256": "ff6d4eed792358049213b114dbca3d3850c1c95caad68bb0e50cfb6f5b802529"
+    }
+  ],
+  "evidence_class": "independent_m2_input_preparation",
+  "preparation_context": "m2-input-preparation-context-2026-08-05",
+  "schema_version": "m3.1-forward-inputs"
+}

@@ -1,0 +1,136 @@
+{
+  "schema_version": "m3.1-forward-r5.2-f02-preparation-v1",
+  "status": "protocol_prepared_awaiting_gate_3_authorization",
+  "revision": "r5.2-f02",
+  "case_id": "m3-f02",
+  "branch": "codex/m3.1.1-r5.2-f02-root-cause-and-protocol-preparation",
+  "based_on_head": "263af3df0d8c075d4cdd9835eabe0708dc4f4163",
+  "m3_status": "IN_PROGRESS",
+  "m4_status": "NOT_STARTED",
+  "preparation_authorized": true,
+  "new_fresh_run_authorized": false,
+  "execution_authorization_instance_present": false,
+  "reserved_task_id": null,
+  "result_root": "evals/m3/results/forward-r5.2-f02",
+  "result_root_allowlist": [
+    ".gitkeep"
+  ],
+  "logical_result_artifact_count": 0,
+  "artifacts": {
+    "prompt": {
+      "path": "evals/m3/forward-inputs-r5.2-f02/m3-f02.prompt.txt",
+      "raw_sha256": "815eae213701505755fb7edc4d64d16089bd4e14e14dc6ec1e16c787918ea1df"
+    },
+    "input_binding": {
+      "path": "evals/m3/forward-inputs-r5.2-f02/m3-f02.input-binding.json",
+      "raw_sha256": "3d90ed7f02a865eb3cab0fd8f70f0407ce5a80a93e500996686e2fad54c1709d",
+      "canonical_sha256": "8f9d1107630613cb90876497e17dad91655caabc98933c8d6ad87fa69aea8020"
+    },
+    "model_output_contract": {
+      "path": "evals/m3/forward-inputs-r5.2-f02/m3-model-output-contract.schema.json",
+      "raw_sha256": "ffac315de66ce8b25da1a575e2af19cdfdadaff9882df49ec130e085aa777a09",
+      "canonical_sha256": "9ea7205bc9f060db202e91a34fad7d63529b6ca08551e2424ff3dc2a0138bb01"
+    },
+    "authorization_receipt_schema": {
+      "path": "evals/m3/forward-inputs-r5.2-f02/m3-f02.authorization-receipt.schema.json",
+      "raw_sha256": "ece4d613818c70203b789f3214a533d4cc481bb2c069b3d2e7a33773442a28c9",
+      "canonical_sha256": "9c4e85fa62034df27c010f4ad76669bac160b09902db3dcc5fd4feb158399857"
+    },
+    "raw_response_observation_schema": {
+      "path": "evals/m3/forward-inputs-r5.2-f02/m3-f02.raw-response-observation.schema.json",
+      "raw_sha256": "0d4e929e5acefa3a4a0526f0d8453b39c3c62f09d90f46f7d4d7bc3c25fee6b3",
+      "canonical_sha256": "a6e35ebff92be3da3ee9fdf402294ac7647675c585ac1edecea42f55b34ffd0a"
+    },
+    "output_mode": {
+      "path": "evals/m3/forward-inputs-r5.2-f02/m3-f02.output-mode.json",
+      "raw_sha256": "77bfe5b562ed5c0fa5a2b889b6a235ec101a590f3cdce21a333f4754c292950e",
+      "canonical_sha256": "c0dce018f311158f172b3a2d77ad7368ce7769f759078af114110be15b05890c"
+    },
+    "protocol_regression_cases": {
+      "path": "evals/m3/forward-inputs-r5.2-f02/protocol-regression-cases.json",
+      "raw_sha256": "e0ef190527ec2d008d07ed986a03da042efcb74d5b463697bfa1370e5476d335",
+      "canonical_sha256": "0c6c529eb5c5edee74654c431e32ac79295e5fc5c3b48da7dda1fb0250b30980"
+    },
+    "protocol_module": {
+      "path": "evals/m3/r5_2_f02_protocol.py",
+      "raw_sha256": "67c8971e552859b287cb232e8e3cb68e57f47e1dcbc046fe84ceaa899fac1d5c"
+    }
+  },
+  "authorization_protocol": {
+    "receipt_instance_path": "evals/m3/forward-inputs-r5.2-f02/execution-authorization.json",
+    "receipt_instance_required_for_gate_3": true,
+    "receipt_instance_must_be_absent_in_gate_2": true,
+    "authorized_task_count_after_gate_3_receipt": 1,
+    "prompt_hash_includes_model_visible_authorization": true,
+    "dispatcher_must_validate_before_task_creation": true
+  },
+  "output_protocol": {
+    "selected_mode": "strict_text_json_fail_closed",
+    "structured_output_request_config": null,
+    "capability_recheck_required_before_gate_3": true,
+    "utf8_bom_policy": "reject",
+    "automatic_repair_allowed": false,
+    "same_task_retry_allowed": false
+  },
+  "future_paths": {
+    "execution_authorization_json": "evals/m3/forward-inputs-r5.2-f02/execution-authorization.json",
+    "launch_receipt_json": "m3-f02.launch.json",
+    "raw_model_final": "m3-f02.model-final.raw",
+    "raw_response_observation_json": "m3-f02.raw-response-observation.json",
+    "context_finalization_json": "m3-f02.context.json",
+    "payload_json": "m3-f02.payload.json",
+    "composer_invocation_receipt_json": "m3-f02.composer-receipt.json",
+    "composed_bundle_json": "m3-f02.bundle.json",
+    "validator_receipt_json": "m3-f02.validator-receipt.json",
+    "validation_json": "m3-f02.validation.json",
+    "case_transaction_json": "m3-f02.transaction.json",
+    "terminal_manifest_json": "terminal-manifest.json"
+  },
+  "counters": {
+    "tasks": 0,
+    "finalizations": 0,
+    "composer": 0,
+    "validator": 0,
+    "retry": 0
+  },
+  "historical_evidence": {
+    "forward_r5": {
+      "evidence_head": "1b696bce53ee0a11163bfe4f91a9a49ab3af6f49",
+      "path": "evals/m3/results/forward-r5",
+      "required_diff": "empty"
+    },
+    "forward_r5_1_f02": {
+      "evidence_head": "fb5eec44bbf86446cf12bda2bddc76fcb07a7e69",
+      "path": "evals/m3/results/forward-r5.1-f02",
+      "required_diff": "empty",
+      "terminal_status": "terminal_not_accepted",
+      "accepted": false,
+      "raw_output_bytes": 216,
+      "raw_output_sha256": "75b4f9f5f4e2459b2886c0a9654c8cc1bda4015c525869cd154a302a2bc0589a"
+    },
+    "reusable_r5_cases": [
+      "m3-f01",
+      "m3-f03",
+      "m3-f04",
+      "m3-f05"
+    ],
+    "cross_revision_aggregation_authorized": false
+  },
+  "gate_state": {
+    "gate_0": "COMPLETE",
+    "gate_1": "COMPLETE",
+    "gate_2": "PREPARATION_ONLY",
+    "gate_3": "NOT_STARTED",
+    "fresh_execution": "NOT_RUN",
+    "cross_revision_aggregate": "NOT_RUN",
+    "m3_closure": "NOT_RUN",
+    "m4": "NOT_STARTED"
+  },
+  "does_not_prove": [
+    "Protocol preparation is not an execution authorization receipt.",
+    "No r5.2-f02 task, model response, finalization, composition, validation, transaction, or acceptance exists.",
+    "Historical r5 and r5.1-f02 failures are not retried, repaired, or relabeled.",
+    "Structured Outputs model support does not imply that the current execution surface exposes a request-level schema parameter.",
+    "M3 remains in progress and M4 remains not started."
+  ]
+}

@@ -1,0 +1,89 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:engineering-research-copilot:m3:r5.2-f02:raw-response-observation",
+  "title": "r5.2-f02 pre-parser raw response observation",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "revision",
+    "case_id",
+    "task_id",
+    "model_id",
+    "request_id",
+    "request_id_status",
+    "finalization_id",
+    "raw_response_path",
+    "raw_output_bytes",
+    "raw_output_sha256",
+    "finish_reason",
+    "finish_reason_status",
+    "input_tokens",
+    "input_tokens_status",
+    "output_tokens",
+    "output_tokens_status",
+    "task_created_at",
+    "task_completed_at",
+    "request_envelope_sha256",
+    "model_visible_messages_sha256"
+  ],
+  "properties": {
+    "schema_version": {"const": "m3.1-r5.2-f02-raw-response-observation-v1"},
+    "revision": {"const": "r5.2-f02"},
+    "case_id": {"const": "m3-f02"},
+    "task_id": {"type": "string", "minLength": 1},
+    "model_id": {"type": "string", "minLength": 1},
+    "request_id": {"type": ["string", "null"], "minLength": 1},
+    "request_id_status": {"enum": ["recorded", "not_exposed"]},
+    "finalization_id": {"type": "string", "minLength": 1},
+    "raw_response_path": {"const": "m3-f02.model-final.raw"},
+    "raw_output_bytes": {"type": "integer", "minimum": 0},
+    "raw_output_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "finish_reason": {"type": ["string", "null"], "minLength": 1},
+    "finish_reason_status": {"enum": ["recorded", "not_exposed"]},
+    "input_tokens": {"type": ["integer", "null"], "minimum": 0},
+    "input_tokens_status": {"enum": ["recorded", "not_exposed"]},
+    "output_tokens": {"type": ["integer", "null"], "minimum": 0},
+    "output_tokens_status": {"enum": ["recorded", "not_exposed"]},
+    "task_created_at": {"type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?Z$"},
+    "task_completed_at": {"type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?Z$"},
+    "request_envelope_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "model_visible_messages_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"request_id_status": {"const": "not_exposed"}}},
+      "then": {"properties": {"request_id": {"const": null}}}
+    },
+    {
+      "if": {"properties": {"request_id_status": {"const": "recorded"}}},
+      "then": {"properties": {"request_id": {"type": "string", "minLength": 1}}}
+    },
+    {
+      "if": {"properties": {"finish_reason_status": {"const": "not_exposed"}}},
+      "then": {"properties": {"finish_reason": {"const": null}}}
+    },
+    {
+      "if": {"properties": {"finish_reason_status": {"const": "recorded"}}},
+      "then": {"properties": {"finish_reason": {"type": "string", "minLength": 1}}}
+    },
+    {
+      "if": {"properties": {"input_tokens_status": {"const": "not_exposed"}}},
+      "then": {"properties": {"input_tokens": {"const": null}}}
+    },
+    {
+      "if": {"properties": {"input_tokens_status": {"const": "recorded"}}},
+      "then": {"properties": {"input_tokens": {"type": "integer", "minimum": 0}}}
+    },
+    {
+      "if": {"properties": {"output_tokens_status": {"const": "not_exposed"}}},
+      "then": {"properties": {"output_tokens": {"const": null}}}
+    },
+    {
+      "if": {"properties": {"output_tokens_status": {"const": "recorded"}}},
+      "then": {"properties": {"output_tokens": {"type": "integer", "minimum": 0}}}
+    }
+  ],
+  "x-observation-order": "persist raw bytes and this observation before parser invocation",
+  "x-repair-allowed": false
+}

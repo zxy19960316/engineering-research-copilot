@@ -1,4 +1,4 @@
-name: M1 Validation
+name: M1, M2.1.1, and M3.1.1 Validation
 
 on:
   push:
@@ -12,6 +12,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: "3.13"
@@ -21,11 +23,106 @@ jobs:
             skills/engineering-research-copilot/scripts/validate_m1_bundle.py \
             skills/engineering-research-copilot/scripts/render_m1_map.py \
             skills/engineering-research-copilot/scripts/validate_citation_gate.py \
+            skills/engineering-research-copilot/scripts/validate_m2_direction_bundle.py \
             evals/m1/replay_offline_results.py \
-            evals/m1/replay_machine_artifacts.py
+            evals/m1/replay_machine_artifacts.py \
+            evals/m2/build_fixtures.py \
+            evals/m2/build_forward_case_f.py \
+            evals/m2/replay_offline_results.py \
+            skills/engineering-research-copilot/scripts/validate_m3_method_bundle.py \
+            skills/engineering-research-copilot/scripts/compose_m3_bundle.py \
+            evals/m3/build_fixtures.py \
+            evals/m3/replay_offline_results.py \
+            evals/m3/run_forward_validation_once.py \
+            evals/m3/audit_forward_case_input.py \
+            evals/m3/validate_m3_forward_outcome.py \
+            evals/m3/run_forward_outcome_validation_once.py \
+            evals/m3/dispatch_forward_r4.py \
+            evals/m3/r5_dispatch_contract.py \
+            evals/m3/dispatch_forward_r5.py \
+            evals/m3/consume_forward_r5_once.py \
+            evals/m3/audit_forward_inputs.py \
+            evals/m3/diagnose_forward_input_hashes.py \
+            evals/m3/audit_m3_r5_1_ci_state.py \
+            evals/m3/audit_forward_acceptance.py \
+            evals/m3/audit_forward_r4_preparation.py \
+            evals/m3/audit_forward_r5_acceptance.py \
+            evals/m3/audit_forward_r5_1_f02_preparation.py \
+            evals/m3/audit_forward_r5_1_f02_authorization.py \
+            evals/m3/dispatch_forward_r5_1_f02.py \
+            evals/m3/r5_1_f02_execution_contract.py \
+            evals/m3/audit_forward_r5_1_f02_execution_authorization.py \
+            evals/m3/dispatch_forward_r5_1_f02_once.py \
+            evals/m3/r5_1_f02_terminal_contract.py \
+            evals/m3/audit_forward_r5_1_f02_terminal.py \
+            evals/m3/r5_2_f02_protocol.py \
+            evals/m3/audit_forward_r5_2_f02_preparation.py \
+            evals/m3/dispatch_forward_r5_2_f02.py \
+            evals/m3/r5_2_f02_execution_contract.py \
+            evals/m3/audit_forward_r5_2_f02_execution_authorization.py \
+            evals/m3/dispatch_forward_r5_2_f02_once.py \
+            evals/m3/consume_forward_r5_2_f02_once.py \
+            evals/m3/audit_forward_r5_2_f02_terminal.py \
+            evals/m3/m3_cross_revision_contract.py \
+            evals/m3/audit_forward_r5_2_aggregate.py \
+            evals/m3/audit_m3_closure.py \
+            evals/m3/audit_immutable_forward_evidence.py \
+            evals/m3/audit_skill_package.py
+      - name: Require immutable r5 evidence commit
+        run: |
+          git cat-file -e 1b696bce53ee0a11163bfe4f91a9a49ab3af6f49^{commit}
+          git cat-file -e 1b696bce53ee0a11163bfe4f91a9a49ab3af6f49:evals/m3/results/forward-r5/acceptance-manifest-consumed.json
       - name: Unit tests
         run: python -m unittest discover -s tests -p "test_*.py" -v
       - name: Replay fixtures
         run: python evals/m1/replay_offline_results.py
       - name: Replay machine artifacts
         run: python evals/m1/replay_machine_artifacts.py
+      - name: Generate M2.1.1 fixtures
+        run: python evals/m2/build_fixtures.py
+      - name: Require M2.1.1 fixture regeneration diff to be empty
+        run: git diff --exit-code -- evals/m2/adversarial-cases.json evals/m2/fixtures
+      - name: Replay M2.1.1 frozen fixtures
+        run: python evals/m2/replay_offline_results.py
+      - name: Generate M3.1 fixtures
+        run: python evals/m3/build_fixtures.py
+      - name: Require M3.1 fixture regeneration diff to be empty
+        run: git diff --exit-code -- evals/m3/adversarial-cases.json evals/m3/fixtures
+      - name: Replay M3.1 frozen fixtures
+        run: python evals/m3/replay_offline_results.py
+      - name: Tracked M3.1 package audit
+        run: python evals/m3/audit_skill_package.py
+      - name: Audit historical prerequisites and current r5 blocked acceptance
+        run: python evals/m3/audit_m3_r5_1_ci_state.py
+      - name: Audit r5.1-f02 terminal one-shot evidence
+        run: python evals/m3/audit_forward_r5_1_f02_terminal.py
+      - name: Audit r5.2-f02 terminal one-shot evidence
+        run: python evals/m3/audit_forward_r5_2_f02_terminal.py
+      - name: Audit accepted r5 and r5.2 cross-revision aggregate
+        run: python -X utf8 evals/m3/audit_forward_r5_2_aggregate.py
+      - name: Audit M3 cross-revision closure
+        run: python -X utf8 evals/m3/audit_m3_closure.py
+
+  historical-audit-cross-platform:
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+          - windows-latest
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Audit historical M3 inputs and Gate 4 contracts on LF and CRLF worktrees
+        run: |
+          python -X utf8 -m unittest tests.test_audit_m3_forward_inputs -v
+          python -X utf8 -m unittest tests.test_audit_m3_forward_r5_2_f02_preparation -v
+          python -X utf8 -m unittest tests.test_audit_m3_forward_r5_2_f02_execution_authorization -v
+          python -X utf8 -m unittest tests.test_audit_m3_forward_r5_2_f02_terminal -v
+          python -X utf8 -m unittest tests.test_audit_m3_forward_r5_2_aggregate -v
+          python -X utf8 -m unittest tests.test_audit_m3_closure -v

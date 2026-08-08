@@ -1,0 +1,38 @@
+# Preserve byte-sensitive F04 evidence exactly across Windows worktrees.
+/evals/f04-upstream/** text eol=lf
+
+# Preserve byte-sensitive r3 inputs, prompts, receipts, and manifests.
+/evals/m3/forward-inputs-r3/** text eol=lf
+/evals/m3/results/forward-r3/** text eol=lf
+/evals/m3/forward-cases-r3.md text eol=lf
+
+# Materialize immutable historical r2 input blobs without CRLF conversion.
+/evals/m3/forward-inputs-r2/** text eol=lf
+
+# Preserve byte-sensitive historical r2 results and forward reports without rewriting their blobs.
+/evals/m3/results/forward-r2/** text eol=lf
+/evals/m3/results/2026-08-05-forward-evaluation-r2.md text eol=lf
+/evals/m3/results/2026-08-06-forward-evaluation-r3.md text eol=lf
+
+# Preserve byte-sensitive r4 frozen inputs, prompts, receipts, and manifests.
+/evals/m3/forward-inputs-r4/** text eol=lf
+/evals/m3/results/forward-r4/** text eol=lf
+/evals/m3/forward-cases-r4.md text eol=lf
+
+# Keep deterministic M3 offline fixture materialization aligned with its builder.
+/evals/m3/fixtures/** text eol=lf
+/evals/m3/adversarial-cases.json text eol=lf
+
+# Preserve byte-sensitive r5.1-f02 replacement preparation inputs and reserved root.
+/evals/m3/forward-inputs-r5.1-f02/** text eol=lf
+/evals/m3/results/forward-r5.1-f02/** text eol=lf
+
+# Preserve byte-sensitive r5.2-f02 protocol inputs, module, and empty result root.
+/evals/m3/forward-inputs-r5.2-f02/** text eol=lf
+/evals/m3/results/forward-r5.2-f02/** text eol=lf
+/evals/m3/r5_2_f02_protocol.py text eol=lf
+
+# Preserve byte-sensitive cross-revision aggregate and closure evidence.
+/evals/m3/results/forward-r5.2-aggregate/** text eol=lf
+/evals/m3/results/2026-08-08-m3.1.1-cross-revision-aggregate-validation.md text eol=lf
+/evals/m3/results/2026-08-08-m3.1.1-closure-validation.md text eol=lf

@@ -1,0 +1,110 @@
+{
+  "schema_version": "m3.1-forward-inputs-r2",
+  "evidence_class": "independent_m2_input_preparation",
+  "preparation_context": "m2-input-preparation-r2-2026-08-05",
+  "baseline_commit": "d0f5e9017044ba35d0ac4559591028228f3b22d8",
+  "cases": [
+    {
+      "case_id": "m3-f01",
+      "input_path": "evals/m3/forward-inputs-r2/m3-f01-bounded-confirmed.bundle.json",
+      "raw_sha256": "b0c47b0135d9a2340eb37cd3bb661fff7f4c9bee8738676c4b0976dd6796d091",
+      "canonical_sha256": "34cb98223d920587b1d4e54ad0722d94ff91c3826ccc19f52bc799de011884d4",
+      "validation_path": "evals/m3/forward-inputs-r2/m3-f01.validation.json",
+      "m2_validation_status": "valid",
+      "m2_validation_errors": [],
+      "m2_validation_evidence_gaps": [],
+      "source_m1_artifact": "evals/m1/results/2026-08-04-pwr-sb-loca-rerun.bundle.json",
+      "source_m1_raw_sha256": "ff6d4eed792358049213b114dbca3d3850c1c95caad68bb0e50cfb6f5b802529",
+      "constructed_by_context": "m2-input-preparation-r2-2026-08-05:m3-f01",
+      "reviewed_by_context": "m2-input-review-r2-2026-08-05:m3-f01",
+      "does_not_prove": [
+        "M2 structural validity does not prove empirical target-domain performance.",
+        "No route step, experiment, simulation, training, download, service, deployment, or resource allocation ran.",
+        "No nuclear safety, licensing, plant transfer, or operational conclusion is established."
+      ]
+    },
+    {
+      "case_id": "m3-f02",
+      "input_path": "evals/m3/forward-inputs-r2/m3-f02-route-compatible.bundle.json",
+      "raw_sha256": "8db4db7f9173a8d10598af49e8ffd83dca12e34692c2827ec47031a30ab49da1",
+      "canonical_sha256": "fc7301d37737d85bc1bd2f0a3c2d51d842d0fe3fbdf1ded142e2d62f04d40841",
+      "validation_path": "evals/m3/forward-inputs-r2/m3-f02.validation.json",
+      "m2_validation_status": "valid",
+      "m2_validation_errors": [],
+      "m2_validation_evidence_gaps": [],
+      "source_m1_artifact": "evals/m1/results/2026-08-04-pwr-sb-loca-rerun.bundle.json",
+      "source_m1_raw_sha256": "ff6d4eed792358049213b114dbca3d3850c1c95caad68bb0e50cfb6f5b802529",
+      "constructed_by_context": "m2-input-preparation-r2-2026-08-05:m3-f02",
+      "reviewed_by_context": "m2-input-review-r2-2026-08-05:m3-f02",
+      "does_not_prove": [
+        "M2 structural validity does not prove empirical target-domain performance.",
+        "No route step, experiment, simulation, training, download, service, deployment, or resource allocation ran.",
+        "No nuclear safety, licensing, plant transfer, or operational conclusion is established."
+      ]
+    },
+    {
+      "case_id": "m3-f03",
+      "input_path": "evals/m3/forward-inputs-r2/m3-f03-approved-change.bundle.json",
+      "raw_sha256": "eb20714de4ef2b6897e69a20169d29c4f38e6f9587d0091994dad6e3e8daafe4",
+      "canonical_sha256": "72f0d522610f159c4bf39ba404f850dd9f86796fc7217e536614f6c44bdbee21",
+      "validation_path": "evals/m3/forward-inputs-r2/m3-f03.validation.json",
+      "m2_validation_status": "valid",
+      "m2_validation_errors": [],
+      "m2_validation_evidence_gaps": [],
+      "source_m1_artifact": "evals/m1/results/2026-08-04-pwr-sb-loca-rerun.bundle.json",
+      "source_m1_raw_sha256": "ff6d4eed792358049213b114dbca3d3850c1c95caad68bb0e50cfb6f5b802529",
+      "constructed_by_context": "m2-input-preparation-r2-2026-08-05:m3-f03",
+      "reviewed_by_context": "m2-input-review-r2-2026-08-05:m3-f03",
+      "does_not_prove": [
+        "M2 structural validity does not prove empirical target-domain performance.",
+        "No route step, experiment, simulation, training, download, service, deployment, or resource allocation ran.",
+        "No nuclear safety, licensing, plant transfer, or operational conclusion is established."
+      ]
+    },
+    {
+      "case_id": "m3-f04",
+      "input_path": null,
+      "raw_sha256": null,
+      "canonical_sha256": null,
+      "validation_path": null,
+      "m2_validation_status": "NOT_RUN",
+      "m2_validation_errors": [],
+      "m2_validation_evidence_gaps": [
+        "no independently accepted complete non-nuclear M1/M2 input"
+      ],
+      "source_m1_artifact": "evals/m1/results/2026-08-04-bearing-fault-rerun-2.bundle.json",
+      "source_m1_raw_sha256": "bee8c0f739647512298d180eb68c934e96dd55054a4aec851ddead7b8e846173",
+      "constructed_by_context": "m2-input-preparation-r2-2026-08-05:m3-f04",
+      "reviewed_by_context": "m2-input-review-r2-2026-08-05:m3-f04",
+      "does_not_prove": [
+        "The available non-nuclear M1 source is evidence_incomplete and cannot support an M2 input.",
+        "No non-nuclear M2 bundle or M3 method card was constructed.",
+        "No measurement, calibration, experiment, or route execution ran."
+      ]
+    },
+    {
+      "case_id": "m3-f05",
+      "input_path": "evals/m3/forward-inputs-r2/m3-f05-nuclear-ml.bundle.json",
+      "raw_sha256": "ff0a68409b50123d800c895ab0e8d6ee46374549cc9ffc7e490d7db89b126377",
+      "canonical_sha256": "34cb98223d920587b1d4e54ad0722d94ff91c3826ccc19f52bc799de011884d4",
+      "validation_path": "evals/m3/forward-inputs-r2/m3-f05.validation.json",
+      "m2_validation_status": "valid",
+      "m2_validation_errors": [],
+      "m2_validation_evidence_gaps": [],
+      "source_m1_artifact": "evals/m1/results/2026-08-04-pwr-sb-loca-rerun.bundle.json",
+      "source_m1_raw_sha256": "ff6d4eed792358049213b114dbca3d3850c1c95caad68bb0e50cfb6f5b802529",
+      "constructed_by_context": "m2-input-preparation-r2-2026-08-05:m3-f05",
+      "reviewed_by_context": "m2-input-review-r2-2026-08-05:m3-f05",
+      "does_not_prove": [
+        "M2 structural validity does not prove empirical target-domain performance.",
+        "No route step, experiment, simulation, training, download, service, deployment, or resource allocation ran.",
+        "No nuclear safety, licensing, plant transfer, or operational conclusion is established."
+      ]
+    }
+  ],
+  "notes": [
+    "F01 and F05 are separate immutable byte snapshots of the same confirmed D1 M2 source; their fresh M3 contexts and frozen prompts remain independent.",
+    "F03 preserves a non-empty proposed constraint change while leaving inherited_constraints equal to the selected direction limits; approval identity is deliberately not authenticated.",
+    "F04 remains NOT_RUN because no independently accepted complete non-nuclear M1/M2 input is available."
+  ]
+}

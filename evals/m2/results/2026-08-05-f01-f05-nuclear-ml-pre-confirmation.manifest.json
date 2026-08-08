@@ -1,0 +1,300 @@
+{
+  "manifest_kind": "m2.1.1_pre_confirmation_bundle_draft",
+  "status": "draft_waiting_for_user_confirmation",
+  "baseline_commit": "d0f5e9017044ba35d0ac4559591028228f3b22d8",
+  "upstream_reference": "evals/m2/results/2026-08-05-case-f.pre-confirmation.bundle.json",
+  "bundle_path": "evals/m2/results/2026-08-05-f01-f05-nuclear-ml-pre-confirmation.bundle.json",
+  "bundle_file_sha256": "965eefbbd302ad173a252d2b7b60d3457f219d522d9cf9ddbcde2d1b47b3a339",
+  "bundle_canonical_sha256": "6ab5d3d67f5450794214b2199d2f2e9ca3ed301e2773c763cff2adbfcb49dd8c",
+  "source_m1_bundle_canonical_sha256": "667fcae265e6ac01699bf6b7f328ca6ef4bbcbb0ede2d508a9970d5c8474e376",
+  "formal_direction_ids": [
+    "NEML-F01-D1",
+    "NEML-F01-D2",
+    "NEML-F01-D3"
+  ],
+  "direction_positions": {
+    "NEML-F01-D1": "provisional_main",
+    "NEML-F01-D2": "adjacent_alternative",
+    "NEML-F01-D3": "transfer_exploration"
+  },
+  "eligible_source_ids": [
+    "P17",
+    "P20",
+    "P21",
+    "P22",
+    "P23",
+    "P25",
+    "P7"
+  ],
+  "eligible_source_snapshot": {
+    "P17": {
+      "verification_status": "verified_registry",
+      "recommendation_eligible": true,
+      "basis_level": "metadata_level"
+    },
+    "P20": {
+      "verification_status": "verified_primary",
+      "recommendation_eligible": true,
+      "basis_level": "abstract_level"
+    },
+    "P21": {
+      "verification_status": "verified_primary",
+      "recommendation_eligible": true,
+      "basis_level": "abstract_level"
+    },
+    "P22": {
+      "verification_status": "verified_primary",
+      "recommendation_eligible": true,
+      "basis_level": "abstract_level"
+    },
+    "P23": {
+      "verification_status": "verified_primary",
+      "recommendation_eligible": true,
+      "basis_level": "abstract_level"
+    },
+    "P25": {
+      "verification_status": "verified_primary",
+      "recommendation_eligible": true,
+      "basis_level": "abstract_level"
+    },
+    "P7": {
+      "verification_status": "verified_primary",
+      "recommendation_eligible": true,
+      "basis_level": "fulltext_level"
+    }
+  },
+  "claims_and_metrics": {
+    "NEML-F01-D1": [
+      {
+        "claim_id": "C-NEML-F01-D1-PRED",
+        "claim_type": "predictive_performance",
+        "metric_ids": [
+          "M-NEML-F01-D1-MAE"
+        ],
+        "criterion_types": [
+          "success",
+          "stop",
+          "pivot"
+        ]
+      },
+      {
+        "claim_id": "C-NEML-F01-D1-UQ",
+        "claim_type": "uncertainty_quality",
+        "metric_ids": [
+          "M-NEML-F01-D1-ECE"
+        ],
+        "criterion_types": [
+          "success",
+          "stop",
+          "pivot"
+        ]
+      },
+      {
+        "claim_id": "C-NEML-F01-D1-DATA",
+        "claim_type": "data_availability",
+        "metric_ids": [
+          "M-NEML-F01-D1-N"
+        ],
+        "criterion_types": [
+          "success",
+          "stop",
+          "pivot"
+        ]
+      }
+    ],
+    "NEML-F01-D2": [
+      {
+        "claim_id": "C-NEML-F01-D2-PRED",
+        "claim_type": "predictive_performance",
+        "metric_ids": [
+          "M-NEML-F01-D2-MAE"
+        ],
+        "criterion_types": [
+          "success",
+          "stop",
+          "pivot"
+        ]
+      },
+      {
+        "claim_id": "C-NEML-F01-D2-UQ",
+        "claim_type": "uncertainty_quality",
+        "metric_ids": [
+          "M-NEML-F01-D2-COV"
+        ],
+        "criterion_types": [
+          "success",
+          "stop",
+          "pivot"
+        ]
+      },
+      {
+        "claim_id": "C-NEML-F01-D2-DATA",
+        "claim_type": "data_availability",
+        "metric_ids": [
+          "M-NEML-F01-D2-N"
+        ],
+        "criterion_types": [
+          "success",
+          "stop",
+          "pivot"
+        ]
+      }
+    ],
+    "NEML-F01-D3": [
+      {
+        "claim_id": "C-NEML-F01-D3-PRED",
+        "claim_type": "predictive_performance",
+        "metric_ids": [
+          "M-NEML-F01-D3-RECALL"
+        ],
+        "criterion_types": [
+          "success",
+          "stop",
+          "pivot"
+        ]
+      },
+      {
+        "claim_id": "C-NEML-F01-D3-UQ",
+        "claim_type": "uncertainty_quality",
+        "metric_ids": [
+          "M-NEML-F01-D3-ECE"
+        ],
+        "criterion_types": [
+          "success",
+          "stop",
+          "pivot"
+        ]
+      },
+      {
+        "claim_id": "C-NEML-F01-D3-OOD",
+        "claim_type": "open_set_detection",
+        "metric_ids": [
+          "M-NEML-F01-D3-AUROC"
+        ],
+        "criterion_types": [
+          "success",
+          "stop",
+          "pivot"
+        ]
+      },
+      {
+        "claim_id": "C-NEML-F01-D3-DATA",
+        "claim_type": "data_availability",
+        "metric_ids": [
+          "M-NEML-F01-D3-N"
+        ],
+        "criterion_types": [
+          "success",
+          "stop",
+          "pivot"
+        ]
+      }
+    ]
+  },
+  "resource_limits": {
+    "NEML-F01-D1": [
+      {
+        "constraint_id": "R-NEML-F01-D1-GPU-COUNT",
+        "resource": "GPU devices",
+        "operator": "<=",
+        "value": 1,
+        "unit": "count"
+      },
+      {
+        "constraint_id": "R-NEML-F01-D1-VRAM",
+        "resource": "Peak GPU memory",
+        "operator": "<=",
+        "value": 24,
+        "unit": "GiB"
+      },
+      {
+        "constraint_id": "R-NEML-F01-D1-WALL",
+        "resource": "Elapsed route duration",
+        "operator": "<=",
+        "value": 14,
+        "unit": "calendar_days"
+      },
+      {
+        "constraint_id": "R-NEML-F01-D1-FITS",
+        "resource": "Total bounded model fits",
+        "operator": "<=",
+        "value": 2,
+        "unit": "fits"
+      }
+    ],
+    "NEML-F01-D2": [
+      {
+        "constraint_id": "R-NEML-F01-D2-GPU-COUNT",
+        "resource": "GPU devices",
+        "operator": "<=",
+        "value": 1,
+        "unit": "count"
+      },
+      {
+        "constraint_id": "R-NEML-F01-D2-VRAM",
+        "resource": "Peak GPU memory",
+        "operator": "<=",
+        "value": 24,
+        "unit": "GiB"
+      },
+      {
+        "constraint_id": "R-NEML-F01-D2-WALL",
+        "resource": "Elapsed route duration",
+        "operator": "<=",
+        "value": 14,
+        "unit": "calendar_days"
+      },
+      {
+        "constraint_id": "R-NEML-F01-D2-FITS",
+        "resource": "Total bounded model fits",
+        "operator": "<=",
+        "value": 2,
+        "unit": "fits"
+      }
+    ],
+    "NEML-F01-D3": [
+      {
+        "constraint_id": "R-NEML-F01-D3-GPU-COUNT",
+        "resource": "GPU devices",
+        "operator": "<=",
+        "value": 1,
+        "unit": "count"
+      },
+      {
+        "constraint_id": "R-NEML-F01-D3-VRAM",
+        "resource": "Peak GPU memory",
+        "operator": "<=",
+        "value": 24,
+        "unit": "GiB"
+      },
+      {
+        "constraint_id": "R-NEML-F01-D3-WALL",
+        "resource": "Elapsed route duration",
+        "operator": "<=",
+        "value": 14,
+        "unit": "calendar_days"
+      },
+      {
+        "constraint_id": "R-NEML-F01-D3-FITS",
+        "resource": "Total bounded model fits",
+        "operator": "<=",
+        "value": 2,
+        "unit": "fits"
+      }
+    ]
+  },
+  "decision": {
+    "selected_direction_id": null,
+    "status": "waiting_for_user_confirmation",
+    "confirmation_event": null,
+    "route_output": null
+  },
+  "validator": {
+    "script": "skills/engineering-research-copilot/scripts/validate_m2_direction_bundle.py",
+    "scope": "M2.1.1 structural contract only",
+    "result": "valid",
+    "exit_code": 0,
+    "receipt_path": "evals/m2/results/2026-08-05-f01-f05-nuclear-ml-pre-confirmation.validation.json",
+    "raw_output": "{\"status\":\"valid\",\"errors\":[],\"evidence_gaps\":[]}"
+  }
+}

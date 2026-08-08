@@ -1,0 +1,8 @@
+{
+  "validator": "validate_m3_method_bundle.py",
+  "status": "validator_unavailable",
+  "valid": false,
+  "invocation_count": 1,
+  "exit_code": 2,
+  "error": "The named validator CLI path used for the single actual attempt was not found; no validator JSON was emitted."
+}

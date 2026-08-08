@@ -1,0 +1,129 @@
+{
+  "provenance_schema": "f04-upstream.1",
+  "lineage_id": "f04-public-bearing-measurement-uq-2026-08-06",
+  "topic": "公开滚动轴承振动数据的测量、校准、重复性、再现性与 measurement uncertainty / UQ",
+  "workflow": ["multi-source-search", "citation-verification"],
+  "independence_statement": "This is a new F04 search branch. Historical bearing results under evals/m1/results/ were not opened or copied.",
+  "research_brief_questions": [
+    "Which public rolling-bearing vibration records expose enough acquisition metadata to reconstruct units, sensor provenance, and operating conditions?",
+    "Which calibration, repeatability, and reproducibility evidence is available for interpreting public bearing-vibration measurements?",
+    "Which uncertainty-aware or cross-dataset evaluations can expose measurement and domain-shift limits before a direction is confirmed?"
+  ],
+  "discovery_sources": [
+    {
+      "source": "SciSpace semantic academic search",
+      "source_tier": "discovery_only",
+      "query": "Which publicly released rolling bearing vibration datasets document sensor types, sampling rates, operating conditions, calibration provenance, or measurement traceability?",
+      "result_count_reported": 10,
+      "retrieved_at": "2026-08-06T10:40:00+08:00",
+      "promotion_rule": "No result was admitted without an independent authoritative registry or official landing-page check."
+    },
+    {
+      "source": "SciSpace semantic academic search",
+      "source_tier": "discovery_only",
+      "query": "What peer-reviewed studies quantify repeatability, reproducibility, calibration, or measurement uncertainty in rolling-bearing vibration measurements?",
+      "result_count_reported": 10,
+      "retrieved_at": "2026-08-06T10:40:00+08:00",
+      "promotion_rule": "No result was admitted without an independent authoritative registry or official landing-page check."
+    },
+    {
+      "source": "SciSpace semantic academic search",
+      "source_tier": "discovery_only",
+      "query": "Which papers evaluate public rolling-bearing vibration datasets for cross-dataset generalization, domain shift, condition metadata, and reproducibility limitations?",
+      "result_count_reported": 10,
+      "retrieved_at": "2026-08-06T10:40:00+08:00",
+      "promotion_rule": "No result was admitted without an independent authoritative registry or official landing-page check."
+    },
+    {
+      "source": "Web academic discovery",
+      "source_tier": "discovery_only",
+      "queries": [
+        "rolling bearing vibration measurement repeatability reproducibility DOI",
+        "rolling bearing vibration dataset public open access DOI",
+        "bearing fault diagnosis dataset reproducibility measurement variability DOI",
+        "vibration calibration measurement uncertainty accelerometer DOI"
+      ],
+      "retrieved_at": "2026-08-06T10:42:00+08:00",
+      "promotion_rule": "Search snippets and DOAJ/aggregator pages were used only to locate publisher or registry records."
+    }
+  ],
+  "authoritative_route": {
+    "tier_1": [
+      "Crossref REST works records for journal and proceedings DOIs",
+      "DataCite REST DOI records for Zenodo, Mendeley Data, and Fordatis records",
+      "Publisher or official repository landing pages and open full-text records"
+    ],
+    "cross_checks": [
+      "PMC full text for the University of Ottawa data paper",
+      "NPL repository record for the vibration-calibration uncertainty paper",
+      "Zenodo and DataCite records for the Politecnico and Paderborn datasets",
+      "Fordatis/DataCite record for drive-train sensor metadata"
+    ],
+    "checked_at": "2026-08-06T11:03:43+08:00",
+    "comparison_fields": ["title", "ordered_authors", "online_or_issue_year", "venue_or_repository", "work_type", "doi_or_official_identifier", "version_relation"]
+  },
+  "raw_response_hash_bindings": {
+    "retrieved_at": "2026-08-06T11:15:00+08:00",
+    "hash_algorithm": "SHA-256",
+    "normalization": "Hash is over the raw response bytes returned by the Crossref or DataCite REST request; no JSON reserialization was used.",
+    "bindings": [
+      {"authority":"Crossref REST","identifier":"10.1016/j.ymssp.2018.10.010","url":"https://api.crossref.org/works/10.1016%2Fj.ymssp.2018.10.010","sha256":"aa791d29bfaaf1dc8a4717fb99de62f0b17c0971675fa1585e24efae0fd55e3e","byte_length":7406},
+      {"authority":"Crossref REST","identifier":"10.1016/j.dib.2023.109327","url":"https://api.crossref.org/works/10.1016%2Fj.dib.2023.109327","sha256":"123a8f1fc4dd6c3e69d16fd90589fbe3b046f5ce8b1512f58120dfe5942cc2c2","byte_length":5401},
+      {"authority":"Crossref REST","identifier":"10.1016/j.dib.2023.109049","url":"https://api.crossref.org/works/10.1016%2Fj.dib.2023.109049","sha256":"5cc6d53bcaff98fd96c744ec09038fb80dd3de96c6ebcf5021c599ed9f88585f","byte_length":8587},
+      {"authority":"Crossref REST","identifier":"10.1186/s13104-023-06400-4","url":"https://api.crossref.org/works/10.1186%2Fs13104-023-06400-4","sha256":"b84cf92c282468c6665df57deab05f8abe6454e679ffb0d09cd0f0a7c71b60bc","byte_length":10098},
+      {"authority":"Crossref REST","identifier":"10.3390/app15073691","url":"https://api.crossref.org/works/10.3390%2Fapp15073691","sha256":"01246e2fb112ebda9c9bf3f4bdadbd12754a55d2a0ca16acca98d0c6bc89edcf","byte_length":21395},
+      {"authority":"Crossref REST","identifier":"10.1038/s41597-024-03934-5","url":"https://api.crossref.org/works/10.1038%2Fs41597-024-03934-5","sha256":"ee2462ebae1ee98b3aa217cc4535b40c9b32622a2ca923f4dc54bae76240f67a","byte_length":12096},
+      {"authority":"Crossref REST","identifier":"10.1038/s41597-026-07224-0","url":"https://api.crossref.org/works/10.1038%2Fs41597-026-07224-0","sha256":"8414daeda070d30021bb2f978684025eca40d6a3798df89c56cf399d793f8b36","byte_length":13208},
+      {"authority":"Crossref REST","identifier":"10.1007/s12647-020-00385-2","url":"https://api.crossref.org/works/10.1007%2Fs12647-020-00385-2","sha256":"04cac43787383a162106e8a4ac4fc8ca0c24f55a51de3e8f527af35f258f302b","byte_length":9321},
+      {"authority":"Crossref REST","identifier":"10.3390/app15020904","url":"https://api.crossref.org/works/10.3390%2Fapp15020904","sha256":"32f9e062871a790e673643b635d86783ef2d20cec711e07e8265460aa73aca05","byte_length":11775},
+      {"authority":"Crossref REST","identifier":"10.1016/j.trpro.2019.07.131","url":"https://api.crossref.org/works/10.1016%2Fj.trpro.2019.07.131","sha256":"e0141634a11062b6b8a4cfc3be92ddabfbf053cfd96dc79140af04debb864b4b","byte_length":5838},
+      {"authority":"Crossref REST","identifier":"10.4028/www.scientific.net/amr.382.133","url":"https://api.crossref.org/works/10.4028%2Fwww.scientific.net%2Famr.382.133","sha256":"c4974faad0aed1f44cdf740d3eb837856899e8c534712e5115b2aa0a15050644","byte_length":5872},
+      {"authority":"Crossref REST","identifier":"10.1155/2019/2896046","url":"https://api.crossref.org/works/10.1155%2F2019%2F2896046","sha256":"338bad65e47a6f0b0048eb5df08d558204ba1efb021954bf925b1f6d5ae70238","byte_length":8858},
+      {"authority":"Crossref REST","identifier":"10.1117/12.803182","url":"https://api.crossref.org/works/10.1117%2F12.803182","sha256":"11783d6b0c6bf8c6379a7b864445422d2c339a9b80f9323613563bc60438d3cf","byte_length":1830},
+      {"authority":"Crossref REST","identifier":"10.1109/tie.2018.2868023","url":"https://api.crossref.org/works/10.1109%2Ftie.2018.2868023","sha256":"55a41a666a3d0d92b1b63885de74a30c469e26d6e427ffe15873776d92cc0549","byte_length":8933},
+      {"authority":"Crossref REST","identifier":"10.1109/jsen.2024.3366689","url":"https://api.crossref.org/works/10.1109%2Fjsen.2024.3366689","sha256":"8b55d1bae4e87a4512e96bbeffcce7076d7f6ed28b24a2922d7796e0e3b305e1","byte_length":8184},
+      {"authority":"DataCite REST","identifier":"10.5281/zenodo.15845309","url":"https://api.datacite.org/dois/10.5281%2Fzenodo.15845309","sha256":"c38c8894b0b4a209addfd9ee7f025545aca2a9385a925e9775afb74628a435d0","byte_length":4325},
+      {"authority":"DataCite REST","identifier":"10.5281/zenodo.3559553","url":"https://api.datacite.org/dois/10.5281%2Fzenodo.3559553","sha256":"4c6c2a967fbf148c5b2552c2bb9d8df0e0ff97edcbd7d825468c3f1c17d8ffa7","byte_length":12901},
+      {"authority":"DataCite REST","identifier":"10.24406/fordatis/132","url":"https://api.datacite.org/dois/10.24406%2Ffordatis%2F132","sha256":"6559022b313b0c3a75078a308a7d6ec6769624e5905809337283aaa9c506a85b","byte_length":10941}
+    ]
+  },
+  "publisher_check_limitations": [
+    "Several publisher pages returned anti-bot or access-denied responses to a non-browser HEAD probe; those records are labeled verified_registry when the current DOI registry record matched and the unavailable publisher check is preserved.",
+    "No model weights, datasets, papers, or full-text files were downloaded. Open web pages and public metadata were inspected only for bibliographic and evidence-level verification.",
+    "The public-data candidate pool is not a claim of exhaustiveness or novelty; it is bounded by the stated queries and source access on 2026-08-06.",
+    "The SciSpace result duplicated VBL-VA001 repository versions and surfaced preprints; the duplicate repository versions and preprint-only records were not admitted when a journal or single official dataset record was available."
+  ],
+  "excluded_evidence": [
+    "Historical incomplete bearing Case B and all prior bearing results under evals/m1/results/",
+    "All tests, fixtures, fixture builders, replay artifacts, and paths under tests/",
+    "All M3 validators, composers, tests, fixtures, prompts, outputs, manifests, and paths under evals/m3/",
+    "Unverified search snippets, inferred identifiers, citation counts, and preprint-only support for the provisional main direction"
+  ],
+  "read_path_attestation": {
+    "repository_files_opened": [
+      "AGENTS.md",
+      "STATUS.md",
+      "PROJECT_PLAN.md",
+      "docs/product-spec-v0.4.md",
+      "skills/engineering-research-copilot/SKILL.md",
+      "skills/engineering-research-copilot/references/core-citation-integrity.md",
+      "skills/engineering-research-copilot/references/core-paper-calibration.md",
+      "skills/engineering-research-copilot/references/core-paper-map.md",
+      "skills/engineering-research-copilot/references/core-direction-decision.md",
+      "skills/engineering-research-copilot/references/core-feedback-rollback.md",
+      "skills/engineering-research-copilot/scripts/validate_m1_bundle.py",
+      "skills/engineering-research-copilot/scripts/validate_citation_gate.py",
+      "skills/engineering-research-copilot/scripts/render_m1_map.py",
+      "skills/engineering-research-copilot/scripts/validate_m2_direction_bundle.py"
+    ],
+    "repository_paths_not_opened": [
+      "tests/",
+      "evals/m1/results/",
+      "evals/m2/",
+      "evals/m3/",
+      "skills/engineering-research-copilot/references/method-*.md",
+      "skills/engineering-research-copilot/references/domain-nuclear-ml.md"
+    ],
+    "attestation_scope": "The list names every repository file opened by this upstream task; directory listings and git metadata were not counted as file opens."
+  }
+}

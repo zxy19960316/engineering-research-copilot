@@ -1,0 +1,133 @@
+{
+  "schema_version": "m3.1-forward-replacement-r5.1-f02-v1",
+  "status": "prepared_awaiting_fresh_authorization",
+  "revision": "r5.1-f02",
+  "case_id": "m3-f02",
+  "m3_status": "IN_PROGRESS",
+  "m4_status": "NOT_STARTED",
+  "branch": "codex/m3.1.1-r5.1-f02-preparation",
+  "based_on_head": "c5ca408beedf2c3f20160fb1d06293336eacd725",
+  "historical_evidence_head": "1b696bce53ee0a11163bfe4f91a9a49ab3af6f49",
+  "preparation_authorized": true,
+  "new_fresh_run_authorized": false,
+  "authorization_scope": "offline r5.1-f02 replacement preparation only; no fresh-context launch, finalization, composition, validation consumption, retry, cross-revision aggregation, M3 closure, M4, push, PR, merge, or tag",
+  "result_root": "evals/m3/results/forward-r5.1-f02",
+  "input_binding": {
+    "path": "evals/m3/forward-inputs-r5.1-f02/m3-f02.input-binding.json",
+    "raw_sha256": "37dbcfa60f9748c489cbcb41b0f918e33c00f018b47285dfd3ac81b06831eb1d"
+  },
+  "prompt": {
+    "path": "evals/m3/forward-inputs-r5.1-f02/m3-f02.prompt.txt",
+    "raw_sha256": "4dccc73a442664088594d834805ad5c780674beffc4607309a74fd3f541ccd68"
+  },
+  "contract": {
+    "path": "evals/m3/forward-inputs-r5.1-f02/m3-model-output-contract.schema.json",
+    "raw_sha256": "0ff3e34105da9f734a0a06faae60daede9a3fdb29358fbccad7924f9a408d6f6"
+  },
+  "supersession_policy": {
+    "path": "evals/m3/results/diagnostics-r5.1/r5-acceptance-erratum.json",
+    "raw_sha256": "08cdbbe01612c9337c381b69620128a1e58d879b1aa92a561c325ec3104cc1ae",
+    "policy": "replace_f02_only",
+    "same_task_retry_forbidden": true,
+    "same_output_path_retry_forbidden": true,
+    "cross_revision_aggregate_requires_hash_bound_cross_validation": true
+  },
+  "historical_failed_task_id": "019fd687-5575-7143-8cf3-1ab3069611f5",
+  "reserved_task_id": null,
+  "reused_accepted_cases": [
+    {
+      "case_id": "m3-f01",
+      "transaction": [
+        "evals/m3/results/forward-r5/m3-f01.transaction.json",
+        "dfc1ea62704f30aea53329cf64dec4d64458dc4f",
+        "8faab5d51a34830e50624631762e6b1baa595c68f22eb21da9aa0089cd5fc01b"
+      ],
+      "validation": [
+        "evals/m3/results/forward-r5/m3-f01.validation.json",
+        "19b4b251fd7fc99ed38155d7db58a067590d2b16",
+        "e49b6f59b4bdfd9f363a40492a5899e4d716449c4b320f563380923a9ccd8460"
+      ],
+      "bundle": [
+        "evals/m3/results/forward-r5/m3-f01.bundle.json",
+        "7d02ec4cd8245674a6c9da81f7def48c1713391a",
+        "6489aac5a042e8d3403241918e7a5e6a5963a6e95451dc06ade1c9d62fc44adc"
+      ]
+    },
+    {
+      "case_id": "m3-f03",
+      "transaction": [
+        "evals/m3/results/forward-r5/m3-f03.transaction.json",
+        "d287c3d24116bc9731d52608d855a93332fb28a8",
+        "15c944b40c5726a065b9e46be7b450a5297f195abc67ece4e05a2dd0b3ef56e7"
+      ],
+      "validation": [
+        "evals/m3/results/forward-r5/m3-f03.validation.json",
+        "8d2e0a01e3081a673a365b69591d1a8980b8e309",
+        "746e3147f06d3aea78ce8c505efd1eed41738e8215d284afc79fe0ba9e5221c2"
+      ]
+    },
+    {
+      "case_id": "m3-f04",
+      "transaction": [
+        "evals/m3/results/forward-r5/m3-f04.transaction.json",
+        "8fb719f9d7d9b6d3be5e61ec1a11dbe4959274c5",
+        "5fe6a12b07fdafe22e808d8a74a776c26a41eebee3f6fcff54465b68c5f89a86"
+      ],
+      "validation": [
+        "evals/m3/results/forward-r5/m3-f04.validation.json",
+        "19b4b251fd7fc99ed38155d7db58a067590d2b16",
+        "e49b6f59b4bdfd9f363a40492a5899e4d716449c4b320f563380923a9ccd8460"
+      ],
+      "bundle": [
+        "evals/m3/results/forward-r5/m3-f04.bundle.json",
+        "4650617510d381ccc75e40898cb69b9742661755",
+        "1c4a13486790c60e4ac73238af5faec811c2e53c9077b8100e471035d08dd275"
+      ]
+    },
+    {
+      "case_id": "m3-f05",
+      "transaction": [
+        "evals/m3/results/forward-r5/m3-f05.transaction.json",
+        "7f24ce8f6d969c283a03b115ff550cba9a33cbd9",
+        "4940905c0eda4aa4fc319319d199fa45ae0ae2b72c06e45d6199d3413ce754ac"
+      ],
+      "validation": [
+        "evals/m3/results/forward-r5/m3-f05.validation.json",
+        "19b4b251fd7fc99ed38155d7db58a067590d2b16",
+        "e49b6f59b4bdfd9f363a40492a5899e4d716449c4b320f563380923a9ccd8460"
+      ],
+      "bundle": [
+        "evals/m3/results/forward-r5/m3-f05.bundle.json",
+        "0b34ecd76e577bd518e1e97239a786f996e0d7e1",
+        "731c85343ffde25fdb8435278dddc6756768ef780578f94375995ce8852cd415"
+      ]
+    }
+  ],
+  "future_paths": {
+    "model_final_json": "m3-f02.model-final.json",
+    "payload_json": "m3-f02.payload.json",
+    "composed_bundle_json": "m3-f02.bundle.json",
+    "outcome_json": "m3-f02.outcome.json",
+    "validation_json": "m3-f02.validation.json",
+    "composer_invocation_receipt_json": "m3-f02.composer-receipt.json",
+    "validator_receipt_json": "m3-f02.validator-receipt.json",
+    "context_finalization_json": "m3-f02.context.json",
+    "case_transaction_json": "m3-f02.transaction.json"
+  },
+  "counters": {
+    "tasks_launched": 0,
+    "task_finalizations_observed": 0,
+    "dispatcher_cases_preflighted": 0,
+    "dispatcher_cases_processed": 0,
+    "composer_invocations": 0,
+    "validator_invocations": 0,
+    "accepted_cases": 0,
+    "transaction_failures": 0
+  },
+  "does_not_prove": [
+    "Preparation readiness is not fresh-context authorization or acceptance evidence.",
+    "The historical failed F02 task is not retried, repaired, or relabeled.",
+    "The four reusable r5 cases remain immutable historical evidence.",
+    "M3 remains in progress and M4 remains not started."
+  ]
+}

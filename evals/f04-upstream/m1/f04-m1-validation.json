@@ -1,0 +1,26 @@
+{
+  "artifact": "evals/f04-upstream/m1/f04-m1-calibration.json",
+  "validator": "skills/engineering-research-copilot/scripts/validate_m1_bundle.py",
+  "command": "python -X utf8 skills/engineering-research-copilot/scripts/validate_m1_bundle.py evals/f04-upstream/m1/f04-m1-calibration.json",
+  "executed_at": "2026-08-06T11:27:29+08:00",
+  "exit_code": 0,
+  "validator_output": {
+    "status": "valid",
+    "errors": [],
+    "evidence_gaps": []
+  },
+  "map_renderer": {
+    "command": "python -X utf8 skills/engineering-research-copilot/scripts/render_m1_map.py evals/f04-upstream/m1/f04-m1-calibration.json",
+    "executed_at": "2026-08-06T11:27:29+08:00",
+    "exit_code": 0
+  },
+  "proves": [
+    "The M1.2 two-round structure, citation identity bindings, role allocation, feedback delta, evidence map, and M1_COMPLETE terminal contract pass the repository validator.",
+    "No blocking citation conflict or evidence gap was emitted by the validator."
+  ],
+  "does_not_prove": [
+    "A live instrument calibration certificate for every public dataset.",
+    "A common traceable measurement standard across datasets.",
+    "A target-domain transfer result or any M3 route or experiment."
+  ]
+}

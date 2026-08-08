@@ -1,0 +1,91 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:engineering-research-copilot:m3:r5.2-f02:launch-records",
+  "title": "r5.2-f02 one-shot launch records",
+  "oneOf": [
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "revision",
+        "case_id",
+        "authorization_receipt",
+        "execution_control",
+        "attempt_count",
+        "max_fresh_tasks",
+        "no_retry",
+        "request_envelope_sha256",
+        "model_visible_messages_sha256",
+        "claimed_at"
+      ],
+      "properties": {
+        "schema_version": {"const": "m3.1-r5.2-f02-launch-attempt-v1"},
+        "revision": {"const": "r5.2-f02"},
+        "case_id": {"const": "m3-f02"},
+        "authorization_receipt": {"$ref": "#/$defs/boundFile"},
+        "execution_control": {"$ref": "#/$defs/boundFile"},
+        "attempt_count": {"const": 1},
+        "max_fresh_tasks": {"const": 1},
+        "no_retry": {"const": true},
+        "request_envelope_sha256": {"$ref": "#/$defs/sha256"},
+        "model_visible_messages_sha256": {"$ref": "#/$defs/sha256"},
+        "claimed_at": {"$ref": "#/$defs/timestamp"}
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "revision",
+        "case_id",
+        "launch_attempt",
+        "fresh_task_id",
+        "model_id",
+        "launch_count",
+        "historical_task_reused",
+        "launch_status",
+        "no_retry",
+        "task_created_at",
+        "request_envelope_sha256",
+        "model_visible_messages_sha256",
+        "errors"
+      ],
+      "properties": {
+        "schema_version": {"const": "m3.1-r5.2-f02-launch-receipt-v1"},
+        "revision": {"const": "r5.2-f02"},
+        "case_id": {"const": "m3-f02"},
+        "launch_attempt": {"$ref": "#/$defs/boundFile"},
+        "fresh_task_id": {"type": "string", "minLength": 1},
+        "model_id": {"type": "string", "minLength": 1},
+        "launch_count": {"const": 1},
+        "historical_task_reused": {"const": false},
+        "launch_status": {"const": "launched"},
+        "no_retry": {"const": true},
+        "task_created_at": {"$ref": "#/$defs/timestamp"},
+        "request_envelope_sha256": {"$ref": "#/$defs/sha256"},
+        "model_visible_messages_sha256": {"$ref": "#/$defs/sha256"},
+        "errors": {"const": []}
+      }
+    }
+  ],
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "timestamp": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?Z$"
+    },
+    "boundFile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "raw_sha256"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "raw_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    }
+  },
+  "x-max-fresh-tasks": 1,
+  "x-retry-allowed": false
+}

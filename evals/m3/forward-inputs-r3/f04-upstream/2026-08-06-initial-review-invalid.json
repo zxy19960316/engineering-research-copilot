@@ -1,0 +1,37 @@
+{
+  "schema_version": "m3.1-r3-f04-independent-review-v1",
+  "review_status": "invalid",
+  "reviewer_context": "codex-task:019fd557-520b-72a0-a4b8-1ac9056a6293",
+  "reviewed_head": "a15e4443aab297459610ab510e81c1d424b3c2a4",
+  "review_mode": "read_only_fresh_worktree",
+  "terminal_failure": {
+    "code": "confirmed_bundle_filesystem_raw_sha256_mismatch",
+    "path": "evals/f04-upstream/m2/f04-m2-confirmed.bundle.json",
+    "observed_filesystem_raw_sha256": "917432f0d80a4b2ec0e902296268e709d3e748467f0e0e4c30e9df40cb550040",
+    "claimed_raw_sha256": "dbc1e778e0b53ea5c8724bcaea39803d13d524a67f8e72a24a046a380ff574e4"
+  },
+  "byte_diagnosis": {
+    "review_worktree_core_autocrlf": true,
+    "review_worktree_eol_attribute": "unspecified",
+    "review_worktree_bytes": 178401,
+    "review_worktree_crlf_count": 4102,
+    "git_blob_bytes": 174299,
+    "git_blob_crlf_count": 0,
+    "git_blob_raw_sha256": "dbc1e778e0b53ea5c8724bcaea39803d13d524a67f8e72a24a046a380ff574e4",
+    "source_worktree_raw_sha256": "dbc1e778e0b53ea5c8724bcaea39803d13d524a67f8e72a24a046a380ff574e4",
+    "inference": "The fresh Windows checkout converted the LF Git blob to CRLF because no path-specific EOL attribute existed at the reviewed HEAD."
+  },
+  "non_terminal_observations": {
+    "m1_validator": "valid_exit_0",
+    "m2_validator": "valid_exit_0",
+    "structural_confirmation_fields": "matched",
+    "canonical_hashes": "matched"
+  },
+  "preserved_final_output": "Final review status: invalid. Terminal failure preserved: filesystem raw SHA-256 917432f0d80a4b2ec0e902296268e709d3e748467f0e0e4c30e9df40cb550040 != claimed dbc1e778e0b53ea5c8724bcaea39803d13d524a67f8e72a24a046a380ff574e4.",
+  "supersession_policy": "This failed review remains immutable. A later review may supersede it for acceptance only after reviewing a new HEAD in a new fresh worktree.",
+  "does_not_prove": [
+    "F04 input eligibility",
+    "M3 acceptance",
+    "empirical measurement, calibration, repeatability, reproducibility, uncertainty, or transfer performance"
+  ]
+}

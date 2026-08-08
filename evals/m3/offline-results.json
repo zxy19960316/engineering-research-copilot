@@ -1,0 +1,302 @@
+{
+  "all_matched": true,
+  "cases": [
+    {
+      "actual_errors": [],
+      "actual_evidence_gaps": [],
+      "actual_status": "valid",
+      "expected_errors": [],
+      "expected_evidence_gaps": [],
+      "expected_status": "valid",
+      "fixture": "valid-bounded.json",
+      "matched": true
+    },
+    {
+      "actual_errors": [],
+      "actual_evidence_gaps": [],
+      "actual_status": "valid",
+      "expected_errors": [],
+      "expected_evidence_gaps": [],
+      "expected_status": "valid",
+      "fixture": "valid-route-specific.json",
+      "matched": true
+    },
+    {
+      "actual_errors": [
+        "invalid_method_card",
+        "missing_method_card_assumptions"
+      ],
+      "actual_evidence_gaps": [],
+      "actual_status": "invalid",
+      "expected_errors": [
+        "invalid_method_card",
+        "missing_method_card_assumptions"
+      ],
+      "expected_evidence_gaps": [],
+      "expected_status": "invalid",
+      "fixture": "missing-assumptions.json",
+      "matched": true
+    },
+    {
+      "actual_errors": [
+        "invalid_method_card",
+        "missing_method_card_baselines"
+      ],
+      "actual_evidence_gaps": [],
+      "actual_status": "invalid",
+      "expected_errors": [
+        "invalid_method_card",
+        "missing_method_card_baselines"
+      ],
+      "expected_evidence_gaps": [],
+      "expected_status": "invalid",
+      "fixture": "missing-baseline.json",
+      "matched": true
+    },
+    {
+      "actual_errors": [
+        "invalid_method_card",
+        "missing_method_card_failure_modes"
+      ],
+      "actual_evidence_gaps": [],
+      "actual_status": "invalid",
+      "expected_errors": [
+        "invalid_method_card",
+        "missing_method_card_failure_modes"
+      ],
+      "expected_evidence_gaps": [],
+      "expected_status": "invalid",
+      "fixture": "missing-failure-mode.json",
+      "matched": true
+    },
+    {
+      "actual_errors": [
+        "invalid_method_card",
+        "missing_method_card_uncertainty_handling"
+      ],
+      "actual_evidence_gaps": [],
+      "actual_status": "invalid",
+      "expected_errors": [
+        "invalid_method_card",
+        "missing_method_card_uncertainty_handling"
+      ],
+      "expected_evidence_gaps": [],
+      "expected_status": "invalid",
+      "fixture": "missing-uncertainty-handling.json",
+      "matched": true
+    },
+    {
+      "actual_errors": [
+        "invalid_method_card_stop_condition",
+        "method_card_stop_condition_not_authoritative"
+      ],
+      "actual_evidence_gaps": [],
+      "actual_status": "invalid",
+      "expected_errors": [
+        "invalid_method_card_stop_condition",
+        "method_card_stop_condition_not_authoritative"
+      ],
+      "expected_evidence_gaps": [],
+      "expected_status": "invalid",
+      "fixture": "nonnumeric-stop-condition.json",
+      "matched": true
+    },
+    {
+      "actual_errors": [
+        "method_card_stop_condition_not_authoritative"
+      ],
+      "actual_evidence_gaps": [],
+      "actual_status": "invalid",
+      "expected_errors": [
+        "method_card_stop_condition_not_authoritative"
+      ],
+      "expected_evidence_gaps": [],
+      "expected_status": "invalid",
+      "fixture": "unbound-stop-condition.json",
+      "matched": true
+    },
+    {
+      "actual_errors": [
+        "method_card_pivot_condition_not_authoritative"
+      ],
+      "actual_evidence_gaps": [],
+      "actual_status": "invalid",
+      "expected_errors": [
+        "method_card_pivot_condition_not_authoritative"
+      ],
+      "expected_evidence_gaps": [],
+      "expected_status": "invalid",
+      "fixture": "unbound-pivot-condition.json",
+      "matched": true
+    },
+    {
+      "actual_errors": [
+        "invalid_source_ledger",
+        "missing_source_ledger_does_not_support"
+      ],
+      "actual_evidence_gaps": [],
+      "actual_status": "invalid",
+      "expected_errors": [
+        "invalid_source_ledger",
+        "missing_source_ledger_does_not_support"
+      ],
+      "expected_evidence_gaps": [],
+      "expected_status": "invalid",
+      "fixture": "source-missing-does-not-support.json",
+      "matched": true
+    },
+    {
+      "actual_errors": [
+        "direction_not_user_confirmed"
+      ],
+      "actual_evidence_gaps": [],
+      "actual_status": "invalid",
+      "expected_errors": [
+        "direction_not_user_confirmed"
+      ],
+      "expected_evidence_gaps": [],
+      "expected_status": "invalid",
+      "fixture": "unconfirmed-direction.json",
+      "matched": true
+    },
+    {
+      "actual_errors": [
+        "unsupported_approved_constraint_change_provenance"
+      ],
+      "actual_evidence_gaps": [],
+      "actual_status": "invalid",
+      "expected_errors": [
+        "unsupported_approved_constraint_change_provenance"
+      ],
+      "expected_evidence_gaps": [],
+      "expected_status": "invalid",
+      "fixture": "nonempty-approved-constraint-changes.json",
+      "matched": true
+    },
+    {
+      "actual_errors": [
+        "minimum_resource_exceeds_ceiling"
+      ],
+      "actual_evidence_gaps": [],
+      "actual_status": "invalid",
+      "expected_errors": [
+        "minimum_resource_exceeds_ceiling"
+      ],
+      "expected_evidence_gaps": [],
+      "expected_status": "invalid",
+      "fixture": "resource-expansion.json",
+      "matched": true
+    },
+    {
+      "actual_errors": [
+        "route_precondition_traceability_mismatch"
+      ],
+      "actual_evidence_gaps": [],
+      "actual_status": "invalid",
+      "expected_errors": [
+        "route_precondition_traceability_mismatch"
+      ],
+      "expected_evidence_gaps": [],
+      "expected_status": "invalid",
+      "fixture": "route-precondition-mismatch.json",
+      "matched": true
+    },
+    {
+      "actual_errors": [
+        "method_card_stop_condition_not_authoritative",
+        "route_condition_traceability_mismatch"
+      ],
+      "actual_evidence_gaps": [],
+      "actual_status": "invalid",
+      "expected_errors": [
+        "method_card_stop_condition_not_authoritative",
+        "route_condition_traceability_mismatch"
+      ],
+      "expected_evidence_gaps": [],
+      "expected_status": "invalid",
+      "fixture": "route-condition-mismatch.json",
+      "matched": true
+    },
+    {
+      "actual_errors": [
+        "nuclear_overlay_transfer_status_not_hypothesis"
+      ],
+      "actual_evidence_gaps": [],
+      "actual_status": "invalid",
+      "expected_errors": [
+        "nuclear_overlay_transfer_status_not_hypothesis"
+      ],
+      "expected_evidence_gaps": [],
+      "expected_status": "invalid",
+      "fixture": "nuclear-transfer-overclaim.json",
+      "matched": true
+    },
+    {
+      "actual_errors": [
+        "safety_support_requires_non_preprint_source"
+      ],
+      "actual_evidence_gaps": [],
+      "actual_status": "invalid",
+      "expected_errors": [
+        "safety_support_requires_non_preprint_source"
+      ],
+      "expected_evidence_gaps": [],
+      "expected_status": "invalid",
+      "fixture": "preprint-only-general-safety.json",
+      "matched": true
+    },
+    {
+      "actual_errors": [
+        "invalid_minimum_resource_required_value"
+      ],
+      "actual_evidence_gaps": [],
+      "actual_status": "invalid",
+      "expected_errors": [
+        "invalid_minimum_resource_required_value"
+      ],
+      "expected_evidence_gaps": [],
+      "expected_status": "invalid",
+      "fixture": "negative-minimum-resource.json",
+      "matched": true
+    },
+    {
+      "actual_errors": [
+        "method_card_condition_metric_not_primary"
+      ],
+      "actual_evidence_gaps": [],
+      "actual_status": "invalid",
+      "expected_errors": [
+        "method_card_condition_metric_not_primary"
+      ],
+      "expected_evidence_gaps": [],
+      "expected_status": "invalid",
+      "fixture": "card-condition-outside-primary-metrics.json",
+      "matched": true
+    },
+    {
+      "actual_errors": [
+        "method_card_primary_metric_claim_type_mismatch"
+      ],
+      "actual_evidence_gaps": [],
+      "actual_status": "invalid",
+      "expected_errors": [
+        "method_card_primary_metric_claim_type_mismatch"
+      ],
+      "expected_evidence_gaps": [],
+      "expected_status": "invalid",
+      "fixture": "card-primary-metric-claim-mismatch.json",
+      "matched": true
+    }
+  ],
+  "does_not_prove": [
+    "Real citation existence or metadata accuracy",
+    "Real experimental, simulation, model, transfer, or safety performance",
+    "Execution of any experiment, simulation, training, download, deployment, service, or route"
+  ],
+  "evidence_class": "offline_contract_fixture",
+  "proves": [
+    "M3.1 offline structural contract behavior for bounded and route-specific method coaching",
+    "Exact rejection behavior for required card fields, source boundaries, confirmation, provenance, resource, route-traceability, and nuclear-transfer guards"
+  ],
+  "schema_version": "m3.1-offline-results"
+}
