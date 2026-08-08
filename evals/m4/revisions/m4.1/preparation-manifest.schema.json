@@ -1,0 +1,239 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://engineering-research-copilot.local/m4/revisions/m4.1/preparation-manifest.schema.json",
+  "title": "M4.1 successor preparation manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "milestone",
+    "revision",
+    "status",
+    "predecessor",
+    "base_preparation",
+    "authority",
+    "matrix",
+    "randomization",
+    "execution_helper",
+    "tasks",
+    "counters"
+  ],
+  "properties": {
+    "schema_version": {"const": "m4.1-successor-preparation-v1"},
+    "milestone": {"const": "M4"},
+    "revision": {"const": "M4.1"},
+    "status": {"const": "PREPARATION_ONLY"},
+    "predecessor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "terminal_head",
+        "terminal_ci_run_id",
+        "terminal_ci_conclusion",
+        "launch_claim",
+        "pre_dispatch_failure",
+        "m4_0_authorization_token_status",
+        "m4_0_task_ids_consumed",
+        "m4_0_observed_contexts"
+      ],
+      "properties": {
+        "terminal_head": {"const": "f48ab8d7e835e9a57e65b75458faa786d696316d"},
+        "terminal_ci_run_id": {"const": 31246286753},
+        "terminal_ci_conclusion": {"const": "success"},
+        "launch_claim": {"$ref": "#/$defs/evidence"},
+        "pre_dispatch_failure": {"$ref": "#/$defs/evidence"},
+        "m4_0_authorization_token_status": {"const": "CONSUMED"},
+        "m4_0_task_ids_consumed": {"const": 60},
+        "m4_0_observed_contexts": {"const": 0}
+      }
+    },
+    "base_preparation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "head", "raw_sha256", "git_blob_oid", "task_count", "source_order_sha256"],
+      "properties": {
+        "path": {"const": "evals/m4/preparation-manifest.json"},
+        "head": {"const": "c56c3c1ab384f65e51a70e9582672c6320d19121"},
+        "raw_sha256": {"$ref": "#/$defs/sha256"},
+        "git_blob_oid": {"$ref": "#/$defs/git_oid"},
+        "task_count": {"const": 60},
+        "source_order_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "fresh_execution_authorized",
+        "fresh_tasks_authorized",
+        "result_writes_authorized",
+        "retry_authorized",
+        "repair_authorized",
+        "authorization_artifact",
+        "model_binding_status"
+      ],
+      "properties": {
+        "fresh_execution_authorized": {"const": false},
+        "fresh_tasks_authorized": {"const": false},
+        "result_writes_authorized": {"const": false},
+        "retry_authorized": {"const": false},
+        "repair_authorized": {"const": false},
+        "authorization_artifact": {"type": "null"},
+        "model_binding_status": {"const": "UNBOUND_UNTIL_SEPARATE_AUTHORIZATION"}
+      }
+    },
+    "matrix": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["case_count", "arm_count", "planned_task_count", "batch_count", "batches"],
+      "properties": {
+        "case_count": {"const": 12},
+        "arm_count": {"const": 5},
+        "planned_task_count": {"const": 60},
+        "batch_count": {"const": 6},
+        "batches": {
+          "type": "array",
+          "minItems": 6,
+          "maxItems": 6,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "batch_id",
+              "source_batch_id",
+              "domain",
+              "task_ids",
+              "source_task_ids",
+              "planned_task_count",
+              "stop_on_infrastructure_or_protocol_failure",
+              "later_batches_mutable_after_observation"
+            ],
+            "properties": {
+              "batch_id": {"type": "string"},
+              "source_batch_id": {"type": "string"},
+              "domain": {"type": "string"},
+              "task_ids": {"type": "array", "minItems": 10, "maxItems": 10, "uniqueItems": true, "items": {"type": "string"}},
+              "source_task_ids": {"type": "array", "minItems": 10, "maxItems": 10, "uniqueItems": true, "items": {"type": "string"}},
+              "planned_task_count": {"const": 10},
+              "stop_on_infrastructure_or_protocol_failure": {"const": true},
+              "later_batches_mutable_after_observation": {"const": false}
+            }
+          }
+        }
+      }
+    },
+    "randomization": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["frozen", "policy", "source_seed", "task_order", "blind_mapping", "judge_mapping_access_authorized"],
+      "properties": {
+        "frozen": {"const": true},
+        "policy": {"const": "INHERITED_M4_0_RELATIVE_ORDER_WITH_DISJOINT_IDENTITIES"},
+        "source_seed": {"const": "m4.0-order-v1"},
+        "task_order": {"type": "array", "minItems": 60, "maxItems": 60, "uniqueItems": true, "items": {"type": "string"}},
+        "blind_mapping": {"type": "object", "minProperties": 60, "maxProperties": 60, "additionalProperties": {"type": "string"}},
+        "judge_mapping_access_authorized": {"const": false}
+      }
+    },
+    "execution_helper": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "raw_sha256", "minimum_windows_powershell_version", "hash_algorithm", "hex_encoding", "prohibited_apis", "modes", "request_binding_count"],
+      "properties": {
+        "path": {"const": "evals/m4/execution/prepare_m4_1_request_bundles.ps1"},
+        "raw_sha256": {"$ref": "#/$defs/sha256"},
+        "minimum_windows_powershell_version": {"const": "5.1"},
+        "hash_algorithm": {"const": "SHA-256"},
+        "hex_encoding": {"const": "BitConverter.ToString.Replace.ToLowerInvariant"},
+        "prohibited_apis": {"const": ["Convert.ToHexString", "SHA256.HashData"]},
+        "modes": {"const": ["SelfTest", "CheckAll", "TaskId"]},
+        "request_binding_count": {"const": 60}
+      }
+    },
+    "tasks": {
+      "type": "array",
+      "minItems": 60,
+      "maxItems": 60,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "task_id",
+          "source_task_id",
+          "blind_id",
+          "source_blind_id",
+          "case_id",
+          "domain",
+          "case_type",
+          "arm_id",
+          "batch_id",
+          "source_batch_id",
+          "case_path",
+          "case_sha256",
+          "user_input_sha256",
+          "task_protocol_sha256",
+          "variant_instruction_path",
+          "variant_instruction_sha256",
+          "rubric_sha256",
+          "execution_constraints_sha256",
+          "result_root",
+          "result_root_must_be_absent",
+          "request_binding_sha256"
+        ],
+        "properties": {
+          "task_id": {"type": "string", "pattern": "^M4\\.1-"},
+          "source_task_id": {"type": "string", "pattern": "^M4-(?!BATCH-)"},
+          "blind_id": {"type": "string", "pattern": "^M4-J(?:0(?:6[1-9]|[7-9][0-9])|1[01][0-9]|120)$"},
+          "source_blind_id": {"type": "string"},
+          "case_id": {"type": "string"},
+          "domain": {"type": "string"},
+          "case_type": {"enum": ["ordinary", "adversarial"]},
+          "arm_id": {"enum": ["N", "F", "A1", "A2", "A3"]},
+          "batch_id": {"type": "string", "pattern": "^M4\\.1-BATCH-"},
+          "source_batch_id": {"type": "string", "pattern": "^M4-BATCH-"},
+          "case_path": {"type": "string"},
+          "case_sha256": {"$ref": "#/$defs/sha256"},
+          "user_input_sha256": {"$ref": "#/$defs/sha256"},
+          "task_protocol_sha256": {"$ref": "#/$defs/sha256"},
+          "variant_instruction_path": {"type": ["string", "null"]},
+          "variant_instruction_sha256": {"anyOf": [{"$ref": "#/$defs/sha256"}, {"type": "null"}]},
+          "rubric_sha256": {"$ref": "#/$defs/sha256"},
+          "execution_constraints_sha256": {"$ref": "#/$defs/sha256"},
+          "result_root": {"type": "string", "pattern": "^evals/m4/results/m4\\.1/"},
+          "result_root_must_be_absent": {"const": true},
+          "request_binding_sha256": {"$ref": "#/$defs/sha256"}
+        }
+      }
+    },
+    "counters": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["authorized_tasks", "created_contexts", "dispatched_tasks", "finalizations", "results_observed", "judge_scores", "retries", "repairs", "unauthorized_side_effects"],
+      "properties": {
+        "authorized_tasks": {"const": 0},
+        "created_contexts": {"const": 0},
+        "dispatched_tasks": {"const": 0},
+        "finalizations": {"const": 0},
+        "results_observed": {"const": 0},
+        "judge_scores": {"const": 0},
+        "retries": {"const": 0},
+        "repairs": {"const": 0},
+        "unauthorized_side_effects": {"const": 0}
+      }
+    }
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "git_oid": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256", "git_blob_oid"],
+      "properties": {
+        "path": {"type": "string"},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "git_blob_oid": {"$ref": "#/$defs/git_oid"}
+      }
+    }
+  }
+}
