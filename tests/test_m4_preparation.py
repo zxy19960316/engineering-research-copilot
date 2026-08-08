@@ -3,6 +3,7 @@ from __future__ import annotations
 import hashlib
 import importlib.util
 import json
+import copy
 import unittest
 from collections import Counter
 from pathlib import Path
@@ -277,6 +278,110 @@ class M4VariantContractTests(unittest.TestCase):
         result = builder.check_variants(REPO_ROOT)
         self.assertEqual(result["status"], "valid")
         self.assertEqual(result["mismatches"], [])
+
+
+class M4PreparationManifestTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.manifest = _load_json(M4_ROOT / "preparation-manifest.json")
+        cls.auditor = _load_module(M4_ROOT / "audit_preparation.py", "m4_audit_preparation")
+        cls.builder = _load_module(M4_ROOT / "build_preparation.py", "m4_build_preparation")
+
+    def test_exact_preparation_matrix(self) -> None:
+        manifest = self.manifest
+        self.assertEqual(manifest["schema_version"], "m4-preparation-manifest-v1")
+        self.assertEqual(manifest["milestone"], "M4")
+        self.assertEqual(manifest["revision"], "M4.0")
+        self.assertEqual(manifest["status"], "PREPARATION_ONLY")
+        self.assertEqual(manifest["matrix"]["case_count"], 12)
+        self.assertEqual(manifest["matrix"]["arm_count"], 5)
+        self.assertEqual(manifest["matrix"]["planned_task_count"], 60)
+        self.assertEqual(manifest["matrix"]["arms"], ["N", "F", "A1", "A2", "A3"])
+        self.assertEqual(len(manifest["tasks"]), 60)
+        self.assertEqual(len(manifest["matrix"]["batches"]), 6)
+        self.assertTrue(all(batch["planned_task_count"] == 10 for batch in manifest["matrix"]["batches"]))
+
+    def test_authority_and_execution_counters_are_closed(self) -> None:
+        authority = self.manifest["authority"]
+        self.assertFalse(authority["fresh_execution_authorized"])
+        self.assertFalse(authority["fresh_tasks_authorized"])
+        self.assertFalse(authority["result_writes_authorized"])
+        self.assertFalse(authority["retry_authorized"])
+        self.assertFalse(authority["repair_authorized"])
+        self.assertIsNone(authority["authorization_artifact"])
+        self.assertEqual(authority["model_binding_status"], "UNBOUND_UNTIL_SEPARATE_AUTHORIZATION")
+        self.assertTrue(all(value == 0 for value in self.manifest["counters"].values()))
+
+    def test_tasks_freeze_identical_inputs_and_unique_blind_ids(self) -> None:
+        tasks = self.manifest["tasks"]
+        self.assertEqual(len({task["task_id"] for task in tasks}), 60)
+        self.assertEqual(len({task["blind_id"] for task in tasks}), 60)
+        self.assertEqual(
+            [task["task_id"] for task in tasks],
+            self.manifest["randomization"]["task_order"],
+        )
+        by_case: dict[str, list[dict]] = {}
+        for task in tasks:
+            by_case.setdefault(task["case_id"], []).append(task)
+            self.assertTrue(task["result_root_must_be_absent"])
+            self.assertFalse((REPO_ROOT / task["result_root"]).exists())
+        for case_tasks in by_case.values():
+            self.assertEqual({task["arm_id"] for task in case_tasks}, {"N", "F", "A1", "A2", "A3"})
+            self.assertEqual(len({task["case_sha256"] for task in case_tasks}), 1)
+            self.assertEqual(len({task["user_input_sha256"] for task in case_tasks}), 1)
+            self.assertEqual(len({task["task_protocol_sha256"] for task in case_tasks}), 1)
+            self.assertEqual(len({task["rubric_sha256"] for task in case_tasks}), 1)
+
+    def test_execution_constraints_are_equal_and_bounded(self) -> None:
+        constraints = self.manifest["execution_constraints"]
+        self.assertIsNone(constraints["exact_model_id"])
+        self.assertTrue(constraints["same_model_across_arms"])
+        self.assertEqual(constraints["tool_profile_id"], "M4-READONLY-RESEARCH-V1")
+        self.assertEqual(constraints["search_query_budget"], 12)
+        self.assertEqual(constraints["input_context_token_ceiling"], 32000)
+        self.assertEqual(constraints["output_token_ceiling"], 8000)
+        self.assertEqual(constraints["wall_clock_minutes"], 20)
+        self.assertTrue(constraints["same_user_input_across_arms"])
+        self.assertTrue(constraints["same_scoring_contract_across_arms"])
+
+    def test_repository_preparation_audit_passes(self) -> None:
+        result = self.auditor.audit_preparation(REPO_ROOT)
+        self.assertEqual(result["status"], "prepared")
+        self.assertEqual(result["errors"], [])
+        self.assertEqual(result["case_count"], 12)
+        self.assertEqual(result["arm_count"], 5)
+        self.assertEqual(result["planned_task_count"], 60)
+        self.assertEqual(result["existing_result_root_count"], 0)
+        self.assertEqual(result["m3_changed_paths"], [])
+
+    def test_builder_check_mode_is_clean(self) -> None:
+        result = self.builder.check_preparation(REPO_ROOT)
+        self.assertEqual(result["status"], "valid")
+        self.assertEqual(result["mismatches"], [])
+
+    def test_mutated_authority_and_ids_fail_closed(self) -> None:
+        authority_mutation = copy.deepcopy(self.manifest)
+        authority_mutation["authority"]["fresh_execution_authorized"] = True
+        result = self.auditor.audit_manifest(authority_mutation, REPO_ROOT, verify_git=False)
+        self.assertIn("fresh_execution_authority_forbidden", result["errors"])
+
+        id_mutation = copy.deepcopy(self.manifest)
+        id_mutation["tasks"][1]["task_id"] = id_mutation["tasks"][0]["task_id"]
+        result = self.auditor.audit_manifest(id_mutation, REPO_ROOT, verify_git=False)
+        self.assertIn("task_id_reused", result["errors"])
+
+    def test_mutated_counter_and_randomization_fail_closed(self) -> None:
+        counter_mutation = copy.deepcopy(self.manifest)
+        counter_mutation["counters"]["dispatched_tasks"] = 1
+        result = self.auditor.audit_manifest(counter_mutation, REPO_ROOT, verify_git=False)
+        self.assertIn("execution_counter_nonzero", result["errors"])
+
+        order_mutation = copy.deepcopy(self.manifest)
+        order_mutation["randomization"]["task_order"][0:2] = reversed(
+            order_mutation["randomization"]["task_order"][0:2]
+        )
+        result = self.auditor.audit_manifest(order_mutation, REPO_ROOT, verify_git=False)
+        self.assertIn("randomization_order_invalid", result["errors"])
 
 
 if __name__ == "__main__":
