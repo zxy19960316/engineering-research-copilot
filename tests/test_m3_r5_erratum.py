@@ -98,12 +98,12 @@ class M3R5ErratumTests(unittest.TestCase):
         self.assertEqual(diagnostic["retry_count"], 0)
         self.assertFalse(diagnostic["composed_output_created"])
 
-    def test_status_top_preserves_terminal_history_after_m3_closure(self):
+    def test_status_top_preserves_terminal_history_during_m4_preparation(self):
         text = (REPO_ROOT / "STATUS.md").read_text(encoding="utf-8")
         current = text.split("## M3 checklist", 1)[0]
 
         self.assertIn(
-            "Active revision: `M3.1.1 r5+r5.2 cross-revision aggregate and M3 closure`",
+            "Active revision: `M4 preparation only`",
             current,
         )
         self.assertIn(f"Historical r5 evidence HEAD: `{EVIDENCE_HEAD}`", current)
@@ -118,8 +118,8 @@ class M3R5ErratumTests(unittest.TestCase):
             current,
         )
         self.assertIn(
-            "Status: `GATE_4_COMPLETE; CROSS_REVISION_AGGREGATE_ACCEPTED; "
-            "M3_CLOSED; M4_NOT_STARTED`",
+            "Status: `M3_CLOSED; M4_PREPARATION_ONLY; "
+            "M4_FRESH_TASKS_AUTHORIZED_FALSE`",
             current,
         )
         self.assertIn("Historical r5 status: `BLOCKED_NOT_ACCEPTED`", current)
@@ -154,7 +154,8 @@ class M3R5ErratumTests(unittest.TestCase):
         )
         self.assertIn("Historical immutable-r5 exact-HEAD CI: `FAILED`", current)
         self.assertIn("M3: `CLOSED`", current)
-        self.assertIn("M4: `NOT_STARTED`", current)
+        self.assertIn("M4: `PREPARATION_ONLY`", current)
+        self.assertIn("M4 fresh tasks authorized: `false`", current)
         self.assertIn("r5.1-f02 retry: `FORBIDDEN`", current)
         self.assertIn("Gate 2: `COMPLETE; EXACT_HEAD_CI_PASSED`", current)
         self.assertIn("Gate 2 new fresh-run authorization: `false`", current)
@@ -179,7 +180,7 @@ class M3R5ErratumTests(unittest.TestCase):
         )
         self.assertIn(
             "M3 closure: `CLOSED; CLOSURE_AUDIT_PASSED; "
-            "DELIVERY_EXACT_HEAD_CI_PENDING`",
+            "DELIVERY_EXACT_HEAD_CI_PASSED`",
             current,
         )
         self.assertIn("r5.1-f02 replacement task budget: `CONSUMED`", current)

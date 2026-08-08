@@ -1,4 +1,4 @@
-name: M1, M2.1.1, and M3.1.1 Validation
+name: M1, M2.1.1, M3.1.1, and M4 Preparation Validation
 
 on:
   push:
@@ -67,7 +67,11 @@ jobs:
             evals/m3/audit_forward_r5_2_aggregate.py \
             evals/m3/audit_m3_closure.py \
             evals/m3/audit_immutable_forward_evidence.py \
-            evals/m3/audit_skill_package.py
+            evals/m3/audit_skill_package.py \
+            evals/m4/variants/build_variants.py \
+            evals/m4/build_preparation.py \
+            evals/m4/audit_preparation.py \
+            evals/m4/audit_results.py
       - name: Require immutable r5 evidence commit
         run: |
           git cat-file -e 1b696bce53ee0a11163bfe4f91a9a49ab3af6f49^{commit}
@@ -102,6 +106,14 @@ jobs:
         run: python -X utf8 evals/m3/audit_forward_r5_2_aggregate.py
       - name: Audit M3 cross-revision closure
         run: python -X utf8 evals/m3/audit_m3_closure.py
+      - name: Require M4 variant regeneration diff to be empty
+        run: python -X utf8 evals/m4/variants/build_variants.py --check
+      - name: Require M4 preparation regeneration diff to be empty
+        run: python -X utf8 evals/m4/build_preparation.py --check
+      - name: Audit M4 preparation
+        run: python -X utf8 evals/m4/audit_preparation.py
+      - name: Assert M4 results remain not run
+        run: python -X utf8 evals/m4/audit_results.py --expect-not-run
 
   historical-audit-cross-platform:
     strategy:
@@ -126,3 +138,6 @@ jobs:
           python -X utf8 -m unittest tests.test_audit_m3_forward_r5_2_f02_terminal -v
           python -X utf8 -m unittest tests.test_audit_m3_forward_r5_2_aggregate -v
           python -X utf8 -m unittest tests.test_audit_m3_closure -v
+          python -X utf8 -m unittest tests.test_m4_preparation tests.test_m4_results -v
+          python -X utf8 evals/m4/audit_preparation.py
+          python -X utf8 evals/m4/audit_results.py --expect-not-run

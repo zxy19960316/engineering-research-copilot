@@ -40,6 +40,20 @@ M4: `PREPARATION_ONLY`
 
 M4 fresh tasks authorized: `false`
 
+M4 preparation protocol: `COMPLETE; OFFLINE_ONLY`
+
+M4 preparation manifest: `evals/m4/preparation-manifest.json`
+
+M4 preparation matrix: `12 cases; 5 arms; 60 planned tasks; 6 domain batches`
+
+M4 preparation counters: `authorized=0; contexts=0; dispatched=0; finalizations=0; results=0; judge_scores=0; retries=0; repairs=0; unauthorized_side_effects=0`
+
+M4 result state: `NOT_RUN`
+
+M4 preparation local gates: `PASSED; focused=27/27; full=606/606; preparation_audit=PASSED; results_audit=NOT_RUN`
+
+M4 separate fresh-execution authorization: `REQUIRED; NOT_PRESENT`
+
 r5.1 CI and acceptance hardening implementation: `COMPLETE`
 
 r5.1 implementation exact-HEAD CI: `PASSED` on HEAD `18e48e38e44b0f0e18e323246496e0919d36fcdc` (GitHub Actions run `31105995299`)
