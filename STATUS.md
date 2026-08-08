@@ -2,9 +2,9 @@
 
 ## Active milestone
 
-`M3 — Engineering method cards`
+`M4 — Cross-engineering forward evaluation`
 
-Active revision: `M3.1.1 r5+r5.2 cross-revision aggregate and M3 closure`
+Active revision: `M4 preparation only`
 
 Historical r5 evidence HEAD: `1b696bce53ee0a11163bfe4f91a9a49ab3af6f49`
 
@@ -12,7 +12,7 @@ Gate 3 accepted evidence baseline HEAD: `ea8a7bbb8b365aded89f9ddb5c784f6e95a51d3
 
 Gate 3 accepted evidence baseline exact-HEAD CI: `PASSED` (GitHub Actions run `31192712555`)
 
-Status: `GATE_4_COMPLETE; CROSS_REVISION_AGGREGATE_ACCEPTED; M3_CLOSED; M4_NOT_STARTED`
+Status: `M3_CLOSED; M4_PREPARATION_ONLY; M4_FRESH_TASKS_AUTHORIZED_FALSE`
 
 Historical r5 status: `BLOCKED_NOT_ACCEPTED`
 
@@ -36,7 +36,9 @@ Historical immutable-r5 exact-HEAD CI: `FAILED` (GitHub Actions run `31096079186
 
 M3: `CLOSED`
 
-M4: `NOT_STARTED`
+M4: `PREPARATION_ONLY`
+
+M4 fresh tasks authorized: `false`
 
 r5.1 CI and acceptance hardening implementation: `COMPLETE`
 
@@ -146,9 +148,13 @@ Gate 4: `COMPLETE; CROSS_REVISION_AGGREGATE_ACCEPTED; EXACT_HEAD_CI_PASSED`
 
 M3 final validation: `PASSED; AGGREGATE_CANDIDATE_EXACT_HEAD_CI_PASSED`
 
-M3 closure: `CLOSED; CLOSURE_AUDIT_PASSED; DELIVERY_EXACT_HEAD_CI_PENDING`
+M3 closure: `CLOSED; CLOSURE_AUDIT_PASSED; DELIVERY_EXACT_HEAD_CI_PASSED`
 
-Gate 4 selects the immutable accepted r5 evidence for F01, F03, F04, and F05 together with the separately accepted r5.2-f02 F02 evidence. The historical r5 F02 `processing_failed` result and the 216-byte r5.1-f02 `terminal_not_accepted` result remain excluded immutable attempts; neither is relabeled, repaired, retried, or deleted. Aggregate candidate HEAD `3be04218b038bac7a55da10a553a5ce05be4652c` passed exact-HEAD run `31233356741`, and the successor closure manifest binds that green candidate and passes the read-only closure audit. M3 is `CLOSED`; the closure delivery HEAD still requires its own exact-HEAD CI, and M4 remains `NOT_STARTED`.
+M3 closure delivery HEAD: `716c11b9154a1ff3b866b7f64d39b1c6a9039e54`
+
+M3 closure delivery exact-HEAD CI: `PASSED` (GitHub Actions run `31233977467`)
+
+Gate 4 selects the immutable accepted r5 evidence for F01, F03, F04, and F05 together with the separately accepted r5.2-f02 F02 evidence. The historical r5 F02 `processing_failed` result and the 216-byte r5.1-f02 `terminal_not_accepted` result remain excluded immutable attempts; neither is relabeled, repaired, retried, or deleted. Aggregate candidate HEAD `3be04218b038bac7a55da10a553a5ce05be4652c` passed exact-HEAD run `31233356741`, and the successor closure manifest binds that green candidate and passes the read-only closure audit. M3 is `CLOSED`; closure delivery HEAD `716c11b9154a1ff3b866b7f64d39b1c6a9039e54` passed exact-HEAD run `31233977467`. M4 is active only for offline preparation, and fresh M4 tasks remain unauthorized.
 
 Before route-specific method-card instantiation, M3.1.1 must validate the complete M2.1.1 bundle, require `user_confirmed`, recompute the selected-direction binding, reject every non-empty `approved_constraint_changes` list with `unsupported_approved_constraint_change_provenance`, and rederive claim metrics, claim-specific preconditions, resource ceilings, actual Go/Stop/Pivot coverage, safety-source eligibility, and method-card internal bindings from upstream structures.
 
@@ -424,14 +430,14 @@ Evidence is recorded under `evals/m1/`, including preserved failed runs and inde
 ## Later milestones
 
 - M2: `M2.1 COMPLETE; M2.1.1 COMPLETE`
-- M3: `IN_PROGRESS`
-- M4: `NOT_STARTED`
+- M3: `CLOSED`
+- M4: `PREPARATION_ONLY; FRESH_TASKS_AUTHORIZED_FALSE`
 - M5: `NOT_STARTED`
 
 ## External state
 
 - Git remote: `https://github.com/zxy19960316/engineering-research-copilot.git`
-- Active local branch: `codex/m3.1.1-r5-r5.2-cross-revision-aggregate-and-closure`
+- Active local branch: `codex/m4-cross-engineering-forward-evaluation-preparation`
 - External APIs/services configured: none
 - RRC integration: not started
 - Platform integration: not required for the local Skill competition track
