@@ -1,0 +1,214 @@
+{
+  "schema_version": "m3.1-cross-revision-supersession-v1",
+  "revision": "r5+r5.2-f02",
+  "authorization": {
+    "message_sha256": "98d85c7301a2a8e65c95c7bcfa3fd256d55c60584f26113e0ae8be6464a4153e",
+    "message_utf8_bytes": 188,
+    "authorized_scope": [
+      "gate_4",
+      "cross_revision_aggregate",
+      "m3_closure"
+    ],
+    "fresh_execution_authorized": false,
+    "retry_authorized": false,
+    "repair_authorized": false,
+    "m4_authorized": false
+  },
+  "gate_3_baseline": {
+    "head": "ea8a7bbb8b365aded89f9ddb5c784f6e95a51d3d",
+    "branch": "codex/m3.1.1-r5.2-f02-one-shot-fresh-execution",
+    "ci_run_id": 31192712555,
+    "conclusion": "success"
+  },
+  "supersession_scope": {
+    "selection_only": true,
+    "relabels_history": false,
+    "deletes_history": false,
+    "repairs_history": false,
+    "retries_history": false
+  },
+  "selected_mapping": {
+    "m3-f01": "r5",
+    "m3-f02": "r5.2-f02",
+    "m3-f03": "r5",
+    "m3-f04": "r5",
+    "m3-f05": "r5"
+  },
+  "f02_lineage": [
+    "r5:m3-f02",
+    "r5.1-f02:m3-f02",
+    "r5.2-f02:m3-f02"
+  ],
+  "attempts": [
+    {
+      "attempt_id": "r5:m3-f01",
+      "case_id": "m3-f01",
+      "revision": "r5",
+      "task_id": "019fd687-4252-73d1-9220-9f8bf88354a6",
+      "finalization_id": "019fd687-47c9-7f02-bc56-1c0716ed73a6",
+      "terminal_status": "processed_accepted",
+      "accepted": true,
+      "selected": true,
+      "composer": 1,
+      "validator": 1,
+      "retry": 0,
+      "evidence": {
+        "path": "evals/m3/results/forward-r5/m3-f01.context.json",
+        "source_head": "1b696bce53ee0a11163bfe4f91a9a49ab3af6f49",
+        "git_blob_oid": "6f3bdc60bbe6250cd15c6424906dd73399a55a3c",
+        "byte_length": 428,
+        "raw_sha256": "8593ddf4fa7b6546536c091da0b3d38cf534d66547790dd7dfb50c8078f0e69b",
+        "json_status": "valid",
+        "canonical_sha256": "61fd01e0f45a20f736d9f45aeba9b76abd5d7f753c21157b01728387d4a017e5"
+      }
+    },
+    {
+      "attempt_id": "r5:m3-f02",
+      "case_id": "m3-f02",
+      "revision": "r5",
+      "task_id": "019fd687-5575-7143-8cf3-1ab3069611f5",
+      "finalization_id": "019fd687-6645-70e0-82d0-003a43147447",
+      "terminal_status": "processing_failed",
+      "accepted": false,
+      "selected": false,
+      "composer": 1,
+      "validator": 0,
+      "retry": 0,
+      "evidence": {
+        "path": "evals/m3/results/forward-r5/m3-f02.context.json",
+        "source_head": "1b696bce53ee0a11163bfe4f91a9a49ab3af6f49",
+        "git_blob_oid": "21465b0e6ef0c9910fd527723c556841e5aefd0d",
+        "byte_length": 428,
+        "raw_sha256": "2c13c1ec9185aa2fa0d01855612263b92f6cda4640464c906c69364220e3c16e",
+        "json_status": "valid",
+        "canonical_sha256": "05dbbc729ed94564ddca7e1240ea1eb9ecc6eff5f7571e30aa269b964528f66c"
+      }
+    },
+    {
+      "attempt_id": "r5:m3-f03",
+      "case_id": "m3-f03",
+      "revision": "r5",
+      "task_id": "019fd687-66db-7a50-98dd-1b4e23b65798",
+      "finalization_id": "019fd687-6ec4-76b2-83b4-9ceeb7d31329",
+      "terminal_status": "processed_accepted",
+      "accepted": true,
+      "selected": true,
+      "composer": 0,
+      "validator": 1,
+      "retry": 0,
+      "evidence": {
+        "path": "evals/m3/results/forward-r5/m3-f03.context.json",
+        "source_head": "1b696bce53ee0a11163bfe4f91a9a49ab3af6f49",
+        "git_blob_oid": "0ea16eb30074c605423d55dc06beff7f71e534e9",
+        "byte_length": 444,
+        "raw_sha256": "7d8c6d80b7515bbf92e545371b73016c77ca32023b881542f8421ad62898b697",
+        "json_status": "valid",
+        "canonical_sha256": "d9900ecfc02f22ba049fb70e8cbb09942bf68db53de0cc572f44ece86f51f13c"
+      }
+    },
+    {
+      "attempt_id": "r5:m3-f04",
+      "case_id": "m3-f04",
+      "revision": "r5",
+      "task_id": "019fd687-7f89-7881-b7e3-17fbb9f7b79d",
+      "finalization_id": "019fd687-86a2-7940-85c2-e89d8bd492da",
+      "terminal_status": "processed_accepted",
+      "accepted": true,
+      "selected": true,
+      "composer": 1,
+      "validator": 1,
+      "retry": 0,
+      "evidence": {
+        "path": "evals/m3/results/forward-r5/m3-f04.context.json",
+        "source_head": "1b696bce53ee0a11163bfe4f91a9a49ab3af6f49",
+        "git_blob_oid": "c30e8a27575c5ec7127600a51dea552e0ef341f7",
+        "byte_length": 428,
+        "raw_sha256": "be52f9bb794079dad3c65f401b42b538c859a76823309e743d2f5d4194c71687",
+        "json_status": "valid",
+        "canonical_sha256": "79d55cb179f1e1c11f0da7a9027220149b0fa372889b5cbc8a17343e50728212"
+      }
+    },
+    {
+      "attempt_id": "r5:m3-f05",
+      "case_id": "m3-f05",
+      "revision": "r5",
+      "task_id": "019fd687-a0c1-7473-bc24-8e15f05a6ab9",
+      "finalization_id": "019fd687-a9c8-7e30-9fab-50164156a3a7",
+      "terminal_status": "processed_accepted",
+      "accepted": true,
+      "selected": true,
+      "composer": 1,
+      "validator": 1,
+      "retry": 0,
+      "evidence": {
+        "path": "evals/m3/results/forward-r5/m3-f05.context.json",
+        "source_head": "1b696bce53ee0a11163bfe4f91a9a49ab3af6f49",
+        "git_blob_oid": "23b6b3d9a057c4e2c7a8d38cb9ab13c06f3a7481",
+        "byte_length": 428,
+        "raw_sha256": "cb35ef41e6690e95ef2416da80de7c108fe81d843ff19bfdc2708976f4fecd61",
+        "json_status": "valid",
+        "canonical_sha256": "80131197296838db2501e20b694bffb776844b648595d1b7efc8248e5ccf54f6"
+      }
+    },
+    {
+      "attempt_id": "r5.1-f02:m3-f02",
+      "case_id": "m3-f02",
+      "revision": "r5.1-f02",
+      "task_id": "019fdb7c-1728-7a92-b6cf-b0eb631a18b8",
+      "finalization_id": "019fdb7c-201e-7a72-bbed-853b45fbfae9",
+      "terminal_status": "terminal_not_accepted",
+      "accepted": false,
+      "selected": false,
+      "composer": 1,
+      "validator": 0,
+      "retry": 0,
+      "evidence": {
+        "path": "evals/m3/results/forward-r5.1-f02/terminal-manifest.json",
+        "source_head": "fb5eec44bbf86446cf12bda2bddc76fcb07a7e69",
+        "git_blob_oid": "3b862581be63529012495b8579f29e16dbb6f02b",
+        "byte_length": 8457,
+        "raw_sha256": "c8d8060e781b601b9dc7120b0cdf2615f9a9709fd67d9745a8d31dd682b8f9db",
+        "json_status": "valid",
+        "canonical_sha256": "dfda0627efd70ddedcc380e6a001dbadacde91bab4fecec51ee29b2eebda45cb"
+      }
+    },
+    {
+      "attempt_id": "r5.2-f02:m3-f02",
+      "case_id": "m3-f02",
+      "revision": "r5.2-f02",
+      "task_id": "019fdcb5-14e4-7462-be4f-379b72171a4d",
+      "finalization_id": "019fdcb5-1932-7182-a682-ea8bbd4703ab",
+      "terminal_status": "accepted",
+      "accepted": true,
+      "selected": true,
+      "composer": 1,
+      "validator": 1,
+      "retry": 0,
+      "evidence": {
+        "path": "evals/m3/results/forward-r5.2-f02/terminal-manifest.json",
+        "source_head": "13dd2f485a32b30e60f7b962cd784cc8bdfe2521",
+        "git_blob_oid": "642b416f44078d5af06e4ddbfbedc971fa3f7371",
+        "byte_length": 1794,
+        "raw_sha256": "7c93efb105705cb828ce4ef76d66a1aea05016b6c44c29b3972521dcd1752ec8",
+        "json_status": "valid",
+        "canonical_sha256": "672c4192fc72ae6152dff85b590de4a144c044e930dcf9ec4cb99ded085faa0f"
+      }
+    }
+  ],
+  "historical_counters": {
+    "tasks": 7,
+    "finalizations": 7,
+    "composer": 6,
+    "validator": 5,
+    "accepted": 5,
+    "failed": 2,
+    "retry": 0
+  },
+  "side_effects": [],
+  "does_not_prove": [
+    "Supersession relabels or repairs a failed historical F02 attempt.",
+    "A fresh task or retry is authorized.",
+    "M3 is closed or M4 has started.",
+    "Any experiment, simulation, training, deployment, or safety claim."
+  ]
+}

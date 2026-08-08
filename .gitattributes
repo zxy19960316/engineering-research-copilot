@@ -31,3 +31,8 @@
 /evals/m3/forward-inputs-r5.2-f02/** text eol=lf
 /evals/m3/results/forward-r5.2-f02/** text eol=lf
 /evals/m3/r5_2_f02_protocol.py text eol=lf
+
+# Preserve byte-sensitive cross-revision aggregate and closure evidence.
+/evals/m3/results/forward-r5.2-aggregate/** text eol=lf
+/evals/m3/results/2026-08-08-m3.1.1-cross-revision-aggregate-validation.md text eol=lf
+/evals/m3/results/2026-08-08-m3.1.1-closure-validation.md text eol=lf
