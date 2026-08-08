@@ -102,6 +102,8 @@ M4.1 preparation counters: `authorized=0; contexts=0; dispatched=0; finalization
 
 M4.1 result state: `NOT_RUN; launch_claim=ABSENT; result_roots=0; results_manifest=ABSENT`
 
+M4.1 preparation local gates: `PASSED; focused=12/12; combined=62/62; full=638/638; preparation_audit=PREPARED_NOT_AUTHORIZED; PowerShell 5.1 self-test=PASSED; request_bindings=60/60; Skill validator=PASSED; workflow_yaml=VALID`
+
 M4.1 preparation exact-HEAD CI: `NOT_RUN; this preparation commit does not pre-claim success`
 
 M4.1 authorization and fresh execution: `NOT_STARTED`
