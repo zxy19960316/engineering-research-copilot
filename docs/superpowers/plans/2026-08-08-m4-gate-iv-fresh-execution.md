@@ -30,6 +30,9 @@
 - `evals/m4/results/m4.0/<task-id>/dispatch-receipt.json`: immutable task/thread binding written after successful creation.
 - `evals/m4/results/m4.0/<task-id>/raw-final.txt`: exact final text returned by the fresh context.
 - `evals/m4/results/m4.0/<task-id>/task-result.json`: created only when the exact final text is already one closed JSON object satisfying the task-result schema; its bytes equal `raw-final.txt` apart from a single terminal LF only when the returned text already has that LF.
+- `evals/m4/execution/m4.0/pre-dispatch-failure.json`: immutable terminal record if the coordinator fails after claim but before any task creation.
+- `evals/m4/execution/audit_m4_0.py`: read-only terminal auditor for the claimed, zero-task pre-dispatch failure state.
+- `tests/test_m4_execution.py`: positive and adversarial terminal-state tests.
 
 ### Task 1: Revalidate and consume the authorization
 
@@ -145,3 +148,52 @@ Stage explicit plan, claim, receipt, and raw-final paths. Do not include cases, 
 - [ ] Later batches do not start after an infrastructure or protocol failure.
 - [ ] Raw final text is never normalized into a passing result.
 - [ ] No judge, aggregation, threshold, closure, or M5 action occurs.
+
+### Task 5: Close out an observed pre-dispatch failure without repair
+
+**Files:**
+- Create: `evals/m4/execution/m4.0/pre-dispatch-failure.json`
+- Create: `evals/m4/execution/audit_m4_0.py`
+- Create: `tests/test_m4_execution.py`
+- Modify: `STATUS.md`
+- Modify: `tests/test_m3_r5_erratum.py`
+
+**Interfaces:**
+- Consumes: the immutable launch claim, exact raw coordinator exception, authorization/control bindings, and absence of all task result roots.
+- Produces: `audit_execution(repo_root: Path, claim_path: Path | None = None, failure_path: Path | None = None, results_base: Path | None = None, verify_git: bool = True) -> dict[str, object]` with terminal status `PRE_DISPATCH_FAILED_PRESERVED`.
+
+- [ ] **Step 1: Freeze the exact failure and zero counters**
+
+Require `failed_stage=frozen_request_bundle_hash_verification`, batch `M4-BATCH-NUC`, `task_id=null`, the exact missing `System.Convert.ToHexString` method error, and all task/finalization/result/retry/repair/follow-up/judge counters equal to zero.
+
+- [ ] **Step 2: Write the failing terminal-audit tests**
+
+Test the repository terminal status, immutable claim/failure binding, no writes during audit, rejection of token/counter drift, rejection of any result root, and unchanged frozen M3/M4 preparation trees.
+
+Run:
+
+```powershell
+python -X utf8 -m unittest tests.test_m4_execution -v
+```
+
+Expected before the auditor exists: import failure for `evals.m4.execution.audit_m4_0`.
+
+- [ ] **Step 3: Implement the minimal read-only auditor**
+
+The auditor parses both JSON objects, verifies raw SHA-256 bindings, compares all 60 task IDs and six batches with authorization control, requires the claimed model/default policy, requires zero result roots and absent results manifest, and checks frozen paths against preparation HEAD `c56c3c1ab384f65e51a70e9582672c6320d19121`.
+
+- [ ] **Step 4: Record the truthful repository transition**
+
+Set M4.0 to `PRE_DISPATCH_FAILED`, token `CONSUMED`, claim count `1`, fresh result state `NOT_RUN`, all execution counters `0`, same-revision continuation `false`, successor revision required, and fresh execution authorization `false` pending separate M4.1 review.
+
+- [ ] **Step 5: Validate and publish immutable closeout evidence**
+
+Run:
+
+```powershell
+python -X utf8 -m unittest tests.test_m4_execution tests.test_m4_authorization tests.test_m4_preparation tests.test_m4_results -v
+python -X utf8 evals/m4/execution/audit_m4_0.py
+python -X utf8 -m unittest discover -s tests -p "test_*.py" -v
+```
+
+Expected: terminal audit returns `PRE_DISPATCH_FAILED_PRESERVED`; no task or result is created; the complete suite passes. Commit and push the execution branch without amending, squashing, retrying, or launching a successor revision.
