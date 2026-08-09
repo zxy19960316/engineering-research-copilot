@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import subprocess
 import tempfile
 import unittest
@@ -30,6 +31,7 @@ SCHEMA_PATH = REVISION_ROOT / "preparation-manifest.schema.json"
 CLAIM_PATH = M4_ROOT / "execution" / "m4.1" / "launch-claim.json"
 TERMINAL_PATH = M4_ROOT / "execution" / "m4.1" / "execution-terminal.json"
 HELPER_PATH = M4_ROOT / "execution" / "prepare_m4_2_request_bundles.ps1"
+WORKFLOW_PATH = REPO_ROOT / ".github" / "workflows" / "m1-validation.yml"
 
 MANIFEST_KEYS = {
     "schema_version",
@@ -555,6 +557,43 @@ class M42PreparationAuditTests(unittest.TestCase):
             )
             return self._audit(manifest_path=changed, verify_git=False)
 
+    @staticmethod
+    def _write_bound_input_probe(repo: Path, *, crlf: bool) -> dict[str, str]:
+        case_relative = Path("evals/m4/cases/probe.json")
+        protocol_relative = Path("evals/m4/task-protocol.md")
+        variant_relative = Path("evals/m4/variants/A1/instructions.md")
+        rubric_relative = Path("evals/m4/judge-rubric.json")
+        sources = {
+            case_relative: b'{\n  "user_input": "probe"\n}\n',
+            protocol_relative: b"protocol\n",
+            variant_relative: b"variant\n",
+            rubric_relative: b'{"rubric":true}\n',
+        }
+        for relative, raw in sources.items():
+            destination = repo / relative
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            destination.write_bytes(raw.replace(b"\n", b"\r\n") if crlf else raw)
+
+        return {
+            "case_path": case_relative.as_posix(),
+            "case_sha256": hashlib.sha256(sources[case_relative]).hexdigest(),
+            "user_input_sha256": hashlib.sha256(b"probe").hexdigest(),
+            "task_protocol_sha256": hashlib.sha256(
+                sources[protocol_relative]
+            ).hexdigest(),
+            "variant_instruction_path": variant_relative.as_posix(),
+            "variant_instruction_sha256": hashlib.sha256(
+                sources[variant_relative]
+            ).hexdigest(),
+            "rubric_sha256": hashlib.sha256(sources[rubric_relative]).hexdigest(),
+        }
+
+    @staticmethod
+    def _canonical_root_alias(repo: Path) -> Path:
+        alias_segment = repo / "canonical-root-alias"
+        alias_segment.mkdir()
+        return alias_segment / ".."
+
     def test_repository_audit_is_read_only_repeatable_and_not_authorized(self) -> None:
         before_status = subprocess.run(
             ["git", "status", "--porcelain"],
@@ -958,44 +997,136 @@ class M42PreparationAuditTests(unittest.TestCase):
 
         with tempfile.TemporaryDirectory() as temp_dir:
             repo = Path(temp_dir)
-            case_relative = Path("evals/m4/cases/probe.json")
-            protocol_relative = Path("evals/m4/task-protocol.md")
-            variant_relative = Path("evals/m4/variants/A1/instructions.md")
-            rubric_relative = Path("evals/m4/judge-rubric.json")
-            for relative in (
-                case_relative,
-                protocol_relative,
-                variant_relative,
-                rubric_relative,
-            ):
-                (repo / relative).parent.mkdir(parents=True, exist_ok=True)
-
-            lf_case = b'{\n  "user_input": "probe"\n}\n'
-            lf_protocol = b"protocol\n"
-            lf_variant = b"variant\n"
-            lf_rubric = b'{"rubric":true}\n'
-            (repo / case_relative).write_bytes(lf_case.replace(b"\n", b"\r\n"))
-            (repo / protocol_relative).write_bytes(
-                lf_protocol.replace(b"\n", b"\r\n")
+            task = self._write_bound_input_probe(repo, crlf=True)
+            repo_alias = self._canonical_root_alias(repo)
+            errors: list[str] = []
+            _validate_bound_input_bytes(repo_alias, [task], errors)
+            self.assertEqual(
+                errors,
+                [
+                    "case_raw_sha256_mismatch",
+                    "task_protocol_raw_sha256_mismatch",
+                    "variant_instruction_raw_sha256_mismatch",
+                    "rubric_raw_sha256_mismatch",
+                ],
             )
-            (repo / variant_relative).write_bytes(lf_variant.replace(b"\n", b"\r\n"))
-            (repo / rubric_relative).write_bytes(lf_rubric.replace(b"\n", b"\r\n"))
-            task = {
-                "case_path": case_relative.as_posix(),
-                "case_sha256": hashlib.sha256(lf_case).hexdigest(),
-                "user_input_sha256": hashlib.sha256(b"probe").hexdigest(),
-                "task_protocol_sha256": hashlib.sha256(lf_protocol).hexdigest(),
-                "variant_instruction_path": variant_relative.as_posix(),
-                "variant_instruction_sha256": hashlib.sha256(lf_variant).hexdigest(),
-                "rubric_sha256": hashlib.sha256(lf_rubric).hexdigest(),
-            }
+
+    def test_bound_input_validation_canonicalizes_repo_root_alias(self) -> None:
+        from evals.m4.audit_m4_2_preparation import _validate_bound_input_bytes
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            repo = Path(temp_dir)
+            task = self._write_bound_input_probe(repo, crlf=False)
+            repo_alias = self._canonical_root_alias(repo)
+            self.assertNotEqual(repo_alias, repo_alias.resolve(strict=False))
+            errors: list[str] = []
+            _validate_bound_input_bytes(repo_alias, [task], errors)
+            self.assertEqual(errors, [])
+
+    def test_bound_input_validation_rejects_sibling_escape(self) -> None:
+        from evals.m4.audit_m4_2_preparation import _validate_bound_input_bytes
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            temp_root = Path(temp_dir)
+            repo = temp_root / "repo"
+            repo.mkdir()
+            task = self._write_bound_input_probe(repo, crlf=False)
+            external = temp_root / "outside-case.json"
+            external.write_bytes(b'{\n  "user_input": "probe"\n}\n')
+            task["case_path"] = "../outside-case.json"
             errors: list[str] = []
             _validate_bound_input_bytes(repo, [task], errors)
-            self.assertIn("case_raw_sha256_mismatch", errors)
-            self.assertIn("task_protocol_raw_sha256_mismatch", errors)
-            self.assertIn("variant_instruction_raw_sha256_mismatch", errors)
-            self.assertIn("rubric_raw_sha256_mismatch", errors)
-            self.assertNotIn("user_input_sha256_mismatch", errors)
+            self.assertEqual(errors, ["case_path_invalid"])
+
+    def test_bound_input_validation_rejects_symlink_escape(self) -> None:
+        from evals.m4.audit_m4_2_preparation import _validate_bound_input_bytes
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            temp_root = Path(temp_dir)
+            repo = temp_root / "repo"
+            repo.mkdir()
+            task = self._write_bound_input_probe(repo, crlf=False)
+            external = temp_root / "outside-case.json"
+            external.write_bytes(b'{\n  "user_input": "probe"\n}\n')
+            linked = repo / "linked-case.json"
+            try:
+                os.symlink(external, linked)
+            except (NotImplementedError, OSError) as error:
+                self.skipTest(f"symlink creation unavailable: {error}")
+            task["case_path"] = linked.name
+            errors: list[str] = []
+            _validate_bound_input_bytes(repo, [task], errors)
+            self.assertEqual(errors, ["case_path_invalid"])
+
+    @unittest.skipUnless(os.name == "nt", "Windows junction regression")
+    def test_bound_input_validation_rejects_junction_escape(self) -> None:
+        from evals.m4.audit_m4_2_preparation import _validate_bound_input_bytes
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            temp_root = Path(temp_dir)
+            repo = temp_root / "repo"
+            repo.mkdir()
+            task = self._write_bound_input_probe(repo, crlf=False)
+            external = temp_root / "outside-cases"
+            external.mkdir()
+            (external / "probe.json").write_bytes(
+                b'{\n  "user_input": "probe"\n}\n'
+            )
+            junction = repo / "linked-cases"
+            created = subprocess.run(
+                ["cmd.exe", "/d", "/c", "mklink", "/J", str(junction), str(external)],
+                check=False,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+            )
+            self.assertEqual(created.returncode, 0, created.stdout + created.stderr)
+            try:
+                self.assertTrue(junction.is_junction())
+                task["case_path"] = "linked-cases/probe.json"
+                errors: list[str] = []
+                _validate_bound_input_bytes(repo, [task], errors)
+                self.assertEqual(errors, ["case_path_invalid"])
+            finally:
+                junction.rmdir()
+
+    def test_m4_2_workflow_fails_closed_on_python_nonzero(self) -> None:
+        workflow = WORKFLOW_PATH.read_text(encoding="utf-8")
+        contract_step = workflow.split(
+            "      - name: Validate M4.2 preparation-only contract\n", 1
+        )[1].split(
+            "      - name: Verify M4.2 request preflight with PowerShell 7\n", 1
+        )[0]
+        self.assertIn("        shell: bash\n", contract_step)
+        self.assertIn("          set -euo pipefail\n", contract_step)
+        self.assertNotIn("continue-on-error", contract_step)
+        for command in (
+            "python -m py_compile",
+            "python -X utf8 -m unittest tests.test_m4_2_preparation -v",
+            "python -X utf8 evals/m4/build_m4_2_preparation.py --check",
+            "python -X utf8 evals/m4/audit_m4_2_preparation.py",
+            "python -X utf8 evals/m4/audit_results.py --expect-not-run",
+        ):
+            with self.subTest(command=command):
+                self.assertIn(command, contract_step)
+
+        powershell_7_step = workflow.split(
+            "      - name: Verify M4.2 request preflight with PowerShell 7\n", 1
+        )[1].split(
+            "      - name: Verify M4.2 request preflight with Windows PowerShell 5.1\n",
+            1,
+        )[0]
+        powershell_5_step = workflow.split(
+            "      - name: Verify M4.2 request preflight with Windows PowerShell 5.1\n",
+            1,
+        )[1].split(
+            "      - name: Assert M4.2 preparation validation remained read-only\n",
+            1,
+        )[0]
+        self.assertIn("        shell: pwsh\n", powershell_7_step)
+        self.assertIn("        shell: powershell\n", powershell_5_step)
 
     def test_module_loading_is_bytecode_free_and_dangling_paths_are_present(self) -> None:
         import sys

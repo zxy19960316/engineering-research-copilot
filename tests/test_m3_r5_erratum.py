@@ -104,7 +104,8 @@ class M3R5ErratumTests(unittest.TestCase):
 
         self.assertIn(
             "Active revision: `M4.2 PREPARATION_ONLY; "
-            "M4_2_PREPARED_NOT_AUTHORIZED`",
+            "M4_2_PREPARED_NOT_AUTHORIZED; CI_INTEGRITY_REPAIR_REQUIRED; "
+            "fresh_execution_authorized=false`",
             current,
         )
         self.assertIn(f"Historical r5 evidence HEAD: `{EVIDENCE_HEAD}`", current)
@@ -122,7 +123,8 @@ class M3R5ErratumTests(unittest.TestCase):
             "Status: `M3_CLOSED; M4_0_PRE_DISPATCH_FAILED_PRESERVED; "
             "M4_1_STOPPED_PROTOCOL_FAILURE_PRESERVED; "
             "M4_1_AUTHORIZATION_CONSUMED; M4_1_TASKS_NOT_DISPATCHED; "
-            "M4_2_PREPARED_NOT_AUTHORIZED; M4_FRESH_RESULTS_NOT_RUN`",
+            "M4_2_PREPARED_NOT_AUTHORIZED; CI_INTEGRITY_REPAIR_REQUIRED; "
+            "M4_FRESH_RESULTS_NOT_RUN`",
             current,
         )
         self.assertIn("Historical r5 status: `BLOCKED_NOT_ACCEPTED`", current)
@@ -159,7 +161,8 @@ class M3R5ErratumTests(unittest.TestCase):
         self.assertIn("M3: `CLOSED`", current)
         self.assertIn(
             "M4: `M4_1_STOPPED_PROTOCOL_FAILURE_PRESERVED; "
-            "M4_1_AUTHORIZATION_CONSUMED; M4_2_PREPARED_NOT_AUTHORIZED`",
+            "M4_1_AUTHORIZATION_CONSUMED; M4_2_PREPARED_NOT_AUTHORIZED; "
+            "CI_INTEGRITY_REPAIR_REQUIRED`",
             current,
         )
         self.assertIn(
@@ -212,19 +215,47 @@ class M3R5ErratumTests(unittest.TestCase):
             current,
         )
         self.assertIn(
-            "M4.2 state: `PREPARATION_ONLY; M4_2_PREPARED_NOT_AUTHORIZED; "
-            "fresh_execution_authorized=false`",
+            "M4.2 state: `M4_2_PREPARED_NOT_AUTHORIZED; "
+            "CI_INTEGRITY_REPAIR_REQUIRED; fresh_execution_authorized=false`",
             current,
         )
+        false_green_runs = {
+            "31311637459": (
+                "be6039e7d2a682b2e001ee12dff5c1db5743b2ed",
+                "93240229660",
+            ),
+            "31313212880": (
+                "dffccf5d2fecc295e3efc7d7368b36b7ff1bf6b7",
+                "93244187473",
+            ),
+        }
+        for run_id, (head, windows_job) in false_green_runs.items():
+            with self.subTest(run_id=run_id):
+                matching_lines = [
+                    line for line in current.splitlines() if run_id in line
+                ]
+                self.assertEqual(len(matching_lines), 1)
+                record = matching_lines[0]
+                self.assertIn(head, record)
+                self.assertIn(f"windows_job={windows_job}", record)
+                self.assertIn(
+                    "GITHUB_CONCLUSION_SUCCESS_BUT_WINDOWS_TEST_FAILED", record
+                )
+                self.assertIn("NOT_ACCEPTED", record)
+                self.assertIn("FALSE_GREEN", record)
+                self.assertIn(
+                    "failed_test=tests.test_m4_2_preparation."
+                    "M42PreparationAuditTests."
+                    "test_rejects_raw_bound_input_eol_drift",
+                    record,
+                )
+                self.assertNotIn("exact-HEAD CI: `PASSED`", record)
+        self.assertNotIn("M4.2 preparation exact-HEAD CI: `PASSED`", current)
         self.assertIn(
-            "M4.2 preparation exact-HEAD CI: `PASSED` on preparation HEAD "
-            "`be6039e7d2a682b2e001ee12dff5c1db5743b2ed` "
-            "(GitHub Actions run `31311637459`; validate job `93240229667` "
-            "success; Ubuntu M4.2 job `93240229696` success; Windows M4.2 job "
-            "`93240229660` success; 7/7 jobs succeeded)",
+            "M4.2 accepted exact-HEAD CI: `NONE; "
+            "CI_INTEGRITY_REPAIR_REQUIRED`",
             current,
         )
-        self.assertNotIn("M4.2 preparation exact-HEAD CI: `PENDING", current)
         self.assertNotIn("branch remains local and unpushed", current)
         self.assertIn(
             "M4.2 predecessor closure baseline: "
@@ -264,6 +295,12 @@ class M3R5ErratumTests(unittest.TestCase):
             "M4.2 absent artifacts: `M4.1 result_root=ABSENT; "
             "M4.2 authorization=ABSENT; execution=ABSENT; "
             "result_root=ABSENT; results_manifest=ABSENT`",
+            current,
+        )
+        self.assertIn(
+            "M4.2 later gates: `Gate IV review=NOT_RUN; "
+            "authorization=NOT_CREATED; claim=NOT_CREATED; execution=NOT_RUN; "
+            "judge=false; aggregation=false; closure=false; M5=NOT_STARTED`",
             current,
         )
         self.assertIn(

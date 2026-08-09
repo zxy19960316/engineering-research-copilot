@@ -289,7 +289,9 @@ jobs:
         with:
           python-version: "3.13"
       - name: Validate M4.2 preparation-only contract
+        shell: bash
         run: |
+          set -euo pipefail
           python -m py_compile evals/m4/build_m4_2_preparation.py evals/m4/audit_m4_2_preparation.py
           python -X utf8 -m unittest tests.test_m4_2_preparation -v
           python -X utf8 evals/m4/build_m4_2_preparation.py --check

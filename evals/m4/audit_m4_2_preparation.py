@@ -323,6 +323,7 @@ def _git_replacements_disabled():
 def _validate_bound_input_bytes(
     repo_root: Path, tasks: list[dict[str, Any]], errors: list[str]
 ) -> None:
+    canonical_root = repo_root.resolve(strict=False)
     cache: dict[str, bytes | None] = {}
 
     def read_relative(relative: object, label: str) -> bytes | None:
@@ -331,9 +332,9 @@ def _validate_bound_input_bytes(
             return None
         if relative in cache:
             return cache[relative]
-        candidate = (repo_root / relative).resolve(strict=False)
+        candidate = (canonical_root / relative).resolve(strict=False)
         try:
-            candidate.relative_to(repo_root)
+            candidate.relative_to(canonical_root)
         except ValueError:
             _add(errors, f"{label}_path_invalid")
             cache[relative] = None
