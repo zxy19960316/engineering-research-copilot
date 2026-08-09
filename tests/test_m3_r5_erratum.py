@@ -329,6 +329,20 @@ class M3R5ErratumTests(unittest.TestCase):
             "r5.1-f02 authorization token: `CONSUMED / TERMINAL`", current
         )
         self.assertNotIn("READY_FOR_AUTHORIZED_R5_FRESH_CONTEXTS", current)
+        self.assertIn(
+            "- M4: `M4.0 PRE_DISPATCH_FAILED_PRESERVED; "
+            "M4.1 STOPPED_PROTOCOL_FAILURE_PRESERVED; "
+            "M4.1 AUTHORIZATION_CONSUMED; M4.1 TASKS_NOT_DISPATCHED; "
+            "M4.2 REQUIRED; FRESH_RESULTS_NOT_RUN`",
+            text,
+        )
+        self.assertIn(
+            "- Active local branch: "
+            "`codex/m4-cross-engineering-forward-evaluation-m4.1-terminal-closure`",
+            text,
+        )
+        self.assertNotIn("GATE_IV_B_LAUNCH_READINESS_LOCAL_READY", text)
+        self.assertNotIn("AUTHORIZATION_UNCONSUMED", text)
 
         r5_1_terminal = json.loads(R5_1_TERMINAL.read_text(encoding="utf-8"))
         self.assertEqual(r5_1_terminal["status"], "terminal_not_accepted")
