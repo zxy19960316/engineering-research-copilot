@@ -185,13 +185,13 @@
           "minItems": 60,
           "maxItems": 60,
           "uniqueItems": true,
-          "items": {"type": "string", "pattern": "^M4\\.2-(?!BATCH-)"}
+          "items": {"type": "string", "pattern": "^M4\\.2-(?!BATCH-)[A-Z0-9.-]+$"}
         },
         "blind_mapping": {
           "type": "object",
           "minProperties": 60,
           "maxProperties": 60,
-          "propertyNames": {"pattern": "^M4\\.2-(?!BATCH-)"},
+          "propertyNames": {"pattern": "^M4\\.2-(?!BATCH-)[A-Z0-9.-]+$"},
           "additionalProperties": {"type": "string", "pattern": "^M4-J(?:12[1-9]|1[3-7][0-9]|180)$"}
         },
         "judge_mapping_access_authorized": {"const": false}
@@ -301,30 +301,30 @@
         "later_batches_mutable_after_observation"
       ],
       "properties": {
-        "batch_id": {"type": "string", "pattern": "^M4\\.2-BATCH-"},
-        "source_batch_id": {"type": "string", "pattern": "^M4\\.1-BATCH-"},
-        "root_batch_id": {"type": "string", "pattern": "^M4-BATCH-"},
+        "batch_id": {"type": "string", "pattern": "^M4\\.2-BATCH-[A-Z]+$"},
+        "source_batch_id": {"type": "string", "pattern": "^M4\\.1-BATCH-[A-Z]+$"},
+        "root_batch_id": {"type": "string", "pattern": "^M4-BATCH-[A-Z]+$"},
         "domain": {"type": "string"},
         "task_ids": {
           "type": "array",
           "minItems": 10,
           "maxItems": 10,
           "uniqueItems": true,
-          "items": {"type": "string", "pattern": "^M4\\.2-(?!BATCH-)"}
+          "items": {"type": "string", "pattern": "^M4\\.2-(?!BATCH-)[A-Z0-9.-]+$"}
         },
         "source_task_ids": {
           "type": "array",
           "minItems": 10,
           "maxItems": 10,
           "uniqueItems": true,
-          "items": {"type": "string", "pattern": "^M4\\.1-(?!BATCH-)"}
+          "items": {"type": "string", "pattern": "^M4\\.1-(?!BATCH-)[A-Z0-9.-]+$"}
         },
         "root_task_ids": {
           "type": "array",
           "minItems": 10,
           "maxItems": 10,
           "uniqueItems": true,
-          "items": {"type": "string", "pattern": "^M4-(?!BATCH-)"}
+          "items": {"type": "string", "pattern": "^M4-(?!BATCH-)[A-Z0-9.-]+$"}
         },
         "planned_task_count": {"const": 10},
         "stop_on_infrastructure_or_protocol_failure": {"const": true},
@@ -361,9 +361,9 @@
         "request_binding_sha256"
       ],
       "properties": {
-        "task_id": {"type": "string", "pattern": "^M4\\.2-(?!BATCH-)"},
-        "source_task_id": {"type": "string", "pattern": "^M4\\.1-(?!BATCH-)"},
-        "root_task_id": {"type": "string", "pattern": "^M4-(?!BATCH-)"},
+        "task_id": {"type": "string", "pattern": "^M4\\.2-(?!BATCH-)[A-Z0-9.-]+$"},
+        "source_task_id": {"type": "string", "pattern": "^M4\\.1-(?!BATCH-)[A-Z0-9.-]+$"},
+        "root_task_id": {"type": "string", "pattern": "^M4-(?!BATCH-)[A-Z0-9.-]+$"},
         "blind_id": {"type": "string", "pattern": "^M4-J(?:12[1-9]|1[3-7][0-9]|180)$"},
         "source_blind_id": {"type": "string", "pattern": "^M4-J(?:0(?:6[1-9]|[7-9][0-9])|1[01][0-9]|120)$"},
         "root_blind_id": {"type": "string", "pattern": "^M4-J(?:00[1-9]|0[1-5][0-9]|060)$"},
@@ -371,9 +371,9 @@
         "domain": {"type": "string"},
         "case_type": {"enum": ["ordinary", "adversarial"]},
         "arm_id": {"enum": ["N", "F", "A1", "A2", "A3"]},
-        "batch_id": {"type": "string", "pattern": "^M4\\.2-BATCH-"},
-        "source_batch_id": {"type": "string", "pattern": "^M4\\.1-BATCH-"},
-        "root_batch_id": {"type": "string", "pattern": "^M4-BATCH-"},
+        "batch_id": {"type": "string", "pattern": "^M4\\.2-BATCH-[A-Z]+$"},
+        "source_batch_id": {"type": "string", "pattern": "^M4\\.1-BATCH-[A-Z]+$"},
+        "root_batch_id": {"type": "string", "pattern": "^M4-BATCH-[A-Z]+$"},
         "case_path": {"type": "string"},
         "case_sha256": {"$ref": "#/$defs/sha256"},
         "user_input_sha256": {"$ref": "#/$defs/sha256"},
@@ -382,7 +382,7 @@
         "variant_instruction_sha256": {"anyOf": [{"$ref": "#/$defs/sha256"}, {"type": "null"}]},
         "rubric_sha256": {"$ref": "#/$defs/sha256"},
         "execution_constraints_sha256": {"$ref": "#/$defs/sha256"},
-        "result_root": {"type": "string", "pattern": "^evals/m4/results/m4\\.2/M4\\.2-(?!BATCH-)"},
+        "result_root": {"type": "string", "pattern": "^evals/m4/results/m4\\.2/M4\\.2-(?!BATCH-)[A-Z0-9.-]+$"},
         "result_root_must_be_absent": {"const": true},
         "request_binding_sha256": {"$ref": "#/$defs/sha256"}
       }

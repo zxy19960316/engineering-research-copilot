@@ -85,6 +85,103 @@ EXPECTED_LIFECYCLE = {
     "canonical_claim_path_integration_test_required": True,
     "same_revision_continuation_authorized": False,
 }
+NESTED_REQUIRED = {
+    "predecessor": {
+        "terminal_closure_head",
+        "terminal_closure_ci_run_id",
+        "terminal_closure_ci_conclusion",
+        "terminal_evidence_head",
+        "launch_claim",
+        "execution_terminal",
+        "failure_evidence",
+        "authorization_token_status",
+        "claim_count",
+        "terminal_state",
+        "failed_stage",
+        "successor_revision_required",
+        "counts",
+        "later_gates",
+    },
+    "source_preparation": {
+        "path",
+        "head",
+        "ci_run_id",
+        "ci_conclusion",
+        "byte_length",
+        "raw_sha256",
+        "git_blob_oid",
+        "task_count",
+        "source_order_sha256",
+    },
+    "authority": set(EXPECTED_AUTHORITY),
+    "lifecycle_requirements": set(EXPECTED_LIFECYCLE),
+    "matrix": {"case_count", "arm_count", "planned_task_count", "batch_count", "batches"},
+    "randomization": {
+        "frozen",
+        "policy",
+        "source_seed",
+        "task_order",
+        "blind_mapping",
+        "judge_mapping_access_authorized",
+    },
+    "execution_helper": {
+        "path",
+        "raw_sha256",
+        "read_only",
+        "minimum_windows_powershell_version",
+        "request_binding_count",
+    },
+}
+DEFINITION_REQUIRED = {
+    "evidence_binding": {"path", "byte_length", "sha256", "git_blob_oid"},
+    "terminal_counts": TERMINAL_COUNTER_NAMES,
+    "later_gates": {
+        "judge",
+        "m4_closure",
+        "m5",
+        "threshold_decision",
+        "unblinding_and_aggregation",
+    },
+    "batch": {
+        "batch_id",
+        "source_batch_id",
+        "root_batch_id",
+        "domain",
+        "task_ids",
+        "source_task_ids",
+        "root_task_ids",
+        "planned_task_count",
+        "stop_on_infrastructure_or_protocol_failure",
+        "later_batches_mutable_after_observation",
+    },
+    "task": {
+        "task_id",
+        "source_task_id",
+        "root_task_id",
+        "blind_id",
+        "source_blind_id",
+        "root_blind_id",
+        "case_id",
+        "domain",
+        "case_type",
+        "arm_id",
+        "batch_id",
+        "source_batch_id",
+        "root_batch_id",
+        "case_path",
+        "case_sha256",
+        "user_input_sha256",
+        "task_protocol_sha256",
+        "variant_instruction_path",
+        "variant_instruction_sha256",
+        "rubric_sha256",
+        "execution_constraints_sha256",
+        "result_root",
+        "result_root_must_be_absent",
+        "request_binding_sha256",
+    },
+    "counters": COUNTER_NAMES,
+}
 
 
 def load_object(path: Path) -> dict:
@@ -292,11 +389,29 @@ class M42PreparationContractTests(unittest.TestCase):
         self.assertNotIn("SHA256]::HashData", source)
         for forbidden in (
             "Set-Content",
+            "Add-Content",
+            "Clear-Content",
             "Out-File",
+            "Export-Csv",
+            "Export-Clixml",
             "New-Item",
             "Remove-Item",
+            "Move-Item",
+            "Copy-Item",
+            "Rename-Item",
+            "Set-Item",
             "Invoke-WebRequest",
+            "Invoke-RestMethod",
+            "Start-BitsTransfer",
             "Start-Process",
+            "Invoke-Expression",
+            "System.Net",
+            "WebClient",
+            "HttpClient",
+            "WriteAll",
+            "OpenWrite",
+            "FileStream",
+            "Directory]::Create",
         ):
             self.assertNotIn(forbidden, source)
 
@@ -311,6 +426,20 @@ class M42PreparationContractTests(unittest.TestCase):
             "source": SOURCE_PATH.read_bytes(),
             "manifest": MANIFEST_PATH.read_bytes(),
         }
+        before_status = subprocess.run(
+            ["git", "status", "--porcelain"],
+            cwd=REPO_ROOT,
+            check=True,
+            stdout=subprocess.PIPE,
+        ).stdout
+        forbidden_paths = (
+            M4_ROOT / "authorization" / "m4.2",
+            M4_ROOT / "execution" / "m4.2",
+            M4_ROOT / "results" / "m4.1",
+            M4_ROOT / "results" / "m4.2",
+            M4_ROOT / "results-manifest.json",
+        )
+        self.assertTrue(all(not path.exists() for path in forbidden_paths))
 
         def run(*arguments: str) -> dict:
             completed = subprocess.run(
@@ -334,7 +463,9 @@ class M42PreparationContractTests(unittest.TestCase):
             self.assertEqual(completed.returncode, 0, completed.stderr)
             lines = [line for line in completed.stdout.splitlines() if line.strip()]
             self.assertEqual(len(lines), 1, completed.stdout)
-            return json.loads(lines[0])
+            value = json.loads(lines[0])
+            self.assertEqual(value["side_effects"], [])
+            return value
 
         self.assertEqual(run("-SelfTest")["status"], "SELF_TEST_PASSED")
         self.assertEqual(run("-CheckAll")["checked_task_count"], 60)
@@ -353,6 +484,14 @@ class M42PreparationContractTests(unittest.TestCase):
             },
             before,
         )
+        self.assertTrue(all(not path.exists() for path in forbidden_paths))
+        after_status = subprocess.run(
+            ["git", "status", "--porcelain"],
+            cwd=REPO_ROOT,
+            check=True,
+            stdout=subprocess.PIPE,
+        ).stdout
+        self.assertEqual(after_status, before_status)
 
     def test_schema_is_closed_and_manifest_regenerates_exactly(self) -> None:
         schema = load_object(SCHEMA_PATH)
@@ -364,15 +503,36 @@ class M42PreparationContractTests(unittest.TestCase):
             schema["properties"]["schema_version"]["const"],
             "m4.2-successor-preparation-v1",
         )
-        for definition in (
-            "evidence_binding",
-            "terminal_counts",
-            "later_gates",
-            "batch",
-            "task",
-            "counters",
-        ):
-            self.assertFalse(schema["$defs"][definition]["additionalProperties"])
+        for name, required in NESTED_REQUIRED.items():
+            with self.subTest(object=name):
+                contract = schema["properties"][name]
+                self.assertFalse(contract["additionalProperties"])
+                self.assertEqual(set(contract["required"]), required)
+                self.assertEqual(set(contract["properties"]), required)
+        predecessor = schema["properties"]["predecessor"]["properties"]
+        failure = predecessor["failure_evidence"]
+        self.assertFalse(failure["additionalProperties"])
+        self.assertEqual(
+            set(failure["required"]),
+            {"raw_evidence_sha256", "observed_protocol_error"},
+        )
+        self.assertEqual(set(failure["properties"]), set(failure["required"]))
+        for definition, required in DEFINITION_REQUIRED.items():
+            with self.subTest(definition=definition):
+                contract = schema["$defs"][definition]
+                self.assertFalse(contract["additionalProperties"])
+                self.assertEqual(set(contract["required"]), required)
+                self.assertEqual(set(contract["properties"]), required)
+        anchored_patterns = (
+            schema["properties"]["randomization"]["properties"]["task_order"]
+            ["items"]["pattern"],
+            schema["properties"]["randomization"]["properties"]["blind_mapping"]
+            ["propertyNames"]["pattern"],
+            schema["$defs"]["batch"]["properties"]["batch_id"]["pattern"],
+            schema["$defs"]["task"]["properties"]["task_id"]["pattern"],
+            schema["$defs"]["task"]["properties"]["result_root"]["pattern"],
+        )
+        self.assertTrue(all(pattern.endswith("$") for pattern in anchored_patterns))
         self.assertEqual(build_preparation(REPO_ROOT, write=False), self.manifest)
 
 
@@ -456,6 +616,18 @@ class M42PreparationAuditTests(unittest.TestCase):
                 "predecessor_terminal_binding_invalid",
             ),
             (
+                lambda value: value["predecessor"]["failure_evidence"].__setitem__(
+                    "raw_evidence_sha256", "0" * 64
+                ),
+                "predecessor_failure_evidence_invalid",
+            ),
+            (
+                lambda value: value["source_preparation"].__setitem__(
+                    "raw_sha256", "0" * 64
+                ),
+                "source_preparation_binding_invalid",
+            ),
+            (
                 lambda value: value["lifecycle_requirements"].__setitem__(
                     "post_claim_claim_absence_checks_authorized", True
                 ),
@@ -501,6 +673,27 @@ class M42PreparationAuditTests(unittest.TestCase):
                 ),
                 "request_binding_mismatch",
             ),
+            (
+                lambda value: value["matrix"]["batches"][0].__setitem__(
+                    "batch_id",
+                    value["matrix"]["batches"][0]["source_batch_id"],
+                ),
+                "batch_id_reused",
+            ),
+            (
+                lambda value: value["matrix"]["batches"][0].__setitem__(
+                    "source_batch_id",
+                    value["matrix"]["batches"][1]["source_batch_id"],
+                ),
+                "source_batch_lineage_invalid",
+            ),
+            (
+                lambda value: value["matrix"]["batches"][0].__setitem__(
+                    "root_batch_id",
+                    value["matrix"]["batches"][1]["root_batch_id"],
+                ),
+                "root_batch_lineage_invalid",
+            ),
         )
         for mutate, error in mutations:
             with self.subTest(error=error):
@@ -509,26 +702,44 @@ class M42PreparationAuditTests(unittest.TestCase):
                 self.assertIn(error, result["errors"])
 
     def test_rejects_authority_counter_and_authorization_artifact(self) -> None:
-        mutations = (
+        mutations = []
+        for key in (
+            "fresh_execution_authorized",
+            "fresh_tasks_authorized",
+            "result_writes_authorized",
+            "retry_authorized",
+            "repair_authorized",
+        ):
+            mutations.append(
+                (
+                    lambda value, key=key: value["authority"].__setitem__(key, True),
+                    "preparation_authority_invalid",
+                )
+            )
+        mutations.extend(
             (
-                lambda value: value["authority"].__setitem__(
-                    "fresh_execution_authorized", True
+                (
+                    lambda value: value["authority"].__setitem__(
+                        "authorization_artifact",
+                        "evals/m4/authorization/m4.2/execution-authorization.json",
+                    ),
+                    "preparation_authority_invalid",
                 ),
-                "preparation_authority_invalid",
-            ),
-            (
-                lambda value: value["authority"].__setitem__(
-                    "authorization_artifact", "evals/m4/authorization/m4.2/x.json"
+                (
+                    lambda value: value["authority"].__setitem__(
+                        "model_binding_status", "BOUND"
+                    ),
+                    "preparation_authority_invalid",
                 ),
-                "preparation_authority_invalid",
-            ),
-            (
-                lambda value: value["counters"].__setitem__(
-                    "created_contexts", 1
-                ),
-                "execution_counter_nonzero",
-            ),
+            )
         )
+        for key in sorted(COUNTER_NAMES):
+            mutations.append(
+                (
+                    lambda value, key=key: value["counters"].__setitem__(key, 1),
+                    "execution_counter_nonzero",
+                )
+            )
         for mutate, error in mutations:
             with self.subTest(error=error):
                 result = self._audit_mutation(mutate)
