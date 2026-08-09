@@ -98,13 +98,14 @@ class M3R5ErratumTests(unittest.TestCase):
         self.assertEqual(diagnostic["retry_count"], 0)
         self.assertFalse(diagnostic["composed_output_created"])
 
-    def test_status_top_preserves_terminal_history_during_m4_1_launch_readiness(self):
+    def test_status_top_preserves_terminal_history_during_m4_1_terminal_closure(self):
         text = (REPO_ROOT / "STATUS.md").read_text(encoding="utf-8")
         current = text.split("## M3 checklist", 1)[0]
 
-        self.assertIn(
-            "Active revision: `M4.1 GATE_IV_B_LAUNCH_READINESS_LOCAL_READY`",
+        self.assertRegex(
             current,
+            r"Active revision: `M4\.1 STOPPED_PROTOCOL_FAILURE_PRESERVED; "
+            r"TERMINAL_CLOSURE_(?:IN_PROGRESS|CI_PASSED)`",
         )
         self.assertIn(f"Historical r5 evidence HEAD: `{EVIDENCE_HEAD}`", current)
         self.assertIn(
@@ -119,9 +120,9 @@ class M3R5ErratumTests(unittest.TestCase):
         )
         self.assertIn(
             "Status: `M3_CLOSED; M4_0_PRE_DISPATCH_FAILED_PRESERVED; "
-            "M4_1_GATE_IV_A_EXACT_HEAD_CI_PASSED; "
-            "M4_1_GATE_IV_B_LAUNCH_READINESS_LOCAL_READY; "
-            "M4_1_AUTHORIZATION_UNCONSUMED; M4_FRESH_RESULTS_NOT_RUN`",
+            "M4_1_STOPPED_PROTOCOL_FAILURE_PRESERVED; "
+            "M4_1_AUTHORIZATION_CONSUMED; M4_1_TASKS_NOT_DISPATCHED; "
+            "M4_2_REQUIRED; M4_FRESH_RESULTS_NOT_RUN`",
             current,
         )
         self.assertIn("Historical r5 status: `BLOCKED_NOT_ACCEPTED`", current)
@@ -157,14 +158,14 @@ class M3R5ErratumTests(unittest.TestCase):
         self.assertIn("Historical immutable-r5 exact-HEAD CI: `FAILED`", current)
         self.assertIn("M3: `CLOSED`", current)
         self.assertIn(
-            "M4: `M4_1_GATE_IV_B_LAUNCH_READINESS_LOCAL_READY; "
-            "AUTHORIZATION_UNCONSUMED`",
+            "M4: `M4_1_STOPPED_PROTOCOL_FAILURE_PRESERVED; "
+            "M4_1_AUTHORIZATION_CONSUMED; M4_2_REQUIRED`",
             current,
         )
         self.assertIn(
-            "M4 fresh tasks authorized: `true for M4.1 only; "
-            "execution-protocol freeze precedes claim; M4.0 authorization consumed "
-            "and terminal; M4.1 execution remains NOT_RUN`",
+            "M4 fresh tasks authorized: `false; M4.0 and M4.1 authorizations "
+            "are consumed and terminal; M4.1 continuation or rerun is forbidden; "
+            "M4.2 is required and not authorized`",
             current,
         )
         self.assertIn(
@@ -184,10 +185,33 @@ class M3R5ErratumTests(unittest.TestCase):
             current,
         )
         self.assertIn(
-            "M4.1 successor state: `GATE_IV_AUTHORIZED_UNCONSUMED; "
-            "OFFLINE_PREPARATION_COMPLETE`",
+            "M4.1 current terminal state: "
+            "`M4_1_STOPPED_PROTOCOL_FAILURE_PRESERVED; "
+            "M4_1_AUTHORIZATION_CONSUMED; M4_1_TASKS_NOT_DISPATCHED; "
+            "M4_2_REQUIRED`",
             current,
         )
+        self.assertIn(
+            "M4.1 launch claim: `PRESENT; "
+            "claim_id=32e0df57-a8d2-5c19-9ffc-da69997686e8; "
+            "sha256=c16a2e53aa2e9215e2325464d547356afdb73897bfc7d29605e0105b9987b3c6; "
+            "claimed_at_utc=2026-08-08T14:28:37Z; claim_count=1`",
+            current,
+        )
+        self.assertIn(
+            "M4.1 execution terminal: `PRESENT; "
+            "terminal_state=STOPPED_PROTOCOL_OR_INFRASTRUCTURE_FAILURE; "
+            "sha256=7305d71ba94cd209f5bb0cb2c977db3bb157d95b907f8f59df9133c192f4d66e; "
+            "recorded_at_utc=2026-08-08T14:28:37Z`",
+            current,
+        )
+        self.assertIn(
+            "M4.1 consumed-state exact-HEAD CI: `FAILED` on HEAD "
+            "`80b54697c3e27a5dad0a24d5318ce26c8fe46141` "
+            "(GitHub Actions run `31262297707`",
+            current,
+        )
+        self.assertIn("M4.2 state: `REQUIRED; NOT_AUTHORIZED; NOT_STARTED`", current)
         self.assertIn(
             "M4.1 predecessor terminal baseline: "
             "`f48ab8d7e835e9a57e65b75458faa786d696316d` "
@@ -200,19 +224,20 @@ class M3R5ErratumTests(unittest.TestCase):
             current,
         )
         self.assertIn(
-            "M4.1 fresh execution authorized: `true; one-shot 60-task matrix only; "
-            "launch claim absent; execution NOT_RUN`",
+            "M4.1 historical one-shot authorization: `CONSUMED by the sole claim; "
+            "no authority remains for continuation or rerun`",
             current,
         )
         self.assertIn(
-            "M4.1 preparation counters: `authorized=0; contexts=0; "
+            "M4.1 historical pre-claim preparation counters: `authorized=0; "
+            "contexts=0; "
             "dispatched=0; finalizations=0; results=0; judge_scores=0; "
             "retries=0; repairs=0; unauthorized_side_effects=0`",
             current,
         )
         self.assertIn(
-            "M4.1 result state: `NOT_RUN; launch_claim=ABSENT; "
-            "result_roots=0; results_manifest=ABSENT`",
+            "M4.1 result state: `NOT_RUN; launch_claim=PRESENT_AND_CONSUMED; "
+            "execution_terminal=PRESENT; result_roots=0; results_manifest=ABSENT`",
             current,
         )
         self.assertIn(
@@ -230,18 +255,19 @@ class M3R5ErratumTests(unittest.TestCase):
         )
         self.assertIn(
             "M4.1 Gate IV authorization token status: "
-            "`AUTHORIZED_UNCONSUMED; claim_count=0`",
+            "`CONSUMED; claim_count=1; SAME_REVISION_CONTINUATION_FORBIDDEN`",
             current,
         )
-        self.assertIn(
-            "M4.1 Gate IV exact-HEAD CI: `NOT_RUN; this authorization "
-            "commit does not pre-claim success`",
+        self.assertRegex(
             current,
+            r"M4\.1 terminal-closure CI transition: `old consumed-state exact-HEAD "
+            r"run 31262297707 preserved as FAILED; lifecycle-aware replacement "
+            r"run (?:PENDING|[0-9]+ PASSED)`",
         )
         self.assertIn(
-            "M4.1 authorization and fresh execution: `AUTHORIZED_UNCONSUMED; "
-            "execution=NOT_RUN; launch_claim=ABSENT; result_roots=0; "
-            "results_manifest=ABSENT`",
+            "M4.1 authorization and fresh execution: `AUTHORIZATION_CONSUMED; "
+            "STOPPED_BEFORE_DISPATCH; launch_claim=PRESENT; terminal=PRESENT; "
+            "result_roots=0; results_manifest=ABSENT`",
             current,
         )
         self.assertIn(
@@ -253,18 +279,22 @@ class M3R5ErratumTests(unittest.TestCase):
             current,
         )
         self.assertIn(
-            "M4.1 Gate IV-B readiness audit: `READY_FOR_ATOMIC_CLAIM; "
+            "M4.1 historical Gate IV-B readiness audit: "
+            "`READY_FOR_ATOMIC_CLAIM; "
             "focused=18/18; combined=67/67; full=693/693; "
             "protocol_review=PASSED; "
             "authorization_audit=READY_UNCONSUMED; "
-            "execution_audit=READY_UNCLAIMED; writer_check=DETERMINISTIC`",
+            "execution_audit=READY_UNCLAIMED; writer_check=DETERMINISTIC at "
+            "c370a3ce21661f0dbf2cdd153b8761d8fce71f9b`",
             current,
         )
         self.assertIn(
-            "M4.1 Gate IV-B zero state: `authorization token=UNCONSUMED; "
+            "M4.1 historical Gate IV-B zero state: "
+            "`authorization token=UNCONSUMED; "
             "launch claim=ABSENT; terminal=ABSENT; platform observations=ABSENT; "
             "result root=ABSENT; results manifest=ABSENT; tasks=0; "
-            "finalizations=0`",
+            "finalizations=0 at "
+            "c370a3ce21661f0dbf2cdd153b8761d8fce71f9b`",
             current,
         )
         self.assertIn("r5.1-f02 retry: `FORBIDDEN`", current)
@@ -299,6 +329,20 @@ class M3R5ErratumTests(unittest.TestCase):
             "r5.1-f02 authorization token: `CONSUMED / TERMINAL`", current
         )
         self.assertNotIn("READY_FOR_AUTHORIZED_R5_FRESH_CONTEXTS", current)
+        self.assertIn(
+            "- M4: `M4.0 PRE_DISPATCH_FAILED_PRESERVED; "
+            "M4.1 STOPPED_PROTOCOL_FAILURE_PRESERVED; "
+            "M4.1 AUTHORIZATION_CONSUMED; M4.1 TASKS_NOT_DISPATCHED; "
+            "M4.2 REQUIRED; FRESH_RESULTS_NOT_RUN`",
+            text,
+        )
+        self.assertIn(
+            "- Active local branch: "
+            "`codex/m4-cross-engineering-forward-evaluation-m4.1-terminal-closure`",
+            text,
+        )
+        self.assertNotIn("GATE_IV_B_LAUNCH_READINESS_LOCAL_READY", text)
+        self.assertNotIn("AUTHORIZATION_UNCONSUMED", text)
 
         r5_1_terminal = json.loads(R5_1_TERMINAL.read_text(encoding="utf-8"))
         self.assertEqual(r5_1_terminal["status"], "terminal_not_accepted")
