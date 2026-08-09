@@ -217,6 +217,16 @@ class M3R5ErratumTests(unittest.TestCase):
             current,
         )
         self.assertIn(
+            "M4.2 preparation exact-HEAD CI: `PASSED` on preparation HEAD "
+            "`be6039e7d2a682b2e001ee12dff5c1db5743b2ed` "
+            "(GitHub Actions run `31311637459`; validate job `93240229667` "
+            "success; Ubuntu M4.2 job `93240229696` success; Windows M4.2 job "
+            "`93240229660` success; 7/7 jobs succeeded)",
+            current,
+        )
+        self.assertNotIn("M4.2 preparation exact-HEAD CI: `PENDING", current)
+        self.assertNotIn("branch remains local and unpushed", current)
+        self.assertIn(
             "M4.2 predecessor closure baseline: "
             "`e6ae2be7695ce1d2613dcd39e379ff458c1b60fe` "
             "(GitHub Actions run `31301984766`; `success`)",

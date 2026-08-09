@@ -144,7 +144,7 @@ M4.2 later gates: `Gate IV review=NOT_RUN; authorization=NOT_CREATED; claim=NOT_
 
 M4.2 preparation local gates: `PASSED; focused=16/16; combined=19/19; full=648/648; builder_check=PASSED; preparation_audit=M4_2_PREPARED_NOT_AUTHORIZED; read_only=true; repeatable=true; PowerShell 5.1 self-test=PASSED; request_bindings=60/60; workflow_yaml=VALID`
 
-M4.2 preparation exact-HEAD CI: `PENDING; successor-preparation branch remains local and unpushed`
+M4.2 preparation exact-HEAD CI: `PASSED` on preparation HEAD `be6039e7d2a682b2e001ee12dff5c1db5743b2ed` (GitHub Actions run `31311637459`; validate job `93240229667` success; Ubuntu M4.2 job `93240229696` success; Windows M4.2 job `93240229660` success; 7/7 jobs succeeded)
 
 M4.1 predecessor terminal baseline: `f48ab8d7e835e9a57e65b75458faa786d696316d` (GitHub Actions run `31246286753`; `success`)
 
