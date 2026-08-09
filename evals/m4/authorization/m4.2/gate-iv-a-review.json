@@ -1,0 +1,532 @@
+{
+  "schema_version": "m4.2-gate-iv-a-independent-review-v1",
+  "reviewed_head": "941602180c75c4ae16edfc927f6c39b8420fb45c",
+  "reviewed_tree": "43357e6fa252abbb84095aebb577974974527791",
+  "reviewed_branch": "codex/m4-cross-engineering-forward-evaluation-m4.2-successor-preparation",
+  "reviewed_artifacts": [
+    {
+      "path": "evals/m4/revisions/m4.2/preparation-manifest.json",
+      "byte_length": 95902,
+      "raw_sha256": "bdd64dbe666f1b17c5c1bcad3ab148dced173331519a08b06087882060713a57",
+      "git_blob_oid": "5d33fe292745a3a2f22e7b841b1499fefab6baf7"
+    },
+    {
+      "path": "evals/m4/revisions/m4.2/preparation-manifest.schema.json",
+      "byte_length": 14594,
+      "raw_sha256": "a3fcea800887cf6c495363dd9dc1e4b9b9d8a91aff69fc8daacf414720f51ee9",
+      "git_blob_oid": "bef0e42882875f0bfbd78bf969f1190aa6da6b67"
+    },
+    {
+      "path": "evals/m4/build_m4_2_preparation.py",
+      "byte_length": 16428,
+      "raw_sha256": "a8468ebd297cbb401b0aadcb92f186d66f8ff37e1a42626eba8bd3ced07d6068",
+      "git_blob_oid": "b4a86cca0b6ad65b56b407188ce89638ed19bc9c"
+    },
+    {
+      "path": "evals/m4/audit_m4_2_preparation.py",
+      "byte_length": 45719,
+      "raw_sha256": "221424a9fb5384486d9dd992b9cf8385165f767dfa31f05317c9ec2bc8829ed3",
+      "git_blob_oid": "ea0745ca77dc7cd8335ae9b6056b4942e21b650b"
+    },
+    {
+      "path": "evals/m4/execution/prepare_m4_2_request_bundles.ps1",
+      "byte_length": 8371,
+      "raw_sha256": "40b15ec3d1ce885f5f0d438377e298541974d46eb26efc934c0755b22b126712",
+      "git_blob_oid": "27e3e11d5790f28e32fee87693a5f88ef77b6bb7"
+    },
+    {
+      "path": "tests/test_m4_2_preparation.py",
+      "byte_length": 46540,
+      "raw_sha256": "0f749ac5072122321944b9c9e5631dc307cc4692e39368970081b459d228b986",
+      "git_blob_oid": "7681f639799d843ad5e161fc698d6e2eee2e2467"
+    },
+    {
+      "path": ".github/workflows/m1-validation.yml",
+      "byte_length": 31045,
+      "raw_sha256": "1e1e6c5997b1b2a10e0f0ce8bfb7fb703c036d447cf05646cd423b6ee83199c3",
+      "git_blob_oid": "9c0ecef15297fee6ca7a801904c11a11670da5c1"
+    },
+    {
+      "path": "STATUS.md",
+      "byte_length": 64367,
+      "raw_sha256": "c7d3c34f1ef0eaf130878d62985407caa2e173afe6b19b8cc3c5fadb6b9a87cb",
+      "git_blob_oid": "5d62a9dcf049792a51c7efb60c69c3a0c368c274"
+    },
+    {
+      "path": "evals/m4/execution/m4.1/launch-claim.json",
+      "byte_length": 24078,
+      "raw_sha256": "c16a2e53aa2e9215e2325464d547356afdb73897bfc7d29605e0105b9987b3c6",
+      "git_blob_oid": "794058739b96598955216b3960b95b0feea1208f"
+    },
+    {
+      "path": "evals/m4/execution/m4.1/execution-terminal.json",
+      "byte_length": 3707,
+      "raw_sha256": "7305d71ba94cd209f5bb0cb2c977db3bb157d95b907f8f59df9133c192f4d66e",
+      "git_blob_oid": "76c7dc1ef88d587741d364536c86e389c296ad5c"
+    },
+    {
+      "path": "evals/m4/execution/audit_m4_1_terminal.py",
+      "byte_length": 15673,
+      "raw_sha256": "c525f043fcce3aa972bcaedfcc84ed03a614f4cfff94a51e23417f9ca45f5855",
+      "git_blob_oid": "9ab7dea46f216bd79e8ec44def174cb6fa390155"
+    }
+  ],
+  "ci_evidence": {
+    "review_date": "2026-08-09",
+    "repository": "zxy19960316/engineering-research-copilot",
+    "implementation": {
+      "head": "242490a5d0d4e9bc52f21263d8d6780830ab1c8f",
+      "push": {
+        "run_id": 31316090614,
+        "event": "push",
+        "head": "242490a5d0d4e9bc52f21263d8d6780830ab1c8f",
+        "branch": "codex/m4-cross-engineering-forward-evaluation-m4.2-successor-preparation",
+        "conclusion": "success",
+        "job_count": 7,
+        "jobs": [
+          {
+            "job_id": 93251454688,
+            "name": "M4.1 pre-claim regression (ubuntu-latest)",
+            "conclusion": "success"
+          },
+          {
+            "job_id": 93251454678,
+            "name": "M4.1 pre-claim regression (windows-latest)",
+            "conclusion": "success"
+          },
+          {
+            "job_id": 93251454695,
+            "name": "M4.2 preparation (NOT AUTHORIZED) (ubuntu-latest)",
+            "conclusion": "success"
+          },
+          {
+            "job_id": 93251454692,
+            "name": "M4.2 preparation (NOT AUTHORIZED) (windows-latest)",
+            "conclusion": "success"
+          },
+          {
+            "job_id": 93251454712,
+            "name": "historical-audit-cross-platform (ubuntu-latest)",
+            "conclusion": "success"
+          },
+          {
+            "job_id": 93251454699,
+            "name": "historical-audit-cross-platform (windows-latest)",
+            "conclusion": "success"
+          },
+          {
+            "job_id": 93251454657,
+            "name": "validate",
+            "conclusion": "success"
+          }
+        ],
+        "current_lifecycle_tests": 653,
+        "raw_log": {
+          "scope": "gh_run_view_all_jobs_stdout",
+          "byte_length": 681321,
+          "sha256": "b4bcae148cc8fc6c1d6d1254323487991bb58298f967b49f13831156f1159356",
+          "banned_pattern_counts": {
+            "FAIL:": 0,
+            "FAILED (": 0,
+            "Traceback": 0,
+            "##[error]": 0
+          }
+        },
+        "windows_powershell_5_1": {
+          "job_id": 93251454692,
+          "version": "5.1.26100.33158",
+          "self_test": "SELF_TEST_PASSED",
+          "checked_task_count": 60,
+          "mismatch_count": 0,
+          "side_effects": []
+        }
+      },
+      "pull_request": {
+        "run_id": 31316093185,
+        "event": "pull_request",
+        "head": "242490a5d0d4e9bc52f21263d8d6780830ab1c8f",
+        "branch": "codex/m4-cross-engineering-forward-evaluation-m4.2-successor-preparation",
+        "conclusion": "success",
+        "job_count": 7,
+        "jobs": [
+          {
+            "job_id": 93251461067,
+            "name": "M4.1 pre-claim regression (ubuntu-latest)",
+            "conclusion": "success"
+          },
+          {
+            "job_id": 93251461092,
+            "name": "M4.1 pre-claim regression (windows-latest)",
+            "conclusion": "success"
+          },
+          {
+            "job_id": 93251461072,
+            "name": "M4.2 preparation (NOT AUTHORIZED) (ubuntu-latest)",
+            "conclusion": "success"
+          },
+          {
+            "job_id": 93251461064,
+            "name": "M4.2 preparation (NOT AUTHORIZED) (windows-latest)",
+            "conclusion": "success"
+          },
+          {
+            "job_id": 93251461076,
+            "name": "historical-audit-cross-platform (ubuntu-latest)",
+            "conclusion": "success"
+          },
+          {
+            "job_id": 93251461061,
+            "name": "historical-audit-cross-platform (windows-latest)",
+            "conclusion": "success"
+          },
+          {
+            "job_id": 93251461042,
+            "name": "validate",
+            "conclusion": "success"
+          }
+        ],
+        "current_lifecycle_tests": 653,
+        "raw_log": {
+          "scope": "gh_run_view_all_jobs_stdout",
+          "byte_length": 691074,
+          "sha256": "457b0cb0cd2621f590c4e8436df10bfb1c7a2fec48e4704627634653a13fb938",
+          "banned_pattern_counts": {
+            "FAIL:": 0,
+            "FAILED (": 0,
+            "Traceback": 0,
+            "##[error]": 0
+          }
+        },
+        "windows_powershell_5_1": {
+          "job_id": 93251461064,
+          "version": "5.1.26100.33158",
+          "self_test": "SELF_TEST_PASSED",
+          "checked_task_count": 60,
+          "mismatch_count": 0,
+          "side_effects": []
+        }
+      }
+    },
+    "closure": {
+      "head": "941602180c75c4ae16edfc927f6c39b8420fb45c",
+      "push": {
+        "run_id": 31316592412,
+        "event": "push",
+        "head": "941602180c75c4ae16edfc927f6c39b8420fb45c",
+        "branch": "codex/m4-cross-engineering-forward-evaluation-m4.2-successor-preparation",
+        "conclusion": "success",
+        "job_count": 7,
+        "jobs": [
+          {
+            "job_id": 93252735895,
+            "name": "M4.1 pre-claim regression (ubuntu-latest)",
+            "conclusion": "success"
+          },
+          {
+            "job_id": 93252735942,
+            "name": "M4.1 pre-claim regression (windows-latest)",
+            "conclusion": "success"
+          },
+          {
+            "job_id": 93252735951,
+            "name": "M4.2 preparation (NOT AUTHORIZED) (ubuntu-latest)",
+            "conclusion": "success"
+          },
+          {
+            "job_id": 93252735943,
+            "name": "M4.2 preparation (NOT AUTHORIZED) (windows-latest)",
+            "conclusion": "success"
+          },
+          {
+            "job_id": 93252735931,
+            "name": "historical-audit-cross-platform (ubuntu-latest)",
+            "conclusion": "success"
+          },
+          {
+            "job_id": 93252735973,
+            "name": "historical-audit-cross-platform (windows-latest)",
+            "conclusion": "success"
+          },
+          {
+            "job_id": 93252735956,
+            "name": "validate",
+            "conclusion": "success"
+          }
+        ],
+        "current_lifecycle_tests": 653,
+        "raw_log": {
+          "scope": "gh_run_view_all_jobs_stdout",
+          "byte_length": 681325,
+          "sha256": "e2e544f3548f0da36c0a097450c46861221887599fe7a54f1d36a3d2df3d7050",
+          "banned_pattern_counts": {
+            "FAIL:": 0,
+            "FAILED (": 0,
+            "Traceback": 0,
+            "##[error]": 0
+          }
+        },
+        "windows_powershell_5_1": {
+          "job_id": 93252735943,
+          "version": "5.1.26100.33158",
+          "self_test": "SELF_TEST_PASSED",
+          "checked_task_count": 60,
+          "mismatch_count": 0,
+          "side_effects": []
+        }
+      },
+      "pull_request": {
+        "run_id": 31316593775,
+        "event": "pull_request",
+        "head": "941602180c75c4ae16edfc927f6c39b8420fb45c",
+        "branch": "codex/m4-cross-engineering-forward-evaluation-m4.2-successor-preparation",
+        "conclusion": "success",
+        "job_count": 7,
+        "jobs": [
+          {
+            "job_id": 93252739563,
+            "name": "M4.1 pre-claim regression (ubuntu-latest)",
+            "conclusion": "success"
+          },
+          {
+            "job_id": 93252739583,
+            "name": "M4.1 pre-claim regression (windows-latest)",
+            "conclusion": "success"
+          },
+          {
+            "job_id": 93252739562,
+            "name": "M4.2 preparation (NOT AUTHORIZED) (ubuntu-latest)",
+            "conclusion": "success"
+          },
+          {
+            "job_id": 93252739579,
+            "name": "M4.2 preparation (NOT AUTHORIZED) (windows-latest)",
+            "conclusion": "success"
+          },
+          {
+            "job_id": 93252739577,
+            "name": "historical-audit-cross-platform (ubuntu-latest)",
+            "conclusion": "success"
+          },
+          {
+            "job_id": 93252739567,
+            "name": "historical-audit-cross-platform (windows-latest)",
+            "conclusion": "success"
+          },
+          {
+            "job_id": 93252739549,
+            "name": "validate",
+            "conclusion": "success"
+          }
+        ],
+        "current_lifecycle_tests": 653,
+        "raw_log": {
+          "scope": "gh_run_view_all_jobs_stdout",
+          "byte_length": 691078,
+          "sha256": "f571be40ccaab4ac94a37e02838c8539d26efacc629ba219d4aa460cfcd93332",
+          "banned_pattern_counts": {
+            "FAIL:": 0,
+            "FAILED (": 0,
+            "Traceback": 0,
+            "##[error]": 0
+          }
+        },
+        "windows_powershell_5_1": {
+          "job_id": 93252739579,
+          "version": "5.1.26100.33158",
+          "self_test": "SELF_TEST_PASSED",
+          "checked_task_count": 60,
+          "mismatch_count": 0,
+          "side_effects": []
+        }
+      }
+    },
+    "historical_false_green": [
+      {
+        "run_id": 31311637459,
+        "event": "push",
+        "head": "be6039e7d2a682b2e001ee12dff5c1db5743b2ed",
+        "run_conclusion": "success",
+        "windows_job_id": 93240229660,
+        "acceptance": "NOT_ACCEPTED",
+        "classification": "FALSE_GREEN",
+        "failed_test": "tests.test_m4_2_preparation.M42PreparationAuditTests.test_rejects_raw_bound_input_eol_drift",
+        "observed_errors": [
+          "case_path_invalid",
+          "task_protocol_path_invalid",
+          "variant_instruction_path_invalid",
+          "rubric_path_invalid"
+        ],
+        "subsequent_commands_continued": true,
+        "raw_windows_job_log": {
+          "scope": "gh_run_view_windows_job_stdout",
+          "byte_length": 41944,
+          "sha256": "af8a1f1256241acef364e737908f1b4a32f8ce49a2b507d5a201636b8305b11e",
+          "failure_marker_counts": {
+            "FAIL:": 1,
+            "FAILED (": 1,
+            "Traceback": 1,
+            "##[error]": 0
+          }
+        }
+      },
+      {
+        "run_id": 31313212880,
+        "event": "push",
+        "head": "dffccf5d2fecc295e3efc7d7368b36b7ff1bf6b7",
+        "run_conclusion": "success",
+        "windows_job_id": 93244187473,
+        "acceptance": "NOT_ACCEPTED",
+        "classification": "FALSE_GREEN",
+        "failed_test": "tests.test_m4_2_preparation.M42PreparationAuditTests.test_rejects_raw_bound_input_eol_drift",
+        "observed_errors": [
+          "case_path_invalid",
+          "task_protocol_path_invalid",
+          "variant_instruction_path_invalid",
+          "rubric_path_invalid"
+        ],
+        "subsequent_commands_continued": true,
+        "raw_windows_job_log": {
+          "scope": "gh_run_view_windows_job_stdout",
+          "byte_length": 45784,
+          "sha256": "756a19420d0ee04a9c9d0219b1b7e0498722ae60b00090d6fcbb2e0c4bed14ca",
+          "failure_marker_counts": {
+            "FAIL:": 1,
+            "FAILED (": 1,
+            "Traceback": 1,
+            "##[error]": 0
+          }
+        }
+      }
+    ]
+  },
+  "matrix_checks": {
+    "case_count": 12,
+    "arm_count": 5,
+    "planned_task_count": 60,
+    "batch_count": 6,
+    "tasks_per_batch": 10,
+    "passed": true
+  },
+  "identity_checks": {
+    "unique_task_id_count": 60,
+    "new_task_id_count": 60,
+    "reused_task_ids": [],
+    "unique_blind_id_count": 60,
+    "blind_id_range": "M4-J121..M4-J180",
+    "reused_blind_ids": [],
+    "unique_batch_id_count": 6,
+    "reused_batch_ids": [],
+    "passed": true
+  },
+  "lineage_checks": {
+    "direct_lineage": "M4.1",
+    "root_lineage": "M4.0",
+    "source_task_matches": 60,
+    "root_task_matches": 60,
+    "relative_order_preserved": true,
+    "inherited_field_drift_count": 0,
+    "passed": true
+  },
+  "request_binding_checks": {
+    "algorithm": "m4.2-request-binding-v1",
+    "independently_recomputed": 60,
+    "matched": 60,
+    "unique": 60,
+    "helper": {
+      "path": "evals/m4/execution/prepare_m4_2_request_bundles.ps1",
+      "byte_length": 8371,
+      "raw_sha256": "40b15ec3d1ce885f5f0d438377e298541974d46eb26efc934c0755b22b126712",
+      "git_blob_oid": "27e3e11d5790f28e32fee87693a5f88ef77b6bb7"
+    },
+    "powershell_5_1_request_bindings": 60,
+    "passed": true
+  },
+  "ci_integrity_checks": {
+    "workflow": {
+      "shell_bash": true,
+      "strict_mode": "set -euo pipefail",
+      "continue_on_error_present": false
+    },
+    "canonical_root_alias_regression": "PASSED",
+    "crlf_raw_sha256_mismatch_codes": [
+      "case_raw_sha256_mismatch",
+      "task_protocol_raw_sha256_mismatch",
+      "variant_instruction_raw_sha256_mismatch",
+      "rubric_raw_sha256_mismatch"
+    ],
+    "escape_regressions": {
+      "sibling": "REJECTED",
+      "symlink": "REJECTED",
+      "junction": "REJECTED"
+    },
+    "accepted_raw_logs_clean": true,
+    "false_green_history_preserved": true,
+    "passed": true
+  },
+  "historical_preservation": {
+    "m4_1_terminal": {
+      "status": "M4_1_STOPPED_PROTOCOL_FAILURE_PRESERVED",
+      "claim_count": 1,
+      "authorization_token_status": "CONSUMED",
+      "claim_sha256": "c16a2e53aa2e9215e2325464d547356afdb73897bfc7d29605e0105b9987b3c6",
+      "claim_blob": "794058739b96598955216b3960b95b0feea1208f",
+      "terminal_sha256": "7305d71ba94cd209f5bb0cb2c977db3bb157d95b907f8f59df9133c192f4d66e",
+      "terminal_blob": "76c7dc1ef88d587741d364536c86e389c296ad5c",
+      "terminal_state": "STOPPED_PROTOCOL_OR_INFRASTRUCTURE_FAILURE",
+      "all_counts_zero": true
+    },
+    "prohibited_baseline_path_drift_count": 0,
+    "passed": true
+  },
+  "zero_state": {
+    "preparation_authority": {
+      "fresh_execution_authorized": false,
+      "fresh_tasks_authorized": false,
+      "result_writes_authorized": false,
+      "retry_authorized": false,
+      "repair_authorized": false,
+      "authorization_artifact": null
+    },
+    "preparation_counters": {
+      "authorized_tasks": 0,
+      "created_contexts": 0,
+      "dispatched_tasks": 0,
+      "finalizations": 0,
+      "results_observed": 0,
+      "judge_scores": 0,
+      "retries": 0,
+      "repairs": 0,
+      "unauthorized_side_effects": 0
+    },
+    "authorization": "ABSENT",
+    "execution": "ABSENT",
+    "claim": "ABSENT",
+    "tasks": 0,
+    "results": 0,
+    "results_status": "NOT_RUN",
+    "forbidden_path_count": 0,
+    "forbidden_paths": [],
+    "passed": true
+  },
+  "lifecycle_requirements": {
+    "fresh_execution_authorized": false,
+    "authorization_created": false,
+    "execution_created": false,
+    "claim_created": false,
+    "protocol_proof_only": true,
+    "judge": "NOT_RUN",
+    "aggregation": "NOT_RUN",
+    "closure": "NOT_RUN",
+    "m5": "NOT_STARTED"
+  },
+  "findings": [],
+  "limitations": [
+    "This review covers only the frozen M4.2 preparation and its CI-integrity closure; it contains no model execution or result.",
+    "The decision permits only preparation of a later Gate IV-B protocol proof and grants no authorization, claim, dispatch, retry, repair, judge, aggregation, or closure authority.",
+    "The Gate IV-A review branch must pass exact-HEAD CI before this review is operationally closed.",
+    "No engineering performance, target-domain transfer, operational readiness, or safety conclusion is established."
+  ],
+  "reviewer_side_effects": [],
+  "decision": "APPROVE_M4_2_GATE_IV_B_PROTOCOL_PROOF_ONLY",
+  "status": "M4_2_GATE_IV_A_REVIEW_PASSED_NOT_AUTHORIZED"
+}
