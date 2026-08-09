@@ -4,7 +4,7 @@
 
 `M4 — Cross-engineering forward evaluation`
 
-Active revision: `M4.2 PREPARATION_ONLY; M4_2_PREPARED_NOT_AUTHORIZED; CI_INTEGRITY_REPAIR_REQUIRED; fresh_execution_authorized=false`
+Active revision: `M4.2 PREPARATION_ONLY; M4_2_PREPARED_NOT_AUTHORIZED; CI_INTEGRITY_REPAIR_CLOSED; fresh_execution_authorized=false`
 
 Historical r5 evidence HEAD: `1b696bce53ee0a11163bfe4f91a9a49ab3af6f49`
 
@@ -12,7 +12,7 @@ Gate 3 accepted evidence baseline HEAD: `ea8a7bbb8b365aded89f9ddb5c784f6e95a51d3
 
 Gate 3 accepted evidence baseline exact-HEAD CI: `PASSED` (GitHub Actions run `31192712555`)
 
-Status: `M3_CLOSED; M4_0_PRE_DISPATCH_FAILED_PRESERVED; M4_1_STOPPED_PROTOCOL_FAILURE_PRESERVED; M4_1_AUTHORIZATION_CONSUMED; M4_1_TASKS_NOT_DISPATCHED; M4_2_PREPARED_NOT_AUTHORIZED; CI_INTEGRITY_REPAIR_REQUIRED; M4_FRESH_RESULTS_NOT_RUN`
+Status: `M3_CLOSED; M4_0_PRE_DISPATCH_FAILED_PRESERVED; M4_1_STOPPED_PROTOCOL_FAILURE_PRESERVED; M4_1_AUTHORIZATION_CONSUMED; M4_1_TASKS_NOT_DISPATCHED; M4_2_PREPARED_NOT_AUTHORIZED; CI_INTEGRITY_REPAIR_CLOSED; M4_FRESH_RESULTS_NOT_RUN`
 
 Historical r5 status: `BLOCKED_NOT_ACCEPTED`
 
@@ -36,7 +36,7 @@ Historical immutable-r5 exact-HEAD CI: `FAILED` (GitHub Actions run `31096079186
 
 M3: `CLOSED`
 
-M4: `M4_1_STOPPED_PROTOCOL_FAILURE_PRESERVED; M4_1_AUTHORIZATION_CONSUMED; M4_2_PREPARED_NOT_AUTHORIZED; CI_INTEGRITY_REPAIR_REQUIRED`
+M4: `M4_1_STOPPED_PROTOCOL_FAILURE_PRESERVED; M4_1_AUTHORIZATION_CONSUMED; M4_2_PREPARED_NOT_AUTHORIZED; CI_INTEGRITY_REPAIR_CLOSED`
 
 M4 fresh tasks authorized: `false; M4.0 and M4.1 authorizations are consumed and terminal; M4.1 continuation or rerun is forbidden; M4.2 is preparation-only and not authorized`
 
@@ -116,7 +116,7 @@ M4.1 terminal-closure exact-HEAD CI: `PASSED` on HEAD `8cfb04f0d7f3631609659e903
 
 M4.1 terminal-closure follow-up exact-HEAD CI: `PASSED` on HEAD `e6ae2be7695ce1d2613dcd39e379ff458c1b60fe` (GitHub Actions run `31301984766`; five lifecycle-aware jobs succeeded)
 
-M4.2 state: `M4_2_PREPARED_NOT_AUTHORIZED; CI_INTEGRITY_REPAIR_REQUIRED; fresh_execution_authorized=false`
+M4.2 state: `M4_2_PREPARED_NOT_AUTHORIZED; CI_INTEGRITY_REPAIR_CLOSED; fresh_execution_authorized=false`
 
 M4.2 successor-preparation branch: `codex/m4-cross-engineering-forward-evaluation-m4.2-successor-preparation`
 
@@ -148,7 +148,9 @@ M4.2 superseded false-green run `31311637459`: `head=be6039e7d2a682b2e001ee12dff
 
 M4.2 superseded false-green run `31313212880`: `head=dffccf5d2fecc295e3efc7d7368b36b7ff1bf6b7; windows_job=93244187473; GITHUB_CONCLUSION_SUCCESS_BUT_WINDOWS_TEST_FAILED; NOT_ACCEPTED; FALSE_GREEN; failed_test=tests.test_m4_2_preparation.M42PreparationAuditTests.test_rejects_raw_bound_input_eol_drift; observed_errors=case_path_invalid,task_protocol_path_invalid,variant_instruction_path_invalid,rubric_path_invalid; subsequent_python_commands_continued=true`
 
-M4.2 accepted exact-HEAD CI: `NONE; CI_INTEGRITY_REPAIR_REQUIRED`
+M4.2 accepted exact-HEAD CI: `TRUE_GREEN_IMPLEMENTATION; CI_INTEGRITY_REPAIR_CLOSED; head=242490a5d0d4e9bc52f21263d8d6780830ab1c8f; run=31316090614; event=push; validate_job=93251454657; ubuntu_m4_2_job=93251454695; windows_m4_2_job=93251454692; all_jobs=7/7; all_raw_logs_verified=true; windows_unittest=OK; errors=[]; forbidden_path_count=0; side_effects=[]; PowerShell_5_1_request_bindings=60/60`
+
+M4.2 companion PR exact-HEAD CI: `TRUE_GREEN_IMPLEMENTATION; head=242490a5d0d4e9bc52f21263d8d6780830ab1c8f; run=31316093185; event=pull_request; validate_job=93251461042; ubuntu_m4_2_job=93251461072; windows_m4_2_job=93251461064; all_jobs=7/7; all_raw_logs_verified=true`
 
 M4.1 predecessor terminal baseline: `f48ab8d7e835e9a57e65b75458faa786d696316d` (GitHub Actions run `31246286753`; `success`)
 

@@ -104,7 +104,7 @@ class M3R5ErratumTests(unittest.TestCase):
 
         self.assertIn(
             "Active revision: `M4.2 PREPARATION_ONLY; "
-            "M4_2_PREPARED_NOT_AUTHORIZED; CI_INTEGRITY_REPAIR_REQUIRED; "
+            "M4_2_PREPARED_NOT_AUTHORIZED; CI_INTEGRITY_REPAIR_CLOSED; "
             "fresh_execution_authorized=false`",
             current,
         )
@@ -123,7 +123,7 @@ class M3R5ErratumTests(unittest.TestCase):
             "Status: `M3_CLOSED; M4_0_PRE_DISPATCH_FAILED_PRESERVED; "
             "M4_1_STOPPED_PROTOCOL_FAILURE_PRESERVED; "
             "M4_1_AUTHORIZATION_CONSUMED; M4_1_TASKS_NOT_DISPATCHED; "
-            "M4_2_PREPARED_NOT_AUTHORIZED; CI_INTEGRITY_REPAIR_REQUIRED; "
+            "M4_2_PREPARED_NOT_AUTHORIZED; CI_INTEGRITY_REPAIR_CLOSED; "
             "M4_FRESH_RESULTS_NOT_RUN`",
             current,
         )
@@ -162,7 +162,7 @@ class M3R5ErratumTests(unittest.TestCase):
         self.assertIn(
             "M4: `M4_1_STOPPED_PROTOCOL_FAILURE_PRESERVED; "
             "M4_1_AUTHORIZATION_CONSUMED; M4_2_PREPARED_NOT_AUTHORIZED; "
-            "CI_INTEGRITY_REPAIR_REQUIRED`",
+            "CI_INTEGRITY_REPAIR_CLOSED`",
             current,
         )
         self.assertIn(
@@ -216,7 +216,7 @@ class M3R5ErratumTests(unittest.TestCase):
         )
         self.assertIn(
             "M4.2 state: `M4_2_PREPARED_NOT_AUTHORIZED; "
-            "CI_INTEGRITY_REPAIR_REQUIRED; fresh_execution_authorized=false`",
+            "CI_INTEGRITY_REPAIR_CLOSED; fresh_execution_authorized=false`",
             current,
         )
         false_green_runs = {
@@ -252,10 +252,26 @@ class M3R5ErratumTests(unittest.TestCase):
                 self.assertNotIn("exact-HEAD CI: `PASSED`", record)
         self.assertNotIn("M4.2 preparation exact-HEAD CI: `PASSED`", current)
         self.assertIn(
-            "M4.2 accepted exact-HEAD CI: `NONE; "
-            "CI_INTEGRITY_REPAIR_REQUIRED`",
+            "M4.2 accepted exact-HEAD CI: `TRUE_GREEN_IMPLEMENTATION; "
+            "CI_INTEGRITY_REPAIR_CLOSED; "
+            "head=242490a5d0d4e9bc52f21263d8d6780830ab1c8f; "
+            "run=31316090614; event=push; validate_job=93251454657; "
+            "ubuntu_m4_2_job=93251454695; windows_m4_2_job=93251454692; "
+            "all_jobs=7/7; all_raw_logs_verified=true; windows_unittest=OK; "
+            "errors=[]; forbidden_path_count=0; side_effects=[]; "
+            "PowerShell_5_1_request_bindings=60/60`",
             current,
         )
+        self.assertIn(
+            "M4.2 companion PR exact-HEAD CI: `TRUE_GREEN_IMPLEMENTATION; "
+            "head=242490a5d0d4e9bc52f21263d8d6780830ab1c8f; "
+            "run=31316093185; event=pull_request; "
+            "validate_job=93251461042; ubuntu_m4_2_job=93251461072; "
+            "windows_m4_2_job=93251461064; all_jobs=7/7; "
+            "all_raw_logs_verified=true`",
+            current,
+        )
+        self.assertNotIn("CI_INTEGRITY_REPAIR_REQUIRED", current)
         self.assertNotIn("branch remains local and unpushed", current)
         self.assertIn(
             "M4.2 predecessor closure baseline: "
