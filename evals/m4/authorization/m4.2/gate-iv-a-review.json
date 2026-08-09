@@ -519,7 +519,11 @@
     "closure": "NOT_RUN",
     "m5": "NOT_STARTED"
   },
-  "findings": [],
+  "findings": [
+    "exact_head_push_windows_current_lifecycle_failed:head=0cc2364aa7833cc410d3133d33597d552b02153d;run=31320763394;job=93263255405;success_jobs=8/9;raw_log_sha256=31d15340414a92ff0a9196b5dac1ff1c9a14da19aa12c3ca83426cfde990838a;markers=FAIL:1,FAILED (:1,Traceback:1,##[error]:1",
+    "exact_head_pull_request_windows_current_lifecycle_failed:head=0cc2364aa7833cc410d3133d33597d552b02153d;run=31320783288;job=93263309590;success_jobs=8/9;raw_log_sha256=c6be1ec4b03e3d3dbcb211b0286911d00e5e015b6621c576dd1187039ba8a095;markers=FAIL:1,FAILED (:1,Traceback:1,##[error]:1",
+    "current_lifecycle_cross_platform_failure:test=tests.test_audit_m3_forward_r5_1_f02_preparation.AuditM3ForwardR51F02PreparationTests.test_accepts_frozen_one_case_preparation_without_side_effects;linux=632/632;windows=631/632;observed_status=invalid;expected_status=ready_for_fresh_authorization"
+  ],
   "limitations": [
     "This review covers only the frozen M4.2 preparation and its CI-integrity closure; it contains no model execution or result.",
     "The decision permits only preparation of a later Gate IV-B protocol proof and grants no authorization, claim, dispatch, retry, repair, judge, aggregation, or closure authority.",
@@ -527,6 +531,6 @@
     "No engineering performance, target-domain transfer, operational readiness, or safety conclusion is established."
   ],
   "reviewer_side_effects": [],
-  "decision": "APPROVE_M4_2_GATE_IV_B_PROTOCOL_PROOF_ONLY",
-  "status": "M4_2_GATE_IV_A_REVIEW_PASSED_NOT_AUTHORIZED"
+  "decision": "BLOCKED",
+  "status": "BLOCKED"
 }

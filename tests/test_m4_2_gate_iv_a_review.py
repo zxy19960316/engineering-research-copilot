@@ -67,6 +67,14 @@ def _load_review() -> dict[str, Any]:
     return value
 
 
+def _passing_review() -> dict[str, Any]:
+    review = copy.deepcopy(_load_review())
+    review["findings"] = []
+    review["decision"] = "APPROVE_M4_2_GATE_IV_B_PROTOCOL_PROOF_ONLY"
+    review["status"] = "M4_2_GATE_IV_A_REVIEW_PASSED_NOT_AUTHORIZED"
+    return review
+
+
 def _artifact(review: dict[str, Any], suffix: str) -> dict[str, Any]:
     for item in review["reviewed_artifacts"]:
         if item["path"].endswith(suffix):
@@ -95,19 +103,17 @@ class M42GateIVAReviewContractTests(unittest.TestCase):
         self.assertTrue(REVIEW_PATH.is_file())
         self.assertTrue(AUDITOR_PATH.is_file())
 
-    def test_review_shape_and_non_authorizing_decision_are_exact(self) -> None:
+    def test_review_shape_and_blocked_decision_are_exact(self) -> None:
         review = _load_review()
         self.assertEqual(set(review), REVIEW_KEYS)
-        self.assertEqual(review["findings"], [])
+        self.assertEqual(len(review["findings"]), 3)
+        self.assertTrue(
+            all("0cc2364aa7833cc410d3133d33597d552b02153d" in finding
+                for finding in review["findings"][:2])
+        )
         self.assertEqual(review["reviewer_side_effects"], [])
-        self.assertEqual(
-            review["decision"],
-            "APPROVE_M4_2_GATE_IV_B_PROTOCOL_PROOF_ONLY",
-        )
-        self.assertEqual(
-            review["status"],
-            "M4_2_GATE_IV_A_REVIEW_PASSED_NOT_AUTHORIZED",
-        )
+        self.assertEqual(review["decision"], "BLOCKED")
+        self.assertEqual(review["status"], "BLOCKED")
         lifecycle = review["lifecycle_requirements"]
         self.assertIs(lifecycle["fresh_execution_authorized"], False)
         self.assertIs(lifecycle["authorization_created"], False)
@@ -154,7 +160,6 @@ class M42GateIVAReviewMutationTests(unittest.TestCase):
             verify_git=verify_git,
             present_paths=present_paths,
         )
-        self.assertEqual(result["reviewer_side_effects"], [])
         return result
 
     def _assert_blocked(
@@ -173,14 +178,22 @@ class M42GateIVAReviewMutationTests(unittest.TestCase):
         self.assertIn(error, result["errors"])
 
     def test_exact_review_passes(self) -> None:
-        result = self._audit(copy.deepcopy(self.review))
+        result = self._audit(_passing_review())
         self.assertEqual(result["errors"], [])
         self.assertEqual(result["findings"], [])
+        self.assertEqual(result["reviewer_side_effects"], [])
         self.assertEqual(result["forbidden_path_count"], 0)
         self.assertEqual(
             result["status"],
             "M4_2_GATE_IV_A_REVIEW_PASSED_NOT_AUTHORIZED",
         )
+
+    def test_committed_review_is_blocked_by_exact_head_windows_ci(self) -> None:
+        result = self._audit(copy.deepcopy(self.review))
+        self.assertEqual(result["status"], "BLOCKED")
+        self.assertEqual(result["errors"], [])
+        self.assertEqual(len(result["findings"]), 3)
+        self.assertEqual(result["reviewer_side_effects"], [])
 
     def test_rejects_reviewed_head_drift(self) -> None:
         review = copy.deepcopy(self.review)
@@ -280,12 +293,12 @@ class M42GateIVAReviewMutationTests(unittest.TestCase):
                 )
 
     def test_rejects_nonempty_findings_with_passed_status(self) -> None:
-        review = copy.deepcopy(self.review)
+        review = _passing_review()
         review["findings"] = ["independent_finding"]
         self._assert_blocked(review, "passed_with_findings")
 
     def test_rejects_reviewer_side_effects(self) -> None:
-        review = copy.deepcopy(self.review)
+        review = _passing_review()
         review["reviewer_side_effects"] = ["wrote_preparation"]
         self._assert_blocked(review, "passed_with_reviewer_side_effects")
 
@@ -319,15 +332,14 @@ class M42GateIVAReviewMutationTests(unittest.TestCase):
             check=True,
             capture_output=True,
         ).stdout
-        self.assertEqual(first.returncode, 0, first.stderr.decode("utf-8", "replace"))
-        self.assertEqual(second.returncode, 0, second.stderr.decode("utf-8", "replace"))
+        self.assertEqual(first.returncode, 1, first.stderr.decode("utf-8", "replace"))
+        self.assertEqual(second.returncode, 1, second.stderr.decode("utf-8", "replace"))
         self.assertEqual(first.stdout, second.stdout)
         self.assertEqual(before, after)
         payload = json.loads(first.stdout)
-        self.assertEqual(
-            payload["status"],
-            "M4_2_GATE_IV_A_REVIEW_PASSED_NOT_AUTHORIZED",
-        )
+        self.assertEqual(payload["status"], "BLOCKED")
+        self.assertEqual(payload["errors"], [])
+        self.assertEqual(len(payload["findings"]), 3)
 
 
 if __name__ == "__main__":

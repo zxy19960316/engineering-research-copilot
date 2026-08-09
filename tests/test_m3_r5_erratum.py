@@ -104,7 +104,7 @@ class M3R5ErratumTests(unittest.TestCase):
 
         self.assertIn(
             "Active revision: `M4.2 GATE_IV_A_REVIEW; "
-            "M4_2_GATE_IV_A_REVIEW_PASSED_NOT_AUTHORIZED; "
+            "BLOCKED; "
             "fresh_execution_authorized=false`",
             current,
         )
@@ -124,7 +124,7 @@ class M3R5ErratumTests(unittest.TestCase):
             "M4_1_STOPPED_PROTOCOL_FAILURE_PRESERVED; "
             "M4_1_AUTHORIZATION_CONSUMED; M4_1_TASKS_NOT_DISPATCHED; "
             "M4_2_PREPARED_NOT_AUTHORIZED; CI_INTEGRITY_REPAIR_CLOSED; "
-            "M4_2_GATE_IV_A_REVIEW_PASSED_NOT_AUTHORIZED; "
+            "M4_2_GATE_IV_A_REVIEW_BLOCKED; "
             "M4_FRESH_RESULTS_NOT_RUN`",
             current,
         )
@@ -164,7 +164,7 @@ class M3R5ErratumTests(unittest.TestCase):
             "M4: `M4_1_STOPPED_PROTOCOL_FAILURE_PRESERVED; "
             "M4_1_AUTHORIZATION_CONSUMED; M4_2_PREPARED_NOT_AUTHORIZED; "
             "CI_INTEGRITY_REPAIR_CLOSED; "
-            "M4_2_GATE_IV_A_REVIEW_PASSED_NOT_AUTHORIZED`",
+            "M4_2_GATE_IV_A_REVIEW_BLOCKED`",
             current,
         )
         self.assertIn(
@@ -220,7 +220,7 @@ class M3R5ErratumTests(unittest.TestCase):
         self.assertIn(
             "M4.2 state: `M4_2_PREPARED_NOT_AUTHORIZED; "
             "CI_INTEGRITY_REPAIR_CLOSED; "
-            "M4_2_GATE_IV_A_REVIEW_PASSED_NOT_AUTHORIZED; "
+            "M4_2_GATE_IV_A_REVIEW_BLOCKED; "
             "fresh_execution_authorized=false`",
             current,
         )
@@ -235,14 +235,26 @@ class M3R5ErratumTests(unittest.TestCase):
         self.assertIn(
             "M4.2 Gate IV-A review artifact: "
             "`evals/m4/authorization/m4.2/gate-iv-a-review.json; "
-            "findings=[]; reviewer_side_effects=[]; "
-            "decision=APPROVE_M4_2_GATE_IV_B_PROTOCOL_PROOF_ONLY; "
-            "status=M4_2_GATE_IV_A_REVIEW_PASSED_NOT_AUTHORIZED`",
+            "findings=3; reviewer_side_effects=[]; "
+            "decision=BLOCKED; status=BLOCKED`",
             current,
         )
         self.assertIn(
-            "M4.2 Gate IV-A exact-HEAD CI: `PENDING; "
-            "required before operational review closure`",
+            "M4.2 Gate IV-A exact-HEAD CI: `BLOCKED; "
+            "head=0cc2364aa7833cc410d3133d33597d552b02153d; "
+            "push_run=31320763394; push_jobs=8/9; "
+            "push_failed_job=93263255405;",
+            current,
+        )
+        self.assertIn(
+            "pull_request_run=31320783288; pull_request_jobs=8/9; "
+            "pull_request_failed_job=93263309590;",
+            current,
+        )
+        self.assertIn(
+            "current_lifecycle=631/632; "
+            "markers=FAIL:1,FAILED (:1,Traceback:1,##[error]:1; "
+            "preparation_repair=NOT_AUTHORIZED`",
             current,
         )
         false_green_runs = {
@@ -340,7 +352,7 @@ class M3R5ErratumTests(unittest.TestCase):
             current,
         )
         self.assertIn(
-            "M4.2 later gates: `Gate IV-A review=PASSED_NOT_AUTHORIZED; "
+            "M4.2 later gates: `Gate IV-A review=BLOCKED; "
             "Gate IV-B protocol proof=NOT_STARTED; authorization=ABSENT; "
             "execution=ABSENT; claim=ABSENT; tasks=0; results=0; "
             "judge=NOT_RUN; aggregation=NOT_RUN; closure=NOT_RUN; "
@@ -348,9 +360,11 @@ class M3R5ErratumTests(unittest.TestCase):
             current,
         )
         self.assertIn(
-            "M4.2 Gate IV-A local gates: `PASSED; focused_review=26/26; "
-            "current_lifecycle=632/632; isolated_baseline=21/21; "
-            "findings=[]; reviewer_side_effects=[]; planned_tasks=60; "
+            "M4.2 Gate IV-A review evidence: `BLOCKED; focused_review=27/27; "
+            "local_LF_current_lifecycle=632/632; "
+            "exact_head_windows_current_lifecycle=631/632; "
+            "isolated_baseline=21/21; findings=3; "
+            "reviewer_side_effects=[]; planned_tasks=60; "
             "batches=6; request_bindings=60/60; "
             "Windows_PowerShell_5_1=60/60; reused_task_ids=0; "
             "forbidden_path_count=0; "
@@ -480,7 +494,7 @@ class M3R5ErratumTests(unittest.TestCase):
             "M4.1 STOPPED_PROTOCOL_FAILURE_PRESERVED; "
             "M4.1 AUTHORIZATION_CONSUMED; M4.1 TASKS_NOT_DISPATCHED; "
             "M4.2 PREPARED_NOT_AUTHORIZED; "
-            "M4.2 GATE_IV_A_REVIEW_PASSED_NOT_AUTHORIZED; "
+            "M4.2 GATE_IV_A_REVIEW_BLOCKED; "
             "FRESH_RESULTS_NOT_RUN`",
             text,
         )

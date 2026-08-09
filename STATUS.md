@@ -4,7 +4,7 @@
 
 `M4 — Cross-engineering forward evaluation`
 
-Active revision: `M4.2 GATE_IV_A_REVIEW; M4_2_GATE_IV_A_REVIEW_PASSED_NOT_AUTHORIZED; fresh_execution_authorized=false`
+Active revision: `M4.2 GATE_IV_A_REVIEW; BLOCKED; fresh_execution_authorized=false`
 
 Historical r5 evidence HEAD: `1b696bce53ee0a11163bfe4f91a9a49ab3af6f49`
 
@@ -12,7 +12,7 @@ Gate 3 accepted evidence baseline HEAD: `ea8a7bbb8b365aded89f9ddb5c784f6e95a51d3
 
 Gate 3 accepted evidence baseline exact-HEAD CI: `PASSED` (GitHub Actions run `31192712555`)
 
-Status: `M3_CLOSED; M4_0_PRE_DISPATCH_FAILED_PRESERVED; M4_1_STOPPED_PROTOCOL_FAILURE_PRESERVED; M4_1_AUTHORIZATION_CONSUMED; M4_1_TASKS_NOT_DISPATCHED; M4_2_PREPARED_NOT_AUTHORIZED; CI_INTEGRITY_REPAIR_CLOSED; M4_2_GATE_IV_A_REVIEW_PASSED_NOT_AUTHORIZED; M4_FRESH_RESULTS_NOT_RUN`
+Status: `M3_CLOSED; M4_0_PRE_DISPATCH_FAILED_PRESERVED; M4_1_STOPPED_PROTOCOL_FAILURE_PRESERVED; M4_1_AUTHORIZATION_CONSUMED; M4_1_TASKS_NOT_DISPATCHED; M4_2_PREPARED_NOT_AUTHORIZED; CI_INTEGRITY_REPAIR_CLOSED; M4_2_GATE_IV_A_REVIEW_BLOCKED; M4_FRESH_RESULTS_NOT_RUN`
 
 Historical r5 status: `BLOCKED_NOT_ACCEPTED`
 
@@ -36,7 +36,7 @@ Historical immutable-r5 exact-HEAD CI: `FAILED` (GitHub Actions run `31096079186
 
 M3: `CLOSED`
 
-M4: `M4_1_STOPPED_PROTOCOL_FAILURE_PRESERVED; M4_1_AUTHORIZATION_CONSUMED; M4_2_PREPARED_NOT_AUTHORIZED; CI_INTEGRITY_REPAIR_CLOSED; M4_2_GATE_IV_A_REVIEW_PASSED_NOT_AUTHORIZED`
+M4: `M4_1_STOPPED_PROTOCOL_FAILURE_PRESERVED; M4_1_AUTHORIZATION_CONSUMED; M4_2_PREPARED_NOT_AUTHORIZED; CI_INTEGRITY_REPAIR_CLOSED; M4_2_GATE_IV_A_REVIEW_BLOCKED`
 
 M4 fresh tasks authorized: `false; M4.0 and M4.1 authorizations are consumed and terminal; M4.1 continuation or rerun is forbidden; M4.2 Gate IV-A permits only later Gate IV-B protocol proof preparation and grants no execution authority`
 
@@ -116,7 +116,7 @@ M4.1 terminal-closure exact-HEAD CI: `PASSED` on HEAD `8cfb04f0d7f3631609659e903
 
 M4.1 terminal-closure follow-up exact-HEAD CI: `PASSED` on HEAD `e6ae2be7695ce1d2613dcd39e379ff458c1b60fe` (GitHub Actions run `31301984766`; five lifecycle-aware jobs succeeded)
 
-M4.2 state: `M4_2_PREPARED_NOT_AUTHORIZED; CI_INTEGRITY_REPAIR_CLOSED; M4_2_GATE_IV_A_REVIEW_PASSED_NOT_AUTHORIZED; fresh_execution_authorized=false`
+M4.2 state: `M4_2_PREPARED_NOT_AUTHORIZED; CI_INTEGRITY_REPAIR_CLOSED; M4_2_GATE_IV_A_REVIEW_BLOCKED; fresh_execution_authorized=false`
 
 M4.2 successor-preparation branch: `codex/m4-cross-engineering-forward-evaluation-m4.2-successor-preparation`
 
@@ -128,9 +128,9 @@ M4.2 Gate IV-A review plan: `docs/superpowers/plans/2026-08-09-m4.2-gate-iv-a-in
 
 M4.2 Gate IV-A reviewed baseline: `head=941602180c75c4ae16edfc927f6c39b8420fb45c; tree=43357e6fa252abbb84095aebb577974974527791; branch=codex/m4-cross-engineering-forward-evaluation-m4.2-successor-preparation`
 
-M4.2 Gate IV-A review artifact: `evals/m4/authorization/m4.2/gate-iv-a-review.json; findings=[]; reviewer_side_effects=[]; decision=APPROVE_M4_2_GATE_IV_B_PROTOCOL_PROOF_ONLY; status=M4_2_GATE_IV_A_REVIEW_PASSED_NOT_AUTHORIZED`
+M4.2 Gate IV-A review artifact: `evals/m4/authorization/m4.2/gate-iv-a-review.json; findings=3; reviewer_side_effects=[]; decision=BLOCKED; status=BLOCKED`
 
-M4.2 Gate IV-A exact-HEAD CI: `PENDING; required before operational review closure`
+M4.2 Gate IV-A exact-HEAD CI: `BLOCKED; head=0cc2364aa7833cc410d3133d33597d552b02153d; push_run=31320763394; push_jobs=8/9; push_failed_job=93263255405; push_raw_log_sha256=31d15340414a92ff0a9196b5dac1ff1c9a14da19aa12c3ca83426cfde990838a; pull_request_run=31320783288; pull_request_jobs=8/9; pull_request_failed_job=93263309590; pull_request_raw_log_sha256=c6be1ec4b03e3d3dbcb211b0286911d00e5e015b6621c576dd1187039ba8a095; failed_job=M4.2 Gate IV-A review (NOT AUTHORIZED) (windows-latest); current_lifecycle=631/632; markers=FAIL:1,FAILED (:1,Traceback:1,##[error]:1; preparation_repair=NOT_AUTHORIZED`
 
 M4.2 predecessor closure baseline: `e6ae2be7695ce1d2613dcd39e379ff458c1b60fe` (GitHub Actions run `31301984766`; `success`)
 
@@ -150,7 +150,7 @@ M4.2 preparation counters: `authorized_tasks=0; created_contexts=0; dispatched_t
 
 M4.2 absent artifacts: `M4.1 result_root=ABSENT; M4.2 authorization=ABSENT; execution=ABSENT; result_root=ABSENT; results_manifest=ABSENT`
 
-M4.2 later gates: `Gate IV-A review=PASSED_NOT_AUTHORIZED; Gate IV-B protocol proof=NOT_STARTED; authorization=ABSENT; execution=ABSENT; claim=ABSENT; tasks=0; results=0; judge=NOT_RUN; aggregation=NOT_RUN; closure=NOT_RUN; M5=NOT_STARTED`
+M4.2 later gates: `Gate IV-A review=BLOCKED; Gate IV-B protocol proof=NOT_STARTED; authorization=ABSENT; execution=ABSENT; claim=ABSENT; tasks=0; results=0; judge=NOT_RUN; aggregation=NOT_RUN; closure=NOT_RUN; M5=NOT_STARTED`
 
 M4.2 preparation local gates: `PASSED; focused=21/21; combined=24/24; full=653/653; compile=PASSED; builder_check=PASSED; preparation_audit=M4_2_PREPARED_NOT_AUTHORIZED; canonical_root_alias=PASSED; CRLF_raw_sha256_mismatches=4/4; sibling_symlink_junction_escape=REJECTED; workflow_python_fail_closed=PASSED; read_only=true; repeatable=true; PowerShell 5.1 self-test=PASSED; request_bindings=60/60; workflow_yaml=VALID`
 
@@ -166,7 +166,7 @@ M4.2 closure push exact-HEAD CI: `TRUE_GREEN_CLOSURE; head=941602180c75c4ae16edf
 
 M4.2 closure PR exact-HEAD CI: `TRUE_GREEN_CLOSURE; head=941602180c75c4ae16edfc927f6c39b8420fb45c; run=31316593775; event=pull_request; all_jobs=7/7; all_raw_logs_verified=true`
 
-M4.2 Gate IV-A local gates: `PASSED; focused_review=26/26; current_lifecycle=632/632; isolated_baseline=21/21; findings=[]; reviewer_side_effects=[]; planned_tasks=60; batches=6; request_bindings=60/60; Windows_PowerShell_5_1=60/60; reused_task_ids=0; forbidden_path_count=0; M4.1_terminal=M4_1_STOPPED_PROTOCOL_FAILURE_PRESERVED; results=NOT_RUN; read_only=true; repeatable=true`
+M4.2 Gate IV-A review evidence: `BLOCKED; focused_review=27/27; local_LF_current_lifecycle=632/632; exact_head_windows_current_lifecycle=631/632; isolated_baseline=21/21; findings=3; reviewer_side_effects=[]; planned_tasks=60; batches=6; request_bindings=60/60; Windows_PowerShell_5_1=60/60; reused_task_ids=0; forbidden_path_count=0; M4.1_terminal=M4_1_STOPPED_PROTOCOL_FAILURE_PRESERVED; results=NOT_RUN; read_only=true; repeatable=true`
 
 M4.1 predecessor terminal baseline: `f48ab8d7e835e9a57e65b75458faa786d696316d` (GitHub Actions run `31246286753`; `success`)
 
@@ -643,7 +643,7 @@ Evidence is recorded under `evals/m1/`, including preserved failed runs and inde
 
 - M2: `M2.1 COMPLETE; M2.1.1 COMPLETE`
 - M3: `CLOSED`
-- M4: `M4.0 PRE_DISPATCH_FAILED_PRESERVED; M4.1 STOPPED_PROTOCOL_FAILURE_PRESERVED; M4.1 AUTHORIZATION_CONSUMED; M4.1 TASKS_NOT_DISPATCHED; M4.2 PREPARED_NOT_AUTHORIZED; M4.2 GATE_IV_A_REVIEW_PASSED_NOT_AUTHORIZED; FRESH_RESULTS_NOT_RUN`
+- M4: `M4.0 PRE_DISPATCH_FAILED_PRESERVED; M4.1 STOPPED_PROTOCOL_FAILURE_PRESERVED; M4.1 AUTHORIZATION_CONSUMED; M4.1 TASKS_NOT_DISPATCHED; M4.2 PREPARED_NOT_AUTHORIZED; M4.2 GATE_IV_A_REVIEW_BLOCKED; FRESH_RESULTS_NOT_RUN`
 - M5: `NOT_STARTED`
 
 ## External state

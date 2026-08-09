@@ -21,7 +21,7 @@ REVIEWED_BRANCH = (
 REVIEW_PATH = Path("evals/m4/authorization/m4.2/gate-iv-a-review.json")
 SCHEMA_PATH = Path("evals/m4/authorization/m4.2/gate-iv-a-review.schema.json")
 REVIEW_RAW_SHA256 = (
-    "4521f44d439b3ce049c7feb172efeb80c1b93413d498801ea1e30e7362379f7d"
+    "cd68d10a140606d4f7dd0ee6d09ebe49c1b4566aa54345cfe91728eaac06b373"
 )
 SCHEMA_RAW_SHA256 = (
     "5636da08c195e6570f0e0aa24626e7f40c035898828587d6cd7ab83382b331d2"
@@ -796,29 +796,36 @@ def audit_review(
     if not isinstance(recorded_side_effects, list):
         recorded_side_effects = []
         _add(errors, "reviewer_side_effects_invalid")
-    if review.get("status") == "M4_2_GATE_IV_A_REVIEW_PASSED_NOT_AUTHORIZED":
-        if findings:
-            _add(errors, "passed_with_findings")
-        if recorded_side_effects:
-            _add(errors, "passed_with_reviewer_side_effects")
-
     decision = review.get("decision")
-    if decision != "APPROVE_M4_2_GATE_IV_B_PROTOCOL_PROOF_ONLY":
-        if isinstance(decision, str) and (
-            "EXECUTION" in decision.upper()
-            or decision.upper().startswith("AUTHORIZE_M4_2")
-        ):
-            _add(errors, "decision_attempts_execution_authorization")
-        else:
+    blocked_evidence = bool(findings or recorded_side_effects)
+    if isinstance(decision, str) and (
+        "EXECUTION" in decision.upper()
+        or decision.upper().startswith("AUTHORIZE_M4_2")
+    ):
+        _add(errors, "decision_attempts_execution_authorization")
+    elif blocked_evidence:
+        if decision != "BLOCKED":
             _add(errors, "decision_mismatch")
-    if review.get("status") != "M4_2_GATE_IV_A_REVIEW_PASSED_NOT_AUTHORIZED":
+    elif decision != "APPROVE_M4_2_GATE_IV_B_PROTOCOL_PROOF_ONLY":
+        _add(errors, "decision_mismatch")
+
+    review_status = review.get("status")
+    if blocked_evidence:
+        if review_status == "M4_2_GATE_IV_A_REVIEW_PASSED_NOT_AUTHORIZED":
+            if findings:
+                _add(errors, "passed_with_findings")
+            if recorded_side_effects:
+                _add(errors, "passed_with_reviewer_side_effects")
+        elif review_status != "BLOCKED":
+            _add(errors, "review_status_mismatch")
+    elif review_status != "M4_2_GATE_IV_A_REVIEW_PASSED_NOT_AUTHORIZED":
         _add(errors, "review_status_mismatch")
     if _canonical_sha256(review.get("limitations")) != LIMITATIONS_CANONICAL_SHA256:
         _add(errors, "limitations_mismatch")
 
     status = (
         "M4_2_GATE_IV_A_REVIEW_PASSED_NOT_AUTHORIZED"
-        if not errors
+        if not errors and not blocked_evidence
         else "BLOCKED"
     )
     return {
@@ -838,7 +845,7 @@ def audit_review(
         "execution_created": False,
         "claim_created": False,
         "m4_1_terminal_status": terminal_binding["status"],
-        "reviewer_side_effects": [],
+        "reviewer_side_effects": list(recorded_side_effects),
     }
 
 
