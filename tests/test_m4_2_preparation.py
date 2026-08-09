@@ -604,6 +604,12 @@ class M42PreparationAuditTests(unittest.TestCase):
     def test_rejects_predecessor_evidence_and_lifecycle_drift(self) -> None:
         mutations = (
             (
+                lambda value: value["predecessor"].__setitem__(
+                    "unexpected", "forbidden"
+                ),
+                "predecessor_shape_invalid",
+            ),
+            (
                 lambda value: value["predecessor"]["launch_claim"].__setitem__(
                     "sha256", "0" * 64
                 ),
@@ -745,6 +751,303 @@ class M42PreparationAuditTests(unittest.TestCase):
                 result = self._audit_mutation(mutate)
                 self.assertEqual(result["status"], "INVALID")
                 self.assertIn(error, result["errors"])
+
+    def test_rejects_bool_int_type_confusion(self) -> None:
+        mutations = (
+            (
+                lambda value: value["authority"].__setitem__("retry_authorized", 0),
+                "preparation_authority_invalid",
+            ),
+            (
+                lambda value: value["lifecycle_requirements"].__setitem__(
+                    "claim_aware_post_claim_confirmation_required", 1
+                ),
+                "lifecycle_requirements_invalid",
+            ),
+            (
+                lambda value: value["counters"].__setitem__(
+                    "authorized_tasks", False
+                ),
+                "execution_counter_type_invalid",
+            ),
+            (
+                lambda value: value["predecessor"].__setitem__("claim_count", True),
+                "predecessor_invalid",
+            ),
+            (
+                lambda value: value["predecessor"]["counts"].__setitem__(
+                    "tasks", False
+                ),
+                "predecessor_counts_invalid",
+            ),
+            (
+                lambda value: value["predecessor"]["later_gates"].__setitem__(
+                    "judge", 0
+                ),
+                "predecessor_later_gates_invalid",
+            ),
+            (
+                lambda value: value["randomization"].__setitem__("frozen", 1),
+                "randomization_invalid",
+            ),
+            (
+                lambda value: value["execution_helper"].__setitem__(
+                    "read_only", 1
+                ),
+                "execution_helper_binding_invalid",
+            ),
+        )
+        for mutate, error in mutations:
+            with self.subTest(error=error):
+                result = self._audit_mutation(mutate)
+                self.assertEqual(result["status"], "INVALID")
+                self.assertIn(error, result["errors"])
+
+    def test_git_freeze_detects_hidden_index_and_unexpected_repo_drift(self) -> None:
+        import os
+        import stat
+
+        from evals.m4.audit_m4_2_preparation import (
+            _changed_paths,
+            _unexpected_repo_changes,
+            _worktree_changed_paths,
+        )
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            repo = Path(temp_dir)
+
+            def git(*arguments: str) -> subprocess.CompletedProcess[bytes]:
+                return subprocess.run(
+                    ["git", "-c", "core.autocrlf=false", *arguments],
+                    cwd=repo,
+                    check=True,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                )
+
+            git("init", "--quiet")
+            frozen_relative = Path("evals/m4/frozen.txt")
+            frozen = repo / frozen_relative
+            f04_relative = Path("evals/f04-upstream/frozen.txt")
+            f04 = repo / f04_relative
+            frozen.parent.mkdir(parents=True, exist_ok=True)
+            f04.parent.mkdir(parents=True, exist_ok=True)
+            (repo / ".gitattributes").write_text(
+                "/evals/f04-upstream/** text eol=lf\n"
+                "/evals/m4/** text eol=lf\n",
+                encoding="utf-8",
+                newline="\n",
+            )
+            frozen.write_text("baseline\n", encoding="utf-8", newline="\n")
+            f04.write_text("baseline\n", encoding="utf-8", newline="\n")
+            git(
+                "add",
+                "--",
+                ".gitattributes",
+                frozen_relative.as_posix(),
+                f04_relative.as_posix(),
+            )
+            git(
+                "-c",
+                "user.name=M4.2 Audit Test",
+                "-c",
+                "user.email=m4.2-audit@example.invalid",
+                "commit",
+                "--quiet",
+                "-m",
+                "baseline",
+            )
+            baseline = git("rev-parse", "HEAD").stdout.decode("ascii").strip()
+
+            frozen.write_text("staged drift\n", encoding="utf-8", newline="\n")
+            git("add", "--", frozen_relative.as_posix())
+            frozen.write_text("baseline\n", encoding="utf-8", newline="\n")
+            errors: list[str] = []
+            changed = _changed_paths(
+                repo, baseline, (frozen_relative.as_posix(),), "frozen", errors
+            )
+            self.assertEqual(changed, [frozen_relative.as_posix()])
+            self.assertIn("frozen_changed", errors)
+
+            (repo / "pyproject.toml").write_text(
+                "[project]\n", encoding="utf-8", newline="\n"
+            )
+            errors = []
+            unexpected = _unexpected_repo_changes(repo, baseline, errors)
+            self.assertIn("pyproject.toml", unexpected)
+            self.assertIn("unexpected_repository_change", errors)
+
+            (repo / "pyproject.toml").unlink()
+            git("read-tree", baseline)
+            f04.write_bytes(b"baseline\r\n")
+            errors = []
+            raw_unexpected = _unexpected_repo_changes(repo, baseline, errors)
+            self.assertIn(f04_relative.as_posix(), raw_unexpected)
+            self.assertIn("unexpected_repository_change", errors)
+            f04.write_bytes(b"baseline\n")
+
+            (repo / ".git/info/attributes").write_text(
+                "/evals/m4/** -text eol=crlf filter=evil\n",
+                encoding="utf-8",
+                newline="\n",
+            )
+            frozen.write_bytes(b"baseline\r\n")
+            errors = []
+            self.assertEqual(
+                _changed_paths(
+                    repo,
+                    baseline,
+                    (frozen_relative.as_posix(),),
+                    "frozen",
+                    errors,
+                ),
+                [],
+            )
+            raw_changed = _worktree_changed_paths(
+                repo,
+                baseline,
+                (frozen_relative.as_posix(),),
+                "frozen_raw",
+                errors,
+            )
+            self.assertEqual(raw_changed, [frozen_relative.as_posix()])
+            self.assertIn("frozen_raw_changed", errors)
+
+            original_oid = git(
+                "rev-parse", f"{baseline}:{frozen_relative.as_posix()}"
+            ).stdout.decode("ascii").strip()
+            replacement_bytes = b"replacement baseline\n"
+            replacement_oid = subprocess.run(
+                ["git", "hash-object", "-w", "--stdin"],
+                cwd=repo,
+                check=True,
+                input=replacement_bytes,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+            ).stdout.decode("ascii").strip()
+            git("replace", original_oid, replacement_oid)
+            frozen.write_bytes(replacement_bytes)
+            errors = []
+            replacement_changed = _worktree_changed_paths(
+                repo,
+                baseline,
+                (frozen_relative.as_posix(),),
+                "replacement",
+                errors,
+            )
+            self.assertEqual(replacement_changed, [frozen_relative.as_posix()])
+            self.assertIn("replacement_changed", errors)
+
+            if os.name != "nt":
+                git("replace", "-d", original_oid)
+                frozen.write_bytes(b"baseline\n")
+                os.chmod(frozen, frozen.stat().st_mode | stat.S_IXUSR)
+                errors = []
+                mode_changed = _worktree_changed_paths(
+                    repo,
+                    baseline,
+                    (frozen_relative.as_posix(),),
+                    "mode",
+                    errors,
+                )
+                self.assertEqual(mode_changed, [frozen_relative.as_posix()])
+                self.assertIn("mode_changed", errors)
+
+    def test_rejects_raw_bound_input_eol_drift(self) -> None:
+        from evals.m4.audit_m4_2_preparation import _validate_bound_input_bytes
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            repo = Path(temp_dir)
+            case_relative = Path("evals/m4/cases/probe.json")
+            protocol_relative = Path("evals/m4/task-protocol.md")
+            variant_relative = Path("evals/m4/variants/A1/instructions.md")
+            rubric_relative = Path("evals/m4/judge-rubric.json")
+            for relative in (
+                case_relative,
+                protocol_relative,
+                variant_relative,
+                rubric_relative,
+            ):
+                (repo / relative).parent.mkdir(parents=True, exist_ok=True)
+
+            lf_case = b'{\n  "user_input": "probe"\n}\n'
+            lf_protocol = b"protocol\n"
+            lf_variant = b"variant\n"
+            lf_rubric = b'{"rubric":true}\n'
+            (repo / case_relative).write_bytes(lf_case.replace(b"\n", b"\r\n"))
+            (repo / protocol_relative).write_bytes(
+                lf_protocol.replace(b"\n", b"\r\n")
+            )
+            (repo / variant_relative).write_bytes(lf_variant.replace(b"\n", b"\r\n"))
+            (repo / rubric_relative).write_bytes(lf_rubric.replace(b"\n", b"\r\n"))
+            task = {
+                "case_path": case_relative.as_posix(),
+                "case_sha256": hashlib.sha256(lf_case).hexdigest(),
+                "user_input_sha256": hashlib.sha256(b"probe").hexdigest(),
+                "task_protocol_sha256": hashlib.sha256(lf_protocol).hexdigest(),
+                "variant_instruction_path": variant_relative.as_posix(),
+                "variant_instruction_sha256": hashlib.sha256(lf_variant).hexdigest(),
+                "rubric_sha256": hashlib.sha256(lf_rubric).hexdigest(),
+            }
+            errors: list[str] = []
+            _validate_bound_input_bytes(repo, [task], errors)
+            self.assertIn("case_raw_sha256_mismatch", errors)
+            self.assertIn("task_protocol_raw_sha256_mismatch", errors)
+            self.assertIn("variant_instruction_raw_sha256_mismatch", errors)
+            self.assertIn("rubric_raw_sha256_mismatch", errors)
+            self.assertNotIn("user_input_sha256_mismatch", errors)
+
+    def test_module_loading_is_bytecode_free_and_dangling_paths_are_present(self) -> None:
+        import sys
+
+        from evals.m4.audit_m4_2_preparation import _load_module, _path_present
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            dependency_name = "m4_2_read_only_dependency"
+            (root / f"{dependency_name}.py").write_text(
+                "VALUE = 7\n", encoding="utf-8", newline="\n"
+            )
+            module_path = root / "probe.py"
+            module_path.write_text(
+                f"import {dependency_name}\nVALUE = {dependency_name}.VALUE\n",
+                encoding="utf-8",
+                newline="\n",
+            )
+            sys.path.insert(0, str(root))
+            try:
+                module = _load_module(module_path, "m4_2_read_only_probe")
+            finally:
+                sys.path.remove(str(root))
+                sys.modules.pop(dependency_name, None)
+            self.assertEqual(module.VALUE, 7)
+            self.assertFalse((root / "__pycache__").exists())
+
+        class DanglingPath:
+            @staticmethod
+            def exists() -> bool:
+                return False
+
+            @staticmethod
+            def is_symlink() -> bool:
+                return True
+
+        self.assertTrue(_path_present(DanglingPath()))
+
+        class DanglingJunction:
+            @staticmethod
+            def exists() -> bool:
+                return False
+
+            @staticmethod
+            def is_symlink() -> bool:
+                return False
+
+            @staticmethod
+            def is_junction() -> bool:
+                return True
+
+        self.assertTrue(_path_present(DanglingJunction()))
 
     def test_rejects_every_forbidden_future_path(self) -> None:
         keys = (
