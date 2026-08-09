@@ -4,7 +4,7 @@
 
 `M4 — Cross-engineering forward evaluation`
 
-Active revision: `M4.1 STOPPED_PROTOCOL_FAILURE_PRESERVED; TERMINAL_CLOSURE_CI_PASSED`
+Active revision: `M4.2 PREPARATION_ONLY; M4_2_PREPARED_NOT_AUTHORIZED`
 
 Historical r5 evidence HEAD: `1b696bce53ee0a11163bfe4f91a9a49ab3af6f49`
 
@@ -12,7 +12,7 @@ Gate 3 accepted evidence baseline HEAD: `ea8a7bbb8b365aded89f9ddb5c784f6e95a51d3
 
 Gate 3 accepted evidence baseline exact-HEAD CI: `PASSED` (GitHub Actions run `31192712555`)
 
-Status: `M3_CLOSED; M4_0_PRE_DISPATCH_FAILED_PRESERVED; M4_1_STOPPED_PROTOCOL_FAILURE_PRESERVED; M4_1_AUTHORIZATION_CONSUMED; M4_1_TASKS_NOT_DISPATCHED; M4_2_REQUIRED; M4_FRESH_RESULTS_NOT_RUN`
+Status: `M3_CLOSED; M4_0_PRE_DISPATCH_FAILED_PRESERVED; M4_1_STOPPED_PROTOCOL_FAILURE_PRESERVED; M4_1_AUTHORIZATION_CONSUMED; M4_1_TASKS_NOT_DISPATCHED; M4_2_PREPARED_NOT_AUTHORIZED; M4_FRESH_RESULTS_NOT_RUN`
 
 Historical r5 status: `BLOCKED_NOT_ACCEPTED`
 
@@ -36,9 +36,9 @@ Historical immutable-r5 exact-HEAD CI: `FAILED` (GitHub Actions run `31096079186
 
 M3: `CLOSED`
 
-M4: `M4_1_STOPPED_PROTOCOL_FAILURE_PRESERVED; M4_1_AUTHORIZATION_CONSUMED; M4_2_REQUIRED`
+M4: `M4_1_STOPPED_PROTOCOL_FAILURE_PRESERVED; M4_1_AUTHORIZATION_CONSUMED; M4_2_PREPARED_NOT_AUTHORIZED`
 
-M4 fresh tasks authorized: `false; M4.0 and M4.1 authorizations are consumed and terminal; M4.1 continuation or rerun is forbidden; M4.2 is required and not authorized`
+M4 fresh tasks authorized: `false; M4.0 and M4.1 authorizations are consumed and terminal; M4.1 continuation or rerun is forbidden; M4.2 is preparation-only and not authorized`
 
 M4 preparation protocol: `COMPLETE; OFFLINE_ONLY`
 
@@ -114,7 +114,37 @@ M4.1 terminal-preservation audit: `PASSED; status=M4_1_STOPPED_PROTOCOL_FAILURE_
 
 M4.1 terminal-closure exact-HEAD CI: `PASSED` on HEAD `8cfb04f0d7f3631609659e903841a1a75b73d750` (GitHub Actions run `31300657717`; validate job `93212781724` success; terminal Ubuntu job `93212781738` success; terminal Windows job `93212781741` success; pre-claim Ubuntu job `93212781752` success; pre-claim Windows job `93212781765` success)
 
-M4.2 state: `REQUIRED; NOT_AUTHORIZED; NOT_STARTED`
+M4.1 terminal-closure follow-up exact-HEAD CI: `PASSED` on HEAD `e6ae2be7695ce1d2613dcd39e379ff458c1b60fe` (GitHub Actions run `31301984766`; five lifecycle-aware jobs succeeded)
+
+M4.2 state: `PREPARATION_ONLY; M4_2_PREPARED_NOT_AUTHORIZED; fresh_execution_authorized=false`
+
+M4.2 successor-preparation branch: `codex/m4-cross-engineering-forward-evaluation-m4.2-successor-preparation`
+
+M4.2 successor-preparation plan: `docs/superpowers/plans/2026-08-09-m4.2-successor-preparation.md`
+
+M4.2 predecessor closure baseline: `e6ae2be7695ce1d2613dcd39e379ff458c1b60fe` (GitHub Actions run `31301984766`; `success`)
+
+M4.2 immutable terminal trust root: `80b54697c3e27a5dad0a24d5318ce26c8fe46141; claim_sha256=c16a2e53aa2e9215e2325464d547356afdb73897bfc7d29605e0105b9987b3c6; terminal_sha256=7305d71ba94cd209f5bb0cb2c977db3bb157d95b907f8f59df9133c192f4d66e`
+
+M4.2 source preparation: `evals/m4/revisions/m4.1/preparation-manifest.json; sha256=d66ad9d513d8e64307f9a1553242d9b7d840ea5432d084b06d86707c1b4c2b61; source_exact_head=fedc5cdeebd7a2943afeb6767d39841305c55444; source_ci_run=31248424046`
+
+M4.2 preparation manifest: `evals/m4/revisions/m4.2/preparation-manifest.json`
+
+M4.2 preparation matrix: `12 cases; 5 arms; 60 planned tasks; 6 domain batches`
+
+M4.2 task identity state: `60 new task IDs; 0 reused; blind IDs=M4-J121..M4-J180; 6 new batch IDs; direct_lineage=M4.1; root_lineage=M4.0`
+
+M4.2 authority state: `fresh_execution=false; tasks=false; result_writes=false; retry=false; repair=false; authorization_artifact=null; model_binding_status=UNBOUND_UNTIL_SEPARATE_AUTHORIZATION`
+
+M4.2 preparation counters: `authorized_tasks=0; created_contexts=0; dispatched_tasks=0; finalizations=0; results_observed=0; judge_scores=0; retries=0; repairs=0; unauthorized_side_effects=0`
+
+M4.2 absent artifacts: `M4.1 result_root=ABSENT; M4.2 authorization=ABSENT; execution=ABSENT; result_root=ABSENT; results_manifest=ABSENT`
+
+M4.2 later gates: `Gate IV review=NOT_RUN; authorization=NOT_CREATED; claim=NOT_CREATED; execution=NOT_RUN; judge=false; aggregation=false; closure=false; M5=NOT_STARTED`
+
+M4.2 preparation local gates: `PASSED; focused=16/16; combined=19/19; full=648/648; builder_check=PASSED; preparation_audit=M4_2_PREPARED_NOT_AUTHORIZED; read_only=true; repeatable=true; PowerShell 5.1 self-test=PASSED; request_bindings=60/60; workflow_yaml=VALID`
+
+M4.2 preparation exact-HEAD CI: `PENDING; successor-preparation branch remains local and unpushed`
 
 M4.1 predecessor terminal baseline: `f48ab8d7e835e9a57e65b75458faa786d696316d` (GitHub Actions run `31246286753`; `success`)
 
@@ -591,13 +621,13 @@ Evidence is recorded under `evals/m1/`, including preserved failed runs and inde
 
 - M2: `M2.1 COMPLETE; M2.1.1 COMPLETE`
 - M3: `CLOSED`
-- M4: `M4.0 PRE_DISPATCH_FAILED_PRESERVED; M4.1 STOPPED_PROTOCOL_FAILURE_PRESERVED; M4.1 AUTHORIZATION_CONSUMED; M4.1 TASKS_NOT_DISPATCHED; M4.2 REQUIRED; FRESH_RESULTS_NOT_RUN`
+- M4: `M4.0 PRE_DISPATCH_FAILED_PRESERVED; M4.1 STOPPED_PROTOCOL_FAILURE_PRESERVED; M4.1 AUTHORIZATION_CONSUMED; M4.1 TASKS_NOT_DISPATCHED; M4.2 PREPARED_NOT_AUTHORIZED; FRESH_RESULTS_NOT_RUN`
 - M5: `NOT_STARTED`
 
 ## External state
 
 - Git remote: `https://github.com/zxy19960316/engineering-research-copilot.git`
-- Active local branch: `codex/m4-cross-engineering-forward-evaluation-m4.1-terminal-closure`
+- Active local branch: `codex/m4-cross-engineering-forward-evaluation-m4.2-successor-preparation`
 - External APIs/services configured: none
 - RRC integration: not started
 - Platform integration: not required for the local Skill competition track

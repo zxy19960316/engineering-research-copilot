@@ -98,14 +98,14 @@ class M3R5ErratumTests(unittest.TestCase):
         self.assertEqual(diagnostic["retry_count"], 0)
         self.assertFalse(diagnostic["composed_output_created"])
 
-    def test_status_top_preserves_terminal_history_during_m4_1_terminal_closure(self):
+    def test_status_top_preserves_terminal_history_during_m4_2_preparation(self):
         text = (REPO_ROOT / "STATUS.md").read_text(encoding="utf-8")
         current = text.split("## M3 checklist", 1)[0]
 
-        self.assertRegex(
+        self.assertIn(
+            "Active revision: `M4.2 PREPARATION_ONLY; "
+            "M4_2_PREPARED_NOT_AUTHORIZED`",
             current,
-            r"Active revision: `M4\.1 STOPPED_PROTOCOL_FAILURE_PRESERVED; "
-            r"TERMINAL_CLOSURE_(?:IN_PROGRESS|CI_PASSED)`",
         )
         self.assertIn(f"Historical r5 evidence HEAD: `{EVIDENCE_HEAD}`", current)
         self.assertIn(
@@ -122,7 +122,7 @@ class M3R5ErratumTests(unittest.TestCase):
             "Status: `M3_CLOSED; M4_0_PRE_DISPATCH_FAILED_PRESERVED; "
             "M4_1_STOPPED_PROTOCOL_FAILURE_PRESERVED; "
             "M4_1_AUTHORIZATION_CONSUMED; M4_1_TASKS_NOT_DISPATCHED; "
-            "M4_2_REQUIRED; M4_FRESH_RESULTS_NOT_RUN`",
+            "M4_2_PREPARED_NOT_AUTHORIZED; M4_FRESH_RESULTS_NOT_RUN`",
             current,
         )
         self.assertIn("Historical r5 status: `BLOCKED_NOT_ACCEPTED`", current)
@@ -159,13 +159,13 @@ class M3R5ErratumTests(unittest.TestCase):
         self.assertIn("M3: `CLOSED`", current)
         self.assertIn(
             "M4: `M4_1_STOPPED_PROTOCOL_FAILURE_PRESERVED; "
-            "M4_1_AUTHORIZATION_CONSUMED; M4_2_REQUIRED`",
+            "M4_1_AUTHORIZATION_CONSUMED; M4_2_PREPARED_NOT_AUTHORIZED`",
             current,
         )
         self.assertIn(
             "M4 fresh tasks authorized: `false; M4.0 and M4.1 authorizations "
             "are consumed and terminal; M4.1 continuation or rerun is forbidden; "
-            "M4.2 is required and not authorized`",
+            "M4.2 is preparation-only and not authorized`",
             current,
         )
         self.assertIn(
@@ -211,7 +211,51 @@ class M3R5ErratumTests(unittest.TestCase):
             "(GitHub Actions run `31262297707`",
             current,
         )
-        self.assertIn("M4.2 state: `REQUIRED; NOT_AUTHORIZED; NOT_STARTED`", current)
+        self.assertIn(
+            "M4.2 state: `PREPARATION_ONLY; M4_2_PREPARED_NOT_AUTHORIZED; "
+            "fresh_execution_authorized=false`",
+            current,
+        )
+        self.assertIn(
+            "M4.2 predecessor closure baseline: "
+            "`e6ae2be7695ce1d2613dcd39e379ff458c1b60fe` "
+            "(GitHub Actions run `31301984766`; `success`)",
+            current,
+        )
+        self.assertIn(
+            "M4.2 source preparation: "
+            "`evals/m4/revisions/m4.1/preparation-manifest.json; "
+            "sha256=d66ad9d513d8e64307f9a1553242d9b7d840ea5432d084b06d86707c1b4c2b61; "
+            "source_exact_head=fedc5cdeebd7a2943afeb6767d39841305c55444; "
+            "source_ci_run=31248424046`",
+            current,
+        )
+        self.assertIn(
+            "M4.2 task identity state: `60 new task IDs; 0 reused; "
+            "blind IDs=M4-J121..M4-J180; 6 new batch IDs; "
+            "direct_lineage=M4.1; root_lineage=M4.0`",
+            current,
+        )
+        self.assertIn(
+            "M4.2 authority state: `fresh_execution=false; tasks=false; "
+            "result_writes=false; retry=false; repair=false; "
+            "authorization_artifact=null; "
+            "model_binding_status=UNBOUND_UNTIL_SEPARATE_AUTHORIZATION`",
+            current,
+        )
+        self.assertIn(
+            "M4.2 preparation counters: `authorized_tasks=0; "
+            "created_contexts=0; dispatched_tasks=0; finalizations=0; "
+            "results_observed=0; judge_scores=0; retries=0; repairs=0; "
+            "unauthorized_side_effects=0`",
+            current,
+        )
+        self.assertIn(
+            "M4.2 absent artifacts: `M4.1 result_root=ABSENT; "
+            "M4.2 authorization=ABSENT; execution=ABSENT; "
+            "result_root=ABSENT; results_manifest=ABSENT`",
+            current,
+        )
         self.assertIn(
             "M4.1 predecessor terminal baseline: "
             "`f48ab8d7e835e9a57e65b75458faa786d696316d` "
@@ -333,12 +377,12 @@ class M3R5ErratumTests(unittest.TestCase):
             "- M4: `M4.0 PRE_DISPATCH_FAILED_PRESERVED; "
             "M4.1 STOPPED_PROTOCOL_FAILURE_PRESERVED; "
             "M4.1 AUTHORIZATION_CONSUMED; M4.1 TASKS_NOT_DISPATCHED; "
-            "M4.2 REQUIRED; FRESH_RESULTS_NOT_RUN`",
+            "M4.2 PREPARED_NOT_AUTHORIZED; FRESH_RESULTS_NOT_RUN`",
             text,
         )
         self.assertIn(
             "- Active local branch: "
-            "`codex/m4-cross-engineering-forward-evaluation-m4.1-terminal-closure`",
+            "`codex/m4-cross-engineering-forward-evaluation-m4.2-successor-preparation`",
             text,
         )
         self.assertNotIn("GATE_IV_B_LAUNCH_READINESS_LOCAL_READY", text)
