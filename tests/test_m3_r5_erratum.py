@@ -98,14 +98,15 @@ class M3R5ErratumTests(unittest.TestCase):
         self.assertEqual(diagnostic["retry_count"], 0)
         self.assertFalse(diagnostic["composed_output_created"])
 
-    def test_status_top_preserves_terminal_history_during_m4_1_terminal_closure(self):
+    def test_status_top_preserves_terminal_history_during_m4_2_preparation(self):
         text = (REPO_ROOT / "STATUS.md").read_text(encoding="utf-8")
         current = text.split("## M3 checklist", 1)[0]
 
-        self.assertRegex(
+        self.assertIn(
+            "Active revision: `M4.2 PREPARATION_ONLY; "
+            "M4_2_PREPARED_NOT_AUTHORIZED; CI_INTEGRITY_REPAIR_CLOSED; "
+            "fresh_execution_authorized=false`",
             current,
-            r"Active revision: `M4\.1 STOPPED_PROTOCOL_FAILURE_PRESERVED; "
-            r"TERMINAL_CLOSURE_(?:IN_PROGRESS|CI_PASSED)`",
         )
         self.assertIn(f"Historical r5 evidence HEAD: `{EVIDENCE_HEAD}`", current)
         self.assertIn(
@@ -122,7 +123,8 @@ class M3R5ErratumTests(unittest.TestCase):
             "Status: `M3_CLOSED; M4_0_PRE_DISPATCH_FAILED_PRESERVED; "
             "M4_1_STOPPED_PROTOCOL_FAILURE_PRESERVED; "
             "M4_1_AUTHORIZATION_CONSUMED; M4_1_TASKS_NOT_DISPATCHED; "
-            "M4_2_REQUIRED; M4_FRESH_RESULTS_NOT_RUN`",
+            "M4_2_PREPARED_NOT_AUTHORIZED; CI_INTEGRITY_REPAIR_CLOSED; "
+            "M4_FRESH_RESULTS_NOT_RUN`",
             current,
         )
         self.assertIn("Historical r5 status: `BLOCKED_NOT_ACCEPTED`", current)
@@ -159,13 +161,14 @@ class M3R5ErratumTests(unittest.TestCase):
         self.assertIn("M3: `CLOSED`", current)
         self.assertIn(
             "M4: `M4_1_STOPPED_PROTOCOL_FAILURE_PRESERVED; "
-            "M4_1_AUTHORIZATION_CONSUMED; M4_2_REQUIRED`",
+            "M4_1_AUTHORIZATION_CONSUMED; M4_2_PREPARED_NOT_AUTHORIZED; "
+            "CI_INTEGRITY_REPAIR_CLOSED`",
             current,
         )
         self.assertIn(
             "M4 fresh tasks authorized: `false; M4.0 and M4.1 authorizations "
             "are consumed and terminal; M4.1 continuation or rerun is forbidden; "
-            "M4.2 is required and not authorized`",
+            "M4.2 is preparation-only and not authorized`",
             current,
         )
         self.assertIn(
@@ -211,7 +214,111 @@ class M3R5ErratumTests(unittest.TestCase):
             "(GitHub Actions run `31262297707`",
             current,
         )
-        self.assertIn("M4.2 state: `REQUIRED; NOT_AUTHORIZED; NOT_STARTED`", current)
+        self.assertIn(
+            "M4.2 state: `M4_2_PREPARED_NOT_AUTHORIZED; "
+            "CI_INTEGRITY_REPAIR_CLOSED; fresh_execution_authorized=false`",
+            current,
+        )
+        false_green_runs = {
+            "31311637459": (
+                "be6039e7d2a682b2e001ee12dff5c1db5743b2ed",
+                "93240229660",
+            ),
+            "31313212880": (
+                "dffccf5d2fecc295e3efc7d7368b36b7ff1bf6b7",
+                "93244187473",
+            ),
+        }
+        for run_id, (head, windows_job) in false_green_runs.items():
+            with self.subTest(run_id=run_id):
+                matching_lines = [
+                    line for line in current.splitlines() if run_id in line
+                ]
+                self.assertEqual(len(matching_lines), 1)
+                record = matching_lines[0]
+                self.assertIn(head, record)
+                self.assertIn(f"windows_job={windows_job}", record)
+                self.assertIn(
+                    "GITHUB_CONCLUSION_SUCCESS_BUT_WINDOWS_TEST_FAILED", record
+                )
+                self.assertIn("NOT_ACCEPTED", record)
+                self.assertIn("FALSE_GREEN", record)
+                self.assertIn(
+                    "failed_test=tests.test_m4_2_preparation."
+                    "M42PreparationAuditTests."
+                    "test_rejects_raw_bound_input_eol_drift",
+                    record,
+                )
+                self.assertNotIn("exact-HEAD CI: `PASSED`", record)
+        self.assertNotIn("M4.2 preparation exact-HEAD CI: `PASSED`", current)
+        self.assertIn(
+            "M4.2 accepted exact-HEAD CI: `TRUE_GREEN_IMPLEMENTATION; "
+            "CI_INTEGRITY_REPAIR_CLOSED; "
+            "head=242490a5d0d4e9bc52f21263d8d6780830ab1c8f; "
+            "run=31316090614; event=push; validate_job=93251454657; "
+            "ubuntu_m4_2_job=93251454695; windows_m4_2_job=93251454692; "
+            "all_jobs=7/7; all_raw_logs_verified=true; windows_unittest=OK; "
+            "errors=[]; forbidden_path_count=0; side_effects=[]; "
+            "PowerShell_5_1_request_bindings=60/60`",
+            current,
+        )
+        self.assertIn(
+            "M4.2 companion PR exact-HEAD CI: `TRUE_GREEN_IMPLEMENTATION; "
+            "head=242490a5d0d4e9bc52f21263d8d6780830ab1c8f; "
+            "run=31316093185; event=pull_request; "
+            "validate_job=93251461042; ubuntu_m4_2_job=93251461072; "
+            "windows_m4_2_job=93251461064; all_jobs=7/7; "
+            "all_raw_logs_verified=true`",
+            current,
+        )
+        self.assertNotIn("CI_INTEGRITY_REPAIR_REQUIRED", current)
+        self.assertNotIn("branch remains local and unpushed", current)
+        self.assertIn(
+            "M4.2 predecessor closure baseline: "
+            "`e6ae2be7695ce1d2613dcd39e379ff458c1b60fe` "
+            "(GitHub Actions run `31301984766`; `success`)",
+            current,
+        )
+        self.assertIn(
+            "M4.2 source preparation: "
+            "`evals/m4/revisions/m4.1/preparation-manifest.json; "
+            "sha256=d66ad9d513d8e64307f9a1553242d9b7d840ea5432d084b06d86707c1b4c2b61; "
+            "source_exact_head=fedc5cdeebd7a2943afeb6767d39841305c55444; "
+            "source_ci_run=31248424046`",
+            current,
+        )
+        self.assertIn(
+            "M4.2 task identity state: `60 new task IDs; 0 reused; "
+            "blind IDs=M4-J121..M4-J180; 6 new batch IDs; "
+            "direct_lineage=M4.1; root_lineage=M4.0`",
+            current,
+        )
+        self.assertIn(
+            "M4.2 authority state: `fresh_execution=false; tasks=false; "
+            "result_writes=false; retry=false; repair=false; "
+            "authorization_artifact=null; "
+            "model_binding_status=UNBOUND_UNTIL_SEPARATE_AUTHORIZATION`",
+            current,
+        )
+        self.assertIn(
+            "M4.2 preparation counters: `authorized_tasks=0; "
+            "created_contexts=0; dispatched_tasks=0; finalizations=0; "
+            "results_observed=0; judge_scores=0; retries=0; repairs=0; "
+            "unauthorized_side_effects=0`",
+            current,
+        )
+        self.assertIn(
+            "M4.2 absent artifacts: `M4.1 result_root=ABSENT; "
+            "M4.2 authorization=ABSENT; execution=ABSENT; "
+            "result_root=ABSENT; results_manifest=ABSENT`",
+            current,
+        )
+        self.assertIn(
+            "M4.2 later gates: `Gate IV review=NOT_RUN; "
+            "authorization=NOT_CREATED; claim=NOT_CREATED; execution=NOT_RUN; "
+            "judge=false; aggregation=false; closure=false; M5=NOT_STARTED`",
+            current,
+        )
         self.assertIn(
             "M4.1 predecessor terminal baseline: "
             "`f48ab8d7e835e9a57e65b75458faa786d696316d` "
@@ -333,12 +440,12 @@ class M3R5ErratumTests(unittest.TestCase):
             "- M4: `M4.0 PRE_DISPATCH_FAILED_PRESERVED; "
             "M4.1 STOPPED_PROTOCOL_FAILURE_PRESERVED; "
             "M4.1 AUTHORIZATION_CONSUMED; M4.1 TASKS_NOT_DISPATCHED; "
-            "M4.2 REQUIRED; FRESH_RESULTS_NOT_RUN`",
+            "M4.2 PREPARED_NOT_AUTHORIZED; FRESH_RESULTS_NOT_RUN`",
             text,
         )
         self.assertIn(
             "- Active local branch: "
-            "`codex/m4-cross-engineering-forward-evaluation-m4.1-terminal-closure`",
+            "`codex/m4-cross-engineering-forward-evaluation-m4.2-successor-preparation`",
             text,
         )
         self.assertNotIn("GATE_IV_B_LAUNCH_READINESS_LOCAL_READY", text)
