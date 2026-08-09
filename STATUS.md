@@ -4,7 +4,7 @@
 
 `M4 — Cross-engineering forward evaluation`
 
-Active revision: `M4.1 STOPPED_PROTOCOL_FAILURE_PRESERVED; TERMINAL_CLOSURE_IN_PROGRESS`
+Active revision: `M4.1 STOPPED_PROTOCOL_FAILURE_PRESERVED; TERMINAL_CLOSURE_CI_PASSED`
 
 Historical r5 evidence HEAD: `1b696bce53ee0a11163bfe4f91a9a49ab3af6f49`
 
@@ -110,9 +110,9 @@ M4.1 continuation policy: `FORBIDDEN; authorization token consumed once; no cont
 
 M4.1 consumed-state exact-HEAD CI: `FAILED` on HEAD `80b54697c3e27a5dad0a24d5318ce26c8fe46141` (GitHub Actions run `31262297707`; validate job `93114901246` failed; Ubuntu job `93114901218` failed; Windows job `93114901228` passed; predecessor claim-absence assertions intentionally preserved as red evidence)
 
-M4.1 terminal-preservation audit: `PENDING_IMPLEMENTATION`
+M4.1 terminal-preservation audit: `PASSED; status=M4_1_STOPPED_PROTOCOL_FAILURE_PRESERVED; focused=6/6; read_only=true; repeatable=true; claim_and_terminal_sha256_exact=true`
 
-M4.1 terminal-closure exact-HEAD CI: `PENDING`
+M4.1 terminal-closure exact-HEAD CI: `PASSED` on HEAD `8cfb04f0d7f3631609659e903841a1a75b73d750` (GitHub Actions run `31300657717`; validate job `93212781724` success; terminal Ubuntu job `93212781738` success; terminal Windows job `93212781741` success; pre-claim Ubuntu job `93212781752` success; pre-claim Windows job `93212781765` success)
 
 M4.2 state: `REQUIRED; NOT_AUTHORIZED; NOT_STARTED`
 
@@ -154,7 +154,7 @@ M4.1 Gate IV execution counters: `authorized_tasks=0; created_contexts=0; dispat
 
 M4.1 historical pre-claim Gate IV local gates: `PASSED; focused=16/16; full=654/654; authorization_builder=VALID; authorization_audit=READY_UNCONSUMED; configured_default_check=MATCHED; results_audit=NOT_RUN`
 
-M4.1 terminal-closure CI transition: `old consumed-state exact-HEAD run 31262297707 preserved as FAILED; lifecycle-aware replacement run PENDING`
+M4.1 terminal-closure CI transition: `old consumed-state exact-HEAD run 31262297707 preserved as FAILED; lifecycle-aware replacement run 31300657717 PASSED`
 
 M4.1 Gate IV judge and later gates: `judge_execution=false; blind_mapping_access=false; aggregation=false; closure=false`
 
