@@ -98,13 +98,13 @@ class M3R5ErratumTests(unittest.TestCase):
         self.assertEqual(diagnostic["retry_count"], 0)
         self.assertFalse(diagnostic["composed_output_created"])
 
-    def test_status_top_preserves_terminal_history_during_m4_2_preparation(self):
+    def test_status_top_preserves_terminal_history_during_m4_2_gate_iv_a_review(self):
         text = (REPO_ROOT / "STATUS.md").read_text(encoding="utf-8")
         current = text.split("## M3 checklist", 1)[0]
 
         self.assertIn(
-            "Active revision: `M4.2 PREPARATION_ONLY; "
-            "M4_2_PREPARED_NOT_AUTHORIZED; CI_INTEGRITY_REPAIR_CLOSED; "
+            "Active revision: `M4.2 GATE_IV_A_REVIEW; "
+            "BLOCKED; "
             "fresh_execution_authorized=false`",
             current,
         )
@@ -124,6 +124,7 @@ class M3R5ErratumTests(unittest.TestCase):
             "M4_1_STOPPED_PROTOCOL_FAILURE_PRESERVED; "
             "M4_1_AUTHORIZATION_CONSUMED; M4_1_TASKS_NOT_DISPATCHED; "
             "M4_2_PREPARED_NOT_AUTHORIZED; CI_INTEGRITY_REPAIR_CLOSED; "
+            "M4_2_GATE_IV_A_REVIEW_BLOCKED; "
             "M4_FRESH_RESULTS_NOT_RUN`",
             current,
         )
@@ -162,13 +163,15 @@ class M3R5ErratumTests(unittest.TestCase):
         self.assertIn(
             "M4: `M4_1_STOPPED_PROTOCOL_FAILURE_PRESERVED; "
             "M4_1_AUTHORIZATION_CONSUMED; M4_2_PREPARED_NOT_AUTHORIZED; "
-            "CI_INTEGRITY_REPAIR_CLOSED`",
+            "CI_INTEGRITY_REPAIR_CLOSED; "
+            "M4_2_GATE_IV_A_REVIEW_BLOCKED`",
             current,
         )
         self.assertIn(
             "M4 fresh tasks authorized: `false; M4.0 and M4.1 authorizations "
             "are consumed and terminal; M4.1 continuation or rerun is forbidden; "
-            "M4.2 is preparation-only and not authorized`",
+            "M4.2 Gate IV-A permits only later Gate IV-B protocol proof "
+            "preparation and grants no execution authority`",
             current,
         )
         self.assertIn(
@@ -216,7 +219,42 @@ class M3R5ErratumTests(unittest.TestCase):
         )
         self.assertIn(
             "M4.2 state: `M4_2_PREPARED_NOT_AUTHORIZED; "
-            "CI_INTEGRITY_REPAIR_CLOSED; fresh_execution_authorized=false`",
+            "CI_INTEGRITY_REPAIR_CLOSED; "
+            "M4_2_GATE_IV_A_REVIEW_BLOCKED; "
+            "fresh_execution_authorized=false`",
+            current,
+        )
+        self.assertIn(
+            "M4.2 Gate IV-A reviewed baseline: "
+            "`head=941602180c75c4ae16edfc927f6c39b8420fb45c; "
+            "tree=43357e6fa252abbb84095aebb577974974527791; "
+            "branch=codex/m4-cross-engineering-forward-evaluation-"
+            "m4.2-successor-preparation`",
+            current,
+        )
+        self.assertIn(
+            "M4.2 Gate IV-A review artifact: "
+            "`evals/m4/authorization/m4.2/gate-iv-a-review.json; "
+            "findings=3; reviewer_side_effects=[]; "
+            "decision=BLOCKED; status=BLOCKED`",
+            current,
+        )
+        self.assertIn(
+            "M4.2 Gate IV-A exact-HEAD CI: `BLOCKED; "
+            "head=0cc2364aa7833cc410d3133d33597d552b02153d; "
+            "push_run=31320763394; push_jobs=8/9; "
+            "push_failed_job=93263255405;",
+            current,
+        )
+        self.assertIn(
+            "pull_request_run=31320783288; pull_request_jobs=8/9; "
+            "pull_request_failed_job=93263309590;",
+            current,
+        )
+        self.assertIn(
+            "current_lifecycle=631/632; "
+            "markers=FAIL:1,FAILED (:1,Traceback:1,##[error]:1; "
+            "preparation_repair=NOT_AUTHORIZED`",
             current,
         )
         false_green_runs = {
@@ -314,9 +352,24 @@ class M3R5ErratumTests(unittest.TestCase):
             current,
         )
         self.assertIn(
-            "M4.2 later gates: `Gate IV review=NOT_RUN; "
-            "authorization=NOT_CREATED; claim=NOT_CREATED; execution=NOT_RUN; "
-            "judge=false; aggregation=false; closure=false; M5=NOT_STARTED`",
+            "M4.2 later gates: `Gate IV-A review=BLOCKED; "
+            "Gate IV-B protocol proof=NOT_STARTED; authorization=ABSENT; "
+            "execution=ABSENT; claim=ABSENT; tasks=0; results=0; "
+            "judge=NOT_RUN; aggregation=NOT_RUN; closure=NOT_RUN; "
+            "M5=NOT_STARTED`",
+            current,
+        )
+        self.assertIn(
+            "M4.2 Gate IV-A review evidence: `BLOCKED; focused_review=27/27; "
+            "local_LF_current_lifecycle=632/632; "
+            "exact_head_windows_current_lifecycle=631/632; "
+            "isolated_baseline=21/21; findings=3; "
+            "reviewer_side_effects=[]; planned_tasks=60; "
+            "batches=6; request_bindings=60/60; "
+            "Windows_PowerShell_5_1=60/60; reused_task_ids=0; "
+            "forbidden_path_count=0; "
+            "M4.1_terminal=M4_1_STOPPED_PROTOCOL_FAILURE_PRESERVED; "
+            "results=NOT_RUN; read_only=true; repeatable=true`",
             current,
         )
         self.assertIn(
@@ -440,12 +493,15 @@ class M3R5ErratumTests(unittest.TestCase):
             "- M4: `M4.0 PRE_DISPATCH_FAILED_PRESERVED; "
             "M4.1 STOPPED_PROTOCOL_FAILURE_PRESERVED; "
             "M4.1 AUTHORIZATION_CONSUMED; M4.1 TASKS_NOT_DISPATCHED; "
-            "M4.2 PREPARED_NOT_AUTHORIZED; FRESH_RESULTS_NOT_RUN`",
+            "M4.2 PREPARED_NOT_AUTHORIZED; "
+            "M4.2 GATE_IV_A_REVIEW_BLOCKED; "
+            "FRESH_RESULTS_NOT_RUN`",
             text,
         )
         self.assertIn(
             "- Active local branch: "
-            "`codex/m4-cross-engineering-forward-evaluation-m4.2-successor-preparation`",
+            "`codex/m4-cross-engineering-forward-evaluation-"
+            "m4.2-gate-iv-a-independent-review`",
             text,
         )
         self.assertNotIn("GATE_IV_B_LAUNCH_READINESS_LOCAL_READY", text)

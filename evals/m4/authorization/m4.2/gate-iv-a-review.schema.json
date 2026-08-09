@@ -1,0 +1,542 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://engineering-research-copilot.local/m4/authorization/m4.2/gate-iv-a-review.schema.json",
+  "title": "M4.2 Gate IV-A independent preparation and CI-integrity review",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "reviewed_head",
+    "reviewed_tree",
+    "reviewed_branch",
+    "reviewed_artifacts",
+    "ci_evidence",
+    "matrix_checks",
+    "identity_checks",
+    "lineage_checks",
+    "request_binding_checks",
+    "ci_integrity_checks",
+    "historical_preservation",
+    "zero_state",
+    "lifecycle_requirements",
+    "findings",
+    "limitations",
+    "reviewer_side_effects",
+    "decision",
+    "status"
+  ],
+  "properties": {
+    "schema_version": {"const": "m4.2-gate-iv-a-independent-review-v1"},
+    "reviewed_head": {"const": "941602180c75c4ae16edfc927f6c39b8420fb45c"},
+    "reviewed_tree": {"const": "43357e6fa252abbb84095aebb577974974527791"},
+    "reviewed_branch": {"const": "codex/m4-cross-engineering-forward-evaluation-m4.2-successor-preparation"},
+    "reviewed_artifacts": {
+      "type": "array",
+      "minItems": 11,
+      "maxItems": 11,
+      "items": {"$ref": "#/$defs/artifact_binding"}
+    },
+    "ci_evidence": {"$ref": "#/$defs/ci_evidence"},
+    "matrix_checks": {"$ref": "#/$defs/matrix_checks"},
+    "identity_checks": {"$ref": "#/$defs/identity_checks"},
+    "lineage_checks": {"$ref": "#/$defs/lineage_checks"},
+    "request_binding_checks": {"$ref": "#/$defs/request_binding_checks"},
+    "ci_integrity_checks": {"$ref": "#/$defs/ci_integrity_checks"},
+    "historical_preservation": {"$ref": "#/$defs/historical_preservation"},
+    "zero_state": {"$ref": "#/$defs/zero_state"},
+    "lifecycle_requirements": {"$ref": "#/$defs/lifecycle_requirements"},
+    "findings": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1},
+      "uniqueItems": true
+    },
+    "limitations": {
+      "type": "array",
+      "minItems": 3,
+      "items": {"type": "string", "minLength": 1},
+      "uniqueItems": true
+    },
+    "reviewer_side_effects": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1},
+      "uniqueItems": true
+    },
+    "decision": {
+      "enum": ["APPROVE_M4_2_GATE_IV_B_PROTOCOL_PROOF_ONLY", "BLOCKED"]
+    },
+    "status": {
+      "enum": ["M4_2_GATE_IV_A_REVIEW_PASSED_NOT_AUTHORIZED", "BLOCKED"]
+    }
+  },
+  "oneOf": [
+    {
+      "properties": {
+        "findings": {"maxItems": 0},
+        "reviewer_side_effects": {"maxItems": 0},
+        "decision": {"const": "APPROVE_M4_2_GATE_IV_B_PROTOCOL_PROOF_ONLY"},
+        "status": {"const": "M4_2_GATE_IV_A_REVIEW_PASSED_NOT_AUTHORIZED"}
+      }
+    },
+    {
+      "properties": {
+        "decision": {"const": "BLOCKED"},
+        "status": {"const": "BLOCKED"}
+      },
+      "anyOf": [
+        {"properties": {"findings": {"minItems": 1}}},
+        {"properties": {"reviewer_side_effects": {"minItems": 1}}}
+      ]
+    }
+  ],
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "git_oid": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "artifact_binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "byte_length", "raw_sha256", "git_blob_oid"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "byte_length": {"type": "integer", "minimum": 1},
+        "raw_sha256": {"$ref": "#/$defs/sha256"},
+        "git_blob_oid": {"$ref": "#/$defs/git_oid"}
+      }
+    },
+    "job": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["job_id", "name", "conclusion"],
+      "properties": {
+        "job_id": {"type": "integer", "minimum": 1},
+        "name": {"type": "string", "minLength": 1},
+        "conclusion": {"const": "success"}
+      }
+    },
+    "banned_pattern_counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["FAIL:", "FAILED (", "Traceback", "##[error]"],
+      "properties": {
+        "FAIL:": {"const": 0},
+        "FAILED (": {"const": 0},
+        "Traceback": {"const": 0},
+        "##[error]": {"const": 0}
+      }
+    },
+    "raw_log": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["scope", "byte_length", "sha256", "banned_pattern_counts"],
+      "properties": {
+        "scope": {"const": "gh_run_view_all_jobs_stdout"},
+        "byte_length": {"type": "integer", "minimum": 1},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "banned_pattern_counts": {"$ref": "#/$defs/banned_pattern_counts"}
+      }
+    },
+    "powershell_evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "job_id",
+        "version",
+        "self_test",
+        "checked_task_count",
+        "mismatch_count",
+        "side_effects"
+      ],
+      "properties": {
+        "job_id": {"type": "integer", "minimum": 1},
+        "version": {"const": "5.1.26100.33158"},
+        "self_test": {"const": "SELF_TEST_PASSED"},
+        "checked_task_count": {"const": 60},
+        "mismatch_count": {"const": 0},
+        "side_effects": {"type": "array", "maxItems": 0}
+      }
+    },
+    "accepted_run": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "run_id",
+        "event",
+        "head",
+        "branch",
+        "conclusion",
+        "job_count",
+        "jobs",
+        "current_lifecycle_tests",
+        "raw_log",
+        "windows_powershell_5_1"
+      ],
+      "properties": {
+        "run_id": {"type": "integer", "minimum": 1},
+        "event": {"enum": ["push", "pull_request"]},
+        "head": {"$ref": "#/$defs/git_oid"},
+        "branch": {"const": "codex/m4-cross-engineering-forward-evaluation-m4.2-successor-preparation"},
+        "conclusion": {"const": "success"},
+        "job_count": {"const": 7},
+        "jobs": {
+          "type": "array",
+          "minItems": 7,
+          "maxItems": 7,
+          "items": {"$ref": "#/$defs/job"}
+        },
+        "current_lifecycle_tests": {"const": 653},
+        "raw_log": {"$ref": "#/$defs/raw_log"},
+        "windows_powershell_5_1": {"$ref": "#/$defs/powershell_evidence"}
+      }
+    },
+    "accepted_phase": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["head", "push", "pull_request"],
+      "properties": {
+        "head": {"$ref": "#/$defs/git_oid"},
+        "push": {"$ref": "#/$defs/accepted_run"},
+        "pull_request": {"$ref": "#/$defs/accepted_run"}
+      }
+    },
+    "false_green_markers": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["FAIL:", "FAILED (", "Traceback", "##[error]"],
+      "properties": {
+        "FAIL:": {"const": 1},
+        "FAILED (": {"const": 1},
+        "Traceback": {"const": 1},
+        "##[error]": {"const": 0}
+      }
+    },
+    "false_green": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "run_id",
+        "event",
+        "head",
+        "run_conclusion",
+        "windows_job_id",
+        "acceptance",
+        "classification",
+        "failed_test",
+        "observed_errors",
+        "subsequent_commands_continued",
+        "raw_windows_job_log"
+      ],
+      "properties": {
+        "run_id": {"type": "integer", "minimum": 1},
+        "event": {"const": "push"},
+        "head": {"$ref": "#/$defs/git_oid"},
+        "run_conclusion": {"const": "success"},
+        "windows_job_id": {"type": "integer", "minimum": 1},
+        "acceptance": {"const": "NOT_ACCEPTED"},
+        "classification": {"const": "FALSE_GREEN"},
+        "failed_test": {"const": "tests.test_m4_2_preparation.M42PreparationAuditTests.test_rejects_raw_bound_input_eol_drift"},
+        "observed_errors": {
+          "type": "array",
+          "minItems": 4,
+          "maxItems": 4,
+          "items": {"type": "string"}
+        },
+        "subsequent_commands_continued": {"const": true},
+        "raw_windows_job_log": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["scope", "byte_length", "sha256", "failure_marker_counts"],
+          "properties": {
+            "scope": {"const": "gh_run_view_windows_job_stdout"},
+            "byte_length": {"type": "integer", "minimum": 1},
+            "sha256": {"$ref": "#/$defs/sha256"},
+            "failure_marker_counts": {"$ref": "#/$defs/false_green_markers"}
+          }
+        }
+      }
+    },
+    "ci_evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["review_date", "repository", "implementation", "closure", "historical_false_green"],
+      "properties": {
+        "review_date": {"const": "2026-08-09"},
+        "repository": {"const": "zxy19960316/engineering-research-copilot"},
+        "implementation": {"$ref": "#/$defs/accepted_phase"},
+        "closure": {"$ref": "#/$defs/accepted_phase"},
+        "historical_false_green": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "items": {"$ref": "#/$defs/false_green"}
+        }
+      }
+    },
+    "matrix_checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["case_count", "arm_count", "planned_task_count", "batch_count", "tasks_per_batch", "passed"],
+      "properties": {
+        "case_count": {"const": 12},
+        "arm_count": {"const": 5},
+        "planned_task_count": {"const": 60},
+        "batch_count": {"const": 6},
+        "tasks_per_batch": {"const": 10},
+        "passed": {"const": true}
+      }
+    },
+    "identity_checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "unique_task_id_count",
+        "new_task_id_count",
+        "reused_task_ids",
+        "unique_blind_id_count",
+        "blind_id_range",
+        "reused_blind_ids",
+        "unique_batch_id_count",
+        "reused_batch_ids",
+        "passed"
+      ],
+      "properties": {
+        "unique_task_id_count": {"const": 60},
+        "new_task_id_count": {"const": 60},
+        "reused_task_ids": {"type": "array", "maxItems": 0},
+        "unique_blind_id_count": {"const": 60},
+        "blind_id_range": {"const": "M4-J121..M4-J180"},
+        "reused_blind_ids": {"type": "array", "maxItems": 0},
+        "unique_batch_id_count": {"const": 6},
+        "reused_batch_ids": {"type": "array", "maxItems": 0},
+        "passed": {"const": true}
+      }
+    },
+    "lineage_checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "direct_lineage",
+        "root_lineage",
+        "source_task_matches",
+        "root_task_matches",
+        "relative_order_preserved",
+        "inherited_field_drift_count",
+        "passed"
+      ],
+      "properties": {
+        "direct_lineage": {"const": "M4.1"},
+        "root_lineage": {"const": "M4.0"},
+        "source_task_matches": {"const": 60},
+        "root_task_matches": {"const": 60},
+        "relative_order_preserved": {"const": true},
+        "inherited_field_drift_count": {"const": 0},
+        "passed": {"const": true}
+      }
+    },
+    "request_binding_checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "algorithm",
+        "independently_recomputed",
+        "matched",
+        "unique",
+        "helper",
+        "powershell_5_1_request_bindings",
+        "passed"
+      ],
+      "properties": {
+        "algorithm": {"const": "m4.2-request-binding-v1"},
+        "independently_recomputed": {"const": 60},
+        "matched": {"const": 60},
+        "unique": {"const": 60},
+        "helper": {"$ref": "#/$defs/artifact_binding"},
+        "powershell_5_1_request_bindings": {"const": 60},
+        "passed": {"const": true}
+      }
+    },
+    "workflow_checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["shell_bash", "strict_mode", "continue_on_error_present"],
+      "properties": {
+        "shell_bash": {"const": true},
+        "strict_mode": {"const": "set -euo pipefail"},
+        "continue_on_error_present": {"const": false}
+      }
+    },
+    "escape_checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sibling", "symlink", "junction"],
+      "properties": {
+        "sibling": {"const": "REJECTED"},
+        "symlink": {"const": "REJECTED"},
+        "junction": {"const": "REJECTED"}
+      }
+    },
+    "ci_integrity_checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "workflow",
+        "canonical_root_alias_regression",
+        "crlf_raw_sha256_mismatch_codes",
+        "escape_regressions",
+        "accepted_raw_logs_clean",
+        "false_green_history_preserved",
+        "passed"
+      ],
+      "properties": {
+        "workflow": {"$ref": "#/$defs/workflow_checks"},
+        "canonical_root_alias_regression": {"const": "PASSED"},
+        "crlf_raw_sha256_mismatch_codes": {
+          "type": "array",
+          "minItems": 4,
+          "maxItems": 4,
+          "items": {"type": "string"}
+        },
+        "escape_regressions": {"$ref": "#/$defs/escape_checks"},
+        "accepted_raw_logs_clean": {"const": true},
+        "false_green_history_preserved": {"const": true},
+        "passed": {"const": true}
+      }
+    },
+    "terminal_preservation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "claim_count",
+        "authorization_token_status",
+        "claim_sha256",
+        "claim_blob",
+        "terminal_sha256",
+        "terminal_blob",
+        "terminal_state",
+        "all_counts_zero"
+      ],
+      "properties": {
+        "status": {"const": "M4_1_STOPPED_PROTOCOL_FAILURE_PRESERVED"},
+        "claim_count": {"const": 1},
+        "authorization_token_status": {"const": "CONSUMED"},
+        "claim_sha256": {"const": "c16a2e53aa2e9215e2325464d547356afdb73897bfc7d29605e0105b9987b3c6"},
+        "claim_blob": {"const": "794058739b96598955216b3960b95b0feea1208f"},
+        "terminal_sha256": {"const": "7305d71ba94cd209f5bb0cb2c977db3bb157d95b907f8f59df9133c192f4d66e"},
+        "terminal_blob": {"const": "76c7dc1ef88d587741d364536c86e389c296ad5c"},
+        "terminal_state": {"const": "STOPPED_PROTOCOL_OR_INFRASTRUCTURE_FAILURE"},
+        "all_counts_zero": {"const": true}
+      }
+    },
+    "historical_preservation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["m4_1_terminal", "prohibited_baseline_path_drift_count", "passed"],
+      "properties": {
+        "m4_1_terminal": {"$ref": "#/$defs/terminal_preservation"},
+        "prohibited_baseline_path_drift_count": {"const": 0},
+        "passed": {"const": true}
+      }
+    },
+    "preparation_authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "fresh_execution_authorized",
+        "fresh_tasks_authorized",
+        "result_writes_authorized",
+        "retry_authorized",
+        "repair_authorized",
+        "authorization_artifact"
+      ],
+      "properties": {
+        "fresh_execution_authorized": {"const": false},
+        "fresh_tasks_authorized": {"const": false},
+        "result_writes_authorized": {"const": false},
+        "retry_authorized": {"const": false},
+        "repair_authorized": {"const": false},
+        "authorization_artifact": {"type": "null"}
+      }
+    },
+    "zero_counters": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "authorized_tasks",
+        "created_contexts",
+        "dispatched_tasks",
+        "finalizations",
+        "results_observed",
+        "judge_scores",
+        "retries",
+        "repairs",
+        "unauthorized_side_effects"
+      ],
+      "properties": {
+        "authorized_tasks": {"const": 0},
+        "created_contexts": {"const": 0},
+        "dispatched_tasks": {"const": 0},
+        "finalizations": {"const": 0},
+        "results_observed": {"const": 0},
+        "judge_scores": {"const": 0},
+        "retries": {"const": 0},
+        "repairs": {"const": 0},
+        "unauthorized_side_effects": {"const": 0}
+      }
+    },
+    "zero_state": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "preparation_authority",
+        "preparation_counters",
+        "authorization",
+        "execution",
+        "claim",
+        "tasks",
+        "results",
+        "results_status",
+        "forbidden_path_count",
+        "forbidden_paths",
+        "passed"
+      ],
+      "properties": {
+        "preparation_authority": {"$ref": "#/$defs/preparation_authority"},
+        "preparation_counters": {"$ref": "#/$defs/zero_counters"},
+        "authorization": {"const": "ABSENT"},
+        "execution": {"const": "ABSENT"},
+        "claim": {"const": "ABSENT"},
+        "tasks": {"const": 0},
+        "results": {"const": 0},
+        "results_status": {"const": "NOT_RUN"},
+        "forbidden_path_count": {"const": 0},
+        "forbidden_paths": {"type": "array", "maxItems": 0},
+        "passed": {"const": true}
+      }
+    },
+    "lifecycle_requirements": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "fresh_execution_authorized",
+        "authorization_created",
+        "execution_created",
+        "claim_created",
+        "protocol_proof_only",
+        "judge",
+        "aggregation",
+        "closure",
+        "m5"
+      ],
+      "properties": {
+        "fresh_execution_authorized": {"const": false},
+        "authorization_created": {"const": false},
+        "execution_created": {"const": false},
+        "claim_created": {"const": false},
+        "protocol_proof_only": {"const": true},
+        "judge": {"const": "NOT_RUN"},
+        "aggregation": {"const": "NOT_RUN"},
+        "closure": {"const": "NOT_RUN"},
+        "m5": {"const": "NOT_STARTED"}
+      }
+    }
+  }
+}
