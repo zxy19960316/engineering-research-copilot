@@ -772,16 +772,176 @@
     "passed": true
   },
   "delivery": {
-    "status": "PENDING_EXACT_HEAD_CI",
-    "accepted_proof_head": null,
-    "push": null,
-    "pull_request": null,
-    "powershell_5_1": null,
-    "powershell_7": null,
-    "semantic_results_match": null
+    "status": "VERIFIED_TRUE_GREEN",
+    "accepted_proof_head": "249e28d07d5e52cd9cec9b7e110f6159e6046222",
+    "push": {
+      "run_id": 31370941146,
+      "event": "push",
+      "head": "249e28d07d5e52cd9cec9b7e110f6159e6046222",
+      "branch": "codex/m4-cross-engineering-forward-evaluation-m4.2-gate-iv-b-protocol-proof",
+      "conclusion": "success",
+      "job_count": 11,
+      "jobs": [
+        {
+          "job_id": 93399542574,
+          "name": "M4.1 pre-claim regression (ubuntu-latest)",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 93399542583,
+          "name": "M4.2 Gate IV-A r2 review (NOT AUTHORIZED) (ubuntu-latest)",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 93399542592,
+          "name": "historical-audit-cross-platform (windows-latest)",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 93399542607,
+          "name": "M4.1 pre-claim regression (windows-latest)",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 93399542628,
+          "name": "M4.2 Gate IV-B protocol proof (NOT AUTHORIZED) (windows-latest)",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 93399542650,
+          "name": "validate",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 93399542672,
+          "name": "M4.2 Gate IV-A r2 review (NOT AUTHORIZED) (windows-latest)",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 93399542679,
+          "name": "M4.2 repaired frozen preparation (NOT AUTHORIZED) (windows-latest)",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 93399542692,
+          "name": "M4.2 Gate IV-B protocol proof (NOT AUTHORIZED) (ubuntu-latest)",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 93399542714,
+          "name": "M4.2 repaired frozen preparation (NOT AUTHORIZED) (ubuntu-latest)",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 93399542770,
+          "name": "historical-audit-cross-platform (ubuntu-latest)",
+          "conclusion": "success"
+        }
+      ],
+      "raw_log": {
+        "byte_length": 1362037,
+        "sha256": "5a0984715457dbdea9217a57239eedac707fb6407e2cb274f61afebdbe5338bd",
+        "markers": {
+          "FAIL:": 0,
+          "FAILED (": 0,
+          "Traceback": 0,
+          "##[error]": 0
+        }
+      }
+    },
+    "pull_request": {
+      "run_id": 31370945548,
+      "event": "pull_request",
+      "head": "249e28d07d5e52cd9cec9b7e110f6159e6046222",
+      "branch": "codex/m4-cross-engineering-forward-evaluation-m4.2-gate-iv-b-protocol-proof",
+      "conclusion": "success",
+      "job_count": 11,
+      "jobs": [
+        {
+          "job_id": 93399556253,
+          "name": "validate",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 93399556259,
+          "name": "M4.1 pre-claim regression (windows-latest)",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 93399556314,
+          "name": "M4.2 Gate IV-B protocol proof (NOT AUTHORIZED) (windows-latest)",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 93399556315,
+          "name": "M4.2 repaired frozen preparation (NOT AUTHORIZED) (ubuntu-latest)",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 93399556328,
+          "name": "M4.2 Gate IV-B protocol proof (NOT AUTHORIZED) (ubuntu-latest)",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 93399556335,
+          "name": "M4.1 pre-claim regression (ubuntu-latest)",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 93399556345,
+          "name": "M4.2 repaired frozen preparation (NOT AUTHORIZED) (windows-latest)",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 93399556354,
+          "name": "M4.2 Gate IV-A r2 review (NOT AUTHORIZED) (ubuntu-latest)",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 93399556382,
+          "name": "historical-audit-cross-platform (windows-latest)",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 93399556403,
+          "name": "M4.2 Gate IV-A r2 review (NOT AUTHORIZED) (windows-latest)",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 93399556413,
+          "name": "historical-audit-cross-platform (ubuntu-latest)",
+          "conclusion": "success"
+        }
+      ],
+      "raw_log": {
+        "byte_length": 1378502,
+        "sha256": "6e483e7d9a897cb8dfc2254b1217089ad2213f30d8f9bc3ecfbbd05124faa471",
+        "markers": {
+          "FAIL:": 0,
+          "FAILED (": 0,
+          "Traceback": 0,
+          "##[error]": 0
+        }
+      }
+    },
+    "powershell_5_1": {
+      "runtime": "Windows PowerShell 5.1",
+      "status": "VERIFIED",
+      "checked_task_count": 60,
+      "mismatches": [],
+      "side_effects": []
+    },
+    "powershell_7": {
+      "runtime": "PowerShell 7 on Ubuntu",
+      "status": "VERIFIED",
+      "checked_task_count": 60,
+      "mismatches": [],
+      "side_effects": []
+    },
+    "semantic_results_match": true
   },
   "findings": [],
   "reviewer_side_effects": [],
-  "decision": "PENDING_M4_2_GATE_IV_B_EXACT_HEAD_CI",
-  "status": "M4_2_GATE_IV_B_LOCAL_PROTOCOL_PROOF_PASSED_PENDING_EXACT_HEAD_CI"
+  "decision": "APPROVE_M4_2_AUTHORIZATION_PREPARATION_ONLY",
+  "status": "M4_2_GATE_IV_B_PROTOCOL_PROOF_PASSED_NOT_AUTHORIZED"
 }
