@@ -533,6 +533,7 @@ jobs:
           python -X utf8 -c "from pathlib import Path; pair = [Path('evals/m4/authorization/m4.2/execution-authorization.json'), Path('evals/m4/authorization/m4.2/execution-control.json')]; exact = [Path('evals/m4/authorization/m4.2/authorization-token.json'), Path('evals/m4/authorization/m4.2/acceptance-claim.json'), Path('evals/m4/results-manifest.json')]; prefixes = [Path('evals/m4/execution/m4.2'), Path('evals/m4/results/m4.1'), Path('evals/m4/results/m4.2'), Path('evals/m5')]; present = [path.as_posix() for path in exact + prefixes if path.exists()]; assert not present, present; assert pair[0].is_file() == pair[1].is_file(); raw = Path('evals/m4/authorization/m4.2/authorization-preparation.json').read_bytes(); assert b'AUTHORIZED_UNCONSUMED' not in raw; assert b'sha256:' not in raw"
           git diff --check
       - name: Create isolated accepted Gate IV-B closure replay worktree
+        id: create_gate_iv_b_closure_worktree
         run: git worktree add --detach "${{ runner.temp }}/m4-2-gate-iv-b-closure" ad67a79f39685937466d3a49d30c6a5117e2810c
       - name: Replay accepted Gate IV-B proof and NOT RUN state
         shell: bash
@@ -547,7 +548,7 @@ jobs:
           python -X utf8 evals/m4/audit_results.py --expect-not-run
           test -z "$(git status --porcelain --untracked-files=all)"
       - name: Remove isolated accepted Gate IV-B closure replay worktree
-        if: always()
+        if: always() && steps.create_gate_iv_b_closure_worktree.outcome == 'success'
         run: git worktree remove --force "${{ runner.temp }}/m4-2-gate-iv-b-closure"
       - name: Verify preparation request bindings with PowerShell 7
         if: runner.os == 'Linux'
@@ -629,6 +630,7 @@ jobs:
           python -X utf8 -c "from pathlib import Path; pair = [Path('evals/m4/authorization/m4.2/execution-authorization.json'), Path('evals/m4/authorization/m4.2/execution-control.json')]; exact = [Path('evals/m4/authorization/m4.2/authorization-token.json'), Path('evals/m4/authorization/m4.2/acceptance-claim.json'), Path('evals/m4/results-manifest.json')]; prefixes = [Path('evals/m4/execution/m4.2'), Path('evals/m4/results/m4.2'), Path('evals/m5')]; assert pair[0].is_file() == pair[1].is_file(); present = [path.as_posix() for path in exact + prefixes if path.exists()]; assert not present, present"
           git diff --check
       - name: Create isolated authorization-preparation closure replay worktree
+        id: create_authorization_preparation_closure_worktree
         run: git worktree add --detach "${{ runner.temp }}/m4-2-authorization-preparation-closure" 4efa75c542172a95c6c72c8c1450fea77a8e2ff1
       - name: Replay frozen preparation and Gate IV-B proof semantics
         shell: bash
@@ -646,7 +648,7 @@ jobs:
           python -X utf8 evals/m4/audit_results.py --expect-not-run
           test -z "$(git status --porcelain --untracked-files=all)"
       - name: Remove isolated authorization-preparation closure replay worktree
-        if: always()
+        if: always() && steps.create_authorization_preparation_closure_worktree.outcome == 'success'
         run: git worktree remove --force "${{ runner.temp }}/m4-2-authorization-preparation-closure"
       - name: Verify authorization request bindings with PowerShell 7
         if: runner.os == 'Linux'

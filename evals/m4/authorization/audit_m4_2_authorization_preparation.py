@@ -24,6 +24,8 @@ SUCCESSOR_BRANCH = (
     "codex/m4-cross-engineering-forward-evaluation-"
     "m4.2-authorization-preparation"
 )
+PREPARATION_CLOSURE_HEAD = "4efa75c542172a95c6c72c8c1450fea77a8e2ff1"
+PREPARATION_CLOSURE_TREE = "f7394004d9d5f0a9be22a62dca1d67bb5f2af52d"
 PROOF_PATH = Path("evals/m4/authorization/m4.2/gate-iv-b-protocol-proof.json")
 PROOF_BLOB = "d3fe975431f2e4584a52ee5305b169f5b5d29268"
 PROOF_SHA256 = "9d160de6893fbb6bd01158524a3a48931496b6d4cae1fdc4c9f0e736921068e0"
@@ -1133,12 +1135,35 @@ def delivery_state(
             add_error(errors, "accepted_candidate_head_unavailable")
         if git(repo_root, "merge-base", "--is-ancestor", head, "HEAD").returncode != 0:
             add_error(errors, "accepted_candidate_head_not_ancestor")
+        successor = (
+            git(
+                repo_root,
+                "merge-base",
+                "--is-ancestor",
+                PREPARATION_CLOSURE_HEAD,
+                "HEAD",
+            ).returncode
+            == 0
+        )
+        closure_target = PREPARATION_CLOSURE_HEAD if successor else "HEAD"
         closure = git_text(
-            repo_root, "diff", "--name-only", "--no-renames", head, "HEAD", "--"
+            repo_root,
+            "diff",
+            "--name-only",
+            "--no-renames",
+            head,
+            closure_target,
+            "--",
         )
         closure_paths = set(closure.splitlines()) if closure else set()
         if closure_paths != CLOSURE_CHANGE_PATHS:
             add_error(errors, "closure_change_set_mismatch")
+        if successor:
+            closure_tree = git_text(
+                repo_root, "rev-parse", f"{PREPARATION_CLOSURE_HEAD}^{{tree}}"
+            )
+            if closure_tree != PREPARATION_CLOSURE_TREE:
+                add_error(errors, "preparation_closure_tree_mismatch")
     return "FINAL"
 
 

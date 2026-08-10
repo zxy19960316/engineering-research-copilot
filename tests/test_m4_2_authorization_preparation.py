@@ -27,6 +27,9 @@ BASELINE_HEAD = "ad67a79f39685937466d3a49d30c6a5117e2810c"
 BASELINE_TREE = "7f5d7c2e15616e4e52f45c0366f8b347211e8849"
 B3_HEAD = "249e28d07d5e52cd9cec9b7e110f6159e6046222"
 B3_TREE = "dacb6e5048a54c3f242add441dd1a36255f80dc4"
+ACCEPTED_CANDIDATE_HEAD = "44e6cd611ce67f362015c431d3c1d6ba069ad345"
+PREPARATION_CLOSURE_HEAD = "4efa75c542172a95c6c72c8c1450fea77a8e2ff1"
+PREPARATION_CLOSURE_TREE = "f7394004d9d5f0a9be22a62dca1d67bb5f2af52d"
 PROOF_BLOB = "d3fe975431f2e4584a52ee5305b169f5b5d29268"
 PROOF_SHA256 = "9d160de6893fbb6bd01158524a3a48931496b6d4cae1fdc4c9f0e736921068e0"
 PROOF_BYTE_LENGTH = 33204
@@ -75,6 +78,11 @@ ROOT_KEYS = {
     "status",
 }
 ZERO_MARKERS = {"FAIL:": 0, "FAILED (": 0, "Traceback": 0, "##[error]": 0}
+CLOSURE_CHANGE_PATHS = {
+    "STATUS.md",
+    "evals/m4/authorization/m4.2/authorization-preparation.json",
+    "tests/test_m3_r5_erratum.py",
+}
 PROVISIONAL_DECISION = "PENDING_M4_2_AUTHORIZATION_PREPARATION_EXACT_HEAD_CI"
 PROVISIONAL_STATUS = (
     "M4_2_AUTHORIZATION_PREPARATION_LOCAL_PASSED_NOT_AUTHORIZED"
@@ -290,6 +298,53 @@ class M42AuthorizationPreparationContractTests(unittest.TestCase):
         self.assertEqual(result["launch_claim"], "ABSENT")
         self.assertEqual(result["result_root"], "ABSENT")
 
+    def test_committed_successor_anchors_historical_closure_change_set(self) -> None:
+        current_head = _git("rev-parse", "HEAD")
+        if current_head == PREPARATION_CLOSURE_HEAD:
+            self.skipTest("committed successor required")
+        self.assertEqual(
+            _git("rev-parse", f"{PREPARATION_CLOSURE_HEAD}^{{tree}}"),
+            PREPARATION_CLOSURE_TREE,
+        )
+        self.assertEqual(
+            subprocess.run(
+                [
+                    "git",
+                    "merge-base",
+                    "--is-ancestor",
+                    PREPARATION_CLOSURE_HEAD,
+                    "HEAD",
+                ],
+                cwd=REPO_ROOT,
+                check=False,
+            ).returncode,
+            0,
+        )
+        closure_paths = set(
+            _git(
+                "diff",
+                "--name-only",
+                "--no-renames",
+                ACCEPTED_CANDIDATE_HEAD,
+                PREPARATION_CLOSURE_HEAD,
+                "--",
+            ).splitlines()
+        )
+        successor_paths = set(
+            _git(
+                "diff",
+                "--name-only",
+                "--no-renames",
+                ACCEPTED_CANDIDATE_HEAD,
+                "HEAD",
+                "--",
+            ).splitlines()
+        )
+        self.assertEqual(closure_paths, CLOSURE_CHANGE_PATHS)
+        self.assertNotEqual(successor_paths, CLOSURE_CHANGE_PATHS)
+        result = self._audit(copy.deepcopy(self.artifact), verify_git=True)
+        self.assertNotIn("closure_change_set_mismatch", result["errors"])
+
     def test_successor_authorization_change_set_is_explicit_and_pair_gated(self) -> None:
         required = {
             "docs/superpowers/plans/2026-08-10-m4.2-one-shot-authorization.md",
@@ -374,6 +429,34 @@ class M42AuthorizationPreparationContractTests(unittest.TestCase):
         self.assertIn("prepare_m4_2_request_bundles.ps1 -CheckAll", job)
         self.assertIn("git status", job)
         self.assertNotIn("continue-on-error", job)
+
+    def test_worktree_cleanup_requires_successful_creation(self) -> None:
+        workflow = WORKFLOW_PATH.read_text(encoding="utf-8")
+        cases = (
+            (
+                "Create isolated accepted Gate IV-B closure replay worktree",
+                "create_gate_iv_b_closure_worktree",
+                "Remove isolated accepted Gate IV-B closure replay worktree",
+            ),
+            (
+                "Create isolated authorization-preparation closure replay worktree",
+                "create_authorization_preparation_closure_worktree",
+                "Remove isolated authorization-preparation closure replay worktree",
+            ),
+        )
+        for create_name, create_id, cleanup_name in cases:
+            with self.subTest(cleanup=cleanup_name):
+                create_step = workflow.split(f"- name: {create_name}", 1)[1].split(
+                    "- name:", 1
+                )[0]
+                cleanup_step = workflow.split(f"- name: {cleanup_name}", 1)[1].split(
+                    "- name:", 1
+                )[0]
+                self.assertIn(f"id: {create_id}", create_step)
+                self.assertIn(
+                    f"if: always() && steps.{create_id}.outcome == 'success'",
+                    cleanup_step,
+                )
 
     def test_auditor_is_offline_read_only_and_no_authorization_writer_exists(self) -> None:
         source = AUDITOR_PATH.read_text(encoding="utf-8")
