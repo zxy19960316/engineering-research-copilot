@@ -86,7 +86,8 @@ jobs:
             evals/m4/execution/audit_m4_1_terminal.py \
             evals/m4/build_m4_2_preparation.py \
             evals/m4/audit_m4_2_preparation.py \
-            evals/m4/authorization/audit_m4_2_gate_iv_a_r2_review.py
+            evals/m4/authorization/audit_m4_2_gate_iv_a_r2_review.py \
+            evals/m4/authorization/audit_m4_2_gate_iv_b_protocol_proof.py
       - name: Require immutable r5 evidence commit
         run: |
           git cat-file -e 1b696bce53ee0a11163bfe4f91a9a49ab3af6f49^{commit}
@@ -131,8 +132,11 @@ jobs:
           git merge-base --is-ancestor ae1ad43cca52ae450e146e952e3b108792b2b665 HEAD
           git diff --raw --exit-code ae1ad43cca52ae450e146e952e3b108792b2b665 HEAD -- evals/m4/authorization/m4.1/gate-iv-review.json evals/m4/authorization/m4.1/execution-authorization.schema.json evals/m4/authorization/m4.1/execution-control.schema.json evals/m4/authorization/m4.1/execution-authorization.json evals/m4/authorization/m4.1/execution-control.json evals/m4/authorization/build_m4_1_authorization.py evals/m4/authorization/audit_m4_1_authorization.py tests/test_m4_1_authorization_builder.py tests/test_m4_1_authorization.py
           git diff --exit-code ae1ad43cca52ae450e146e952e3b108792b2b665 HEAD -- evals/m4/authorization/m4.1/gate-iv-review.json evals/m4/authorization/m4.1/execution-authorization.schema.json evals/m4/authorization/m4.1/execution-control.schema.json evals/m4/authorization/m4.1/execution-authorization.json evals/m4/authorization/m4.1/execution-control.json evals/m4/authorization/build_m4_1_authorization.py evals/m4/authorization/audit_m4_1_authorization.py tests/test_m4_1_authorization_builder.py tests/test_m4_1_authorization.py
-      - name: Audit current M4.2 Gate IV-A r2 independent review
+      - name: Create isolated Gate IV-A r2 baseline worktree
+        run: git -c core.autocrlf=false worktree add --detach "${{ runner.temp }}/m4-2-gate-iv-a-r2-baseline" 988b4332504549df2038f51532175effd696a445
+      - name: Audit frozen M4.2 Gate IV-A r2 independent review
         shell: bash
+        working-directory: ${{ runner.temp }}/m4-2-gate-iv-a-r2-baseline
         run: |
           set -euo pipefail
           git cat-file -e '44d1004da1cbb2681ee0d423d1748f98fbaa13e4^{commit}'
@@ -141,6 +145,19 @@ jobs:
           python -X utf8 -m unittest tests.test_m4_2_gate_iv_a_r2_review -v
           python -X utf8 evals/m4/authorization/audit_m4_2_gate_iv_a_r2_review.py
           python -X utf8 -c "from pathlib import Path; forbidden = [Path('evals/m4/authorization/m4.2/execution-authorization.json'), Path('evals/m4/authorization/m4.2/execution-control.json'), Path('evals/m4/execution/m4.2'), Path('evals/m4/results/m4.1'), Path('evals/m4/results/m4.2'), Path('evals/m4/results-manifest.json')]; present = [path.as_posix() for path in forbidden if path.exists()]; assert not present, present"
+      - name: Remove isolated Gate IV-A r2 baseline worktree
+        if: always()
+        run: git worktree remove --force "${{ runner.temp }}/m4-2-gate-iv-a-r2-baseline"
+      - name: Audit current M4.2 Gate IV-B protocol proof without authority
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -X utf8 -m unittest tests.test_m4_2_gate_iv_b_protocol_proof -v
+          first="$(python -X utf8 evals/m4/authorization/audit_m4_2_gate_iv_b_protocol_proof.py)"
+          second="$(python -X utf8 evals/m4/authorization/audit_m4_2_gate_iv_b_protocol_proof.py)"
+          test "$first" = "$second"
+          printf '%s\n' "$first"
+          python -X utf8 evals/m4/audit_results.py --expect-not-run
       - name: Current lifecycle unit tests
         run: >-
           python -X utf8 -c "import pathlib, sys, unittest;
@@ -355,8 +372,11 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.13"
-      - name: Validate current Gate IV-A r2 review and lifecycle
+      - name: Create isolated Gate IV-A r2 baseline worktree
+        run: git -c core.autocrlf=false worktree add --detach "${{ runner.temp }}/m4-2-gate-iv-a-r2-baseline" 988b4332504549df2038f51532175effd696a445
+      - name: Validate frozen Gate IV-A r2 review and lifecycle
         shell: bash
+        working-directory: ${{ runner.temp }}/m4-2-gate-iv-a-r2-baseline
         run: |
           set -euo pipefail
           python -m py_compile evals/m4/authorization/audit_m4_2_gate_iv_a_r2_review.py
@@ -370,17 +390,91 @@ jobs:
       - name: Verify reviewed request bindings with PowerShell 7
         if: runner.os == 'Linux'
         shell: pwsh
+        working-directory: ${{ runner.temp }}/m4-2-gate-iv-a-r2-baseline
         run: |
           ./evals/m4/execution/prepare_m4_2_request_bundles.ps1 -SelfTest
           ./evals/m4/execution/prepare_m4_2_request_bundles.ps1 -CheckAll
       - name: Verify reviewed request bindings with Windows PowerShell 5.1
         if: runner.os == 'Windows'
         shell: powershell
+        working-directory: ${{ runner.temp }}/m4-2-gate-iv-a-r2-baseline
         run: |
           if ($PSVersionTable.PSVersion.Major -ne 5) { throw 'expected_windows_powershell_5_1' }
           .\evals\m4\execution\prepare_m4_2_request_bundles.ps1 -SelfTest
           .\evals\m4\execution\prepare_m4_2_request_bundles.ps1 -CheckAll
       - name: Assert Gate IV-A r2 review remained read-only
+        working-directory: ${{ runner.temp }}/m4-2-gate-iv-a-r2-baseline
+        run: >-
+          python -X utf8 -c "import subprocess;
+          status = subprocess.run(['git', 'status', '--porcelain', '--untracked-files=all'],
+          check=True, capture_output=True, text=True).stdout;
+          assert not status, status"
+      - name: Remove isolated Gate IV-A r2 baseline worktree
+        if: always()
+        run: git worktree remove --force "${{ runner.temp }}/m4-2-gate-iv-a-r2-baseline"
+
+  m4-2-gate-iv-b-protocol-proof:
+    name: M4.2 Gate IV-B protocol proof (NOT AUTHORIZED) (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+          - windows-latest
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Validate Gate IV-B offline proof and zero authority
+        shell: bash
+        run: |
+          set -euo pipefail
+          git cat-file -e '988b4332504549df2038f51532175effd696a445^{commit}'
+          git merge-base --is-ancestor 988b4332504549df2038f51532175effd696a445 HEAD
+          test "$(git rev-parse 'HEAD:evals/m4/authorization/m4.2/gate-iv-a-review-r2.json')" = '734918bd5de16ea6f7595e206c3cd313ba041fa7'
+          python -m py_compile evals/m4/authorization/audit_m4_2_gate_iv_b_protocol_proof.py
+          python -X utf8 -m unittest tests.test_m4_2_gate_iv_b_protocol_proof -v
+          first="$(python -X utf8 evals/m4/authorization/audit_m4_2_gate_iv_b_protocol_proof.py)"
+          second="$(python -X utf8 evals/m4/authorization/audit_m4_2_gate_iv_b_protocol_proof.py)"
+          test "$first" = "$second"
+          printf '%s\n' "$first"
+          python -X utf8 evals/m4/audit_results.py --expect-not-run
+      - name: Verify Gate IV-B request bindings with PowerShell 7
+        if: runner.os == 'Linux'
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          ./evals/m4/execution/prepare_m4_2_request_bundles.ps1 -SelfTest
+          if ($LASTEXITCODE -ne 0) { throw 'm4_2_protocol_self_test_failed' }
+          $raw = ./evals/m4/execution/prepare_m4_2_request_bundles.ps1 -CheckAll
+          if ($LASTEXITCODE -ne 0) { throw 'm4_2_protocol_request_check_failed' }
+          $result = $raw | ConvertFrom-Json
+          if ($result.status -ne 'VERIFIED') { throw 'm4_2_protocol_status_invalid' }
+          if ($result.checked_task_count -ne 60) { throw 'm4_2_protocol_task_count_invalid' }
+          if ($result.mismatches.Count -ne 0) { throw 'm4_2_protocol_mismatches_present' }
+          if ($result.side_effects.Count -ne 0) { throw 'm4_2_protocol_side_effects_present' }
+          $raw
+      - name: Verify Gate IV-B request bindings with Windows PowerShell 5.1
+        if: runner.os == 'Windows'
+        shell: powershell
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if ($PSVersionTable.PSVersion.Major -ne 5 -or $PSVersionTable.PSVersion.Minor -ne 1) { throw 'expected_windows_powershell_5_1' }
+          .\evals\m4\execution\prepare_m4_2_request_bundles.ps1 -SelfTest
+          if ($LASTEXITCODE -ne 0) { throw 'm4_2_protocol_self_test_failed' }
+          $raw = .\evals\m4\execution\prepare_m4_2_request_bundles.ps1 -CheckAll
+          if ($LASTEXITCODE -ne 0) { throw 'm4_2_protocol_request_check_failed' }
+          $result = $raw | ConvertFrom-Json
+          if ($result.status -ne 'VERIFIED') { throw 'm4_2_protocol_status_invalid' }
+          if ($result.checked_task_count -ne 60) { throw 'm4_2_protocol_task_count_invalid' }
+          if ($result.mismatches.Count -ne 0) { throw 'm4_2_protocol_mismatches_present' }
+          if ($result.side_effects.Count -ne 0) { throw 'm4_2_protocol_side_effects_present' }
+          $raw
+      - name: Assert Gate IV-B proof remained read-only
         run: >-
           python -X utf8 -c "import subprocess;
           status = subprocess.run(['git', 'status', '--porcelain', '--untracked-files=all'],

@@ -24,6 +24,7 @@ AUDITOR_PATH = (
     / "evals/m4/authorization/audit_m4_2_gate_iv_b_protocol_proof.py"
 )
 R2_PATH = REPO_ROOT / "evals/m4/authorization/m4.2/gate-iv-a-review-r2.json"
+WORKFLOW_PATH = REPO_ROOT / ".github/workflows/m1-validation.yml"
 BASELINE_HEAD = "988b4332504549df2038f51532175effd696a445"
 BASELINE_TREE = "38b1aeacd54b5e5a9ac115be1816206a7a3f8a4f"
 R2_BLOB = "734918bd5de16ea6f7595e206c3cd313ba041fa7"
@@ -434,6 +435,50 @@ class M42GateIVBContractTests(unittest.TestCase):
         self.assertEqual(negative["authorization_artifact"], "ABSENT")
         self.assertEqual(negative["launch_claim"], "ABSENT")
         self.assertEqual(negative["result_root"], "ABSENT")
+
+    def test_workflow_replays_r2_at_baseline_and_gates_proof_on_both_platforms(
+        self,
+    ) -> None:
+        workflow = WORKFLOW_PATH.read_text(encoding="utf-8")
+        r2_job = workflow.split("  m4-2-gate-iv-a-r2-review:\n", 1)[1].split(
+            "\n  m4-2-gate-iv-b-protocol-proof:\n", 1
+        )[0]
+        self.assertIn(
+            "worktree add --detach \"${{ runner.temp }}/m4-2-gate-iv-a-r2-baseline\" "
+            + BASELINE_HEAD,
+            r2_job,
+        )
+        self.assertIn(
+            "working-directory: ${{ runner.temp }}/m4-2-gate-iv-a-r2-baseline",
+            r2_job,
+        )
+        self.assertIn("if: always()", r2_job)
+        proof_job = workflow.split(
+            "  m4-2-gate-iv-b-protocol-proof:\n", 1
+        )[1].split("\n  historical-audit-cross-platform:\n", 1)[0]
+        self.assertIn(
+            "name: M4.2 Gate IV-B protocol proof (NOT AUTHORIZED) "
+            "(${{ matrix.os }})",
+            proof_job,
+        )
+        self.assertIn("          - ubuntu-latest", proof_job)
+        self.assertIn("          - windows-latest", proof_job)
+        self.assertIn("set -euo pipefail", proof_job)
+        self.assertIn(
+            "python -X utf8 -m unittest "
+            "tests.test_m4_2_gate_iv_b_protocol_proof -v",
+            proof_job,
+        )
+        self.assertGreaterEqual(
+            proof_job.count("audit_m4_2_gate_iv_b_protocol_proof.py"), 3
+        )
+        self.assertIn("prepare_m4_2_request_bundles.ps1 -CheckAll", proof_job)
+        self.assertIn("$result.checked_task_count -ne 60", proof_job)
+        self.assertIn("$result.mismatches.Count -ne 0", proof_job)
+        self.assertIn("$result.side_effects.Count -ne 0", proof_job)
+        self.assertIn("expected_windows_powershell_5_1", proof_job)
+        self.assertIn("audit_results.py --expect-not-run", proof_job)
+        self.assertNotIn("continue-on-error", proof_job)
 
     def test_final_delivery_state_is_semantically_valid_without_git(self) -> None:
         result = self._audit(_final_proof())
