@@ -98,13 +98,13 @@ class M3R5ErratumTests(unittest.TestCase):
         self.assertEqual(diagnostic["retry_count"], 0)
         self.assertFalse(diagnostic["composed_output_created"])
 
-    def test_status_top_preserves_terminal_history_during_m4_2_preparation(self):
+    def test_status_top_preserves_terminal_history_during_m4_2_gate_iv_a_r2(self):
         text = (REPO_ROOT / "STATUS.md").read_text(encoding="utf-8")
         current = text.split("## M3 checklist", 1)[0]
 
         self.assertIn(
-            "Active revision: `M4.2 PREPARATION_ONLY; "
-            "M4_2_PREPARED_NOT_AUTHORIZED; CI_INTEGRITY_REPAIR_CLOSED; "
+            "Active revision: `M4.2 GATE_IV_A_R2_LOCAL_REVIEW; "
+            "M4_2_GATE_IV_A_R2_LOCAL_REVIEW_PASSED_PENDING_EXACT_HEAD_CI; "
             "fresh_execution_authorized=false`",
             current,
         )
@@ -123,7 +123,9 @@ class M3R5ErratumTests(unittest.TestCase):
             "Status: `M3_CLOSED; M4_0_PRE_DISPATCH_FAILED_PRESERVED; "
             "M4_1_STOPPED_PROTOCOL_FAILURE_PRESERVED; "
             "M4_1_AUTHORIZATION_CONSUMED; M4_1_TASKS_NOT_DISPATCHED; "
-            "M4_2_PREPARED_NOT_AUTHORIZED; CI_INTEGRITY_REPAIR_CLOSED; "
+            "M4_2_PREPARED_NOT_AUTHORIZED; "
+            "M4_2_WINDOWS_LIFECYCLE_REPAIR_ACCEPTED; "
+            "M4_2_GATE_IV_A_R2_LOCAL_REVIEW_PASSED_PENDING_EXACT_HEAD_CI; "
             "M4_FRESH_RESULTS_NOT_RUN`",
             current,
         )
@@ -162,13 +164,14 @@ class M3R5ErratumTests(unittest.TestCase):
         self.assertIn(
             "M4: `M4_1_STOPPED_PROTOCOL_FAILURE_PRESERVED; "
             "M4_1_AUTHORIZATION_CONSUMED; M4_2_PREPARED_NOT_AUTHORIZED; "
-            "CI_INTEGRITY_REPAIR_CLOSED`",
+            "M4_2_WINDOWS_LIFECYCLE_REPAIR_ACCEPTED; "
+            "M4_2_GATE_IV_A_R2_LOCAL_REVIEW_PASSED_PENDING_EXACT_HEAD_CI`",
             current,
         )
         self.assertIn(
             "M4 fresh tasks authorized: `false; M4.0 and M4.1 authorizations "
             "are consumed and terminal; M4.1 continuation or rerun is forbidden; "
-            "M4.2 is preparation-only and not authorized`",
+            "Gate IV-A r2 is pending exact-head CI and grants no execution authority`",
             current,
         )
         self.assertIn(
@@ -216,7 +219,68 @@ class M3R5ErratumTests(unittest.TestCase):
         )
         self.assertIn(
             "M4.2 state: `M4_2_PREPARED_NOT_AUTHORIZED; "
-            "CI_INTEGRITY_REPAIR_CLOSED; fresh_execution_authorized=false`",
+            "M4_2_WINDOWS_LIFECYCLE_REPAIR_ACCEPTED; "
+            "M4_2_GATE_IV_A_R2_LOCAL_REVIEW_PASSED_PENDING_EXACT_HEAD_CI; "
+            "fresh_execution_authorized=false`",
+            current,
+        )
+        self.assertIn(
+            "M4.2 Gate IV-A r1 terminal evidence: "
+            "`head=ac6cc70714a90f73b4de09eaf0e521e699296890; "
+            "tree=3ee67b0c5ffa53fc2676381e9ab9b79499e2cf6e; "
+            "pull_request=4; "
+            "artifact=evals/m4/authorization/m4.2/gate-iv-a-review.json; "
+            "artifact_blob=9af5710dfba68ee5038f0c9e832591181d41835e; "
+            "artifact_sha256=cd68d10a140606d4f7dd0ee6d09ebe49c1b4566aa54345cfe91728eaac06b373; "
+            "findings=3; reviewer_side_effects=[]; decision=BLOCKED; "
+            "status=BLOCKED; immutable=true`",
+            current,
+        )
+        self.assertIn(
+            "M4.2 Windows lifecycle repair exact HEAD: "
+            "`44d1004da1cbb2681ee0d423d1748f98fbaa13e4; "
+            "tree=9845b1a05e23fa84e55ad20399ec1b86bc861e44; "
+            "parent=941602180c75c4ae16edfc927f6c39b8420fb45c; "
+            "pull_request=5`",
+            current,
+        )
+        self.assertIn(
+            "M4.2 Windows lifecycle repair push exact-HEAD CI: `ALL_GREEN; "
+            "run=31354780589; "
+            "head=44d1004da1cbb2681ee0d423d1748f98fbaa13e4; jobs=7/7; "
+            "raw_log_bytes=685943; "
+            "raw_log_sha256=6b8bd910c89b5f17510c542f3a2418e20ded2c547d5cef69ff78aa32f78be29d; "
+            "markers=FAIL:0,FAILED (:0,Traceback:0,##[error]:0`",
+            current,
+        )
+        self.assertIn(
+            "M4.2 Windows lifecycle repair PR exact-HEAD CI: `ALL_GREEN; "
+            "run=31354802277; "
+            "head=44d1004da1cbb2681ee0d423d1748f98fbaa13e4; jobs=7/7; "
+            "raw_log_bytes=695517; "
+            "raw_log_sha256=5f63879f748cecfc0ca8ddc4ac3b9686fb83aa1fd5683468f22b2e88b0a5a7f2; "
+            "markers=FAIL:0,FAILED (:0,Traceback:0,##[error]:0`",
+            current,
+        )
+        self.assertIn(
+            "M4.2 Gate IV-A r2 reviewed repair: "
+            "`head=44d1004da1cbb2681ee0d423d1748f98fbaa13e4; "
+            "tree=9845b1a05e23fa84e55ad20399ec1b86bc861e44; "
+            ".gitattributes=REVIEWED; repair_artifacts=REVIEWED`",
+            current,
+        )
+        self.assertIn(
+            "M4.2 Gate IV-A r2 artifact: "
+            "`evals/m4/authorization/m4.2/gate-iv-a-review-r2.json; "
+            "findings=[]; reviewer_side_effects=[]; "
+            "decision=PENDING_M4_2_GATE_IV_A_R2_EXACT_HEAD_CI; "
+            "status=M4_2_GATE_IV_A_R2_LOCAL_REVIEW_PASSED_PENDING_EXACT_HEAD_CI`",
+            current,
+        )
+        self.assertIn(
+            "M4.2 Gate IV-A r2 delivery: `PENDING_EXACT_HEAD_CI; "
+            "accepted_review_head=null; push_run=null; pull_request_run=null; "
+            "final_approval=ABSENT`",
             current,
         )
         false_green_runs = {
@@ -314,9 +378,13 @@ class M3R5ErratumTests(unittest.TestCase):
             current,
         )
         self.assertIn(
-            "M4.2 later gates: `Gate IV review=NOT_RUN; "
-            "authorization=NOT_CREATED; claim=NOT_CREATED; execution=NOT_RUN; "
-            "judge=false; aggregation=false; closure=false; M5=NOT_STARTED`",
+            "M4.2 later gates: `Gate IV-A r1=BLOCKED_PRESERVED; "
+            "Windows_lifecycle_repair=ACCEPTED; "
+            "Gate IV-A r2=PENDING_EXACT_HEAD_CI; "
+            "Gate IV-B protocol proof=NOT_STARTED; authorization=ABSENT; "
+            "execution=ABSENT; claim=ABSENT; tasks=0; results=0; "
+            "judge=NOT_RUN; aggregation=NOT_RUN; closure=NOT_RUN; "
+            "M5=NOT_STARTED`",
             current,
         )
         self.assertIn(
@@ -440,12 +508,15 @@ class M3R5ErratumTests(unittest.TestCase):
             "- M4: `M4.0 PRE_DISPATCH_FAILED_PRESERVED; "
             "M4.1 STOPPED_PROTOCOL_FAILURE_PRESERVED; "
             "M4.1 AUTHORIZATION_CONSUMED; M4.1 TASKS_NOT_DISPATCHED; "
-            "M4.2 PREPARED_NOT_AUTHORIZED; FRESH_RESULTS_NOT_RUN`",
+            "M4.2 PREPARED_NOT_AUTHORIZED; "
+            "M4.2 WINDOWS_LIFECYCLE_REPAIR_ACCEPTED; "
+            "M4.2 GATE_IV_A_R2_PENDING_EXACT_HEAD_CI; "
+            "FRESH_RESULTS_NOT_RUN`",
             text,
         )
         self.assertIn(
             "- Active local branch: "
-            "`codex/m4-cross-engineering-forward-evaluation-m4.2-successor-preparation`",
+            "`codex/m4-cross-engineering-forward-evaluation-m4.2-gate-iv-a-r2`",
             text,
         )
         self.assertNotIn("GATE_IV_B_LAUNCH_READINESS_LOCAL_READY", text)

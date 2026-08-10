@@ -1,0 +1,1042 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://engineering-research-copilot.local/schemas/m4.2-gate-iv-a-review-r2.schema.json",
+  "title": "M4.2 Gate IV-A r2 independent review",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "reviewed_head",
+    "reviewed_tree",
+    "reviewed_branch",
+    "reviewed_artifacts",
+    "prior_blocked_review",
+    "repair_evidence",
+    "matrix_checks",
+    "identity_checks",
+    "lineage_checks",
+    "request_binding_checks",
+    "historical_preservation",
+    "zero_state",
+    "lifecycle_requirements",
+    "review_delivery",
+    "findings",
+    "limitations",
+    "reviewer_side_effects",
+    "decision",
+    "status"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "m4.2-gate-iv-a-review-r2-v1"
+    },
+    "reviewed_head": {
+      "$ref": "#/$defs/gitObjectId"
+    },
+    "reviewed_tree": {
+      "$ref": "#/$defs/gitObjectId"
+    },
+    "reviewed_branch": {
+      "type": "string",
+      "minLength": 1
+    },
+    "reviewed_artifacts": {
+      "type": "array",
+      "minItems": 19,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/artifactBinding"
+      }
+    },
+    "prior_blocked_review": {
+      "$ref": "#/$defs/priorBlockedReview"
+    },
+    "repair_evidence": {
+      "$ref": "#/$defs/repairEvidence"
+    },
+    "matrix_checks": {
+      "$ref": "#/$defs/matrixChecks"
+    },
+    "identity_checks": {
+      "$ref": "#/$defs/identityChecks"
+    },
+    "lineage_checks": {
+      "$ref": "#/$defs/lineageChecks"
+    },
+    "request_binding_checks": {
+      "$ref": "#/$defs/requestBindingChecks"
+    },
+    "historical_preservation": {
+      "$ref": "#/$defs/historicalPreservation"
+    },
+    "zero_state": {
+      "$ref": "#/$defs/zeroState"
+    },
+    "lifecycle_requirements": {
+      "$ref": "#/$defs/lifecycleRequirements"
+    },
+    "review_delivery": {
+      "$ref": "#/$defs/reviewDelivery"
+    },
+    "findings": {
+      "type": "array",
+      "maxItems": 0,
+      "items": {
+        "type": "string"
+      }
+    },
+    "limitations": {
+      "type": "array",
+      "minItems": 4,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "reviewer_side_effects": {
+      "type": "array",
+      "maxItems": 0,
+      "items": {
+        "type": "string"
+      }
+    },
+    "decision": {
+      "enum": [
+        "PENDING_M4_2_GATE_IV_A_R2_EXACT_HEAD_CI",
+        "APPROVE_M4_2_GATE_IV_B_PROTOCOL_PROOF_ONLY"
+      ]
+    },
+    "status": {
+      "enum": [
+        "M4_2_GATE_IV_A_R2_LOCAL_REVIEW_PASSED_PENDING_EXACT_HEAD_CI",
+        "M4_2_GATE_IV_A_REVIEW_PASSED_NOT_AUTHORIZED"
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "review_delivery": {
+            "properties": {
+              "status": {
+                "const": "PENDING_EXACT_HEAD_CI"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "decision": {
+            "const": "PENDING_M4_2_GATE_IV_A_R2_EXACT_HEAD_CI"
+          },
+          "status": {
+            "const": "M4_2_GATE_IV_A_R2_LOCAL_REVIEW_PASSED_PENDING_EXACT_HEAD_CI"
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "decision": {
+            "const": "APPROVE_M4_2_GATE_IV_B_PROTOCOL_PROOF_ONLY"
+          },
+          "status": {
+            "const": "M4_2_GATE_IV_A_REVIEW_PASSED_NOT_AUTHORIZED"
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "gitObjectId": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "artifactBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "git_blob_oid",
+        "raw_sha256",
+        "byte_length"
+      ],
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "git_blob_oid": {
+          "$ref": "#/$defs/gitObjectId"
+        },
+        "raw_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "byte_length": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "priorBlockedReview": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "head",
+        "tree",
+        "branch",
+        "artifact",
+        "pull_request",
+        "decision",
+        "status",
+        "finding_count",
+        "reviewer_side_effects"
+      ],
+      "properties": {
+        "head": {
+          "$ref": "#/$defs/gitObjectId"
+        },
+        "tree": {
+          "$ref": "#/$defs/gitObjectId"
+        },
+        "branch": {
+          "type": "string",
+          "minLength": 1
+        },
+        "artifact": {
+          "$ref": "#/$defs/artifactBinding"
+        },
+        "pull_request": {
+          "const": 4
+        },
+        "decision": {
+          "const": "BLOCKED"
+        },
+        "status": {
+          "const": "BLOCKED"
+        },
+        "finding_count": {
+          "const": 3
+        },
+        "reviewer_side_effects": {
+          "type": "array",
+          "maxItems": 0,
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "eolBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "git_blob_oid",
+        "raw_sha256",
+        "byte_length",
+        "crlf_count",
+        "lf_count",
+        "text_attribute",
+        "eol_attribute",
+        "worktree_equals_blob"
+      ],
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "git_blob_oid": {
+          "$ref": "#/$defs/gitObjectId"
+        },
+        "raw_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "byte_length": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "crlf_count": {
+          "const": 0
+        },
+        "lf_count": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "text_attribute": {
+          "const": "set"
+        },
+        "eol_attribute": {
+          "const": "lf"
+        },
+        "worktree_equals_blob": {
+          "const": true
+        }
+      }
+    },
+    "rawLogMarkers": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "FAIL:",
+        "FAILED (",
+        "Traceback",
+        "##[error]"
+      ],
+      "properties": {
+        "FAIL:": {
+          "const": 0
+        },
+        "FAILED (": {
+          "const": 0
+        },
+        "Traceback": {
+          "const": 0
+        },
+        "##[error]": {
+          "const": 0
+        }
+      }
+    },
+    "rawLog": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "byte_length",
+        "sha256",
+        "markers"
+      ],
+      "properties": {
+        "byte_length": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "markers": {
+          "$ref": "#/$defs/rawLogMarkers"
+        }
+      }
+    },
+    "ciJob": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "job_id",
+        "name",
+        "conclusion"
+      ],
+      "properties": {
+        "job_id": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "conclusion": {
+          "const": "success"
+        }
+      }
+    },
+    "repairCiRun": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "run_id",
+        "event",
+        "head",
+        "branch",
+        "conclusion",
+        "job_count",
+        "jobs",
+        "current_lifecycle_count",
+        "m4_2_focused_count",
+        "historical_focused_count",
+        "powershell_5_1_request_bindings",
+        "results_status",
+        "forbidden_path_count",
+        "raw_log"
+      ],
+      "properties": {
+        "run_id": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "event": {
+          "enum": [
+            "push",
+            "pull_request"
+          ]
+        },
+        "head": {
+          "$ref": "#/$defs/gitObjectId"
+        },
+        "branch": {
+          "type": "string",
+          "minLength": 1
+        },
+        "conclusion": {
+          "const": "success"
+        },
+        "job_count": {
+          "const": 7
+        },
+        "jobs": {
+          "type": "array",
+          "minItems": 7,
+          "maxItems": 7,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/ciJob"
+          }
+        },
+        "current_lifecycle_count": {
+          "const": 655
+        },
+        "m4_2_focused_count": {
+          "const": 21
+        },
+        "historical_focused_count": {
+          "const": 6
+        },
+        "powershell_5_1_request_bindings": {
+          "const": 60
+        },
+        "results_status": {
+          "const": "NOT_RUN"
+        },
+        "forbidden_path_count": {
+          "const": 0
+        },
+        "raw_log": {
+          "$ref": "#/$defs/rawLog"
+        }
+      }
+    },
+    "repairCi": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "repository",
+        "pull_request",
+        "push",
+        "pull_request_run"
+      ],
+      "properties": {
+        "repository": {
+          "const": "zxy19960316/engineering-research-copilot"
+        },
+        "pull_request": {
+          "const": 5
+        },
+        "push": {
+          "$ref": "#/$defs/repairCiRun"
+        },
+        "pull_request_run": {
+          "$ref": "#/$defs/repairCiRun"
+        }
+      }
+    },
+    "diagnosticsPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "pattern",
+        "text_attribute",
+        "eol_attribute",
+        "tracked_file_count",
+        "files"
+      ],
+      "properties": {
+        "pattern": {
+          "const": "/evals/m3/results/diagnostics-r5.1/**"
+        },
+        "text_attribute": {
+          "const": "set"
+        },
+        "eol_attribute": {
+          "const": "lf"
+        },
+        "tracked_file_count": {
+          "const": 2
+        },
+        "files": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/eolBinding"
+          }
+        }
+      }
+    },
+    "repairEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "parent_head",
+        "changed_paths",
+        "historical_m3_changed_paths",
+        "diagnostics_policy",
+        "ci"
+      ],
+      "properties": {
+        "parent_head": {
+          "$ref": "#/$defs/gitObjectId"
+        },
+        "changed_paths": {
+          "type": "array",
+          "minItems": 4,
+          "maxItems": 4,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "historical_m3_changed_paths": {
+          "type": "array",
+          "maxItems": 0,
+          "items": {
+            "type": "string"
+          }
+        },
+        "diagnostics_policy": {
+          "$ref": "#/$defs/diagnosticsPolicy"
+        },
+        "ci": {
+          "$ref": "#/$defs/repairCi"
+        }
+      }
+    },
+    "matrixChecks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "case_count",
+        "arm_count",
+        "planned_task_count",
+        "batch_count",
+        "tasks_per_batch",
+        "passed"
+      ],
+      "properties": {
+        "case_count": {
+          "const": 12
+        },
+        "arm_count": {
+          "const": 5
+        },
+        "planned_task_count": {
+          "const": 60
+        },
+        "batch_count": {
+          "const": 6
+        },
+        "tasks_per_batch": {
+          "const": 10
+        },
+        "passed": {
+          "const": true
+        }
+      }
+    },
+    "identityChecks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "unique_task_id_count",
+        "new_task_id_count",
+        "reused_task_ids",
+        "unique_blind_id_count",
+        "blind_id_range",
+        "reused_blind_ids",
+        "unique_batch_id_count",
+        "reused_batch_ids",
+        "passed"
+      ],
+      "properties": {
+        "unique_task_id_count": {
+          "const": 60
+        },
+        "new_task_id_count": {
+          "const": 60
+        },
+        "reused_task_ids": {
+          "type": "array",
+          "maxItems": 0,
+          "items": {
+            "type": "string"
+          }
+        },
+        "unique_blind_id_count": {
+          "const": 60
+        },
+        "blind_id_range": {
+          "const": "M4-J121..M4-J180"
+        },
+        "reused_blind_ids": {
+          "type": "array",
+          "maxItems": 0,
+          "items": {
+            "type": "string"
+          }
+        },
+        "unique_batch_id_count": {
+          "const": 6
+        },
+        "reused_batch_ids": {
+          "type": "array",
+          "maxItems": 0,
+          "items": {
+            "type": "string"
+          }
+        },
+        "passed": {
+          "const": true
+        }
+      }
+    },
+    "lineageChecks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "direct_lineage",
+        "root_lineage",
+        "source_task_matches",
+        "root_task_matches",
+        "relative_order_preserved",
+        "inherited_field_drift_count",
+        "passed"
+      ],
+      "properties": {
+        "direct_lineage": {
+          "const": "M4.1"
+        },
+        "root_lineage": {
+          "const": "M4.0"
+        },
+        "source_task_matches": {
+          "const": 60
+        },
+        "root_task_matches": {
+          "const": 60
+        },
+        "relative_order_preserved": {
+          "const": true
+        },
+        "inherited_field_drift_count": {
+          "const": 0
+        },
+        "passed": {
+          "const": true
+        }
+      }
+    },
+    "requestBindingChecks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "algorithm",
+        "independently_recomputed",
+        "matched",
+        "unique",
+        "aggregate_sha256",
+        "helper",
+        "powershell_5_1_request_bindings",
+        "passed"
+      ],
+      "properties": {
+        "algorithm": {
+          "const": "m4.2-request-binding-v1"
+        },
+        "independently_recomputed": {
+          "const": 60
+        },
+        "matched": {
+          "const": 60
+        },
+        "unique": {
+          "const": 60
+        },
+        "aggregate_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "helper": {
+          "$ref": "#/$defs/artifactBinding"
+        },
+        "powershell_5_1_request_bindings": {
+          "const": 60
+        },
+        "passed": {
+          "const": true
+        }
+      }
+    },
+    "m41Preservation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "claim",
+        "terminal",
+        "terminal_status",
+        "tasks",
+        "contexts",
+        "finalizations",
+        "results",
+        "retries",
+        "repairs",
+        "passed"
+      ],
+      "properties": {
+        "claim": {
+          "$ref": "#/$defs/artifactBinding"
+        },
+        "terminal": {
+          "$ref": "#/$defs/artifactBinding"
+        },
+        "terminal_status": {
+          "const": "M4_1_STOPPED_PROTOCOL_FAILURE_PRESERVED"
+        },
+        "tasks": {
+          "const": 0
+        },
+        "contexts": {
+          "const": 0
+        },
+        "finalizations": {
+          "const": 0
+        },
+        "results": {
+          "const": 0
+        },
+        "retries": {
+          "const": 0
+        },
+        "repairs": {
+          "const": 0
+        },
+        "passed": {
+          "const": true
+        }
+      }
+    },
+    "historicalPreservation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "m4_1",
+        "m3_changed_paths",
+        "old_gate_iv_a_rewritten",
+        "passed"
+      ],
+      "properties": {
+        "m4_1": {
+          "$ref": "#/$defs/m41Preservation"
+        },
+        "m3_changed_paths": {
+          "type": "array",
+          "maxItems": 0,
+          "items": {
+            "type": "string"
+          }
+        },
+        "old_gate_iv_a_rewritten": {
+          "const": false
+        },
+        "passed": {
+          "const": true
+        }
+      }
+    },
+    "preparationAuthority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "fresh_execution_authorized",
+        "fresh_tasks_authorized",
+        "result_writes_authorized",
+        "retry_authorized",
+        "repair_authorized",
+        "authorization_artifact",
+        "model_binding_status"
+      ],
+      "properties": {
+        "fresh_execution_authorized": {
+          "const": false
+        },
+        "fresh_tasks_authorized": {
+          "const": false
+        },
+        "result_writes_authorized": {
+          "const": false
+        },
+        "retry_authorized": {
+          "const": false
+        },
+        "repair_authorized": {
+          "const": false
+        },
+        "authorization_artifact": {
+          "type": "null"
+        },
+        "model_binding_status": {
+          "const": "UNBOUND_UNTIL_SEPARATE_AUTHORIZATION"
+        }
+      }
+    },
+    "preparationCounters": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "authorized_tasks",
+        "created_contexts",
+        "dispatched_tasks",
+        "finalizations",
+        "results_observed",
+        "judge_scores",
+        "retries",
+        "repairs",
+        "unauthorized_side_effects"
+      ],
+      "properties": {
+        "authorized_tasks": {
+          "const": 0
+        },
+        "created_contexts": {
+          "const": 0
+        },
+        "dispatched_tasks": {
+          "const": 0
+        },
+        "finalizations": {
+          "const": 0
+        },
+        "results_observed": {
+          "const": 0
+        },
+        "judge_scores": {
+          "const": 0
+        },
+        "retries": {
+          "const": 0
+        },
+        "repairs": {
+          "const": 0
+        },
+        "unauthorized_side_effects": {
+          "const": 0
+        }
+      }
+    },
+    "zeroState": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "preparation_authority",
+        "preparation_counters",
+        "authorization",
+        "execution",
+        "claim",
+        "tasks",
+        "results",
+        "results_status",
+        "forbidden_path_count",
+        "forbidden_paths",
+        "passed"
+      ],
+      "properties": {
+        "preparation_authority": {
+          "$ref": "#/$defs/preparationAuthority"
+        },
+        "preparation_counters": {
+          "$ref": "#/$defs/preparationCounters"
+        },
+        "authorization": {
+          "const": "ABSENT"
+        },
+        "execution": {
+          "const": "ABSENT"
+        },
+        "claim": {
+          "const": "ABSENT"
+        },
+        "tasks": {
+          "const": 0
+        },
+        "results": {
+          "const": 0
+        },
+        "results_status": {
+          "const": "NOT_RUN"
+        },
+        "forbidden_path_count": {
+          "const": 0
+        },
+        "forbidden_paths": {
+          "type": "array",
+          "maxItems": 0,
+          "items": {
+            "type": "string"
+          }
+        },
+        "passed": {
+          "const": true
+        }
+      }
+    },
+    "lifecycleRequirements": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "fresh_execution_authorized",
+        "authorization_created",
+        "execution_created",
+        "claim_created",
+        "protocol_proof_only",
+        "judge",
+        "aggregation",
+        "closure",
+        "m5"
+      ],
+      "properties": {
+        "fresh_execution_authorized": {
+          "const": false
+        },
+        "authorization_created": {
+          "const": false
+        },
+        "execution_created": {
+          "const": false
+        },
+        "claim_created": {
+          "const": false
+        },
+        "protocol_proof_only": {
+          "const": true
+        },
+        "judge": {
+          "const": "NOT_RUN"
+        },
+        "aggregation": {
+          "const": "NOT_RUN"
+        },
+        "closure": {
+          "const": "NOT_RUN"
+        },
+        "m5": {
+          "const": "NOT_STARTED"
+        }
+      }
+    },
+    "deliveryCiRun": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "run_id",
+        "event",
+        "head",
+        "branch",
+        "conclusion",
+        "job_count",
+        "jobs",
+        "raw_log"
+      ],
+      "properties": {
+        "run_id": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "event": {
+          "enum": [
+            "push",
+            "pull_request"
+          ]
+        },
+        "head": {
+          "$ref": "#/$defs/gitObjectId"
+        },
+        "branch": {
+          "type": "string",
+          "minLength": 1
+        },
+        "conclusion": {
+          "const": "success"
+        },
+        "job_count": {
+          "type": "integer",
+          "minimum": 9
+        },
+        "jobs": {
+          "type": "array",
+          "minItems": 9,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/ciJob"
+          }
+        },
+        "raw_log": {
+          "$ref": "#/$defs/rawLog"
+        }
+      }
+    },
+    "reviewDelivery": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "accepted_review_head",
+        "push",
+        "pull_request"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "PENDING_EXACT_HEAD_CI",
+            "VERIFIED_TRUE_GREEN"
+          ]
+        },
+        "accepted_review_head": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/$defs/gitObjectId"
+            }
+          ]
+        },
+        "push": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/$defs/deliveryCiRun"
+            }
+          ]
+        },
+        "pull_request": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/$defs/deliveryCiRun"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

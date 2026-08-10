@@ -85,7 +85,8 @@ jobs:
             evals/m4/execution/audit_m4_1_launch_readiness.py \
             evals/m4/execution/audit_m4_1_terminal.py \
             evals/m4/build_m4_2_preparation.py \
-            evals/m4/audit_m4_2_preparation.py
+            evals/m4/audit_m4_2_preparation.py \
+            evals/m4/authorization/audit_m4_2_gate_iv_a_r2_review.py
       - name: Require immutable r5 evidence commit
         run: |
           git cat-file -e 1b696bce53ee0a11163bfe4f91a9a49ab3af6f49^{commit}
@@ -130,12 +131,23 @@ jobs:
           git merge-base --is-ancestor ae1ad43cca52ae450e146e952e3b108792b2b665 HEAD
           git diff --raw --exit-code ae1ad43cca52ae450e146e952e3b108792b2b665 HEAD -- evals/m4/authorization/m4.1/gate-iv-review.json evals/m4/authorization/m4.1/execution-authorization.schema.json evals/m4/authorization/m4.1/execution-control.schema.json evals/m4/authorization/m4.1/execution-authorization.json evals/m4/authorization/m4.1/execution-control.json evals/m4/authorization/build_m4_1_authorization.py evals/m4/authorization/audit_m4_1_authorization.py tests/test_m4_1_authorization_builder.py tests/test_m4_1_authorization.py
           git diff --exit-code ae1ad43cca52ae450e146e952e3b108792b2b665 HEAD -- evals/m4/authorization/m4.1/gate-iv-review.json evals/m4/authorization/m4.1/execution-authorization.schema.json evals/m4/authorization/m4.1/execution-control.schema.json evals/m4/authorization/m4.1/execution-authorization.json evals/m4/authorization/m4.1/execution-control.json evals/m4/authorization/build_m4_1_authorization.py evals/m4/authorization/audit_m4_1_authorization.py tests/test_m4_1_authorization_builder.py tests/test_m4_1_authorization.py
+      - name: Audit current M4.2 Gate IV-A r2 independent review
+        shell: bash
+        run: |
+          set -euo pipefail
+          git cat-file -e '44d1004da1cbb2681ee0d423d1748f98fbaa13e4^{commit}'
+          git cat-file -e 'ac6cc70714a90f73b4de09eaf0e521e699296890^{commit}'
+          git merge-base --is-ancestor 44d1004da1cbb2681ee0d423d1748f98fbaa13e4 HEAD
+          python -X utf8 -m unittest tests.test_m4_2_gate_iv_a_r2_review -v
+          python -X utf8 evals/m4/authorization/audit_m4_2_gate_iv_a_r2_review.py
+          python -X utf8 -c "from pathlib import Path; forbidden = [Path('evals/m4/authorization/m4.2/execution-authorization.json'), Path('evals/m4/authorization/m4.2/execution-control.json'), Path('evals/m4/execution/m4.2'), Path('evals/m4/results/m4.1'), Path('evals/m4/results/m4.2'), Path('evals/m4/results-manifest.json')]; present = [path.as_posix() for path in forbidden if path.exists()]; assert not present, present"
       - name: Current lifecycle unit tests
         run: >-
           python -X utf8 -c "import pathlib, sys, unittest;
           excluded = {'test_m4_1_preparation', 'test_m4_1_authorization_builder',
           'test_m4_1_authorization', 'test_m4_1_execution',
-          'test_m4_1_launch_readiness'};
+          'test_m4_1_launch_readiness', 'test_m4_2_preparation',
+          'test_m4_2_gate_iv_a_r2_review'};
           modules = ['tests.' + path.stem for path in
           sorted(pathlib.Path('tests').glob('test_*.py')) if path.stem not in excluded];
           suite = unittest.defaultTestLoader.loadTestsFromNames(modules);
@@ -273,7 +285,7 @@ jobs:
         run: git worktree remove --force "${{ runner.temp }}/m4-1-preclaim"
 
   m4-2-preparation:
-    name: M4.2 preparation (NOT AUTHORIZED) (${{ matrix.os }})
+    name: M4.2 repaired frozen preparation (NOT AUTHORIZED) (${{ matrix.os }})
     strategy:
       fail-fast: false
       matrix:
@@ -288,8 +300,11 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.13"
-      - name: Validate M4.2 preparation-only contract
+      - name: Create isolated repaired baseline worktree
+        run: git -c core.autocrlf=false worktree add --detach "${{ runner.temp }}/m4-2-repaired-baseline" 44d1004da1cbb2681ee0d423d1748f98fbaa13e4
+      - name: Validate repaired M4.2 preparation-only contract
         shell: bash
+        working-directory: ${{ runner.temp }}/m4-2-repaired-baseline
         run: |
           set -euo pipefail
           python -m py_compile evals/m4/build_m4_2_preparation.py evals/m4/audit_m4_2_preparation.py
@@ -301,17 +316,71 @@ jobs:
       - name: Verify M4.2 request preflight with PowerShell 7
         if: runner.os == 'Linux'
         shell: pwsh
+        working-directory: ${{ runner.temp }}/m4-2-repaired-baseline
         run: |
           ./evals/m4/execution/prepare_m4_2_request_bundles.ps1 -SelfTest
           ./evals/m4/execution/prepare_m4_2_request_bundles.ps1 -CheckAll
       - name: Verify M4.2 request preflight with Windows PowerShell 5.1
         if: runner.os == 'Windows'
         shell: powershell
+        working-directory: ${{ runner.temp }}/m4-2-repaired-baseline
         run: |
           if ($PSVersionTable.PSVersion.Major -ne 5) { throw 'expected_windows_powershell_5_1' }
           .\evals\m4\execution\prepare_m4_2_request_bundles.ps1 -SelfTest
           .\evals\m4\execution\prepare_m4_2_request_bundles.ps1 -CheckAll
-      - name: Assert M4.2 preparation validation remained read-only
+      - name: Assert repaired M4.2 preparation validation remained read-only
+        working-directory: ${{ runner.temp }}/m4-2-repaired-baseline
+        run: >-
+          python -X utf8 -c "import subprocess;
+          status = subprocess.run(['git', 'status', '--porcelain', '--untracked-files=all'],
+          check=True, capture_output=True, text=True).stdout;
+          assert not status, status"
+      - name: Remove isolated repaired baseline worktree
+        if: always()
+        run: git worktree remove --force "${{ runner.temp }}/m4-2-repaired-baseline"
+
+  m4-2-gate-iv-a-r2-review:
+    name: M4.2 Gate IV-A r2 review (NOT AUTHORIZED) (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+          - windows-latest
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Validate current Gate IV-A r2 review and lifecycle
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m py_compile evals/m4/authorization/audit_m4_2_gate_iv_a_r2_review.py
+          python -X utf8 -m unittest tests.test_m4_2_gate_iv_a_r2_review -v
+          python -X utf8 evals/m4/authorization/audit_m4_2_gate_iv_a_r2_review.py
+          python -X utf8 -c "import pathlib, sys, unittest; excluded = {'test_m4_1_preparation', 'test_m4_1_authorization_builder', 'test_m4_1_authorization', 'test_m4_1_execution', 'test_m4_1_launch_readiness', 'test_m4_2_preparation', 'test_m4_2_gate_iv_a_r2_review'}; modules = ['tests.' + path.stem for path in sorted(pathlib.Path('tests').glob('test_*.py')) if path.stem not in excluded]; suite = unittest.defaultTestLoader.loadTestsFromNames(modules); result = unittest.TextTestRunner(verbosity=2).run(suite); sys.exit(0 if result.wasSuccessful() else 1)"
+          python -X utf8 evals/m4/execution/audit_m4_1_terminal.py
+          python -X utf8 evals/m4/audit_results.py --expect-not-run
+          python -X utf8 -c "from pathlib import Path; forbidden = [Path('evals/m4/authorization/m4.2/execution-authorization.json'), Path('evals/m4/authorization/m4.2/execution-control.json'), Path('evals/m4/execution/m4.2'), Path('evals/m4/results/m4.1'), Path('evals/m4/results/m4.2'), Path('evals/m4/results-manifest.json')]; present = [path.as_posix() for path in forbidden if path.exists()]; assert not present, present"
+          git diff --check
+      - name: Verify reviewed request bindings with PowerShell 7
+        if: runner.os == 'Linux'
+        shell: pwsh
+        run: |
+          ./evals/m4/execution/prepare_m4_2_request_bundles.ps1 -SelfTest
+          ./evals/m4/execution/prepare_m4_2_request_bundles.ps1 -CheckAll
+      - name: Verify reviewed request bindings with Windows PowerShell 5.1
+        if: runner.os == 'Windows'
+        shell: powershell
+        run: |
+          if ($PSVersionTable.PSVersion.Major -ne 5) { throw 'expected_windows_powershell_5_1' }
+          .\evals\m4\execution\prepare_m4_2_request_bundles.ps1 -SelfTest
+          .\evals\m4\execution\prepare_m4_2_request_bundles.ps1 -CheckAll
+      - name: Assert Gate IV-A r2 review remained read-only
         run: >-
           python -X utf8 -c "import subprocess;
           status = subprocess.run(['git', 'status', '--porcelain', '--untracked-files=all'],
