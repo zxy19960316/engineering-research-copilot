@@ -1,0 +1,365 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://engineering-research-copilot.local/m4/authorization/m4.2/authorization-preparation.schema.json",
+  "title": "M4.2 authorization preparation without authorization",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "milestone",
+    "revision",
+    "preparation_kind",
+    "baseline",
+    "gate_iv_b_evidence",
+    "schema_bindings",
+    "matrix_projection",
+    "request_binding_projection",
+    "authorization_projection",
+    "control_projection",
+    "policy_proofs",
+    "negative_authority",
+    "delivery",
+    "findings",
+    "auditor_side_effects",
+    "decision",
+    "status"
+  ],
+  "properties": {
+    "schema_version": {"const": "m4.2-authorization-preparation-v1"},
+    "milestone": {"const": "M4"},
+    "revision": {"const": "M4.2"},
+    "preparation_kind": {"const": "AUTHORIZATION_SCHEMA_AND_PROJECTION_ONLY"},
+    "baseline": {"$ref": "#/$defs/baseline"},
+    "gate_iv_b_evidence": {"$ref": "#/$defs/gate_iv_b_evidence"},
+    "schema_bindings": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": {"$ref": "#/$defs/schema_binding"}
+    },
+    "matrix_projection": {"$ref": "#/$defs/matrix_projection"},
+    "request_binding_projection": {"$ref": "#/$defs/request_binding_projection"},
+    "authorization_projection": {"$ref": "#/$defs/authorization_projection"},
+    "control_projection": {"$ref": "#/$defs/control_projection"},
+    "policy_proofs": {"$ref": "#/$defs/policy_proofs"},
+    "negative_authority": {"$ref": "#/$defs/negative_authority"},
+    "delivery": {
+      "oneOf": [
+        {"$ref": "#/$defs/provisional_delivery"},
+        {"$ref": "#/$defs/final_delivery"}
+      ]
+    },
+    "findings": {"type": "array", "maxItems": 0},
+    "auditor_side_effects": {"type": "array", "maxItems": 0},
+    "decision": {
+      "enum": [
+        "PENDING_M4_2_AUTHORIZATION_PREPARATION_EXACT_HEAD_CI",
+        "APPROVE_M4_2_SEPARATE_AUTHORIZATION_WORK_PACKAGE_ONLY"
+      ]
+    },
+    "status": {
+      "enum": [
+        "M4_2_AUTHORIZATION_PREPARATION_LOCAL_PASSED_NOT_AUTHORIZED",
+        "M4_2_AUTHORIZATION_PREPARATION_PASSED_NOT_AUTHORIZED"
+      ]
+    }
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "git_oid": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "baseline": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["required_ancestor_head", "required_ancestor_tree", "source_branch", "successor_branch", "draft_pr_base_branch", "fresh_execution_authorized"],
+      "properties": {
+        "required_ancestor_head": {"const": "ad67a79f39685937466d3a49d30c6a5117e2810c"},
+        "required_ancestor_tree": {"const": "7f5d7c2e15616e4e52f45c0366f8b347211e8849"},
+        "source_branch": {"const": "codex/m4-cross-engineering-forward-evaluation-m4.2-gate-iv-b-protocol-proof"},
+        "successor_branch": {"const": "codex/m4-cross-engineering-forward-evaluation-m4.2-authorization-preparation"},
+        "draft_pr_base_branch": {"const": "codex/m4-cross-engineering-forward-evaluation-m4.2-gate-iv-b-protocol-proof"},
+        "fresh_execution_authorized": {"const": false}
+      }
+    },
+    "proof_artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "git_blob_oid", "raw_sha256", "byte_length"],
+      "properties": {
+        "path": {"const": "evals/m4/authorization/m4.2/gate-iv-b-protocol-proof.json"},
+        "git_blob_oid": {"$ref": "#/$defs/git_oid"},
+        "raw_sha256": {"$ref": "#/$defs/sha256"},
+        "byte_length": {"type": "integer", "minimum": 1}
+      }
+    },
+    "job": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["job_id", "name", "conclusion"],
+      "properties": {
+        "job_id": {"type": "integer", "minimum": 1},
+        "name": {"type": "string", "minLength": 1},
+        "conclusion": {"const": "success"}
+      }
+    },
+    "markers": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["FAIL:", "FAILED (", "Traceback", "##[error]"],
+      "properties": {
+        "FAIL:": {"const": 0},
+        "FAILED (": {"const": 0},
+        "Traceback": {"const": 0},
+        "##[error]": {"const": 0}
+      }
+    },
+    "raw_log": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["byte_length", "sha256", "markers"],
+      "properties": {
+        "byte_length": {"type": "integer", "minimum": 1},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "markers": {"$ref": "#/$defs/markers"}
+      }
+    },
+    "run": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["run_id", "event", "head", "branch", "conclusion", "job_count", "jobs", "raw_log"],
+      "properties": {
+        "run_id": {"type": "integer", "minimum": 1},
+        "event": {"enum": ["push", "pull_request"]},
+        "head": {"$ref": "#/$defs/git_oid"},
+        "branch": {"type": "string", "minLength": 1},
+        "conclusion": {"const": "success"},
+        "job_count": {"type": "integer", "minimum": 1},
+        "jobs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/job"}
+        },
+        "raw_log": {"$ref": "#/$defs/raw_log"}
+      }
+    },
+    "gate_stage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["head", "tree", "proof_artifact", "push", "pull_request"],
+      "properties": {
+        "head": {"$ref": "#/$defs/git_oid"},
+        "tree": {"$ref": "#/$defs/git_oid"},
+        "proof_artifact": {"$ref": "#/$defs/proof_artifact"},
+        "push": {"$ref": "#/$defs/run"},
+        "pull_request": {"$ref": "#/$defs/run"}
+      }
+    },
+    "gate_iv_b_evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["b3", "b4", "decision", "status"],
+      "properties": {
+        "b3": {"$ref": "#/$defs/gate_stage"},
+        "b4": {"$ref": "#/$defs/gate_stage"},
+        "decision": {"const": "APPROVE_M4_2_AUTHORIZATION_PREPARATION_ONLY"},
+        "status": {"const": "M4_2_GATE_IV_B_PROTOCOL_PROOF_PASSED_NOT_AUTHORIZED"}
+      }
+    },
+    "schema_binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "raw_sha256", "byte_length", "closed", "instance_present"],
+      "properties": {
+        "path": {"type": "string", "pattern": "^evals/m4/authorization/m4\\.2/.*schema\\.json$"},
+        "raw_sha256": {"$ref": "#/$defs/sha256"},
+        "byte_length": {"type": "integer", "minimum": 1},
+        "closed": {"const": true},
+        "instance_present": {"const": false}
+      }
+    },
+    "matrix_projection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["algorithm", "case_count", "arm_count", "planned_task_count", "batch_count", "tasks_per_batch", "unique_task_id_count", "unique_blind_id_count", "unique_batch_id_count", "task_order_sha256", "batch_order_sha256", "matrix_binding_sha256", "passed"],
+      "properties": {
+        "algorithm": {"const": "m4.2-protocol-matrix-binding-v1"},
+        "case_count": {"const": 12},
+        "arm_count": {"const": 5},
+        "planned_task_count": {"const": 60},
+        "batch_count": {"const": 6},
+        "tasks_per_batch": {"const": 10},
+        "unique_task_id_count": {"const": 60},
+        "unique_blind_id_count": {"const": 60},
+        "unique_batch_id_count": {"const": 6},
+        "task_order_sha256": {"$ref": "#/$defs/sha256"},
+        "batch_order_sha256": {"$ref": "#/$defs/sha256"},
+        "matrix_binding_sha256": {"$ref": "#/$defs/sha256"},
+        "passed": {"const": true}
+      }
+    },
+    "request_binding_projection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["algorithm", "independently_recomputed", "matched", "unique", "aggregate_sha256", "source_bytes_verified", "passed"],
+      "properties": {
+        "algorithm": {"const": "m4.2-request-binding-v1"},
+        "independently_recomputed": {"const": 60},
+        "matched": {"const": 60},
+        "unique": {"const": 60},
+        "aggregate_sha256": {"$ref": "#/$defs/sha256"},
+        "source_bytes_verified": {"const": 60},
+        "passed": {"const": true}
+      }
+    },
+    "authorization_projection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["projection_schema_version", "projection_only", "instance_schema_path", "instance_path", "instance_must_be_absent", "status", "authorization_token", "authorization_token_status", "fresh_execution_authorized", "claim_authorized", "future_whole_matrix_task_count", "future_task_order_sha256", "future_batch_count", "future_batch_order_sha256", "future_result_root_prefix", "partial_authority_allowed", "second_claim_allowed", "cross_task_result_visibility", "successor_revision_required_after_failure", "canonical_sha256"],
+      "properties": {
+        "projection_schema_version": {"const": "m4.2-candidate-authorization-projection-v1"},
+        "projection_only": {"const": true},
+        "instance_schema_path": {"const": "evals/m4/authorization/m4.2/execution-authorization.schema.json"},
+        "instance_path": {"const": "evals/m4/authorization/m4.2/execution-authorization.json"},
+        "instance_must_be_absent": {"const": true},
+        "status": {"const": "PREPARED_NOT_AUTHORIZED"},
+        "authorization_token": {"type": "null"},
+        "authorization_token_status": {"const": "NOT_ISSUED"},
+        "fresh_execution_authorized": {"const": false},
+        "claim_authorized": {"const": false},
+        "future_whole_matrix_task_count": {"const": 60},
+        "future_task_order_sha256": {"$ref": "#/$defs/sha256"},
+        "future_batch_count": {"const": 6},
+        "future_batch_order_sha256": {"$ref": "#/$defs/sha256"},
+        "future_result_root_prefix": {"const": "evals/m4/results/m4.2"},
+        "partial_authority_allowed": {"const": false},
+        "second_claim_allowed": {"const": false},
+        "cross_task_result_visibility": {"const": false},
+        "successor_revision_required_after_failure": {"const": true},
+        "canonical_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "control_projection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["projection_schema_version", "projection_only", "instance_schema_path", "instance_path", "instance_must_be_absent", "status", "execution_ready", "claim_ready", "future_controlled_task_count", "future_task_order_sha256", "future_batch_count", "future_batch_order_sha256", "allowed_context_inputs", "visible_result_task_ids", "cross_task_result_visibility", "judge_available", "aggregation_available", "canonical_sha256"],
+      "properties": {
+        "projection_schema_version": {"const": "m4.2-candidate-control-projection-v1"},
+        "projection_only": {"const": true},
+        "instance_schema_path": {"const": "evals/m4/authorization/m4.2/execution-control.schema.json"},
+        "instance_path": {"const": "evals/m4/authorization/m4.2/execution-control.json"},
+        "instance_must_be_absent": {"const": true},
+        "status": {"const": "PREPARED_NOT_READY"},
+        "execution_ready": {"const": false},
+        "claim_ready": {"const": false},
+        "future_controlled_task_count": {"const": 60},
+        "future_task_order_sha256": {"$ref": "#/$defs/sha256"},
+        "future_batch_count": {"const": 6},
+        "future_batch_order_sha256": {"$ref": "#/$defs/sha256"},
+        "allowed_context_inputs": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "uniqueItems": true,
+          "items": {"enum": ["case", "task_protocol", "selected_variant_instruction"]}
+        },
+        "visible_result_task_ids": {"type": "array", "maxItems": 0},
+        "cross_task_result_visibility": {"const": false},
+        "judge_available": {"const": false},
+        "aggregation_available": {"const": false},
+        "canonical_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "policy_proofs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["whole_matrix_task_count", "claim_consumes_entire_matrix_authorization", "partial_authority_allowed", "second_claim_allowed", "attempts_per_task_id", "retry_authorized", "repair_authorized", "followup_message_authorized", "terminal_failure_consumes_authority", "successor_revision_required_after_failure", "cross_task_result_visibility", "blind_mapping_access_authorized", "judge_execution_authorized", "aggregation_authorized", "passed"],
+      "properties": {
+        "whole_matrix_task_count": {"const": 60},
+        "claim_consumes_entire_matrix_authorization": {"const": true},
+        "partial_authority_allowed": {"const": false},
+        "second_claim_allowed": {"const": false},
+        "attempts_per_task_id": {"const": 1},
+        "retry_authorized": {"const": false},
+        "repair_authorized": {"const": false},
+        "followup_message_authorized": {"const": false},
+        "terminal_failure_consumes_authority": {"const": true},
+        "successor_revision_required_after_failure": {"const": true},
+        "cross_task_result_visibility": {"const": false},
+        "blind_mapping_access_authorized": {"const": false},
+        "judge_execution_authorized": {"const": false},
+        "aggregation_authorized": {"const": false},
+        "passed": {"const": true}
+      }
+    },
+    "negative_authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["authorized_tasks", "created_contexts", "dispatched_tasks", "finalizations", "results_observed", "judge_scores", "retries", "repairs", "unauthorized_side_effects", "raw_model_finals", "aggregation_calls", "acceptance_claims", "authorization_artifact", "execution_control", "authorization_token_status", "launch_claim", "result_root", "judge", "aggregation", "closure", "m5", "forbidden_paths", "forbidden_states", "passed"],
+      "properties": {
+        "authorized_tasks": {"const": 0},
+        "created_contexts": {"const": 0},
+        "dispatched_tasks": {"const": 0},
+        "finalizations": {"const": 0},
+        "results_observed": {"const": 0},
+        "judge_scores": {"const": 0},
+        "retries": {"const": 0},
+        "repairs": {"const": 0},
+        "unauthorized_side_effects": {"const": 0},
+        "raw_model_finals": {"const": 0},
+        "aggregation_calls": {"const": 0},
+        "acceptance_claims": {"const": 0},
+        "authorization_artifact": {"const": "ABSENT"},
+        "execution_control": {"const": "ABSENT"},
+        "authorization_token_status": {"const": "NOT_ISSUED"},
+        "launch_claim": {"const": "ABSENT"},
+        "result_root": {"const": "ABSENT"},
+        "judge": {"const": "NOT_RUN"},
+        "aggregation": {"const": "NOT_RUN"},
+        "closure": {"const": "NOT_RUN"},
+        "m5": {"const": "NOT_STARTED"},
+        "forbidden_paths": {"type": "array", "maxItems": 0},
+        "forbidden_states": {"type": "array", "maxItems": 0},
+        "passed": {"const": true}
+      }
+    },
+    "provisional_delivery": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "accepted_candidate_head", "push", "pull_request", "powershell_5_1", "powershell_7", "semantic_results_match"],
+      "properties": {
+        "status": {"const": "PENDING_EXACT_HEAD_CI"},
+        "accepted_candidate_head": {"type": "null"},
+        "push": {"type": "null"},
+        "pull_request": {"type": "null"},
+        "powershell_5_1": {"type": "null"},
+        "powershell_7": {"type": "null"},
+        "semantic_results_match": {"type": "null"}
+      }
+    },
+    "runtime_result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["runtime", "status", "checked_task_count", "mismatches", "side_effects"],
+      "properties": {
+        "runtime": {"enum": ["Windows PowerShell 5.1", "PowerShell 7 on Ubuntu"]},
+        "status": {"const": "VERIFIED"},
+        "checked_task_count": {"const": 60},
+        "mismatches": {"type": "array", "maxItems": 0},
+        "side_effects": {"type": "array", "maxItems": 0}
+      }
+    },
+    "final_delivery": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "accepted_candidate_head", "push", "pull_request", "powershell_5_1", "powershell_7", "semantic_results_match"],
+      "properties": {
+        "status": {"const": "VERIFIED_TRUE_GREEN"},
+        "accepted_candidate_head": {"$ref": "#/$defs/git_oid"},
+        "push": {"$ref": "#/$defs/run"},
+        "pull_request": {"$ref": "#/$defs/run"},
+        "powershell_5_1": {"$ref": "#/$defs/runtime_result"},
+        "powershell_7": {"$ref": "#/$defs/runtime_result"},
+        "semantic_results_match": {"const": true}
+      }
+    }
+  }
+}
