@@ -1,0 +1,787 @@
+{
+  "schema_version": "m4.2-gate-iv-b-protocol-proof-v1",
+  "milestone": "M4",
+  "revision": "M4.2",
+  "proof_kind": "OFFLINE_PROTOCOL_PROOF_NOT_EXECUTION_AUTHORIZATION",
+  "baseline": {
+    "required_ancestor_head": "988b4332504549df2038f51532175effd696a445",
+    "required_ancestor_tree": "38b1aeacd54b5e5a9ac115be1816206a7a3f8a4f",
+    "source_branch": "codex/m4-cross-engineering-forward-evaluation-m4.2-gate-iv-a-r2",
+    "gate_iv_a_r2_artifact": {
+      "head": "988b4332504549df2038f51532175effd696a445",
+      "path": "evals/m4/authorization/m4.2/gate-iv-a-review-r2.json",
+      "git_blob_oid": "734918bd5de16ea6f7595e206c3cd313ba041fa7",
+      "raw_sha256": "73162089ad9a477598fe0ddcc975f666be60c15fb21e7471e32f472a4c30fded",
+      "byte_length": 19411
+    },
+    "gate_iv_a_r2_decision": "APPROVE_M4_2_GATE_IV_B_PROTOCOL_PROOF_ONLY",
+    "gate_iv_a_r2_status": "M4_2_GATE_IV_A_REVIEW_PASSED_NOT_AUTHORIZED",
+    "fresh_execution_authorized": false,
+    "prior_blocked_review": {
+      "head": "ac6cc70714a90f73b4de09eaf0e521e699296890",
+      "pull_request": 4,
+      "decision": "BLOCKED",
+      "status": "BLOCKED",
+      "finding_count": 3,
+      "preserved": true
+    },
+    "repair_evidence": {
+      "head": "44d1004da1cbb2681ee0d423d1748f98fbaa13e4",
+      "pull_request": 5,
+      "push_run_id": 31354780589,
+      "pull_request_run_id": 31354802277,
+      "preserved": true
+    },
+    "r2_delivery": {
+      "accepted_review_head": "caf2f579556d6df0dff88af246e51ed3ae6438b9",
+      "push_run_id": 31359218501,
+      "pull_request_run_id": 31359221182,
+      "preserved": true
+    },
+    "zero_state_preserved": true
+  },
+  "source_artifacts": [
+    {
+      "head": "988b4332504549df2038f51532175effd696a445",
+      "path": "evals/m4/authorization/m4.2/gate-iv-a-review-r2.json",
+      "git_blob_oid": "734918bd5de16ea6f7595e206c3cd313ba041fa7",
+      "raw_sha256": "73162089ad9a477598fe0ddcc975f666be60c15fb21e7471e32f472a4c30fded",
+      "byte_length": 19411
+    },
+    {
+      "head": "988b4332504549df2038f51532175effd696a445",
+      "path": "evals/m4/authorization/m4.2/gate-iv-a-review-r2.schema.json",
+      "git_blob_oid": "3b225845edef3a0ad2b5ad7dc3c41697144a2896",
+      "raw_sha256": "e592dcf19b0ed01b6f34aaaadc35a7c81adeca8591f081ed71d317aaacfa35c8",
+      "byte_length": 22735
+    },
+    {
+      "head": "ac6cc70714a90f73b4de09eaf0e521e699296890",
+      "path": "evals/m4/authorization/m4.2/gate-iv-a-review.json",
+      "git_blob_oid": "9af5710dfba68ee5038f0c9e832591181d41835e",
+      "raw_sha256": "cd68d10a140606d4f7dd0ee6d09ebe49c1b4566aa54345cfe91728eaac06b373",
+      "byte_length": 19004
+    },
+    {
+      "head": "44d1004da1cbb2681ee0d423d1748f98fbaa13e4",
+      "path": ".gitattributes",
+      "git_blob_oid": "adc88fe923638750ebcf332b5604d84ecce616e5",
+      "raw_sha256": "c63413c79095cd3cf522e75d585929432872ea4464370f9bb96bc9ce9d01afe6",
+      "byte_length": 2005
+    },
+    {
+      "head": "44d1004da1cbb2681ee0d423d1748f98fbaa13e4",
+      "path": "docs/superpowers/plans/2026-08-10-m4.2-windows-lifecycle-repair.md",
+      "git_blob_oid": "4822bf059457f9a206010d8e0a18367a30de9303",
+      "raw_sha256": "d2e85ce653d943d3964f86979ab592b88344077762e3aa53f52d90a37e05ba5b",
+      "byte_length": 13285
+    },
+    {
+      "head": "44d1004da1cbb2681ee0d423d1748f98fbaa13e4",
+      "path": "evals/m4/audit_m4_2_preparation.py",
+      "git_blob_oid": "a1f5aad712a30457ae63aedecb247b0648905e47",
+      "raw_sha256": "cafc4084446d2a06ec71eee38c2683c2ff29d0428379c3337d8553ad76f80fab",
+      "byte_length": 45912
+    },
+    {
+      "head": "44d1004da1cbb2681ee0d423d1748f98fbaa13e4",
+      "path": "tests/test_m3_raw_sha_eol_policy.py",
+      "git_blob_oid": "d9500efff42db631b1cfedc39948f0b6bbb33abc",
+      "raw_sha256": "f1fdac0210607e9436bdacef0289da3e5da64589df8944f0cb9d32eb88e6434a",
+      "byte_length": 2784
+    },
+    {
+      "head": "988b4332504549df2038f51532175effd696a445",
+      "path": "evals/m4/revisions/m4.2/preparation-manifest.json",
+      "git_blob_oid": "5d33fe292745a3a2f22e7b841b1499fefab6baf7",
+      "raw_sha256": "bdd64dbe666f1b17c5c1bcad3ab148dced173331519a08b06087882060713a57",
+      "byte_length": 95902
+    },
+    {
+      "head": "988b4332504549df2038f51532175effd696a445",
+      "path": "evals/m4/revisions/m4.1/preparation-manifest.json",
+      "git_blob_oid": "42a10d36e4d64ab98aa724114b904001107f557d",
+      "raw_sha256": "d66ad9d513d8e64307f9a1553242d9b7d840ea5432d084b06d86707c1b4c2b61",
+      "byte_length": 85962
+    },
+    {
+      "head": "988b4332504549df2038f51532175effd696a445",
+      "path": "evals/m4/preparation-manifest.json",
+      "git_blob_oid": "196d19be1483b58f2f6f8bb67d76d9a3f8020d98",
+      "raw_sha256": "1838412c690c2000544999e955e399b4429289a698aa9467129f43fb0cd1bb76",
+      "byte_length": 75746
+    },
+    {
+      "head": "988b4332504549df2038f51532175effd696a445",
+      "path": "evals/m4/execution/prepare_m4_2_request_bundles.ps1",
+      "git_blob_oid": "27e3e11d5790f28e32fee87693a5f88ef77b6bb7",
+      "raw_sha256": "40b15ec3d1ce885f5f0d438377e298541974d46eb26efc934c0755b22b126712",
+      "byte_length": 8371
+    },
+    {
+      "head": "988b4332504549df2038f51532175effd696a445",
+      "path": "evals/m4/task-protocol.md",
+      "git_blob_oid": "65fff58503e80422c64602e6a6eaab9f7298c1c0",
+      "raw_sha256": "bf52fe558358036cffe37b6390bfeaf896aa45152b31a6777552de0f44b36468",
+      "byte_length": 1938
+    },
+    {
+      "head": "988b4332504549df2038f51532175effd696a445",
+      "path": "evals/m4/judge-rubric.json",
+      "git_blob_oid": "407a514c31bd33979e7d5c944224388890e0acac",
+      "raw_sha256": "36056affa68cba4e39c8281ef88fc9460b39a1158b8c52b718a2235d2bc5196a",
+      "byte_length": 6683
+    },
+    {
+      "head": "988b4332504549df2038f51532175effd696a445",
+      "path": "evals/m4/execution/m4.1/launch-claim.json",
+      "git_blob_oid": "794058739b96598955216b3960b95b0feea1208f",
+      "raw_sha256": "c16a2e53aa2e9215e2325464d547356afdb73897bfc7d29605e0105b9987b3c6",
+      "byte_length": 24078
+    },
+    {
+      "head": "988b4332504549df2038f51532175effd696a445",
+      "path": "evals/m4/execution/m4.1/execution-terminal.json",
+      "git_blob_oid": "76c7dc1ef88d587741d364536c86e389c296ad5c",
+      "raw_sha256": "7305d71ba94cd209f5bb0cb2c977db3bb157d95b907f8f59df9133c192f4d66e",
+      "byte_length": 3707
+    },
+    {
+      "head": "988b4332504549df2038f51532175effd696a445",
+      "path": "evals/m4/cases/automation-control-a.json",
+      "git_blob_oid": "f684ee9c7bc8aac386413b7fa684f8006de9a873",
+      "raw_sha256": "a5354e30ff243ad446c3252478182071ac5795db68d16250e34f9b11252d57a5",
+      "byte_length": 1744
+    },
+    {
+      "head": "988b4332504549df2038f51532175effd696a445",
+      "path": "evals/m4/cases/automation-control-b.json",
+      "git_blob_oid": "bb312bbaaa877b6405393b81b8f673d3343b6dcf",
+      "raw_sha256": "c966bfa8414976fdef91d530a28783dbd5e3fddd0625d13f1e2a9d295d78ec24",
+      "byte_length": 2808
+    },
+    {
+      "head": "988b4332504549df2038f51532175effd696a445",
+      "path": "evals/m4/cases/computer-data-a.json",
+      "git_blob_oid": "f36e3b5e3b6c867ba0cec73f33ece7c822a6a8d0",
+      "raw_sha256": "30cc5e751f3dfdb6324748e5ec32a65ec7ed28bb10e0740151d08db299245cbf",
+      "byte_length": 1621
+    },
+    {
+      "head": "988b4332504549df2038f51532175effd696a445",
+      "path": "evals/m4/cases/computer-data-b.json",
+      "git_blob_oid": "c02537bcbb901ec8ed4ccf17cee63a7c9bdd173c",
+      "raw_sha256": "81723981ff3c3881360e2e25a17509acf64b0f6ab54864084753a19ad381f311",
+      "byte_length": 2815
+    },
+    {
+      "head": "988b4332504549df2038f51532175effd696a445",
+      "path": "evals/m4/cases/electrical-a.json",
+      "git_blob_oid": "9700f9a204d41e4a7aaaa2f3c763e97522d7f47a",
+      "raw_sha256": "40b33a5b3c80ec834c541f33a4e20f05f09ce0e92fddb0578caab78b4a9177bd",
+      "byte_length": 1657
+    },
+    {
+      "head": "988b4332504549df2038f51532175effd696a445",
+      "path": "evals/m4/cases/electrical-b.json",
+      "git_blob_oid": "43cf4582bb982958ad94d91ee39f57ea133380d1",
+      "raw_sha256": "f5a12ee5e4abf7e1628c627ce25e1978c525e653f46711e22052bd9108615096",
+      "byte_length": 2887
+    },
+    {
+      "head": "988b4332504549df2038f51532175effd696a445",
+      "path": "evals/m4/cases/mechanical-a.json",
+      "git_blob_oid": "a85771462de90527c36d17498629aa4234496d2c",
+      "raw_sha256": "3428fb9d43a0f7f0d6e96c5d5ced865d3019562d6eaf63a3dd23a7d39cc02161",
+      "byte_length": 1705
+    },
+    {
+      "head": "988b4332504549df2038f51532175effd696a445",
+      "path": "evals/m4/cases/mechanical-b.json",
+      "git_blob_oid": "d127c55ff152d6eb589c9ea34dd6714652fe58c7",
+      "raw_sha256": "a3e0f6000446b4bd74ad6d9c21b5cf597db27d42c31c7335f197b55a7a3ea3c2",
+      "byte_length": 2794
+    },
+    {
+      "head": "988b4332504549df2038f51532175effd696a445",
+      "path": "evals/m4/cases/multiphysics-a.json",
+      "git_blob_oid": "9ac04b96291d27e9b78ec6c85dcb88675d36b2f5",
+      "raw_sha256": "e7efc26df05283707d67db483bda97713d9bbe00d16c3dce4ccaf8833ea1bc60",
+      "byte_length": 1679
+    },
+    {
+      "head": "988b4332504549df2038f51532175effd696a445",
+      "path": "evals/m4/cases/multiphysics-b.json",
+      "git_blob_oid": "f4a325c9bc3ffe25eaa76260284643ddf6bcc365",
+      "raw_sha256": "9d02653f122b481b6996690d92ba6288b83ecea1abc75670b926ccd93e01977b",
+      "byte_length": 3159
+    },
+    {
+      "head": "988b4332504549df2038f51532175effd696a445",
+      "path": "evals/m4/cases/nuclear-a.json",
+      "git_blob_oid": "cdfd1c0b09e89343bda5db91769064ba0a5d953f",
+      "raw_sha256": "65f74f1d042ca2a2e39724d76c64acc65b046998f03bdd1653f73d453935fe4e",
+      "byte_length": 1795
+    },
+    {
+      "head": "988b4332504549df2038f51532175effd696a445",
+      "path": "evals/m4/cases/nuclear-b.json",
+      "git_blob_oid": "0a79100a9cac06fa760ef16e04a575e905c53e11",
+      "raw_sha256": "4ae1a40497f3cd5c5cc8caa7158394fa63ad2347db6eb4fb260b0d5a748f0d25",
+      "byte_length": 3027
+    },
+    {
+      "head": "988b4332504549df2038f51532175effd696a445",
+      "path": "evals/m4/variants/A1/instructions.md",
+      "git_blob_oid": "d0d2d5b1cc158b2f18c6977b75f3c5520d61ec1c",
+      "raw_sha256": "271a4389f6b07286fd57b64b51c30862e30b2f6fd742dbd77d4fbbfb1c4e7018",
+      "byte_length": 131008
+    },
+    {
+      "head": "988b4332504549df2038f51532175effd696a445",
+      "path": "evals/m4/variants/A2/instructions.md",
+      "git_blob_oid": "5177c723d736580dd2f3797eb1bd6810b9fadc17",
+      "raw_sha256": "37ba950aa17bece479189aee6abaebc625845c136361b4a6d82ae0e14516cb2d",
+      "byte_length": 138705
+    },
+    {
+      "head": "988b4332504549df2038f51532175effd696a445",
+      "path": "evals/m4/variants/A3/instructions.md",
+      "git_blob_oid": "b544901856b92e322825d7c413d0b004cd23b002",
+      "raw_sha256": "eb2994a357d7db20faca66ed323223927e7f8700291349a6ec55d2be27c2c8c6",
+      "byte_length": 73637
+    },
+    {
+      "head": "988b4332504549df2038f51532175effd696a445",
+      "path": "evals/m4/variants/F/instructions.md",
+      "git_blob_oid": "cc8f1a2b7a56675ef4446b1efe501643e57e26c7",
+      "raw_sha256": "79a88447dcab4023267764bfe88d5e2a877e09fe7dd53a9c7242a7076cbef04e",
+      "byte_length": 148331
+    }
+  ],
+  "matrix_proof": {
+    "algorithm": "m4.2-protocol-matrix-binding-v1",
+    "case_count": 12,
+    "arm_count": 5,
+    "planned_task_count": 60,
+    "batch_count": 6,
+    "tasks_per_batch": 10,
+    "unique_task_id_count": 60,
+    "unique_blind_id_count": 60,
+    "unique_batch_id_count": 6,
+    "task_order_sha256": "08cb43f486d2da12553ec2c81b5f60f88bb8ba0e633970c5645147e52c03d4e6",
+    "batch_order_sha256": "303581068d7517db792077a753a9af9c3c640d4d236d7d089d84800a9620abe7",
+    "matrix_binding_sha256": "2bdb12d7290b2026b41280a6a25e963491201f8c57aa9bcc958e9dcf61e60180",
+    "passed": true
+  },
+  "request_binding_proof": {
+    "algorithm": "m4.2-request-binding-v1",
+    "independently_recomputed": 60,
+    "matched": 60,
+    "unique": 60,
+    "aggregate_sha256": "5bc47878e3c13afd9dafc4d17ca742ce4d29c8a2a00d70a53fc1753b11329142",
+    "source_bytes_verified": 60,
+    "passed": true
+  },
+  "candidate_authorization_fixture": {
+    "fixture_kind": "NON_EXECUTABLE_PROTOCOL_FIXTURE",
+    "fresh_execution_authorized": false,
+    "result_writes_authorized": false,
+    "authorization_token_status": "NOT_ISSUED",
+    "claim_authorized": false,
+    "authorized_task_count": 0,
+    "matrix_authority_task_count_if_later_authorized": 60,
+    "partial_authorization_allowed": false
+  },
+  "claim_semantics": {
+    "simulator": "m4.2-offline-claim-state-machine-v1",
+    "scenarios": [
+      {
+        "name": "first_claim",
+        "input": {
+          "virtual_state": "VIRTUAL_UNCONSUMED",
+          "preconditions": {
+            "model_binding_matches": true,
+            "project_matches": true,
+            "worktree_matches": true,
+            "request_bindings_match": true,
+            "head_is_fresh": true,
+            "prerequisites_present": true
+          },
+          "requested_task_count": 60,
+          "post_claim_failure": false
+        },
+        "output": {
+          "decision": "SIMULATED_CLAIM_ACCEPTED",
+          "virtual_state_before": "VIRTUAL_UNCONSUMED",
+          "virtual_state_after": "VIRTUAL_CONSUMED",
+          "simulated_claim_count_delta": 1,
+          "simulated_matrix_authority_consumed_count": 60,
+          "simulated_dispatched_tasks": 0,
+          "simulated_retry_count": 0,
+          "simulated_repair_count": 0,
+          "simulated_followup_count": 0,
+          "successor_revision_required": false
+        }
+      },
+      {
+        "name": "second_claim",
+        "input": {
+          "virtual_state": "VIRTUAL_CONSUMED",
+          "preconditions": {
+            "model_binding_matches": true,
+            "project_matches": true,
+            "worktree_matches": true,
+            "request_bindings_match": true,
+            "head_is_fresh": true,
+            "prerequisites_present": true
+          },
+          "requested_task_count": 60,
+          "post_claim_failure": false
+        },
+        "output": {
+          "decision": "REJECTED_ALREADY_CONSUMED",
+          "virtual_state_before": "VIRTUAL_CONSUMED",
+          "virtual_state_after": "VIRTUAL_CONSUMED",
+          "simulated_claim_count_delta": 0,
+          "simulated_matrix_authority_consumed_count": 0,
+          "simulated_dispatched_tasks": 0,
+          "simulated_retry_count": 0,
+          "simulated_repair_count": 0,
+          "simulated_followup_count": 0,
+          "successor_revision_required": true
+        }
+      },
+      {
+        "name": "partial_authority",
+        "input": {
+          "virtual_state": "VIRTUAL_UNCONSUMED",
+          "preconditions": {
+            "model_binding_matches": true,
+            "project_matches": true,
+            "worktree_matches": true,
+            "request_bindings_match": true,
+            "head_is_fresh": true,
+            "prerequisites_present": true
+          },
+          "requested_task_count": 59,
+          "post_claim_failure": false
+        },
+        "output": {
+          "decision": "REJECTED_PARTIAL_AUTHORITY",
+          "virtual_state_before": "VIRTUAL_UNCONSUMED",
+          "virtual_state_after": "VIRTUAL_UNCONSUMED",
+          "simulated_claim_count_delta": 0,
+          "simulated_matrix_authority_consumed_count": 0,
+          "simulated_dispatched_tasks": 0,
+          "simulated_retry_count": 0,
+          "simulated_repair_count": 0,
+          "simulated_followup_count": 0,
+          "successor_revision_required": false
+        }
+      },
+      {
+        "name": "post_claim_failure",
+        "input": {
+          "virtual_state": "VIRTUAL_UNCONSUMED",
+          "preconditions": {
+            "model_binding_matches": true,
+            "project_matches": true,
+            "worktree_matches": true,
+            "request_bindings_match": true,
+            "head_is_fresh": true,
+            "prerequisites_present": true
+          },
+          "requested_task_count": 60,
+          "post_claim_failure": true
+        },
+        "output": {
+          "decision": "STOPPED_PROTOCOL_OR_INFRASTRUCTURE_FAILURE",
+          "virtual_state_before": "VIRTUAL_UNCONSUMED",
+          "virtual_state_after": "VIRTUAL_TERMINAL_FAILED",
+          "simulated_claim_count_delta": 1,
+          "simulated_matrix_authority_consumed_count": 60,
+          "simulated_dispatched_tasks": 0,
+          "simulated_retry_count": 0,
+          "simulated_repair_count": 0,
+          "simulated_followup_count": 0,
+          "successor_revision_required": true
+        }
+      }
+    ],
+    "passed": true
+  },
+  "pre_dispatch_proofs": [
+    {
+      "name": "model_binding_mismatch",
+      "failed_precondition": "model_binding_matches",
+      "input": {
+        "virtual_state": "VIRTUAL_UNCONSUMED",
+        "preconditions": {
+          "model_binding_matches": false,
+          "project_matches": true,
+          "worktree_matches": true,
+          "request_bindings_match": true,
+          "head_is_fresh": true,
+          "prerequisites_present": true
+        },
+        "requested_task_count": 60,
+        "post_claim_failure": false
+      },
+      "output": {
+        "decision": "REJECTED_PRE_DISPATCH",
+        "virtual_state_before": "VIRTUAL_UNCONSUMED",
+        "virtual_state_after": "VIRTUAL_UNCONSUMED",
+        "simulated_claim_count_delta": 0,
+        "simulated_matrix_authority_consumed_count": 0,
+        "simulated_dispatched_tasks": 0,
+        "simulated_retry_count": 0,
+        "simulated_repair_count": 0,
+        "simulated_followup_count": 0,
+        "successor_revision_required": false
+      }
+    },
+    {
+      "name": "project_mismatch",
+      "failed_precondition": "project_matches",
+      "input": {
+        "virtual_state": "VIRTUAL_UNCONSUMED",
+        "preconditions": {
+          "model_binding_matches": true,
+          "project_matches": false,
+          "worktree_matches": true,
+          "request_bindings_match": true,
+          "head_is_fresh": true,
+          "prerequisites_present": true
+        },
+        "requested_task_count": 60,
+        "post_claim_failure": false
+      },
+      "output": {
+        "decision": "REJECTED_PRE_DISPATCH",
+        "virtual_state_before": "VIRTUAL_UNCONSUMED",
+        "virtual_state_after": "VIRTUAL_UNCONSUMED",
+        "simulated_claim_count_delta": 0,
+        "simulated_matrix_authority_consumed_count": 0,
+        "simulated_dispatched_tasks": 0,
+        "simulated_retry_count": 0,
+        "simulated_repair_count": 0,
+        "simulated_followup_count": 0,
+        "successor_revision_required": false
+      }
+    },
+    {
+      "name": "worktree_mismatch",
+      "failed_precondition": "worktree_matches",
+      "input": {
+        "virtual_state": "VIRTUAL_UNCONSUMED",
+        "preconditions": {
+          "model_binding_matches": true,
+          "project_matches": true,
+          "worktree_matches": false,
+          "request_bindings_match": true,
+          "head_is_fresh": true,
+          "prerequisites_present": true
+        },
+        "requested_task_count": 60,
+        "post_claim_failure": false
+      },
+      "output": {
+        "decision": "REJECTED_PRE_DISPATCH",
+        "virtual_state_before": "VIRTUAL_UNCONSUMED",
+        "virtual_state_after": "VIRTUAL_UNCONSUMED",
+        "simulated_claim_count_delta": 0,
+        "simulated_matrix_authority_consumed_count": 0,
+        "simulated_dispatched_tasks": 0,
+        "simulated_retry_count": 0,
+        "simulated_repair_count": 0,
+        "simulated_followup_count": 0,
+        "successor_revision_required": false
+      }
+    },
+    {
+      "name": "request_binding_mismatch",
+      "failed_precondition": "request_bindings_match",
+      "input": {
+        "virtual_state": "VIRTUAL_UNCONSUMED",
+        "preconditions": {
+          "model_binding_matches": true,
+          "project_matches": true,
+          "worktree_matches": true,
+          "request_bindings_match": false,
+          "head_is_fresh": true,
+          "prerequisites_present": true
+        },
+        "requested_task_count": 60,
+        "post_claim_failure": false
+      },
+      "output": {
+        "decision": "REJECTED_PRE_DISPATCH",
+        "virtual_state_before": "VIRTUAL_UNCONSUMED",
+        "virtual_state_after": "VIRTUAL_UNCONSUMED",
+        "simulated_claim_count_delta": 0,
+        "simulated_matrix_authority_consumed_count": 0,
+        "simulated_dispatched_tasks": 0,
+        "simulated_retry_count": 0,
+        "simulated_repair_count": 0,
+        "simulated_followup_count": 0,
+        "successor_revision_required": false
+      }
+    },
+    {
+      "name": "stale_head",
+      "failed_precondition": "head_is_fresh",
+      "input": {
+        "virtual_state": "VIRTUAL_UNCONSUMED",
+        "preconditions": {
+          "model_binding_matches": true,
+          "project_matches": true,
+          "worktree_matches": true,
+          "request_bindings_match": true,
+          "head_is_fresh": false,
+          "prerequisites_present": true
+        },
+        "requested_task_count": 60,
+        "post_claim_failure": false
+      },
+      "output": {
+        "decision": "REJECTED_PRE_DISPATCH",
+        "virtual_state_before": "VIRTUAL_UNCONSUMED",
+        "virtual_state_after": "VIRTUAL_UNCONSUMED",
+        "simulated_claim_count_delta": 0,
+        "simulated_matrix_authority_consumed_count": 0,
+        "simulated_dispatched_tasks": 0,
+        "simulated_retry_count": 0,
+        "simulated_repair_count": 0,
+        "simulated_followup_count": 0,
+        "successor_revision_required": false
+      }
+    },
+    {
+      "name": "missing_prerequisite",
+      "failed_precondition": "prerequisites_present",
+      "input": {
+        "virtual_state": "VIRTUAL_UNCONSUMED",
+        "preconditions": {
+          "model_binding_matches": true,
+          "project_matches": true,
+          "worktree_matches": true,
+          "request_bindings_match": true,
+          "head_is_fresh": true,
+          "prerequisites_present": false
+        },
+        "requested_task_count": 60,
+        "post_claim_failure": false
+      },
+      "output": {
+        "decision": "REJECTED_PRE_DISPATCH",
+        "virtual_state_before": "VIRTUAL_UNCONSUMED",
+        "virtual_state_after": "VIRTUAL_UNCONSUMED",
+        "simulated_claim_count_delta": 0,
+        "simulated_matrix_authority_consumed_count": 0,
+        "simulated_dispatched_tasks": 0,
+        "simulated_retry_count": 0,
+        "simulated_repair_count": 0,
+        "simulated_followup_count": 0,
+        "successor_revision_required": false
+      }
+    }
+  ],
+  "batch_failure_proofs": [
+    {
+      "input": {
+        "failed_batch_sequence": 1
+      },
+      "output": {
+        "decision": "STOPPED_PROTOCOL_OR_INFRASTRUCTURE_FAILURE",
+        "failed_batch": "M4.2-BATCH-NUC",
+        "failed_batch_sequence": 1,
+        "completed_prior_batches": [],
+        "simulated_tasks_dispatched_before_failure": 0,
+        "later_batches_not_started": [
+          "M4.2-BATCH-MEC",
+          "M4.2-BATCH-ELE",
+          "M4.2-BATCH-AUT",
+          "M4.2-BATCH-COM",
+          "M4.2-BATCH-MPH"
+        ],
+        "simulated_retry_count": 0,
+        "simulated_repair_count": 0,
+        "simulated_followup_count": 0,
+        "successor_revision_required": true
+      }
+    },
+    {
+      "input": {
+        "failed_batch_sequence": 2
+      },
+      "output": {
+        "decision": "STOPPED_PROTOCOL_OR_INFRASTRUCTURE_FAILURE",
+        "failed_batch": "M4.2-BATCH-MEC",
+        "failed_batch_sequence": 2,
+        "completed_prior_batches": [
+          "M4.2-BATCH-NUC"
+        ],
+        "simulated_tasks_dispatched_before_failure": 10,
+        "later_batches_not_started": [
+          "M4.2-BATCH-ELE",
+          "M4.2-BATCH-AUT",
+          "M4.2-BATCH-COM",
+          "M4.2-BATCH-MPH"
+        ],
+        "simulated_retry_count": 0,
+        "simulated_repair_count": 0,
+        "simulated_followup_count": 0,
+        "successor_revision_required": true
+      }
+    },
+    {
+      "input": {
+        "failed_batch_sequence": 3
+      },
+      "output": {
+        "decision": "STOPPED_PROTOCOL_OR_INFRASTRUCTURE_FAILURE",
+        "failed_batch": "M4.2-BATCH-ELE",
+        "failed_batch_sequence": 3,
+        "completed_prior_batches": [
+          "M4.2-BATCH-NUC",
+          "M4.2-BATCH-MEC"
+        ],
+        "simulated_tasks_dispatched_before_failure": 20,
+        "later_batches_not_started": [
+          "M4.2-BATCH-AUT",
+          "M4.2-BATCH-COM",
+          "M4.2-BATCH-MPH"
+        ],
+        "simulated_retry_count": 0,
+        "simulated_repair_count": 0,
+        "simulated_followup_count": 0,
+        "successor_revision_required": true
+      }
+    },
+    {
+      "input": {
+        "failed_batch_sequence": 4
+      },
+      "output": {
+        "decision": "STOPPED_PROTOCOL_OR_INFRASTRUCTURE_FAILURE",
+        "failed_batch": "M4.2-BATCH-AUT",
+        "failed_batch_sequence": 4,
+        "completed_prior_batches": [
+          "M4.2-BATCH-NUC",
+          "M4.2-BATCH-MEC",
+          "M4.2-BATCH-ELE"
+        ],
+        "simulated_tasks_dispatched_before_failure": 30,
+        "later_batches_not_started": [
+          "M4.2-BATCH-COM",
+          "M4.2-BATCH-MPH"
+        ],
+        "simulated_retry_count": 0,
+        "simulated_repair_count": 0,
+        "simulated_followup_count": 0,
+        "successor_revision_required": true
+      }
+    },
+    {
+      "input": {
+        "failed_batch_sequence": 5
+      },
+      "output": {
+        "decision": "STOPPED_PROTOCOL_OR_INFRASTRUCTURE_FAILURE",
+        "failed_batch": "M4.2-BATCH-COM",
+        "failed_batch_sequence": 5,
+        "completed_prior_batches": [
+          "M4.2-BATCH-NUC",
+          "M4.2-BATCH-MEC",
+          "M4.2-BATCH-ELE",
+          "M4.2-BATCH-AUT"
+        ],
+        "simulated_tasks_dispatched_before_failure": 40,
+        "later_batches_not_started": [
+          "M4.2-BATCH-MPH"
+        ],
+        "simulated_retry_count": 0,
+        "simulated_repair_count": 0,
+        "simulated_followup_count": 0,
+        "successor_revision_required": true
+      }
+    },
+    {
+      "input": {
+        "failed_batch_sequence": 6
+      },
+      "output": {
+        "decision": "STOPPED_PROTOCOL_OR_INFRASTRUCTURE_FAILURE",
+        "failed_batch": "M4.2-BATCH-MPH",
+        "failed_batch_sequence": 6,
+        "completed_prior_batches": [
+          "M4.2-BATCH-NUC",
+          "M4.2-BATCH-MEC",
+          "M4.2-BATCH-ELE",
+          "M4.2-BATCH-AUT",
+          "M4.2-BATCH-COM"
+        ],
+        "simulated_tasks_dispatched_before_failure": 50,
+        "later_batches_not_started": [],
+        "simulated_retry_count": 0,
+        "simulated_repair_count": 0,
+        "simulated_followup_count": 0,
+        "successor_revision_required": true
+      }
+    }
+  ],
+  "visibility_proof": {
+    "task_context_allowed_inputs": [
+      "case",
+      "task_protocol",
+      "selected_variant_instruction"
+    ],
+    "visible_result_task_ids": [],
+    "cross_task_results_visible": false,
+    "blind_mapping_available_to_task": false,
+    "judge_available": false,
+    "unblinding_available": false,
+    "aggregation_available": false,
+    "passed": true
+  },
+  "negative_authority": {
+    "authorized_tasks": 0,
+    "created_contexts": 0,
+    "dispatched_tasks": 0,
+    "finalizations": 0,
+    "results_observed": 0,
+    "judge_scores": 0,
+    "retries": 0,
+    "repairs": 0,
+    "unauthorized_side_effects": 0,
+    "raw_model_finals": 0,
+    "aggregation_calls": 0,
+    "acceptance_claims": 0,
+    "authorization_artifact": "ABSENT",
+    "execution_control": "ABSENT",
+    "authorization_token_status": "NOT_ISSUED",
+    "launch_claim": "ABSENT",
+    "result_root": "ABSENT",
+    "judge": "NOT_RUN",
+    "aggregation": "NOT_RUN",
+    "closure": "NOT_RUN",
+    "m5": "NOT_STARTED",
+    "forbidden_paths": [],
+    "forbidden_states": [],
+    "passed": true
+  },
+  "delivery": {
+    "status": "PENDING_EXACT_HEAD_CI",
+    "accepted_proof_head": null,
+    "push": null,
+    "pull_request": null,
+    "powershell_5_1": null,
+    "powershell_7": null,
+    "semantic_results_match": null
+  },
+  "findings": [],
+  "reviewer_side_effects": [],
+  "decision": "PENDING_M4_2_GATE_IV_B_EXACT_HEAD_CI",
+  "status": "M4_2_GATE_IV_B_LOCAL_PROTOCOL_PROOF_PASSED_PENDING_EXACT_HEAD_CI"
+}
