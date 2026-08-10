@@ -167,13 +167,13 @@
     "schema_binding": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["path", "raw_sha256", "byte_length", "closed", "instance_present"],
+      "required": ["path", "raw_sha256", "byte_length", "closed", "executable_instance_present"],
       "properties": {
         "path": {"type": "string", "pattern": "^evals/m4/authorization/m4\\.2/.*schema\\.json$"},
         "raw_sha256": {"$ref": "#/$defs/sha256"},
         "byte_length": {"type": "integer", "minimum": 1},
         "closed": {"const": true},
-        "instance_present": {"const": false}
+        "executable_instance_present": {"const": false}
       }
     },
     "matrix_projection": {
@@ -271,22 +271,31 @@
     "policy_proofs": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["whole_matrix_task_count", "claim_consumes_entire_matrix_authorization", "partial_authority_allowed", "second_claim_allowed", "attempts_per_task_id", "retry_authorized", "repair_authorized", "followup_message_authorized", "terminal_failure_consumes_authority", "successor_revision_required_after_failure", "cross_task_result_visibility", "blind_mapping_access_authorized", "judge_execution_authorized", "aggregation_authorized", "passed"],
+      "required": ["whole_matrix_task_count", "claim_consumes_entire_matrix_authorization", "partial_authority_allowed", "second_claim_allowed", "first_claim_consumed_task_count", "first_claim_dispatched_task_count", "partial_claim_decision", "second_claim_decision", "post_claim_failure_decision", "attempts_per_task_id", "retry_authorized", "repair_authorized", "followup_message_authorized", "terminal_failure_consumes_authority", "successor_revision_required_after_failure", "failed_batch_scenario_count", "later_batch_dispatch_count_after_failure", "cross_task_result_visibility", "blind_mapping_access_authorized", "judge_execution_authorized", "aggregation_authorized", "claim_semantics_sha256", "batch_failure_semantics_sha256", "passed"],
       "properties": {
         "whole_matrix_task_count": {"const": 60},
         "claim_consumes_entire_matrix_authorization": {"const": true},
         "partial_authority_allowed": {"const": false},
         "second_claim_allowed": {"const": false},
+        "first_claim_consumed_task_count": {"const": 60},
+        "first_claim_dispatched_task_count": {"const": 0},
+        "partial_claim_decision": {"const": "REJECTED_PARTIAL_AUTHORITY"},
+        "second_claim_decision": {"const": "REJECTED_ALREADY_CONSUMED"},
+        "post_claim_failure_decision": {"const": "STOPPED_PROTOCOL_OR_INFRASTRUCTURE_FAILURE"},
         "attempts_per_task_id": {"const": 1},
         "retry_authorized": {"const": false},
         "repair_authorized": {"const": false},
         "followup_message_authorized": {"const": false},
         "terminal_failure_consumes_authority": {"const": true},
         "successor_revision_required_after_failure": {"const": true},
+        "failed_batch_scenario_count": {"const": 6},
+        "later_batch_dispatch_count_after_failure": {"const": 0},
         "cross_task_result_visibility": {"const": false},
         "blind_mapping_access_authorized": {"const": false},
         "judge_execution_authorized": {"const": false},
         "aggregation_authorized": {"const": false},
+        "claim_semantics_sha256": {"$ref": "#/$defs/sha256"},
+        "batch_failure_semantics_sha256": {"$ref": "#/$defs/sha256"},
         "passed": {"const": true}
       }
     },
