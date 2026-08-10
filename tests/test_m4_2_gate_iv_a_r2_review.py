@@ -131,6 +131,19 @@ def _final_review() -> dict[str, Any]:
     return review
 
 
+def _provisional_review() -> dict[str, Any]:
+    review = copy.deepcopy(_load_review())
+    review["review_delivery"] = {
+        "status": "PENDING_EXACT_HEAD_CI",
+        "accepted_review_head": None,
+        "push": None,
+        "pull_request": None,
+    }
+    review["decision"] = PROVISIONAL_DECISION
+    review["status"] = PROVISIONAL_STATUS
+    return review
+
+
 class M42GateIVAR2ContractTests(unittest.TestCase):
     def test_schema_artifact_and_auditor_exist_without_copying_r1_artifact(self) -> None:
         self.assertTrue(SCHEMA_PATH.is_file())
@@ -153,22 +166,25 @@ class M42GateIVAR2ContractTests(unittest.TestCase):
                         set(definition["properties"]),
                     )
 
-    def test_provisional_artifact_shape_and_permissions_are_exact(self) -> None:
+    def test_artifact_state_and_permissions_are_exact(self) -> None:
         review = _load_review()
         self.assertEqual(set(review), ROOT_KEYS)
         self.assertEqual(review["findings"], [])
         self.assertEqual(review["reviewer_side_effects"], [])
-        self.assertEqual(review["decision"], PROVISIONAL_DECISION)
-        self.assertEqual(review["status"], PROVISIONAL_STATUS)
-        self.assertEqual(
-            review["review_delivery"],
-            {
-                "status": "PENDING_EXACT_HEAD_CI",
-                "accepted_review_head": None,
-                "push": None,
-                "pull_request": None,
-            },
-        )
+        delivery = review["review_delivery"]
+        if delivery["status"] == "PENDING_EXACT_HEAD_CI":
+            self.assertEqual(review["decision"], PROVISIONAL_DECISION)
+            self.assertEqual(review["status"], PROVISIONAL_STATUS)
+            self.assertIsNone(delivery["accepted_review_head"])
+            self.assertIsNone(delivery["push"])
+            self.assertIsNone(delivery["pull_request"])
+        else:
+            self.assertEqual(delivery["status"], "VERIFIED_TRUE_GREEN")
+            self.assertEqual(review["decision"], FINAL_DECISION)
+            self.assertEqual(review["status"], FINAL_STATUS)
+            self.assertIsInstance(delivery["accepted_review_head"], str)
+            self.assertIsInstance(delivery["push"], dict)
+            self.assertIsInstance(delivery["pull_request"], dict)
         lifecycle = review["lifecycle_requirements"]
         self.assertIs(lifecycle["fresh_execution_authorized"], False)
         self.assertIs(lifecycle["authorization_created"], False)
@@ -273,12 +289,12 @@ class M42GateIVAR2MutationTests(unittest.TestCase):
         self.assertEqual(result["status"], "BLOCKED")
         self.assertIn(error, result["errors"])
 
-    def test_exact_provisional_review_passes_with_git_verification(self) -> None:
+    def test_exact_committed_review_passes_with_git_verification(self) -> None:
         result = self._audit(copy.deepcopy(self.review), verify_git=True)
         self.assertEqual(result["errors"], [])
         self.assertEqual(result["findings"], [])
         self.assertEqual(result["reviewer_side_effects"], [])
-        self.assertEqual(result["status"], PROVISIONAL_STATUS)
+        self.assertEqual(result["status"], self.review["status"])
         self.assertEqual(result["planned_task_count"], 60)
         self.assertEqual(result["batch_count"], 6)
         self.assertEqual(result["request_binding_count"], 60)
@@ -435,7 +451,7 @@ class M42GateIVAR2MutationTests(unittest.TestCase):
                 self._assert_blocked(review, "repair_ci_evidence_mismatch")
 
     def test_rejects_provisional_or_final_state_mismatch(self) -> None:
-        review = copy.deepcopy(self.review)
+        review = _provisional_review()
         review["decision"] = FINAL_DECISION
         self._assert_blocked(review, "provisional_decision_status_mismatch")
         review = _final_review()
@@ -494,7 +510,7 @@ class M42GateIVAR2MutationTests(unittest.TestCase):
         self.assertEqual(before, after)
         payload = json.loads(first.stdout)
         self.assertEqual(payload["errors"], [])
-        self.assertEqual(payload["status"], PROVISIONAL_STATUS)
+        self.assertEqual(payload["status"], self.review["status"])
         self.assertEqual(payload["findings"], [])
         self.assertEqual(payload["reviewer_side_effects"], [])
 
