@@ -414,10 +414,138 @@
     "m5": "NOT_STARTED"
   },
   "review_delivery": {
-    "status": "PENDING_EXACT_HEAD_CI",
-    "accepted_review_head": null,
-    "push": null,
-    "pull_request": null
+    "status": "VERIFIED_TRUE_GREEN",
+    "accepted_review_head": "caf2f579556d6df0dff88af246e51ed3ae6438b9",
+    "push": {
+      "run_id": 31359218501,
+      "event": "push",
+      "head": "caf2f579556d6df0dff88af246e51ed3ae6438b9",
+      "branch": "codex/m4-cross-engineering-forward-evaluation-m4.2-gate-iv-a-r2",
+      "conclusion": "success",
+      "job_count": 9,
+      "jobs": [
+        {
+          "job_id": 93364594550,
+          "name": "validate",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 93364594572,
+          "name": "historical-audit-cross-platform (windows-latest)",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 93364594593,
+          "name": "M4.1 pre-claim regression (ubuntu-latest)",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 93364594609,
+          "name": "historical-audit-cross-platform (ubuntu-latest)",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 93364594610,
+          "name": "M4.1 pre-claim regression (windows-latest)",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 93364594612,
+          "name": "M4.2 repaired frozen preparation (NOT AUTHORIZED) (windows-latest)",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 93364594613,
+          "name": "M4.2 repaired frozen preparation (NOT AUTHORIZED) (ubuntu-latest)",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 93364594618,
+          "name": "M4.2 Gate IV-A r2 review (NOT AUTHORIZED) (ubuntu-latest)",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 93364594670,
+          "name": "M4.2 Gate IV-A r2 review (NOT AUTHORIZED) (windows-latest)",
+          "conclusion": "success"
+        }
+      ],
+      "raw_log": {
+        "byte_length": 1217964,
+        "sha256": "933554d4e16e839f6f8de3cc7ed52ae7a4abf7e894458a699d869b8621985a60",
+        "markers": {
+          "FAIL:": 0,
+          "FAILED (": 0,
+          "Traceback": 0,
+          "##[error]": 0
+        }
+      }
+    },
+    "pull_request": {
+      "run_id": 31359221182,
+      "event": "pull_request",
+      "head": "caf2f579556d6df0dff88af246e51ed3ae6438b9",
+      "branch": "codex/m4-cross-engineering-forward-evaluation-m4.2-gate-iv-a-r2",
+      "conclusion": "success",
+      "job_count": 9,
+      "jobs": [
+        {
+          "job_id": 93364601686,
+          "name": "validate",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 93364601748,
+          "name": "M4.2 repaired frozen preparation (NOT AUTHORIZED) (windows-latest)",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 93364601751,
+          "name": "M4.2 repaired frozen preparation (NOT AUTHORIZED) (ubuntu-latest)",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 93364601768,
+          "name": "M4.1 pre-claim regression (windows-latest)",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 93364601775,
+          "name": "M4.2 Gate IV-A r2 review (NOT AUTHORIZED) (windows-latest)",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 93364601777,
+          "name": "historical-audit-cross-platform (windows-latest)",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 93364601790,
+          "name": "historical-audit-cross-platform (ubuntu-latest)",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 93364601801,
+          "name": "M4.1 pre-claim regression (ubuntu-latest)",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 93364601812,
+          "name": "M4.2 Gate IV-A r2 review (NOT AUTHORIZED) (ubuntu-latest)",
+          "conclusion": "success"
+        }
+      ],
+      "raw_log": {
+        "byte_length": 1231978,
+        "sha256": "0efaf0ba5135fea86f4c0d32788c02e5b2555c392802ee3fe11f59daaf65ae0d",
+        "markers": {
+          "FAIL:": 0,
+          "FAILED (": 0,
+          "Traceback": 0,
+          "##[error]": 0
+        }
+      }
+    }
   },
   "findings": [],
   "limitations": [
@@ -427,6 +555,6 @@
     "Fresh execution remains forbidden unless a later independent authorization gate explicitly grants it."
   ],
   "reviewer_side_effects": [],
-  "decision": "PENDING_M4_2_GATE_IV_A_R2_EXACT_HEAD_CI",
-  "status": "M4_2_GATE_IV_A_R2_LOCAL_REVIEW_PASSED_PENDING_EXACT_HEAD_CI"
+  "decision": "APPROVE_M4_2_GATE_IV_B_PROTOCOL_PROOF_ONLY",
+  "status": "M4_2_GATE_IV_A_REVIEW_PASSED_NOT_AUTHORIZED"
 }
