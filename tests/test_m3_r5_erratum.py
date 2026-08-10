@@ -98,14 +98,14 @@ class M3R5ErratumTests(unittest.TestCase):
         self.assertEqual(diagnostic["retry_count"], 0)
         self.assertFalse(diagnostic["composed_output_created"])
 
-    def test_status_top_preserves_terminal_history_during_m4_2_gate_iv_b(self):
+    def test_status_top_preserves_terminal_history_during_m4_2_authorization_preparation(self):
         text = (REPO_ROOT / "STATUS.md").read_text(encoding="utf-8")
         current = text.split("## M3 checklist", 1)[0]
 
         self.assertIn(
-            "Active revision: `M4.2 GATE_IV_B_PROTOCOL_PROOF; "
-            "M4_2_GATE_IV_B_PROTOCOL_PROOF_PASSED_NOT_AUTHORIZED; "
-            "decision=APPROVE_M4_2_AUTHORIZATION_PREPARATION_ONLY; "
+            "Active revision: `M4.2 AUTHORIZATION_PREPARATION; "
+            "M4_2_AUTHORIZATION_PREPARATION_PASSED_NOT_AUTHORIZED; "
+            "decision=APPROVE_M4_2_SEPARATE_AUTHORIZATION_WORK_PACKAGE_ONLY; "
             "fresh_execution_authorized=false`",
             current,
         )
@@ -128,6 +128,7 @@ class M3R5ErratumTests(unittest.TestCase):
             "M4_2_WINDOWS_LIFECYCLE_REPAIR_ACCEPTED; "
             "M4_2_GATE_IV_A_REVIEW_PASSED_NOT_AUTHORIZED; "
             "M4_2_GATE_IV_B_PROTOCOL_PROOF_PASSED_NOT_AUTHORIZED; "
+            "M4_2_AUTHORIZATION_PREPARATION_PASSED_NOT_AUTHORIZED; "
             "M4_FRESH_RESULTS_NOT_RUN`",
             current,
         )
@@ -168,14 +169,15 @@ class M3R5ErratumTests(unittest.TestCase):
             "M4_1_AUTHORIZATION_CONSUMED; M4_2_PREPARED_NOT_AUTHORIZED; "
             "M4_2_WINDOWS_LIFECYCLE_REPAIR_ACCEPTED; "
             "M4_2_GATE_IV_A_REVIEW_PASSED_NOT_AUTHORIZED; "
-            "M4_2_GATE_IV_B_PROTOCOL_PROOF_PASSED_NOT_AUTHORIZED`",
+            "M4_2_GATE_IV_B_PROTOCOL_PROOF_PASSED_NOT_AUTHORIZED; "
+            "M4_2_AUTHORIZATION_PREPARATION_PASSED_NOT_AUTHORIZED`",
             current,
         )
         self.assertIn(
             "M4 fresh tasks authorized: `false; M4.0 and M4.1 authorizations "
             "are consumed and terminal; M4.1 continuation or rerun is forbidden; "
-            "Gate IV-B proof permits only a later authorization-preparation work "
-            "package and grants no execution authority`",
+            "M4.2 authorization preparation permits only a separate one-shot "
+            "authorization work package and grants no execution authority`",
             current,
         )
         self.assertIn(
@@ -226,6 +228,7 @@ class M3R5ErratumTests(unittest.TestCase):
             "M4_2_WINDOWS_LIFECYCLE_REPAIR_ACCEPTED; "
             "M4_2_GATE_IV_A_REVIEW_PASSED_NOT_AUTHORIZED; "
             "M4_2_GATE_IV_B_PROTOCOL_PROOF_PASSED_NOT_AUTHORIZED; "
+            "M4_2_AUTHORIZATION_PREPARATION_PASSED_NOT_AUTHORIZED; "
             "fresh_execution_authorized=false`",
             current,
         )
@@ -374,6 +377,66 @@ class M3R5ErratumTests(unittest.TestCase):
             "unauthorized_side_effects=0`",
             current,
         )
+        self.assertIn(
+            "M4.2 authorization-preparation artifact: "
+            "`evals/m4/authorization/m4.2/authorization-preparation.json; "
+            "preparation_kind=AUTHORIZATION_SCHEMA_AND_PROJECTION_ONLY; "
+            "status=M4_2_AUTHORIZATION_PREPARATION_PASSED_NOT_AUTHORIZED`",
+            current,
+        )
+        self.assertIn(
+            "M4.2 authorization-preparation superseded local closure attempt: "
+            "`PRESERVED_NOT_PUSHED; "
+            "closure_head=a3a2b14526358f8b359cc6c4b442884f0b851269; "
+            "failed_test=tests.test_m4_2_authorization_preparation."
+            "M42AuthorizationPreparationMutationTests."
+            "test_rejects_final_state_without_valid_candidate_delivery; "
+            "cause=final_values_reassigned_to_already_final_artifact_without_mutation; "
+            "restore_head=86b5afc1631fb8c80ab753832abcfbb375c4366b; "
+            "repaired_candidate_head=44e6cd611ce67f362015c431d3c1d6ba069ad345; "
+            "no authorization or execution side effect`",
+            current,
+        )
+        self.assertIn(
+            "M4.2 authorization-preparation local gates: `PASSED; "
+            "focused=48/48; current_lifecycle=682/682; "
+            "exact_Gate_IV_B_replay=27/27; "
+            "local_Windows_PowerShell_5_1=60/60; audit_results=NOT_RUN; "
+            "preparation_auditor=BYTE_IDENTICAL_TWICE; "
+            "Gate_IV_B_auditor=BYTE_IDENTICAL_TWICE; "
+            "forbidden_path_count=0; working_tree=clean`",
+            current,
+        )
+        self.assertIn(
+            "M4.2 authorization-preparation delivery: `VERIFIED_TRUE_GREEN; "
+            "accepted_candidate_head=44e6cd611ce67f362015c431d3c1d6ba069ad345; "
+            "push_run=31379784953; push_jobs=13/13; "
+            "push_raw_log_bytes=2026196; "
+            "push_raw_log_sha256=4753351484c5f58defaf681b8568b768f07025f01394a2a6ed817b69212b7d51; "
+            "pull_request_run=31379789763; pull_request_jobs=13/13; "
+            "pull_request_raw_log_bytes=2045877; "
+            "pull_request_raw_log_sha256=f1ad38ee2316c0147a5ee742bf634697457aa25cb9f7ff8f06522ba35bf80449; "
+            "markers=FAIL:0,FAILED (:0,Traceback:0,##[error]:0`",
+            current,
+        )
+        self.assertIn(
+            "M4.2 authorization-preparation decision: "
+            "`APPROVE_M4_2_SEPARATE_AUTHORIZATION_WORK_PACKAGE_ONLY; "
+            "status=M4_2_AUTHORIZATION_PREPARATION_PASSED_NOT_AUTHORIZED; "
+            "this is not execution authorization`",
+            current,
+        )
+        self.assertIn(
+            "M4.2 authorization-preparation negative authority: "
+            "`authorization artifact=ABSENT; execution control=ABSENT; "
+            "authorization token=NOT_ISSUED; claim=ABSENT; "
+            "execution_root=ABSENT; result_root=ABSENT; authorized_tasks=0; "
+            "created_contexts=0; dispatched_tasks=0; finalizations=0; "
+            "results_observed=0; judge_scores=0; retries=0; repairs=0; "
+            "raw_model_finals=0; aggregation_calls=0; acceptance_claims=0; "
+            "unauthorized_side_effects=0`",
+            current,
+        )
         false_green_runs = {
             "31311637459": (
                 "be6039e7d2a682b2e001ee12dff5c1db5743b2ed",
@@ -473,7 +536,8 @@ class M3R5ErratumTests(unittest.TestCase):
             "Windows_lifecycle_repair=ACCEPTED; "
             "Gate IV-A r2=PASSED_NOT_AUTHORIZED; "
             "Gate IV-B protocol proof=PASSED_NOT_AUTHORIZED; "
-            "authorization preparation=PERMITTED_NOT_STARTED; "
+            "authorization preparation=PASSED_NOT_AUTHORIZED; "
+            "separate one-shot authorization=PERMITTED_NOT_STARTED; "
             "authorization=ABSENT; execution=ABSENT; claim=ABSENT; "
             "tasks=0; results=0; "
             "judge=NOT_RUN; aggregation=NOT_RUN; closure=NOT_RUN; "
