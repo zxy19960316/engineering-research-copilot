@@ -1,0 +1,560 @@
+{
+  "schema_version": "m4.2-gate-iv-a-review-r2-v1",
+  "reviewed_head": "44d1004da1cbb2681ee0d423d1748f98fbaa13e4",
+  "reviewed_tree": "9845b1a05e23fa84e55ad20399ec1b86bc861e44",
+  "reviewed_branch": "codex/m4-cross-engineering-forward-evaluation-m4.2-windows-lifecycle-repair",
+  "reviewed_artifacts": [
+    {
+      "path": ".gitattributes",
+      "git_blob_oid": "adc88fe923638750ebcf332b5604d84ecce616e5",
+      "raw_sha256": "c63413c79095cd3cf522e75d585929432872ea4464370f9bb96bc9ce9d01afe6",
+      "byte_length": 2005
+    },
+    {
+      "path": ".github/workflows/m1-validation.yml",
+      "git_blob_oid": "9c0ecef15297fee6ca7a801904c11a11670da5c1",
+      "raw_sha256": "1e1e6c5997b1b2a10e0f0ce8bfb7fb703c036d447cf05646cd423b6ee83199c3",
+      "byte_length": 31045
+    },
+    {
+      "path": "STATUS.md",
+      "git_blob_oid": "5d62a9dcf049792a51c7efb60c69c3a0c368c274",
+      "raw_sha256": "c7d3c34f1ef0eaf130878d62985407caa2e173afe6b19b8cc3c5fadb6b9a87cb",
+      "byte_length": 64367
+    },
+    {
+      "path": "docs/superpowers/plans/2026-08-10-m4.2-windows-lifecycle-repair.md",
+      "git_blob_oid": "4822bf059457f9a206010d8e0a18367a30de9303",
+      "raw_sha256": "d2e85ce653d943d3964f86979ab592b88344077762e3aa53f52d90a37e05ba5b",
+      "byte_length": 13285
+    },
+    {
+      "path": "evals/m4/revisions/m4.2/preparation-manifest.json",
+      "git_blob_oid": "5d33fe292745a3a2f22e7b841b1499fefab6baf7",
+      "raw_sha256": "bdd64dbe666f1b17c5c1bcad3ab148dced173331519a08b06087882060713a57",
+      "byte_length": 95902
+    },
+    {
+      "path": "evals/m4/revisions/m4.2/preparation-manifest.schema.json",
+      "git_blob_oid": "bef0e42882875f0bfbd78bf969f1190aa6da6b67",
+      "raw_sha256": "a3fcea800887cf6c495363dd9dc1e4b9b9d8a91aff69fc8daacf414720f51ee9",
+      "byte_length": 14594
+    },
+    {
+      "path": "evals/m4/build_m4_2_preparation.py",
+      "git_blob_oid": "b4a86cca0b6ad65b56b407188ce89638ed19bc9c",
+      "raw_sha256": "a8468ebd297cbb401b0aadcb92f186d66f8ff37e1a42626eba8bd3ced07d6068",
+      "byte_length": 16428
+    },
+    {
+      "path": "evals/m4/audit_m4_2_preparation.py",
+      "git_blob_oid": "a1f5aad712a30457ae63aedecb247b0648905e47",
+      "raw_sha256": "cafc4084446d2a06ec71eee38c2683c2ff29d0428379c3337d8553ad76f80fab",
+      "byte_length": 45912
+    },
+    {
+      "path": "evals/m4/execution/prepare_m4_2_request_bundles.ps1",
+      "git_blob_oid": "27e3e11d5790f28e32fee87693a5f88ef77b6bb7",
+      "raw_sha256": "40b15ec3d1ce885f5f0d438377e298541974d46eb26efc934c0755b22b126712",
+      "byte_length": 8371
+    },
+    {
+      "path": "tests/test_m4_2_preparation.py",
+      "git_blob_oid": "7681f639799d843ad5e161fc698d6e2eee2e2467",
+      "raw_sha256": "0f749ac5072122321944b9c9e5631dc307cc4692e39368970081b459d228b986",
+      "byte_length": 46540
+    },
+    {
+      "path": "tests/test_m3_raw_sha_eol_policy.py",
+      "git_blob_oid": "d9500efff42db631b1cfedc39948f0b6bbb33abc",
+      "raw_sha256": "f1fdac0210607e9436bdacef0289da3e5da64589df8944f0cb9d32eb88e6434a",
+      "byte_length": 2784
+    },
+    {
+      "path": "tests/test_m3_r5_erratum.py",
+      "git_blob_oid": "6186facdb9fe3311998a165fb64a4304fc216903",
+      "raw_sha256": "442534eedb6725dc595ec97cae51dccaad25cc7866a300331f2bcfd2051e158f",
+      "byte_length": 20461
+    },
+    {
+      "path": "evals/m4/revisions/m4.1/preparation-manifest.json",
+      "git_blob_oid": "42a10d36e4d64ab98aa724114b904001107f557d",
+      "raw_sha256": "d66ad9d513d8e64307f9a1553242d9b7d840ea5432d084b06d86707c1b4c2b61",
+      "byte_length": 85962
+    },
+    {
+      "path": "evals/m4/preparation-manifest.json",
+      "git_blob_oid": "196d19be1483b58f2f6f8bb67d76d9a3f8020d98",
+      "raw_sha256": "1838412c690c2000544999e955e399b4429289a698aa9467129f43fb0cd1bb76",
+      "byte_length": 75746
+    },
+    {
+      "path": "evals/m4/execution/m4.1/launch-claim.json",
+      "git_blob_oid": "794058739b96598955216b3960b95b0feea1208f",
+      "raw_sha256": "c16a2e53aa2e9215e2325464d547356afdb73897bfc7d29605e0105b9987b3c6",
+      "byte_length": 24078
+    },
+    {
+      "path": "evals/m4/execution/m4.1/execution-terminal.json",
+      "git_blob_oid": "76c7dc1ef88d587741d364536c86e389c296ad5c",
+      "raw_sha256": "7305d71ba94cd209f5bb0cb2c977db3bb157d95b907f8f59df9133c192f4d66e",
+      "byte_length": 3707
+    },
+    {
+      "path": "evals/m4/execution/audit_m4_1_terminal.py",
+      "git_blob_oid": "9ab7dea46f216bd79e8ec44def174cb6fa390155",
+      "raw_sha256": "c525f043fcce3aa972bcaedfcc84ed03a614f4cfff94a51e23417f9ca45f5855",
+      "byte_length": 15673
+    },
+    {
+      "path": "evals/m3/results/diagnostics-r5.1/m3-f02.offline-diagnostic.json",
+      "git_blob_oid": "10743c09737b2048b8e287e36eed1fd9c0cc3be1",
+      "raw_sha256": "408f522e7b56a0ccccb3f7bd0e2147b31df2ba1a0554d533b23b9b812fb10f8f",
+      "byte_length": 1690
+    },
+    {
+      "path": "evals/m3/results/diagnostics-r5.1/r5-acceptance-erratum.json",
+      "git_blob_oid": "cab4eff1f473faf2ab1dc3893fa494342af3b3a0",
+      "raw_sha256": "08cdbbe01612c9337c381b69620128a1e58d879b1aa92a561c325ec3104cc1ae",
+      "byte_length": 4775
+    }
+  ],
+  "prior_blocked_review": {
+    "head": "ac6cc70714a90f73b4de09eaf0e521e699296890",
+    "tree": "3ee67b0c5ffa53fc2676381e9ab9b79499e2cf6e",
+    "branch": "codex/m4-cross-engineering-forward-evaluation-m4.2-gate-iv-a-independent-review",
+    "artifact": {
+      "path": "evals/m4/authorization/m4.2/gate-iv-a-review.json",
+      "git_blob_oid": "9af5710dfba68ee5038f0c9e832591181d41835e",
+      "raw_sha256": "cd68d10a140606d4f7dd0ee6d09ebe49c1b4566aa54345cfe91728eaac06b373",
+      "byte_length": 19004
+    },
+    "pull_request": 4,
+    "decision": "BLOCKED",
+    "status": "BLOCKED",
+    "finding_count": 3,
+    "reviewer_side_effects": []
+  },
+  "repair_evidence": {
+    "parent_head": "941602180c75c4ae16edfc927f6c39b8420fb45c",
+    "changed_paths": [
+      ".gitattributes",
+      "docs/superpowers/plans/2026-08-10-m4.2-windows-lifecycle-repair.md",
+      "evals/m4/audit_m4_2_preparation.py",
+      "tests/test_m3_raw_sha_eol_policy.py"
+    ],
+    "historical_m3_changed_paths": [],
+    "diagnostics_policy": {
+      "pattern": "/evals/m3/results/diagnostics-r5.1/**",
+      "text_attribute": "set",
+      "eol_attribute": "lf",
+      "tracked_file_count": 2,
+      "files": [
+        {
+          "path": "evals/m3/results/diagnostics-r5.1/m3-f02.offline-diagnostic.json",
+          "git_blob_oid": "10743c09737b2048b8e287e36eed1fd9c0cc3be1",
+          "raw_sha256": "408f522e7b56a0ccccb3f7bd0e2147b31df2ba1a0554d533b23b9b812fb10f8f",
+          "byte_length": 1690,
+          "crlf_count": 0,
+          "lf_count": 32,
+          "text_attribute": "set",
+          "eol_attribute": "lf",
+          "worktree_equals_blob": true
+        },
+        {
+          "path": "evals/m3/results/diagnostics-r5.1/r5-acceptance-erratum.json",
+          "git_blob_oid": "cab4eff1f473faf2ab1dc3893fa494342af3b3a0",
+          "raw_sha256": "08cdbbe01612c9337c381b69620128a1e58d879b1aa92a561c325ec3104cc1ae",
+          "byte_length": 4775,
+          "crlf_count": 0,
+          "lf_count": 73,
+          "text_attribute": "set",
+          "eol_attribute": "lf",
+          "worktree_equals_blob": true
+        }
+      ]
+    },
+    "ci": {
+      "repository": "zxy19960316/engineering-research-copilot",
+      "pull_request": 5,
+      "push": {
+        "run_id": 31354780589,
+        "event": "push",
+        "head": "44d1004da1cbb2681ee0d423d1748f98fbaa13e4",
+        "branch": "codex/m4-cross-engineering-forward-evaluation-m4.2-windows-lifecycle-repair",
+        "conclusion": "success",
+        "job_count": 7,
+        "jobs": [
+          {
+            "job_id": 93352349728,
+            "name": "validate",
+            "conclusion": "success"
+          },
+          {
+            "job_id": 93352349739,
+            "name": "M4.2 preparation (NOT AUTHORIZED) (windows-latest)",
+            "conclusion": "success"
+          },
+          {
+            "job_id": 93352349746,
+            "name": "M4.1 pre-claim regression (ubuntu-latest)",
+            "conclusion": "success"
+          },
+          {
+            "job_id": 93352349759,
+            "name": "M4.2 preparation (NOT AUTHORIZED) (ubuntu-latest)",
+            "conclusion": "success"
+          },
+          {
+            "job_id": 93352349766,
+            "name": "historical-audit-cross-platform (ubuntu-latest)",
+            "conclusion": "success"
+          },
+          {
+            "job_id": 93352349773,
+            "name": "M4.1 pre-claim regression (windows-latest)",
+            "conclusion": "success"
+          },
+          {
+            "job_id": 93352349781,
+            "name": "historical-audit-cross-platform (windows-latest)",
+            "conclusion": "success"
+          }
+        ],
+        "current_lifecycle_count": 655,
+        "m4_2_focused_count": 21,
+        "historical_focused_count": 6,
+        "powershell_5_1_request_bindings": 60,
+        "results_status": "NOT_RUN",
+        "forbidden_path_count": 0,
+        "raw_log": {
+          "byte_length": 685943,
+          "sha256": "6b8bd910c89b5f17510c542f3a2418e20ded2c547d5cef69ff78aa32f78be29d",
+          "markers": {
+            "FAIL:": 0,
+            "FAILED (": 0,
+            "Traceback": 0,
+            "##[error]": 0
+          }
+        }
+      },
+      "pull_request_run": {
+        "run_id": 31354802277,
+        "event": "pull_request",
+        "head": "44d1004da1cbb2681ee0d423d1748f98fbaa13e4",
+        "branch": "codex/m4-cross-engineering-forward-evaluation-m4.2-windows-lifecycle-repair",
+        "conclusion": "success",
+        "job_count": 7,
+        "jobs": [
+          {
+            "job_id": 93352405451,
+            "name": "M4.2 preparation (NOT AUTHORIZED) (windows-latest)",
+            "conclusion": "success"
+          },
+          {
+            "job_id": 93352405456,
+            "name": "historical-audit-cross-platform (ubuntu-latest)",
+            "conclusion": "success"
+          },
+          {
+            "job_id": 93352405465,
+            "name": "M4.1 pre-claim regression (windows-latest)",
+            "conclusion": "success"
+          },
+          {
+            "job_id": 93352405477,
+            "name": "historical-audit-cross-platform (windows-latest)",
+            "conclusion": "success"
+          },
+          {
+            "job_id": 93352405484,
+            "name": "validate",
+            "conclusion": "success"
+          },
+          {
+            "job_id": 93352405485,
+            "name": "M4.1 pre-claim regression (ubuntu-latest)",
+            "conclusion": "success"
+          },
+          {
+            "job_id": 93352405488,
+            "name": "M4.2 preparation (NOT AUTHORIZED) (ubuntu-latest)",
+            "conclusion": "success"
+          }
+        ],
+        "current_lifecycle_count": 655,
+        "m4_2_focused_count": 21,
+        "historical_focused_count": 6,
+        "powershell_5_1_request_bindings": 60,
+        "results_status": "NOT_RUN",
+        "forbidden_path_count": 0,
+        "raw_log": {
+          "byte_length": 695517,
+          "sha256": "5f63879f748cecfc0ca8ddc4ac3b9686fb83aa1fd5683468f22b2e88b0a5a7f2",
+          "markers": {
+            "FAIL:": 0,
+            "FAILED (": 0,
+            "Traceback": 0,
+            "##[error]": 0
+          }
+        }
+      }
+    }
+  },
+  "matrix_checks": {
+    "case_count": 12,
+    "arm_count": 5,
+    "planned_task_count": 60,
+    "batch_count": 6,
+    "tasks_per_batch": 10,
+    "passed": true
+  },
+  "identity_checks": {
+    "unique_task_id_count": 60,
+    "new_task_id_count": 60,
+    "reused_task_ids": [],
+    "unique_blind_id_count": 60,
+    "blind_id_range": "M4-J121..M4-J180",
+    "reused_blind_ids": [],
+    "unique_batch_id_count": 6,
+    "reused_batch_ids": [],
+    "passed": true
+  },
+  "lineage_checks": {
+    "direct_lineage": "M4.1",
+    "root_lineage": "M4.0",
+    "source_task_matches": 60,
+    "root_task_matches": 60,
+    "relative_order_preserved": true,
+    "inherited_field_drift_count": 0,
+    "passed": true
+  },
+  "request_binding_checks": {
+    "algorithm": "m4.2-request-binding-v1",
+    "independently_recomputed": 60,
+    "matched": 60,
+    "unique": 60,
+    "aggregate_sha256": "5bc47878e3c13afd9dafc4d17ca742ce4d29c8a2a00d70a53fc1753b11329142",
+    "helper": {
+      "path": "evals/m4/execution/prepare_m4_2_request_bundles.ps1",
+      "git_blob_oid": "27e3e11d5790f28e32fee87693a5f88ef77b6bb7",
+      "raw_sha256": "40b15ec3d1ce885f5f0d438377e298541974d46eb26efc934c0755b22b126712",
+      "byte_length": 8371
+    },
+    "powershell_5_1_request_bindings": 60,
+    "passed": true
+  },
+  "historical_preservation": {
+    "m4_1": {
+      "claim": {
+        "path": "evals/m4/execution/m4.1/launch-claim.json",
+        "git_blob_oid": "794058739b96598955216b3960b95b0feea1208f",
+        "raw_sha256": "c16a2e53aa2e9215e2325464d547356afdb73897bfc7d29605e0105b9987b3c6",
+        "byte_length": 24078
+      },
+      "terminal": {
+        "path": "evals/m4/execution/m4.1/execution-terminal.json",
+        "git_blob_oid": "76c7dc1ef88d587741d364536c86e389c296ad5c",
+        "raw_sha256": "7305d71ba94cd209f5bb0cb2c977db3bb157d95b907f8f59df9133c192f4d66e",
+        "byte_length": 3707
+      },
+      "terminal_status": "M4_1_STOPPED_PROTOCOL_FAILURE_PRESERVED",
+      "tasks": 0,
+      "contexts": 0,
+      "finalizations": 0,
+      "results": 0,
+      "retries": 0,
+      "repairs": 0,
+      "passed": true
+    },
+    "m3_changed_paths": [],
+    "old_gate_iv_a_rewritten": false,
+    "passed": true
+  },
+  "zero_state": {
+    "preparation_authority": {
+      "fresh_execution_authorized": false,
+      "fresh_tasks_authorized": false,
+      "result_writes_authorized": false,
+      "retry_authorized": false,
+      "repair_authorized": false,
+      "authorization_artifact": null,
+      "model_binding_status": "UNBOUND_UNTIL_SEPARATE_AUTHORIZATION"
+    },
+    "preparation_counters": {
+      "authorized_tasks": 0,
+      "created_contexts": 0,
+      "dispatched_tasks": 0,
+      "finalizations": 0,
+      "results_observed": 0,
+      "judge_scores": 0,
+      "retries": 0,
+      "repairs": 0,
+      "unauthorized_side_effects": 0
+    },
+    "authorization": "ABSENT",
+    "execution": "ABSENT",
+    "claim": "ABSENT",
+    "tasks": 0,
+    "results": 0,
+    "results_status": "NOT_RUN",
+    "forbidden_path_count": 0,
+    "forbidden_paths": [],
+    "passed": true
+  },
+  "lifecycle_requirements": {
+    "fresh_execution_authorized": false,
+    "authorization_created": false,
+    "execution_created": false,
+    "claim_created": false,
+    "protocol_proof_only": true,
+    "judge": "NOT_RUN",
+    "aggregation": "NOT_RUN",
+    "closure": "NOT_RUN",
+    "m5": "NOT_STARTED"
+  },
+  "review_delivery": {
+    "status": "VERIFIED_TRUE_GREEN",
+    "accepted_review_head": "caf2f579556d6df0dff88af246e51ed3ae6438b9",
+    "push": {
+      "run_id": 31359218501,
+      "event": "push",
+      "head": "caf2f579556d6df0dff88af246e51ed3ae6438b9",
+      "branch": "codex/m4-cross-engineering-forward-evaluation-m4.2-gate-iv-a-r2",
+      "conclusion": "success",
+      "job_count": 9,
+      "jobs": [
+        {
+          "job_id": 93364594550,
+          "name": "validate",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 93364594572,
+          "name": "historical-audit-cross-platform (windows-latest)",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 93364594593,
+          "name": "M4.1 pre-claim regression (ubuntu-latest)",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 93364594609,
+          "name": "historical-audit-cross-platform (ubuntu-latest)",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 93364594610,
+          "name": "M4.1 pre-claim regression (windows-latest)",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 93364594612,
+          "name": "M4.2 repaired frozen preparation (NOT AUTHORIZED) (windows-latest)",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 93364594613,
+          "name": "M4.2 repaired frozen preparation (NOT AUTHORIZED) (ubuntu-latest)",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 93364594618,
+          "name": "M4.2 Gate IV-A r2 review (NOT AUTHORIZED) (ubuntu-latest)",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 93364594670,
+          "name": "M4.2 Gate IV-A r2 review (NOT AUTHORIZED) (windows-latest)",
+          "conclusion": "success"
+        }
+      ],
+      "raw_log": {
+        "byte_length": 1217964,
+        "sha256": "933554d4e16e839f6f8de3cc7ed52ae7a4abf7e894458a699d869b8621985a60",
+        "markers": {
+          "FAIL:": 0,
+          "FAILED (": 0,
+          "Traceback": 0,
+          "##[error]": 0
+        }
+      }
+    },
+    "pull_request": {
+      "run_id": 31359221182,
+      "event": "pull_request",
+      "head": "caf2f579556d6df0dff88af246e51ed3ae6438b9",
+      "branch": "codex/m4-cross-engineering-forward-evaluation-m4.2-gate-iv-a-r2",
+      "conclusion": "success",
+      "job_count": 9,
+      "jobs": [
+        {
+          "job_id": 93364601686,
+          "name": "validate",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 93364601748,
+          "name": "M4.2 repaired frozen preparation (NOT AUTHORIZED) (windows-latest)",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 93364601751,
+          "name": "M4.2 repaired frozen preparation (NOT AUTHORIZED) (ubuntu-latest)",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 93364601768,
+          "name": "M4.1 pre-claim regression (windows-latest)",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 93364601775,
+          "name": "M4.2 Gate IV-A r2 review (NOT AUTHORIZED) (windows-latest)",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 93364601777,
+          "name": "historical-audit-cross-platform (windows-latest)",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 93364601790,
+          "name": "historical-audit-cross-platform (ubuntu-latest)",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 93364601801,
+          "name": "M4.1 pre-claim regression (ubuntu-latest)",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 93364601812,
+          "name": "M4.2 Gate IV-A r2 review (NOT AUTHORIZED) (ubuntu-latest)",
+          "conclusion": "success"
+        }
+      ],
+      "raw_log": {
+        "byte_length": 1231978,
+        "sha256": "0efaf0ba5135fea86f4c0d32788c02e5b2555c392802ee3fe11f59daaf65ae0d",
+        "markers": {
+          "FAIL:": 0,
+          "FAILED (": 0,
+          "Traceback": 0,
+          "##[error]": 0
+        }
+      }
+    }
+  },
+  "findings": [],
+  "limitations": [
+    "The r2 decision can permit only a later Gate IV-B protocol-proof work package.",
+    "No M4.2 authorization, control, claim, context, task, result, judge, aggregation, or closure artifact exists.",
+    "Repair CI evidence binds exact GitHub run metadata and full raw-log byte hashes without embedding log bodies.",
+    "Fresh execution remains forbidden unless a later independent authorization gate explicitly grants it."
+  ],
+  "reviewer_side_effects": [],
+  "decision": "APPROVE_M4_2_GATE_IV_B_PROTOCOL_PROOF_ONLY",
+  "status": "M4_2_GATE_IV_A_REVIEW_PASSED_NOT_AUTHORIZED"
+}
