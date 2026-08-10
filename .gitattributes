@@ -27,6 +27,9 @@
 /evals/m3/forward-inputs-r5.1-f02/** text eol=lf
 /evals/m3/results/forward-r5.1-f02/** text eol=lf
 
+# Preserve byte-sensitive r5.1 diagnostics consumed by lifecycle auditors.
+/evals/m3/results/diagnostics-r5.1/** text eol=lf
+
 # Preserve byte-sensitive r5.2-f02 protocol inputs, module, and empty result root.
 /evals/m3/forward-inputs-r5.2-f02/** text eol=lf
 /evals/m3/results/forward-r5.2-f02/** text eol=lf
