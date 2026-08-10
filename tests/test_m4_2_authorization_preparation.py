@@ -502,6 +502,7 @@ class M42AuthorizationPreparationMutationTests(unittest.TestCase):
 
     def test_rejects_final_state_without_valid_candidate_delivery(self) -> None:
         artifact = copy.deepcopy(self.artifact)
+        artifact["delivery"] = self.auditor.provisional_delivery()
         artifact["decision"] = FINAL_DECISION
         artifact["status"] = FINAL_STATUS
         self._assert_blocked(artifact, "decision_status_state_mismatch")
