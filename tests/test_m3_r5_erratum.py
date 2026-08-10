@@ -14,6 +14,8 @@ OFFLINE_DIAGNOSTIC = REPO_ROOT / "evals" / "m3" / "results" / "diagnostics-r5.1"
 R5_1_TERMINAL = REPO_ROOT / "evals" / "m3" / "results" / "forward-r5.1-f02" / "terminal-manifest.json"
 R5_2_TERMINAL = REPO_ROOT / "evals" / "m3" / "results" / "forward-r5.2-f02" / "terminal-manifest.json"
 CLOSURE_MANIFEST = REPO_ROOT / "evals" / "m3" / "results" / "forward-r5.2-aggregate" / "m3-closure-manifest.json"
+M4_2_AUTHORIZATION = REPO_ROOT / "evals" / "m4" / "authorization" / "m4.2" / "execution-authorization.json"
+M4_2_CONTROL = REPO_ROOT / "evals" / "m4" / "authorization" / "m4.2" / "execution-control.json"
 
 
 class M3R5ErratumTests(unittest.TestCase):
@@ -98,17 +100,27 @@ class M3R5ErratumTests(unittest.TestCase):
         self.assertEqual(diagnostic["retry_count"], 0)
         self.assertFalse(diagnostic["composed_output_created"])
 
-    def test_status_top_preserves_terminal_history_during_m4_2_authorization_preparation(self):
+    def test_status_top_preserves_terminal_history_during_m4_2_one_shot_authorization(self):
         text = (REPO_ROOT / "STATUS.md").read_text(encoding="utf-8")
         current = text.split("## M3 checklist", 1)[0]
+        issued = M4_2_AUTHORIZATION.exists() and M4_2_CONTROL.exists()
 
-        self.assertIn(
-            "Active revision: `M4.2 AUTHORIZATION_PREPARATION; "
-            "M4_2_AUTHORIZATION_PREPARATION_PASSED_NOT_AUTHORIZED; "
-            "decision=APPROVE_M4_2_SEPARATE_AUTHORIZATION_WORK_PACKAGE_ONLY; "
-            "fresh_execution_authorized=false`",
-            current,
-        )
+        if issued:
+            self.assertIn(
+                "Active revision: `M4.2 ONE_SHOT_AUTHORIZATION; "
+                "M4_2_AUTHORIZED_UNCONSUMED_NOT_CLAIMED_NOT_EXECUTED; "
+                "decision=APPROVE_M4_2_SEPARATE_ONE_SHOT_CLAIM_AND_EXECUTION_"
+                "WORK_PACKAGE_ONLY; fresh_execution_authorized=true`",
+                current,
+            )
+        else:
+            self.assertIn(
+                "Active revision: `M4.2 ONE_SHOT_AUTHORIZATION_CANDIDATE; "
+                "M4_2_ONE_SHOT_AUTHORIZATION_CANDIDATE_READY_NOT_ISSUED; "
+                "decision=PENDING_CANDIDATE_EXACT_HEAD_PUSH_AND_PR_CI; "
+                "fresh_execution_authorized=false`",
+                current,
+            )
         self.assertIn(f"Historical r5 evidence HEAD: `{EVIDENCE_HEAD}`", current)
         self.assertIn(
             "Gate 3 accepted evidence baseline HEAD: "
@@ -120,18 +132,20 @@ class M3R5ErratumTests(unittest.TestCase):
             "(GitHub Actions run `31192712555`)",
             current,
         )
-        self.assertIn(
-            "Status: `M3_CLOSED; M4_0_PRE_DISPATCH_FAILED_PRESERVED; "
-            "M4_1_STOPPED_PROTOCOL_FAILURE_PRESERVED; "
-            "M4_1_AUTHORIZATION_CONSUMED; M4_1_TASKS_NOT_DISPATCHED; "
-            "M4_2_PREPARED_NOT_AUTHORIZED; "
-            "M4_2_WINDOWS_LIFECYCLE_REPAIR_ACCEPTED; "
-            "M4_2_GATE_IV_A_REVIEW_PASSED_NOT_AUTHORIZED; "
-            "M4_2_GATE_IV_B_PROTOCOL_PROOF_PASSED_NOT_AUTHORIZED; "
-            "M4_2_AUTHORIZATION_PREPARATION_PASSED_NOT_AUTHORIZED; "
-            "M4_FRESH_RESULTS_NOT_RUN`",
-            current,
-        )
+        for preserved_status in (
+            "M3_CLOSED",
+            "M4_0_PRE_DISPATCH_FAILED_PRESERVED",
+            "M4_1_STOPPED_PROTOCOL_FAILURE_PRESERVED",
+            "M4_1_AUTHORIZATION_CONSUMED",
+            "M4_1_TASKS_NOT_DISPATCHED",
+            "M4_2_PREPARED_NOT_AUTHORIZED",
+            "M4_2_WINDOWS_LIFECYCLE_REPAIR_ACCEPTED",
+            "M4_2_GATE_IV_A_REVIEW_PASSED_NOT_AUTHORIZED",
+            "M4_2_GATE_IV_B_PROTOCOL_PROOF_PASSED_NOT_AUTHORIZED",
+            "M4_2_AUTHORIZATION_PREPARATION_PASSED_NOT_AUTHORIZED",
+            "M4_FRESH_RESULTS_NOT_RUN",
+        ):
+            self.assertIn(preserved_status, current)
         self.assertIn("Historical r5 status: `BLOCKED_NOT_ACCEPTED`", current)
         self.assertIn("Historical accepted fresh cases: `F01, F03, F04, F05`", current)
         self.assertIn("Historical failed fresh case: `F02`", current)
@@ -164,22 +178,7 @@ class M3R5ErratumTests(unittest.TestCase):
         )
         self.assertIn("Historical immutable-r5 exact-HEAD CI: `FAILED`", current)
         self.assertIn("M3: `CLOSED`", current)
-        self.assertIn(
-            "M4: `M4_1_STOPPED_PROTOCOL_FAILURE_PRESERVED; "
-            "M4_1_AUTHORIZATION_CONSUMED; M4_2_PREPARED_NOT_AUTHORIZED; "
-            "M4_2_WINDOWS_LIFECYCLE_REPAIR_ACCEPTED; "
-            "M4_2_GATE_IV_A_REVIEW_PASSED_NOT_AUTHORIZED; "
-            "M4_2_GATE_IV_B_PROTOCOL_PROOF_PASSED_NOT_AUTHORIZED; "
-            "M4_2_AUTHORIZATION_PREPARATION_PASSED_NOT_AUTHORIZED`",
-            current,
-        )
-        self.assertIn(
-            "M4 fresh tasks authorized: `false; M4.0 and M4.1 authorizations "
-            "are consumed and terminal; M4.1 continuation or rerun is forbidden; "
-            "M4.2 authorization preparation permits only a separate one-shot "
-            "authorization work package and grants no execution authority`",
-            current,
-        )
+        self.assertIn("M4.1 continuation or rerun is forbidden", current)
         self.assertIn(
             "M4 Gate IV authorization token status: `CONSUMED; claim_count=1; "
             "terminal for M4.0`",
@@ -223,15 +222,7 @@ class M3R5ErratumTests(unittest.TestCase):
             "(GitHub Actions run `31262297707`",
             current,
         )
-        self.assertIn(
-            "M4.2 state: `M4_2_PREPARED_NOT_AUTHORIZED; "
-            "M4_2_WINDOWS_LIFECYCLE_REPAIR_ACCEPTED; "
-            "M4_2_GATE_IV_A_REVIEW_PASSED_NOT_AUTHORIZED; "
-            "M4_2_GATE_IV_B_PROTOCOL_PROOF_PASSED_NOT_AUTHORIZED; "
-            "M4_2_AUTHORIZATION_PREPARATION_PASSED_NOT_AUTHORIZED; "
-            "fresh_execution_authorized=false`",
-            current,
-        )
+        self.assertIn("M4.2 state: `M4_2_PREPARED_NOT_AUTHORIZED", current)
         self.assertIn(
             "M4.2 Gate IV-A r1 terminal evidence: "
             "`head=ac6cc70714a90f73b4de09eaf0e521e699296890; "
@@ -677,7 +668,18 @@ class M3R5ErratumTests(unittest.TestCase):
             text,
         )
         self.assertNotIn("GATE_IV_B_LAUNCH_READINESS_LOCAL_READY", text)
-        self.assertNotIn("AUTHORIZATION_UNCONSUMED", text)
+        if issued:
+            self.assertIn(
+                "M4_2_AUTHORIZED_UNCONSUMED_NOT_CLAIMED_NOT_EXECUTED", current
+            )
+            self.assertIn("claim_count=0", current)
+        else:
+            self.assertIn(
+                "M4_2_ONE_SHOT_AUTHORIZATION_CANDIDATE_READY_NOT_ISSUED", current
+            )
+            self.assertNotIn(
+                "M4_2_AUTHORIZED_UNCONSUMED_NOT_CLAIMED_NOT_EXECUTED", current
+            )
 
         r5_1_terminal = json.loads(R5_1_TERMINAL.read_text(encoding="utf-8"))
         self.assertEqual(r5_1_terminal["status"], "terminal_not_accepted")

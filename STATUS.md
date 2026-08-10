@@ -4,7 +4,7 @@
 
 `M4 — Cross-engineering forward evaluation`
 
-Active revision: `M4.2 AUTHORIZATION_PREPARATION; M4_2_AUTHORIZATION_PREPARATION_PASSED_NOT_AUTHORIZED; decision=APPROVE_M4_2_SEPARATE_AUTHORIZATION_WORK_PACKAGE_ONLY; fresh_execution_authorized=false`
+Active revision: `M4.2 ONE_SHOT_AUTHORIZATION_CANDIDATE; M4_2_ONE_SHOT_AUTHORIZATION_CANDIDATE_READY_NOT_ISSUED; decision=PENDING_CANDIDATE_EXACT_HEAD_PUSH_AND_PR_CI; fresh_execution_authorized=false`
 
 Historical r5 evidence HEAD: `1b696bce53ee0a11163bfe4f91a9a49ab3af6f49`
 
@@ -12,7 +12,7 @@ Gate 3 accepted evidence baseline HEAD: `ea8a7bbb8b365aded89f9ddb5c784f6e95a51d3
 
 Gate 3 accepted evidence baseline exact-HEAD CI: `PASSED` (GitHub Actions run `31192712555`)
 
-Status: `M3_CLOSED; M4_0_PRE_DISPATCH_FAILED_PRESERVED; M4_1_STOPPED_PROTOCOL_FAILURE_PRESERVED; M4_1_AUTHORIZATION_CONSUMED; M4_1_TASKS_NOT_DISPATCHED; M4_2_PREPARED_NOT_AUTHORIZED; M4_2_WINDOWS_LIFECYCLE_REPAIR_ACCEPTED; M4_2_GATE_IV_A_REVIEW_PASSED_NOT_AUTHORIZED; M4_2_GATE_IV_B_PROTOCOL_PROOF_PASSED_NOT_AUTHORIZED; M4_2_AUTHORIZATION_PREPARATION_PASSED_NOT_AUTHORIZED; M4_FRESH_RESULTS_NOT_RUN`
+Status: `M3_CLOSED; M4_0_PRE_DISPATCH_FAILED_PRESERVED; M4_1_STOPPED_PROTOCOL_FAILURE_PRESERVED; M4_1_AUTHORIZATION_CONSUMED; M4_1_TASKS_NOT_DISPATCHED; M4_2_PREPARED_NOT_AUTHORIZED; M4_2_WINDOWS_LIFECYCLE_REPAIR_ACCEPTED; M4_2_GATE_IV_A_REVIEW_PASSED_NOT_AUTHORIZED; M4_2_GATE_IV_B_PROTOCOL_PROOF_PASSED_NOT_AUTHORIZED; M4_2_AUTHORIZATION_PREPARATION_PASSED_NOT_AUTHORIZED; M4_2_ONE_SHOT_AUTHORIZATION_CANDIDATE_READY_NOT_ISSUED; M4_FRESH_RESULTS_NOT_RUN`
 
 Historical r5 status: `BLOCKED_NOT_ACCEPTED`
 
@@ -36,9 +36,9 @@ Historical immutable-r5 exact-HEAD CI: `FAILED` (GitHub Actions run `31096079186
 
 M3: `CLOSED`
 
-M4: `M4_1_STOPPED_PROTOCOL_FAILURE_PRESERVED; M4_1_AUTHORIZATION_CONSUMED; M4_2_PREPARED_NOT_AUTHORIZED; M4_2_WINDOWS_LIFECYCLE_REPAIR_ACCEPTED; M4_2_GATE_IV_A_REVIEW_PASSED_NOT_AUTHORIZED; M4_2_GATE_IV_B_PROTOCOL_PROOF_PASSED_NOT_AUTHORIZED; M4_2_AUTHORIZATION_PREPARATION_PASSED_NOT_AUTHORIZED`
+M4: `M4_1_STOPPED_PROTOCOL_FAILURE_PRESERVED; M4_1_AUTHORIZATION_CONSUMED; M4_2_PREPARED_NOT_AUTHORIZED; M4_2_WINDOWS_LIFECYCLE_REPAIR_ACCEPTED; M4_2_GATE_IV_A_REVIEW_PASSED_NOT_AUTHORIZED; M4_2_GATE_IV_B_PROTOCOL_PROOF_PASSED_NOT_AUTHORIZED; M4_2_AUTHORIZATION_PREPARATION_PASSED_NOT_AUTHORIZED; M4_2_ONE_SHOT_AUTHORIZATION_CANDIDATE_READY_NOT_ISSUED`
 
-M4 fresh tasks authorized: `false; M4.0 and M4.1 authorizations are consumed and terminal; M4.1 continuation or rerun is forbidden; M4.2 authorization preparation permits only a separate one-shot authorization work package and grants no execution authority`
+M4 fresh tasks authorized: `false; M4.0 and M4.1 authorizations are consumed and terminal; M4.1 continuation or rerun is forbidden; the M4.2 one-shot authorization candidate is code and validation only; executable instances, token, claim, contexts, dispatch, execution, and results remain absent`
 
 M4 preparation protocol: `COMPLETE; OFFLINE_ONLY`
 
@@ -116,7 +116,7 @@ M4.1 terminal-closure exact-HEAD CI: `PASSED` on HEAD `8cfb04f0d7f3631609659e903
 
 M4.1 terminal-closure follow-up exact-HEAD CI: `PASSED` on HEAD `e6ae2be7695ce1d2613dcd39e379ff458c1b60fe` (GitHub Actions run `31301984766`; five lifecycle-aware jobs succeeded)
 
-M4.2 state: `M4_2_PREPARED_NOT_AUTHORIZED; M4_2_WINDOWS_LIFECYCLE_REPAIR_ACCEPTED; M4_2_GATE_IV_A_REVIEW_PASSED_NOT_AUTHORIZED; M4_2_GATE_IV_B_PROTOCOL_PROOF_PASSED_NOT_AUTHORIZED; M4_2_AUTHORIZATION_PREPARATION_PASSED_NOT_AUTHORIZED; fresh_execution_authorized=false`
+M4.2 state: `M4_2_PREPARED_NOT_AUTHORIZED; M4_2_WINDOWS_LIFECYCLE_REPAIR_ACCEPTED; M4_2_GATE_IV_A_REVIEW_PASSED_NOT_AUTHORIZED; M4_2_GATE_IV_B_PROTOCOL_PROOF_PASSED_NOT_AUTHORIZED; M4_2_AUTHORIZATION_PREPARATION_PASSED_NOT_AUTHORIZED; M4_2_ONE_SHOT_AUTHORIZATION_CANDIDATE_READY_NOT_ISSUED; fresh_execution_authorized=false`
 
 M4.2 successor-preparation branch: `codex/m4-cross-engineering-forward-evaluation-m4.2-successor-preparation`
 
@@ -211,6 +211,24 @@ M4.2 authorization-preparation decision: `APPROVE_M4_2_SEPARATE_AUTHORIZATION_WO
 M4.2 authorization-preparation negative authority: `authorization artifact=ABSENT; execution control=ABSENT; authorization token=NOT_ISSUED; claim=ABSENT; execution_root=ABSENT; result_root=ABSENT; authorized_tasks=0; created_contexts=0; dispatched_tasks=0; finalizations=0; results_observed=0; judge_scores=0; retries=0; repairs=0; raw_model_finals=0; aggregation_calls=0; acceptance_claims=0; unauthorized_side_effects=0`
 
 M4.2 next permitted work: `SEPARATE_ONE_SHOT_AUTHORIZATION_WORK_PACKAGE_ONLY; authorization remains absent; do not issue a token or claim and do not create contexts, tasks, results, judge, aggregation, or closure in this work package`
+
+M4.2 one-shot authorization branch: `codex/m4-cross-engineering-forward-evaluation-m4.2-one-shot-authorization`
+
+M4.2 one-shot authorization plan: `docs/superpowers/plans/2026-08-10-m4.2-one-shot-authorization.md`
+
+M4.2 one-shot authorization baseline: `head=4efa75c542172a95c6c72c8c1450fea77a8e2ff1; tree=f7394004d9d5f0a9be22a62dca1d67bb5f2af52d; accepted_preparation_candidate=44e6cd611ce67f362015c431d3c1d6ba069ad345; Gate_IV_B_closure=ad67a79f39685937466d3a49d30c6a5117e2810c`
+
+M4.2 one-shot authorization candidate: `M4_2_ONE_SHOT_AUTHORIZATION_CANDIDATE_READY_NOT_ISSUED; builder=evals/m4/authorization/build_m4_2_authorization.py; auditor=evals/m4/authorization/audit_m4_2_authorization.py; candidate_exact_head_delivery=PENDING`
+
+M4.2 one-shot authorization candidate authority: `execution-authorization.json=ABSENT; execution-control.json=ABSENT; authorization_token=NOT_ISSUED; launch_claim=ABSENT; execution_root=ABSENT; result_root=ABSENT; results_manifest=ABSENT`
+
+M4.2 one-shot authorization candidate matrix: `planned_tasks=60; planned_batches=6; authorized_tasks=0; created_contexts=0; dispatched_tasks=0; finalizations=0; results_observed=0; judge_scores=0; retries=0; repairs=0; raw_model_finals=0; aggregation_calls=0; acceptance_claims=0; unauthorized_side_effects=0`
+
+M4.2 one-shot authorization candidate later gates: `write_once_issuance=NOT_RUN; claim=NOT_RUN; execution=NOT_RUN; judge=NOT_RUN; aggregation=NOT_RUN; closure=NOT_RUN; M5=NOT_STARTED`
+
+M4.2 one-shot authorization candidate local gates: `PASSED; new_authorization=19/19; successor_focused=50/50; current_lifecycle=703/703; preserved_predecessor_lifecycle=682/682; exact_Gate_IV_B_replay=27/27; local_Windows_PowerShell_5_1=60/60; audit_results=NOT_RUN; authorization_auditor=BYTE_IDENTICAL_TWICE; preparation_auditor=BYTE_IDENTICAL_TWICE; Gate_IV_B_auditor=BYTE_IDENTICAL_TWICE; workflow_jobs=15; authorization_pair=ABSENT; forbidden_path_count=0`
+
+M4.2 one-shot authorization candidate next gate: `push exact candidate HEAD and open Draft PR against codex/m4-cross-engineering-forward-evaluation-m4.2-authorization-preparation; require push and pull_request CI 15/15 with clean raw logs before one write-once issuance; no claim or execution is permitted in this candidate state`
 
 M4.2 predecessor closure baseline: `e6ae2be7695ce1d2613dcd39e379ff458c1b60fe` (GitHub Actions run `31301984766`; `success`)
 

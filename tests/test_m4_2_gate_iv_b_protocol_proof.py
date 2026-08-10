@@ -277,6 +277,24 @@ class M42GateIVBContractTests(unittest.TestCase):
         self.assertEqual(result["dispatched_tasks"], 0)
         self.assertEqual(result["results_observed"], 0)
 
+    def test_successor_authorization_change_set_is_explicit_and_pair_gated(self) -> None:
+        pair = {
+            "evals/m4/authorization/m4.2/execution-authorization.json",
+            "evals/m4/authorization/m4.2/execution-control.json",
+        }
+        required = {
+            "docs/superpowers/plans/2026-08-10-m4.2-one-shot-authorization.md",
+            "evals/m4/authorization/build_m4_2_authorization.py",
+            "evals/m4/authorization/audit_m4_2_authorization.py",
+            "tests/test_m4_2_authorization.py",
+            *pair,
+        }
+        self.assertTrue(required <= self.auditor.ALLOWED_CHANGE_PATHS)
+        pair_present = all((REPO_ROOT / relative).is_file() for relative in pair)
+        self.assertEqual(
+            self.auditor.valid_successor_authorization_pair(REPO_ROOT), pair_present
+        )
+
     def test_baseline_head_tree_r2_blob_and_decision_are_immutable(self) -> None:
         baseline = self.proof["baseline"]
         self.assertEqual(baseline["required_ancestor_head"], BASELINE_HEAD)

@@ -40,11 +40,13 @@ BASE_BRANCH = (
 )
 
 FORBIDDEN_EXACT = (
-    "evals/m4/authorization/m4.2/execution-authorization.json",
-    "evals/m4/authorization/m4.2/execution-control.json",
     "evals/m4/authorization/m4.2/authorization-token.json",
     "evals/m4/authorization/m4.2/acceptance-claim.json",
     "evals/m4/results-manifest.json",
+)
+SUCCESSOR_PAIR = (
+    "evals/m4/authorization/m4.2/execution-authorization.json",
+    "evals/m4/authorization/m4.2/execution-control.json",
 )
 FORBIDDEN_PREFIXES = (
     "evals/m4/execution/m4.2",
@@ -168,8 +170,10 @@ class M42AuthorizationPreparationRedFirstTests(unittest.TestCase):
             0,
         )
 
-    def test_actual_authorization_execution_and_result_paths_are_absent(self) -> None:
+    def test_claim_execution_and_result_paths_are_absent(self) -> None:
         self.assertEqual(_present_forbidden(), [])
+        present = [(REPO_ROOT / relative).is_file() for relative in SUCCESSOR_PAIR]
+        self.assertIn(present, ([False, False], [True, True]))
 
     def test_preparation_files_exist(self) -> None:
         missing = [
@@ -286,6 +290,20 @@ class M42AuthorizationPreparationContractTests(unittest.TestCase):
         self.assertEqual(result["launch_claim"], "ABSENT")
         self.assertEqual(result["result_root"], "ABSENT")
 
+    def test_successor_authorization_change_set_is_explicit_and_pair_gated(self) -> None:
+        required = {
+            "docs/superpowers/plans/2026-08-10-m4.2-one-shot-authorization.md",
+            "evals/m4/authorization/build_m4_2_authorization.py",
+            "evals/m4/authorization/audit_m4_2_authorization.py",
+            "tests/test_m4_2_authorization.py",
+            *SUCCESSOR_PAIR,
+        }
+        self.assertTrue(required <= self.auditor.ALLOWED_CHANGE_PATHS)
+        pair_present = all((REPO_ROOT / relative).is_file() for relative in SUCCESSOR_PAIR)
+        self.assertEqual(
+            self.auditor.valid_successor_authorization_pair(REPO_ROOT), pair_present
+        )
+
     def test_candidate_projections_are_pure_non_instances(self) -> None:
         authorization = self.auditor.candidate_authorization_projection(REPO_ROOT)
         control = self.auditor.candidate_control_projection(REPO_ROOT)
@@ -374,7 +392,8 @@ class M42AuthorizationPreparationContractTests(unittest.TestCase):
         ):
             with self.subTest(forbidden=forbidden):
                 self.assertNotIn(forbidden, source)
-        self.assertFalse((AUTHORIZATION_ROOT / "build_m4_2_authorization.py").exists())
+        self.assertTrue((AUTHORIZATION_ROOT / "build_m4_2_authorization.py").is_file())
+        self.assertTrue((AUTHORIZATION_ROOT / "audit_m4_2_authorization.py").is_file())
 
     def test_cli_is_byte_repeatable_and_read_only(self) -> None:
         before = subprocess.run(
