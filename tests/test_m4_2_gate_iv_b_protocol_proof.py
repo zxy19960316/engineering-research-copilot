@@ -448,6 +448,16 @@ class M42GateIVBContractTests(unittest.TestCase):
             + BASELINE_HEAD,
             r2_job,
         )
+        r2_worktree_command = (
+            'git worktree add --detach "${{ runner.temp }}/m4-2-gate-iv-a-r2-baseline" '
+            + BASELINE_HEAD
+        )
+        self.assertEqual(workflow.count(r2_worktree_command), 2)
+        self.assertNotIn(
+            'git -c core.autocrlf=false worktree add --detach '
+            '"${{ runner.temp }}/m4-2-gate-iv-a-r2-baseline"',
+            workflow,
+        )
         self.assertIn(
             "working-directory: ${{ runner.temp }}/m4-2-gate-iv-a-r2-baseline",
             r2_job,

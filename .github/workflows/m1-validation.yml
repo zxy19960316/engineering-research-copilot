@@ -133,7 +133,7 @@ jobs:
           git diff --raw --exit-code ae1ad43cca52ae450e146e952e3b108792b2b665 HEAD -- evals/m4/authorization/m4.1/gate-iv-review.json evals/m4/authorization/m4.1/execution-authorization.schema.json evals/m4/authorization/m4.1/execution-control.schema.json evals/m4/authorization/m4.1/execution-authorization.json evals/m4/authorization/m4.1/execution-control.json evals/m4/authorization/build_m4_1_authorization.py evals/m4/authorization/audit_m4_1_authorization.py tests/test_m4_1_authorization_builder.py tests/test_m4_1_authorization.py
           git diff --exit-code ae1ad43cca52ae450e146e952e3b108792b2b665 HEAD -- evals/m4/authorization/m4.1/gate-iv-review.json evals/m4/authorization/m4.1/execution-authorization.schema.json evals/m4/authorization/m4.1/execution-control.schema.json evals/m4/authorization/m4.1/execution-authorization.json evals/m4/authorization/m4.1/execution-control.json evals/m4/authorization/build_m4_1_authorization.py evals/m4/authorization/audit_m4_1_authorization.py tests/test_m4_1_authorization_builder.py tests/test_m4_1_authorization.py
       - name: Create isolated Gate IV-A r2 baseline worktree
-        run: git -c core.autocrlf=false worktree add --detach "${{ runner.temp }}/m4-2-gate-iv-a-r2-baseline" 988b4332504549df2038f51532175effd696a445
+        run: git worktree add --detach "${{ runner.temp }}/m4-2-gate-iv-a-r2-baseline" 988b4332504549df2038f51532175effd696a445
       - name: Audit frozen M4.2 Gate IV-A r2 independent review
         shell: bash
         working-directory: ${{ runner.temp }}/m4-2-gate-iv-a-r2-baseline
@@ -373,7 +373,7 @@ jobs:
         with:
           python-version: "3.13"
       - name: Create isolated Gate IV-A r2 baseline worktree
-        run: git -c core.autocrlf=false worktree add --detach "${{ runner.temp }}/m4-2-gate-iv-a-r2-baseline" 988b4332504549df2038f51532175effd696a445
+        run: git worktree add --detach "${{ runner.temp }}/m4-2-gate-iv-a-r2-baseline" 988b4332504549df2038f51532175effd696a445
       - name: Validate frozen Gate IV-A r2 review and lifecycle
         shell: bash
         working-directory: ${{ runner.temp }}/m4-2-gate-iv-a-r2-baseline
