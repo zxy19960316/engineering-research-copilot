@@ -1,0 +1,217 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://engineering-research-copilot.local/m4/authorization/m4.2/execution-authorization.schema.json",
+  "title": "M4.2 future one-shot execution authorization instance",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "milestone",
+    "revision",
+    "status",
+    "authorization_preparation",
+    "gate_iv_b_proof",
+    "model_binding",
+    "execution_surface",
+    "authority",
+    "batch_policy",
+    "prelaunch_counters",
+    "consumption",
+    "does_not_authorize",
+    "authorization_token"
+  ],
+  "properties": {
+    "schema_version": {"const": "m4.2-execution-authorization-v1"},
+    "milestone": {"const": "M4"},
+    "revision": {"const": "M4.2"},
+    "status": {"const": "AUTHORIZED_UNCONSUMED"},
+    "authorization_preparation": {"$ref": "#/$defs/authorization_preparation"},
+    "gate_iv_b_proof": {"$ref": "#/$defs/gate_iv_b_proof"},
+    "model_binding": {"$ref": "#/$defs/model_binding"},
+    "execution_surface": {"$ref": "#/$defs/execution_surface"},
+    "authority": {"$ref": "#/$defs/authority"},
+    "batch_policy": {"$ref": "#/$defs/batch_policy"},
+    "prelaunch_counters": {"$ref": "#/$defs/zero_counters"},
+    "consumption": {"$ref": "#/$defs/consumption"},
+    "does_not_authorize": {
+      "type": "array",
+      "minItems": 8,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "authorization_token": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "git_oid": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "authorization_preparation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "accepted_candidate_head", "git_blob_oid", "raw_sha256", "status", "decision"],
+      "properties": {
+        "path": {"const": "evals/m4/authorization/m4.2/authorization-preparation.json"},
+        "accepted_candidate_head": {"$ref": "#/$defs/git_oid"},
+        "git_blob_oid": {"$ref": "#/$defs/git_oid"},
+        "raw_sha256": {"$ref": "#/$defs/sha256"},
+        "status": {"const": "M4_2_AUTHORIZATION_PREPARATION_PASSED_NOT_AUTHORIZED"},
+        "decision": {"const": "APPROVE_M4_2_SEPARATE_AUTHORIZATION_WORK_PACKAGE_ONLY"}
+      }
+    },
+    "gate_iv_b_proof": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["closure_head", "path", "git_blob_oid", "raw_sha256", "status", "decision"],
+      "properties": {
+        "closure_head": {"const": "ad67a79f39685937466d3a49d30c6a5117e2810c"},
+        "path": {"const": "evals/m4/authorization/m4.2/gate-iv-b-protocol-proof.json"},
+        "git_blob_oid": {"const": "d3fe975431f2e4584a52ee5305b169f5b5d29268"},
+        "raw_sha256": {"const": "9d160de6893fbb6bd01158524a3a48931496b6d4cae1fdc4c9f0e736921068e0"},
+        "status": {"const": "M4_2_GATE_IV_B_PROTOCOL_PROOF_PASSED_NOT_AUTHORIZED"},
+        "decision": {"const": "APPROVE_M4_2_AUTHORIZATION_PREPARATION_ONLY"}
+      }
+    },
+    "model_binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["exact_model_id", "reasoning_effort", "configured_default_required", "model_argument_policy", "thinking_argument_policy"],
+      "properties": {
+        "exact_model_id": {"const": "gpt-5.6-sol"},
+        "reasoning_effort": {"const": "max"},
+        "configured_default_required": {"const": true},
+        "model_argument_policy": {"const": "OMIT_AND_VERIFY_CONFIGURED_DEFAULT"},
+        "thinking_argument_policy": {"const": "OMIT_AND_VERIFY_CONFIGURED_DEFAULT"}
+      }
+    },
+    "execution_surface": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tool", "project_id", "project_label", "project_is_git_repository", "environment", "starting_branch", "task_context_isolation", "cross_task_result_visibility"],
+      "properties": {
+        "tool": {"const": "codex_app.create_thread"},
+        "project_id": {"const": "ff35b25f-4644-41c8-9073-74c697559439"},
+        "project_label": {"const": "engineering-research-copilot"},
+        "project_is_git_repository": {"const": true},
+        "environment": {"const": "worktree"},
+        "starting_branch": {"const": "codex/m4-cross-engineering-forward-evaluation-m4.2-one-shot-authorization"},
+        "task_context_isolation": {"const": "ONE_NEW_THREAD_PER_TASK_ID"},
+        "cross_task_result_visibility": {"const": false}
+      }
+    },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "fresh_execution_authorized",
+        "whole_matrix_required",
+        "partial_authority_allowed",
+        "authorized_task_ids",
+        "authorized_task_count",
+        "authorized_batch_ids",
+        "authorized_batch_count",
+        "fresh_contexts_authorized",
+        "independent_finalizations_authorized",
+        "attempts_per_task_id",
+        "result_writes_authorized",
+        "result_write_root_prefix",
+        "retry_authorized",
+        "repair_authorized",
+        "followup_message_authorized",
+        "cross_task_result_visibility",
+        "judge_execution_authorized",
+        "blind_mapping_access_authorized",
+        "aggregation_authorized",
+        "threshold_claim_authorized",
+        "closure_authorized"
+      ],
+      "properties": {
+        "fresh_execution_authorized": {"const": true},
+        "whole_matrix_required": {"const": true},
+        "partial_authority_allowed": {"const": false},
+        "authorized_task_ids": {
+          "type": "array",
+          "minItems": 60,
+          "maxItems": 60,
+          "uniqueItems": true,
+          "items": {"type": "string", "pattern": "^M4\\.2-"}
+        },
+        "authorized_task_count": {"const": 60},
+        "authorized_batch_ids": {
+          "type": "array",
+          "minItems": 6,
+          "maxItems": 6,
+          "uniqueItems": true,
+          "items": {"type": "string", "pattern": "^M4\\.2-BATCH-"}
+        },
+        "authorized_batch_count": {"const": 6},
+        "fresh_contexts_authorized": {"const": 60},
+        "independent_finalizations_authorized": {"const": 60},
+        "attempts_per_task_id": {"const": 1},
+        "result_writes_authorized": {"const": true},
+        "result_write_root_prefix": {"const": "evals/m4/results/m4.2"},
+        "retry_authorized": {"const": false},
+        "repair_authorized": {"const": false},
+        "followup_message_authorized": {"const": false},
+        "cross_task_result_visibility": {"const": false},
+        "judge_execution_authorized": {"const": false},
+        "blind_mapping_access_authorized": {"const": false},
+        "aggregation_authorized": {"const": false},
+        "threshold_claim_authorized": {"const": false},
+        "closure_authorized": {"const": false}
+      }
+    },
+    "batch_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["batch_order", "tasks_per_batch", "stop_current_batch_on_infrastructure_or_protocol_failure", "later_batches_mutable_after_observation", "failure_preservation_required", "successor_revision_required_after_failure"],
+      "properties": {
+        "batch_order": {
+          "type": "array",
+          "minItems": 6,
+          "maxItems": 6,
+          "uniqueItems": true,
+          "items": {"type": "string", "pattern": "^M4\\.2-BATCH-"}
+        },
+        "tasks_per_batch": {"const": 10},
+        "stop_current_batch_on_infrastructure_or_protocol_failure": {"const": true},
+        "later_batches_mutable_after_observation": {"const": false},
+        "failure_preservation_required": {"const": true},
+        "successor_revision_required_after_failure": {"const": true}
+      }
+    },
+    "consumption": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["authorization_token_status", "claim_count", "launch_claim_path", "launch_claim_must_be_absent", "claim_consumes_entire_matrix_authorization", "partial_authority_allowed", "second_claim_allowed", "terminal_failure_consumes_authority", "successor_revision_required_after_failure"],
+      "properties": {
+        "authorization_token_status": {"const": "UNCONSUMED"},
+        "claim_count": {"const": 0},
+        "launch_claim_path": {"const": "evals/m4/execution/m4.2/launch-claim.json"},
+        "launch_claim_must_be_absent": {"const": true},
+        "claim_consumes_entire_matrix_authorization": {"const": true},
+        "partial_authority_allowed": {"const": false},
+        "second_claim_allowed": {"const": false},
+        "terminal_failure_consumes_authority": {"const": true},
+        "successor_revision_required_after_failure": {"const": true}
+      }
+    },
+    "zero_counters": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["authorized_tasks", "created_contexts", "dispatched_tasks", "finalizations", "results_observed", "judge_scores", "retries", "repairs", "unauthorized_side_effects", "raw_model_finals", "aggregation_calls", "acceptance_claims"],
+      "properties": {
+        "authorized_tasks": {"const": 0},
+        "created_contexts": {"const": 0},
+        "dispatched_tasks": {"const": 0},
+        "finalizations": {"const": 0},
+        "results_observed": {"const": 0},
+        "judge_scores": {"const": 0},
+        "retries": {"const": 0},
+        "repairs": {"const": 0},
+        "unauthorized_side_effects": {"const": 0},
+        "raw_model_finals": {"const": 0},
+        "aggregation_calls": {"const": 0},
+        "acceptance_claims": {"const": 0}
+      }
+    }
+  }
+}

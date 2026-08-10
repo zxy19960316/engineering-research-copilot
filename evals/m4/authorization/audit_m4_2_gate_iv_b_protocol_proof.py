@@ -21,6 +21,9 @@ PROOF_BRANCH = (
     "codex/m4-cross-engineering-forward-evaluation-"
     "m4.2-gate-iv-b-protocol-proof"
 )
+PROOF_CLOSURE_HEAD = "ad67a79f39685937466d3a49d30c6a5117e2810c"
+PROOF_CLOSURE_TREE = "7f5d7c2e15616e4e52f45c0366f8b347211e8849"
+PROOF_CLOSURE_BLOB = "d3fe975431f2e4584a52ee5305b169f5b5d29268"
 PRIOR_REVIEW_HEAD = "ac6cc70714a90f73b4de09eaf0e521e699296890"
 REPAIR_HEAD = "44d1004da1cbb2681ee0d423d1748f98fbaa13e4"
 
@@ -189,6 +192,25 @@ ALLOWED_CHANGE_PATHS = frozenset(
         "evals/m4/authorization/audit_m4_2_gate_iv_b_protocol_proof.py",
         "tests/test_m3_r5_erratum.py",
         "tests/test_m4_2_gate_iv_b_protocol_proof.py",
+        "docs/superpowers/plans/2026-08-10-m4.2-authorization-preparation.md",
+        "evals/m4/authorization/m4.2/authorization-preparation.json",
+        "evals/m4/authorization/m4.2/authorization-preparation.schema.json",
+        "evals/m4/authorization/m4.2/execution-authorization.schema.json",
+        "evals/m4/authorization/m4.2/execution-control.schema.json",
+        "evals/m4/authorization/audit_m4_2_authorization_preparation.py",
+        "tests/test_m4_2_authorization_preparation.py",
+    }
+)
+SUCCESSOR_PREPARATION_FILES = frozenset(
+    {
+        R2_REVIEW_PATH.as_posix(),
+        R2_SCHEMA_PATH.as_posix(),
+        PROOF_PATH.as_posix(),
+        SCHEMA_PATH.as_posix(),
+        "evals/m4/authorization/m4.2/authorization-preparation.json",
+        "evals/m4/authorization/m4.2/authorization-preparation.schema.json",
+        "evals/m4/authorization/m4.2/execution-authorization.schema.json",
+        "evals/m4/authorization/m4.2/execution-control.schema.json",
     }
 )
 CLOSURE_CHANGE_PATHS = frozenset(
@@ -781,18 +803,12 @@ def discover_forbidden_paths(
                     if item.is_file() or item.is_symlink():
                         found.add(item.relative_to(repo_root).as_posix())
     authorization_root = repo_root / "evals/m4/authorization/m4.2"
-    allowed = {
-        (repo_root / R2_REVIEW_PATH).resolve(strict=False),
-        (repo_root / R2_SCHEMA_PATH).resolve(strict=False),
-        (repo_root / PROOF_PATH).resolve(strict=False),
-        (repo_root / SCHEMA_PATH).resolve(strict=False),
-    }
     if authorization_root.exists():
         for item in authorization_root.rglob("*"):
-            if (item.is_file() or item.is_symlink()) and item.resolve(
-                strict=False
-            ) not in allowed:
-                found.add(item.relative_to(repo_root).as_posix())
+            if item.is_file() or item.is_symlink():
+                relative = item.relative_to(repo_root).as_posix()
+                if relative not in SUCCESSOR_PREPARATION_FILES:
+                    found.add(relative)
     if present_paths:
         found.update(path.replace("\\", "/") for path in present_paths)
     return sorted(found)
@@ -1136,12 +1152,49 @@ def delivery_state(
             add_error(errors, "accepted_proof_head_unavailable")
         if git(repo_root, "merge-base", "--is-ancestor", head, "HEAD").returncode != 0:
             add_error(errors, "accepted_proof_head_not_ancestor")
+        successor = (
+            git(
+                repo_root,
+                "merge-base",
+                "--is-ancestor",
+                PROOF_CLOSURE_HEAD,
+                "HEAD",
+            ).returncode
+            == 0
+        )
+        closure_target = PROOF_CLOSURE_HEAD if successor else "HEAD"
         closure = git_text(
-            repo_root, "diff", "--name-only", "--no-renames", head, "HEAD", "--"
+            repo_root,
+            "diff",
+            "--name-only",
+            "--no-renames",
+            head,
+            closure_target,
+            "--",
         )
         closure_paths = set(closure.splitlines()) if closure else set()
         if closure_paths != CLOSURE_CHANGE_PATHS:
             add_error(errors, "closure_change_set_mismatch")
+        if successor:
+            if (
+                git_text(repo_root, "rev-parse", f"{PROOF_CLOSURE_HEAD}^{{tree}}")
+                != PROOF_CLOSURE_TREE
+            ):
+                add_error(errors, "proof_closure_tree_mismatch")
+            if (
+                git_text(
+                    repo_root,
+                    "rev-parse",
+                    f"{PROOF_CLOSURE_HEAD}:{PROOF_PATH.as_posix()}",
+                )
+                != PROOF_CLOSURE_BLOB
+            ):
+                add_error(errors, "proof_closure_blob_mismatch")
+            current_blob = git_text(
+                repo_root, "rev-parse", f"HEAD:{PROOF_PATH.as_posix()}"
+            )
+            if current_blob != PROOF_CLOSURE_BLOB:
+                add_error(errors, "proof_artifact_changed_after_closure")
     return "FINAL"
 
 

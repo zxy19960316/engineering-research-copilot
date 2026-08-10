@@ -1,0 +1,240 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://engineering-research-copilot.local/m4/authorization/m4.2/execution-control.schema.json",
+  "title": "M4.2 future one-shot execution control instance",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "milestone",
+    "revision",
+    "status",
+    "authorization",
+    "preparation",
+    "execution_helper",
+    "request_policy",
+    "execution_constraints",
+    "batch_order",
+    "batches",
+    "tasks",
+    "launch_claim",
+    "permissions",
+    "prelaunch_counters",
+    "does_not_authorize"
+  ],
+  "properties": {
+    "schema_version": {"const": "m4.2-execution-control-v1"},
+    "milestone": {"const": "M4"},
+    "revision": {"const": "M4.2"},
+    "status": {"const": "READY_UNCONSUMED"},
+    "authorization": {"$ref": "#/$defs/authorization"},
+    "preparation": {"$ref": "#/$defs/preparation"},
+    "execution_helper": {"$ref": "#/$defs/execution_helper"},
+    "request_policy": {"$ref": "#/$defs/request_policy"},
+    "execution_constraints": {"$ref": "#/$defs/execution_constraints"},
+    "batch_order": {
+      "type": "array",
+      "minItems": 6,
+      "maxItems": 6,
+      "uniqueItems": true,
+      "items": {"type": "string", "pattern": "^M4\\.2-BATCH-"}
+    },
+    "batches": {
+      "type": "array",
+      "minItems": 6,
+      "maxItems": 6,
+      "items": {"$ref": "#/$defs/batch"}
+    },
+    "tasks": {
+      "type": "array",
+      "minItems": 60,
+      "maxItems": 60,
+      "items": {"$ref": "#/$defs/task"}
+    },
+    "launch_claim": {"$ref": "#/$defs/launch_claim"},
+    "permissions": {"$ref": "#/$defs/permissions"},
+    "prelaunch_counters": {"$ref": "#/$defs/zero_counters"},
+    "does_not_authorize": {
+      "type": "array",
+      "minItems": 8,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    }
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "git_oid": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "authorization": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "raw_sha256", "authorization_token"],
+      "properties": {
+        "path": {"const": "evals/m4/authorization/m4.2/execution-authorization.json"},
+        "raw_sha256": {"$ref": "#/$defs/sha256"},
+        "authorization_token": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"}
+      }
+    },
+    "preparation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "accepted_candidate_head", "git_blob_oid", "raw_sha256", "request_binding_count"],
+      "properties": {
+        "path": {"const": "evals/m4/authorization/m4.2/authorization-preparation.json"},
+        "accepted_candidate_head": {"$ref": "#/$defs/git_oid"},
+        "git_blob_oid": {"$ref": "#/$defs/git_oid"},
+        "raw_sha256": {"$ref": "#/$defs/sha256"},
+        "request_binding_count": {"const": 60}
+      }
+    },
+    "execution_helper": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "git_blob_oid", "raw_sha256", "minimum_windows_powershell_version", "request_binding_count", "read_only"],
+      "properties": {
+        "path": {"const": "evals/m4/execution/prepare_m4_2_request_bundles.ps1"},
+        "git_blob_oid": {"$ref": "#/$defs/git_oid"},
+        "raw_sha256": {"$ref": "#/$defs/sha256"},
+        "minimum_windows_powershell_version": {"const": "5.1"},
+        "request_binding_count": {"const": 60},
+        "read_only": {"const": true}
+      }
+    },
+    "request_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["surface", "target_type", "project_id", "environment_type", "starting_branch", "one_new_thread_per_task_id", "one_independent_finalization_per_task_id", "cross_task_result_visibility"],
+      "properties": {
+        "surface": {"const": "codex_app.create_thread"},
+        "target_type": {"const": "project"},
+        "project_id": {"const": "ff35b25f-4644-41c8-9073-74c697559439"},
+        "environment_type": {"const": "worktree"},
+        "starting_branch": {"const": "codex/m4-cross-engineering-forward-evaluation-m4.2-one-shot-authorization"},
+        "one_new_thread_per_task_id": {"const": true},
+        "one_independent_finalization_per_task_id": {"const": true},
+        "cross_task_result_visibility": {"const": false}
+      }
+    },
+    "execution_constraints": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["exact_model_id", "reasoning_effort", "attempts_per_task_id", "whole_matrix_required", "partial_authority_allowed", "second_claim_allowed", "successor_revision_required_after_failure"],
+      "properties": {
+        "exact_model_id": {"const": "gpt-5.6-sol"},
+        "reasoning_effort": {"const": "max"},
+        "attempts_per_task_id": {"const": 1},
+        "whole_matrix_required": {"const": true},
+        "partial_authority_allowed": {"const": false},
+        "second_claim_allowed": {"const": false},
+        "successor_revision_required_after_failure": {"const": true}
+      }
+    },
+    "batch": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["batch_id", "source_batch_id", "domain", "task_ids", "planned_task_count", "stop_on_infrastructure_or_protocol_failure", "later_batches_mutable_after_observation"],
+      "properties": {
+        "batch_id": {"type": "string", "pattern": "^M4\\.2-BATCH-"},
+        "source_batch_id": {"type": "string", "pattern": "^M4\\.1-BATCH-"},
+        "domain": {"type": "string", "minLength": 1},
+        "task_ids": {
+          "type": "array",
+          "minItems": 10,
+          "maxItems": 10,
+          "uniqueItems": true,
+          "items": {"type": "string", "pattern": "^M4\\.2-"}
+        },
+        "planned_task_count": {"const": 10},
+        "stop_on_infrastructure_or_protocol_failure": {"const": true},
+        "later_batches_mutable_after_observation": {"const": false}
+      }
+    },
+    "task": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["task_id", "source_task_id", "root_task_id", "blind_id", "batch_id", "case_path", "task_protocol_path", "variant_instruction_path", "request_binding_sha256", "result_root", "result_root_must_be_absent", "allowed_context_paths", "forbidden_context_roots", "attempt_limit", "independent_finalization_required", "cross_task_result_visibility"],
+      "properties": {
+        "task_id": {"type": "string", "pattern": "^M4\\.2-"},
+        "source_task_id": {"type": "string", "pattern": "^M4\\.1-"},
+        "root_task_id": {"type": "string", "pattern": "^M4-"},
+        "blind_id": {"type": "string", "pattern": "^M4-J1(?:2[1-9]|[3-7][0-9]|80)$"},
+        "batch_id": {"type": "string", "pattern": "^M4\\.2-BATCH-"},
+        "case_path": {"type": "string", "pattern": "^evals/m4/cases/"},
+        "task_protocol_path": {"const": "evals/m4/task-protocol.md"},
+        "variant_instruction_path": {"type": ["string", "null"]},
+        "request_binding_sha256": {"$ref": "#/$defs/sha256"},
+        "result_root": {"type": "string", "pattern": "^evals/m4/results/m4\\.2/M4\\.2-"},
+        "result_root_must_be_absent": {"const": true},
+        "allowed_context_paths": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 3,
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "forbidden_context_roots": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "uniqueItems": true,
+          "items": {"enum": ["evals/m4/results", "evals/m4/execution"]}
+        },
+        "attempt_limit": {"const": 1},
+        "independent_finalization_required": {"const": true},
+        "cross_task_result_visibility": {"const": false}
+      }
+    },
+    "launch_claim": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "must_be_absent_before_execution", "claim_count_before_execution", "claim_consumes_authorization_token", "claim_consumes_entire_matrix_authorization", "partial_authority_allowed", "second_claim_allowed", "must_be_created_before_first_task", "successor_revision_required_after_failure"],
+      "properties": {
+        "path": {"const": "evals/m4/execution/m4.2/launch-claim.json"},
+        "must_be_absent_before_execution": {"const": true},
+        "claim_count_before_execution": {"const": 0},
+        "claim_consumes_authorization_token": {"const": true},
+        "claim_consumes_entire_matrix_authorization": {"const": true},
+        "partial_authority_allowed": {"const": false},
+        "second_claim_allowed": {"const": false},
+        "must_be_created_before_first_task": {"const": true},
+        "successor_revision_required_after_failure": {"const": true}
+      }
+    },
+    "permissions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["fresh_task_creation", "result_writes_below_frozen_roots", "retry", "repair", "followup_message", "cross_task_result_read", "judge_execution", "blind_mapping_access", "aggregation", "threshold_claim", "m4_closure"],
+      "properties": {
+        "fresh_task_creation": {"const": true},
+        "result_writes_below_frozen_roots": {"const": true},
+        "retry": {"const": false},
+        "repair": {"const": false},
+        "followup_message": {"const": false},
+        "cross_task_result_read": {"const": false},
+        "judge_execution": {"const": false},
+        "blind_mapping_access": {"const": false},
+        "aggregation": {"const": false},
+        "threshold_claim": {"const": false},
+        "m4_closure": {"const": false}
+      }
+    },
+    "zero_counters": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["authorized_tasks", "created_contexts", "dispatched_tasks", "finalizations", "results_observed", "judge_scores", "retries", "repairs", "unauthorized_side_effects", "raw_model_finals", "aggregation_calls", "acceptance_claims"],
+      "properties": {
+        "authorized_tasks": {"const": 0},
+        "created_contexts": {"const": 0},
+        "dispatched_tasks": {"const": 0},
+        "finalizations": {"const": 0},
+        "results_observed": {"const": 0},
+        "judge_scores": {"const": 0},
+        "retries": {"const": 0},
+        "repairs": {"const": 0},
+        "unauthorized_side_effects": {"const": 0},
+        "raw_model_finals": {"const": 0},
+        "aggregation_calls": {"const": 0},
+        "acceptance_claims": {"const": 0}
+      }
+    }
+  }
+}

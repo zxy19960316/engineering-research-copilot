@@ -27,6 +27,8 @@ R2_PATH = REPO_ROOT / "evals/m4/authorization/m4.2/gate-iv-a-review-r2.json"
 WORKFLOW_PATH = REPO_ROOT / ".github/workflows/m1-validation.yml"
 BASELINE_HEAD = "988b4332504549df2038f51532175effd696a445"
 BASELINE_TREE = "38b1aeacd54b5e5a9ac115be1816206a7a3f8a4f"
+PROOF_CLOSURE_HEAD = "ad67a79f39685937466d3a49d30c6a5117e2810c"
+PROOF_CLOSURE_BLOB = "d3fe975431f2e4584a52ee5305b169f5b5d29268"
 R2_BLOB = "734918bd5de16ea6f7595e206c3cd313ba041fa7"
 R2_RAW_SHA256 = "73162089ad9a477598fe0ddcc975f666be60c15fb21e7471e32f472a4c30fded"
 BRANCH = (
@@ -62,6 +64,17 @@ FINAL_DECISION = "APPROVE_M4_2_AUTHORIZATION_PREPARATION_ONLY"
 FINAL_STATUS = "M4_2_GATE_IV_B_PROTOCOL_PROOF_PASSED_NOT_AUTHORIZED"
 ZERO_MARKERS = {"FAIL:": 0, "FAILED (": 0, "Traceback": 0, "##[error]": 0}
 IMPLEMENTED = all(path.is_file() for path in (SCHEMA_PATH, PROOF_PATH, AUDITOR_PATH))
+
+
+def _git(*arguments: str) -> str:
+    return subprocess.run(
+        ["git", *arguments],
+        cwd=REPO_ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+    ).stdout.strip()
 
 
 def _load_auditor() -> ModuleType:
@@ -276,6 +289,14 @@ class M42GateIVBContractTests(unittest.TestCase):
             "APPROVE_M4_2_GATE_IV_B_PROTOCOL_PROOF_ONLY",
         )
         self.assertIs(baseline["fresh_execution_authorized"], False)
+        self.assertEqual(
+            _git("rev-parse", f"{PROOF_CLOSURE_HEAD}:{PROOF_PATH.relative_to(REPO_ROOT).as_posix()}"),
+            PROOF_CLOSURE_BLOB,
+        )
+        self.assertEqual(
+            _git("rev-parse", f"HEAD:{PROOF_PATH.relative_to(REPO_ROOT).as_posix()}"),
+            PROOF_CLOSURE_BLOB,
+        )
 
     def test_matrix_and_request_bindings_are_independently_recomputed(self) -> None:
         manifest = json.loads(

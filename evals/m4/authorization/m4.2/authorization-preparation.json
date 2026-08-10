@@ -1,0 +1,362 @@
+{
+  "schema_version": "m4.2-authorization-preparation-v1",
+  "milestone": "M4",
+  "revision": "M4.2",
+  "preparation_kind": "AUTHORIZATION_SCHEMA_AND_PROJECTION_ONLY",
+  "baseline": {
+    "required_ancestor_head": "ad67a79f39685937466d3a49d30c6a5117e2810c",
+    "required_ancestor_tree": "7f5d7c2e15616e4e52f45c0366f8b347211e8849",
+    "source_branch": "codex/m4-cross-engineering-forward-evaluation-m4.2-gate-iv-b-protocol-proof",
+    "successor_branch": "codex/m4-cross-engineering-forward-evaluation-m4.2-authorization-preparation",
+    "draft_pr_base_branch": "codex/m4-cross-engineering-forward-evaluation-m4.2-gate-iv-b-protocol-proof",
+    "fresh_execution_authorized": false
+  },
+  "gate_iv_b_evidence": {
+    "b3": {
+      "head": "249e28d07d5e52cd9cec9b7e110f6159e6046222",
+      "tree": "dacb6e5048a54c3f242add441dd1a36255f80dc4",
+      "proof_artifact": {
+        "path": "evals/m4/authorization/m4.2/gate-iv-b-protocol-proof.json",
+        "git_blob_oid": "97b0586b375b604cff27959fb6e5250c66569624",
+        "raw_sha256": "bc47816b25b0eaa2887acdfa2df0999540da6de0b162f16a74d4ba08c07c9b1f",
+        "byte_length": 28202
+      },
+      "push": {
+        "run_id": 31370941146,
+        "event": "push",
+        "head": "249e28d07d5e52cd9cec9b7e110f6159e6046222",
+        "branch": "codex/m4-cross-engineering-forward-evaluation-m4.2-gate-iv-b-protocol-proof",
+        "conclusion": "success",
+        "job_count": 11,
+        "jobs": [
+          {"job_id": 93399542574, "name": "M4.1 pre-claim regression (ubuntu-latest)", "conclusion": "success"},
+          {"job_id": 93399542583, "name": "M4.2 Gate IV-A r2 review (NOT AUTHORIZED) (ubuntu-latest)", "conclusion": "success"},
+          {"job_id": 93399542592, "name": "historical-audit-cross-platform (windows-latest)", "conclusion": "success"},
+          {"job_id": 93399542607, "name": "M4.1 pre-claim regression (windows-latest)", "conclusion": "success"},
+          {"job_id": 93399542628, "name": "M4.2 Gate IV-B protocol proof (NOT AUTHORIZED) (windows-latest)", "conclusion": "success"},
+          {"job_id": 93399542650, "name": "validate", "conclusion": "success"},
+          {"job_id": 93399542672, "name": "M4.2 Gate IV-A r2 review (NOT AUTHORIZED) (windows-latest)", "conclusion": "success"},
+          {"job_id": 93399542679, "name": "M4.2 repaired frozen preparation (NOT AUTHORIZED) (windows-latest)", "conclusion": "success"},
+          {"job_id": 93399542692, "name": "M4.2 Gate IV-B protocol proof (NOT AUTHORIZED) (ubuntu-latest)", "conclusion": "success"},
+          {"job_id": 93399542714, "name": "M4.2 repaired frozen preparation (NOT AUTHORIZED) (ubuntu-latest)", "conclusion": "success"},
+          {"job_id": 93399542770, "name": "historical-audit-cross-platform (ubuntu-latest)", "conclusion": "success"}
+        ],
+        "raw_log": {
+          "byte_length": 1362037,
+          "sha256": "5a0984715457dbdea9217a57239eedac707fb6407e2cb274f61afebdbe5338bd",
+          "markers": {"FAIL:": 0, "FAILED (": 0, "Traceback": 0, "##[error]": 0}
+        }
+      },
+      "pull_request": {
+        "run_id": 31370945548,
+        "event": "pull_request",
+        "head": "249e28d07d5e52cd9cec9b7e110f6159e6046222",
+        "branch": "codex/m4-cross-engineering-forward-evaluation-m4.2-gate-iv-b-protocol-proof",
+        "conclusion": "success",
+        "job_count": 11,
+        "jobs": [
+          {"job_id": 93399556253, "name": "validate", "conclusion": "success"},
+          {"job_id": 93399556259, "name": "M4.1 pre-claim regression (windows-latest)", "conclusion": "success"},
+          {"job_id": 93399556314, "name": "M4.2 Gate IV-B protocol proof (NOT AUTHORIZED) (windows-latest)", "conclusion": "success"},
+          {"job_id": 93399556315, "name": "M4.2 repaired frozen preparation (NOT AUTHORIZED) (ubuntu-latest)", "conclusion": "success"},
+          {"job_id": 93399556328, "name": "M4.2 Gate IV-B protocol proof (NOT AUTHORIZED) (ubuntu-latest)", "conclusion": "success"},
+          {"job_id": 93399556335, "name": "M4.1 pre-claim regression (ubuntu-latest)", "conclusion": "success"},
+          {"job_id": 93399556345, "name": "M4.2 repaired frozen preparation (NOT AUTHORIZED) (windows-latest)", "conclusion": "success"},
+          {"job_id": 93399556354, "name": "M4.2 Gate IV-A r2 review (NOT AUTHORIZED) (ubuntu-latest)", "conclusion": "success"},
+          {"job_id": 93399556382, "name": "historical-audit-cross-platform (windows-latest)", "conclusion": "success"},
+          {"job_id": 93399556403, "name": "M4.2 Gate IV-A r2 review (NOT AUTHORIZED) (windows-latest)", "conclusion": "success"},
+          {"job_id": 93399556413, "name": "historical-audit-cross-platform (ubuntu-latest)", "conclusion": "success"}
+        ],
+        "raw_log": {
+          "byte_length": 1378502,
+          "sha256": "6e483e7d9a897cb8dfc2254b1217089ad2213f30d8f9bc3ecfbbd05124faa471",
+          "markers": {"FAIL:": 0, "FAILED (": 0, "Traceback": 0, "##[error]": 0}
+        }
+      }
+    },
+    "b4": {
+      "head": "ad67a79f39685937466d3a49d30c6a5117e2810c",
+      "tree": "7f5d7c2e15616e4e52f45c0366f8b347211e8849",
+      "proof_artifact": {
+        "path": "evals/m4/authorization/m4.2/gate-iv-b-protocol-proof.json",
+        "git_blob_oid": "d3fe975431f2e4584a52ee5305b169f5b5d29268",
+        "raw_sha256": "9d160de6893fbb6bd01158524a3a48931496b6d4cae1fdc4c9f0e736921068e0",
+        "byte_length": 33204
+      },
+      "push": {
+        "run_id": 31371973449,
+        "event": "push",
+        "head": "ad67a79f39685937466d3a49d30c6a5117e2810c",
+        "branch": "codex/m4-cross-engineering-forward-evaluation-m4.2-gate-iv-b-protocol-proof",
+        "conclusion": "success",
+        "job_count": 11,
+        "jobs": [
+          {"job_id": 93402729586, "name": "historical-audit-cross-platform (windows-latest)", "conclusion": "success"},
+          {"job_id": 93402729590, "name": "M4.2 repaired frozen preparation (NOT AUTHORIZED) (windows-latest)", "conclusion": "success"},
+          {"job_id": 93402729623, "name": "M4.2 Gate IV-B protocol proof (NOT AUTHORIZED) (windows-latest)", "conclusion": "success"},
+          {"job_id": 93402729634, "name": "M4.1 pre-claim regression (windows-latest)", "conclusion": "success"},
+          {"job_id": 93402729638, "name": "M4.2 Gate IV-B protocol proof (NOT AUTHORIZED) (ubuntu-latest)", "conclusion": "success"},
+          {"job_id": 93402729648, "name": "M4.2 repaired frozen preparation (NOT AUTHORIZED) (ubuntu-latest)", "conclusion": "success"},
+          {"job_id": 93402729655, "name": "historical-audit-cross-platform (ubuntu-latest)", "conclusion": "success"},
+          {"job_id": 93402729663, "name": "M4.2 Gate IV-A r2 review (NOT AUTHORIZED) (ubuntu-latest)", "conclusion": "success"},
+          {"job_id": 93402729667, "name": "validate", "conclusion": "success"},
+          {"job_id": 93402729682, "name": "M4.1 pre-claim regression (ubuntu-latest)", "conclusion": "success"},
+          {"job_id": 93402729747, "name": "M4.2 Gate IV-A r2 review (NOT AUTHORIZED) (windows-latest)", "conclusion": "success"}
+        ],
+        "raw_log": {
+          "byte_length": 1362010,
+          "sha256": "2e66682f4aa381df67f3e5bc879f114aa5918cb21e497b5634dc0c8686fb8ae2",
+          "markers": {"FAIL:": 0, "FAILED (": 0, "Traceback": 0, "##[error]": 0}
+        }
+      },
+      "pull_request": {
+        "run_id": 31371976651,
+        "event": "pull_request",
+        "head": "ad67a79f39685937466d3a49d30c6a5117e2810c",
+        "branch": "codex/m4-cross-engineering-forward-evaluation-m4.2-gate-iv-b-protocol-proof",
+        "conclusion": "success",
+        "job_count": 11,
+        "jobs": [
+          {"job_id": 93402739194, "name": "M4.2 repaired frozen preparation (NOT AUTHORIZED) (ubuntu-latest)", "conclusion": "success"},
+          {"job_id": 93402739209, "name": "M4.2 Gate IV-B protocol proof (NOT AUTHORIZED) (ubuntu-latest)", "conclusion": "success"},
+          {"job_id": 93402739228, "name": "validate", "conclusion": "success"},
+          {"job_id": 93402739244, "name": "historical-audit-cross-platform (windows-latest)", "conclusion": "success"},
+          {"job_id": 93402739252, "name": "M4.1 pre-claim regression (windows-latest)", "conclusion": "success"},
+          {"job_id": 93402739255, "name": "M4.2 Gate IV-A r2 review (NOT AUTHORIZED) (ubuntu-latest)", "conclusion": "success"},
+          {"job_id": 93402739256, "name": "M4.2 Gate IV-A r2 review (NOT AUTHORIZED) (windows-latest)", "conclusion": "success"},
+          {"job_id": 93402739304, "name": "M4.1 pre-claim regression (ubuntu-latest)", "conclusion": "success"},
+          {"job_id": 93402739323, "name": "historical-audit-cross-platform (ubuntu-latest)", "conclusion": "success"},
+          {"job_id": 93402739346, "name": "M4.2 repaired frozen preparation (NOT AUTHORIZED) (windows-latest)", "conclusion": "success"},
+          {"job_id": 93402739354, "name": "M4.2 Gate IV-B protocol proof (NOT AUTHORIZED) (windows-latest)", "conclusion": "success"}
+        ],
+        "raw_log": {
+          "byte_length": 1378469,
+          "sha256": "ad80062801dca369042a6b6b393bb52349d3c08152ec4c5304d4afb4051ed8d4",
+          "markers": {"FAIL:": 0, "FAILED (": 0, "Traceback": 0, "##[error]": 0}
+        }
+      }
+    },
+    "decision": "APPROVE_M4_2_AUTHORIZATION_PREPARATION_ONLY",
+    "status": "M4_2_GATE_IV_B_PROTOCOL_PROOF_PASSED_NOT_AUTHORIZED"
+  },
+  "schema_bindings": [
+    {
+      "path": "evals/m4/authorization/m4.2/authorization-preparation.schema.json",
+      "raw_sha256": "a7e862c7393b18533ec66d76fa3b950ebf31578adf4f6d93289dd6af10e56c48",
+      "byte_length": 17738,
+      "closed": true,
+      "executable_instance_present": false
+    },
+    {
+      "path": "evals/m4/authorization/m4.2/execution-authorization.schema.json",
+      "raw_sha256": "0cc09f3856e0812fd38d1c962adce6e2dbe5ec12067bc202d100290782bb38e8",
+      "byte_length": 9578,
+      "closed": true,
+      "executable_instance_present": false
+    },
+    {
+      "path": "evals/m4/authorization/m4.2/execution-control.schema.json",
+      "raw_sha256": "e76a3071d8b00489afb9b5fd4fd798a6e08f23d376ddecff4d267687c4d9604e",
+      "byte_length": 10532,
+      "closed": true,
+      "executable_instance_present": false
+    }
+  ],
+  "matrix_projection": {
+    "algorithm": "m4.2-protocol-matrix-binding-v1",
+    "case_count": 12,
+    "arm_count": 5,
+    "planned_task_count": 60,
+    "batch_count": 6,
+    "tasks_per_batch": 10,
+    "unique_task_id_count": 60,
+    "unique_blind_id_count": 60,
+    "unique_batch_id_count": 6,
+    "task_order_sha256": "08cb43f486d2da12553ec2c81b5f60f88bb8ba0e633970c5645147e52c03d4e6",
+    "batch_order_sha256": "303581068d7517db792077a753a9af9c3c640d4d236d7d089d84800a9620abe7",
+    "matrix_binding_sha256": "2bdb12d7290b2026b41280a6a25e963491201f8c57aa9bcc958e9dcf61e60180",
+    "passed": true
+  },
+  "request_binding_projection": {
+    "algorithm": "m4.2-request-binding-v1",
+    "independently_recomputed": 60,
+    "matched": 60,
+    "unique": 60,
+    "aggregate_sha256": "5bc47878e3c13afd9dafc4d17ca742ce4d29c8a2a00d70a53fc1753b11329142",
+    "source_bytes_verified": 60,
+    "passed": true
+  },
+  "authorization_projection": {
+    "projection_schema_version": "m4.2-candidate-authorization-projection-v1",
+    "projection_only": true,
+    "instance_schema_path": "evals/m4/authorization/m4.2/execution-authorization.schema.json",
+    "instance_path": "evals/m4/authorization/m4.2/execution-authorization.json",
+    "instance_must_be_absent": true,
+    "status": "PREPARED_NOT_AUTHORIZED",
+    "authorization_token": null,
+    "authorization_token_status": "NOT_ISSUED",
+    "fresh_execution_authorized": false,
+    "claim_authorized": false,
+    "future_whole_matrix_task_count": 60,
+    "future_task_order_sha256": "08cb43f486d2da12553ec2c81b5f60f88bb8ba0e633970c5645147e52c03d4e6",
+    "future_batch_count": 6,
+    "future_batch_order_sha256": "303581068d7517db792077a753a9af9c3c640d4d236d7d089d84800a9620abe7",
+    "future_result_root_prefix": "evals/m4/results/m4.2",
+    "partial_authority_allowed": false,
+    "second_claim_allowed": false,
+    "cross_task_result_visibility": false,
+    "successor_revision_required_after_failure": true,
+    "canonical_sha256": "e709872b32f32109fe40f53c3f0b7413d93a564478a4169a205514d7e4ac8502"
+  },
+  "control_projection": {
+    "projection_schema_version": "m4.2-candidate-control-projection-v1",
+    "projection_only": true,
+    "instance_schema_path": "evals/m4/authorization/m4.2/execution-control.schema.json",
+    "instance_path": "evals/m4/authorization/m4.2/execution-control.json",
+    "instance_must_be_absent": true,
+    "status": "PREPARED_NOT_READY",
+    "execution_ready": false,
+    "claim_ready": false,
+    "future_controlled_task_count": 60,
+    "future_task_order_sha256": "08cb43f486d2da12553ec2c81b5f60f88bb8ba0e633970c5645147e52c03d4e6",
+    "future_batch_count": 6,
+    "future_batch_order_sha256": "303581068d7517db792077a753a9af9c3c640d4d236d7d089d84800a9620abe7",
+    "allowed_context_inputs": ["case", "task_protocol", "selected_variant_instruction"],
+    "visible_result_task_ids": [],
+    "cross_task_result_visibility": false,
+    "judge_available": false,
+    "aggregation_available": false,
+    "canonical_sha256": "13fbb2abbafb89789a437cc5e343ad9ddffc7b6fdd366745eb66946973fb712e"
+  },
+  "policy_proofs": {
+    "whole_matrix_task_count": 60,
+    "claim_consumes_entire_matrix_authorization": true,
+    "partial_authority_allowed": false,
+    "second_claim_allowed": false,
+    "first_claim_consumed_task_count": 60,
+    "first_claim_dispatched_task_count": 0,
+    "partial_claim_decision": "REJECTED_PARTIAL_AUTHORITY",
+    "second_claim_decision": "REJECTED_ALREADY_CONSUMED",
+    "post_claim_failure_decision": "STOPPED_PROTOCOL_OR_INFRASTRUCTURE_FAILURE",
+    "attempts_per_task_id": 1,
+    "retry_authorized": false,
+    "repair_authorized": false,
+    "followup_message_authorized": false,
+    "terminal_failure_consumes_authority": true,
+    "successor_revision_required_after_failure": true,
+    "failed_batch_scenario_count": 6,
+    "later_batch_dispatch_count_after_failure": 0,
+    "cross_task_result_visibility": false,
+    "blind_mapping_access_authorized": false,
+    "judge_execution_authorized": false,
+    "aggregation_authorized": false,
+    "claim_semantics_sha256": "426b54c1814a845476883fa4b98e5b0322c45445359d6396a46ac87be5151f6c",
+    "batch_failure_semantics_sha256": "cb14e6c39e27bcf1bf0a58211efab560d1b48ed0c2fbd9d52690ccb0ecc1246d",
+    "passed": true
+  },
+  "negative_authority": {
+    "authorized_tasks": 0,
+    "created_contexts": 0,
+    "dispatched_tasks": 0,
+    "finalizations": 0,
+    "results_observed": 0,
+    "judge_scores": 0,
+    "retries": 0,
+    "repairs": 0,
+    "unauthorized_side_effects": 0,
+    "raw_model_finals": 0,
+    "aggregation_calls": 0,
+    "acceptance_claims": 0,
+    "authorization_artifact": "ABSENT",
+    "execution_control": "ABSENT",
+    "authorization_token_status": "NOT_ISSUED",
+    "launch_claim": "ABSENT",
+    "result_root": "ABSENT",
+    "judge": "NOT_RUN",
+    "aggregation": "NOT_RUN",
+    "closure": "NOT_RUN",
+    "m5": "NOT_STARTED",
+    "forbidden_paths": [],
+    "forbidden_states": [],
+    "passed": true
+  },
+  "delivery": {
+    "status": "VERIFIED_TRUE_GREEN",
+    "accepted_candidate_head": "44e6cd611ce67f362015c431d3c1d6ba069ad345",
+    "push": {
+      "run_id": 31379784953,
+      "event": "push",
+      "head": "44e6cd611ce67f362015c431d3c1d6ba069ad345",
+      "branch": "codex/m4-cross-engineering-forward-evaluation-m4.2-authorization-preparation",
+      "conclusion": "success",
+      "job_count": 13,
+      "jobs": [
+        {"job_id": 93427145729, "name": "M4.2 Gate IV-A r2 review (NOT AUTHORIZED) (windows-latest)", "conclusion": "success"},
+        {"job_id": 93427145799, "name": "M4.2 repaired frozen preparation (NOT AUTHORIZED) (windows-latest)", "conclusion": "success"},
+        {"job_id": 93427145801, "name": "M4.2 Gate IV-B protocol proof (NOT AUTHORIZED) (windows-latest)", "conclusion": "success"},
+        {"job_id": 93427145811, "name": "M4.1 pre-claim regression (ubuntu-latest)", "conclusion": "success"},
+        {"job_id": 93427145821, "name": "M4.2 repaired frozen preparation (NOT AUTHORIZED) (ubuntu-latest)", "conclusion": "success"},
+        {"job_id": 93427145822, "name": "M4.2 Gate IV-A r2 review (NOT AUTHORIZED) (ubuntu-latest)", "conclusion": "success"},
+        {"job_id": 93427145834, "name": "validate", "conclusion": "success"},
+        {"job_id": 93427145836, "name": "historical-audit-cross-platform (windows-latest)", "conclusion": "success"},
+        {"job_id": 93427145839, "name": "M4.1 pre-claim regression (windows-latest)", "conclusion": "success"},
+        {"job_id": 93427145851, "name": "M4.2 authorization preparation (NOT AUTHORIZED) (ubuntu-latest)", "conclusion": "success"},
+        {"job_id": 93427145857, "name": "M4.2 authorization preparation (NOT AUTHORIZED) (windows-latest)", "conclusion": "success"},
+        {"job_id": 93427145887, "name": "M4.2 Gate IV-B protocol proof (NOT AUTHORIZED) (ubuntu-latest)", "conclusion": "success"},
+        {"job_id": 93427145913, "name": "historical-audit-cross-platform (ubuntu-latest)", "conclusion": "success"}
+      ],
+      "raw_log": {
+        "byte_length": 2026196,
+        "sha256": "4753351484c5f58defaf681b8568b768f07025f01394a2a6ed817b69212b7d51",
+        "markers": {"FAIL:": 0, "FAILED (": 0, "Traceback": 0, "##[error]": 0}
+      }
+    },
+    "pull_request": {
+      "run_id": 31379789763,
+      "event": "pull_request",
+      "head": "44e6cd611ce67f362015c431d3c1d6ba069ad345",
+      "branch": "codex/m4-cross-engineering-forward-evaluation-m4.2-authorization-preparation",
+      "conclusion": "success",
+      "job_count": 13,
+      "jobs": [
+        {"job_id": 93427160759, "name": "M4.2 Gate IV-B protocol proof (NOT AUTHORIZED) (ubuntu-latest)", "conclusion": "success"},
+        {"job_id": 93427160801, "name": "M4.2 authorization preparation (NOT AUTHORIZED) (windows-latest)", "conclusion": "success"},
+        {"job_id": 93427160812, "name": "M4.2 Gate IV-A r2 review (NOT AUTHORIZED) (ubuntu-latest)", "conclusion": "success"},
+        {"job_id": 93427160816, "name": "M4.2 repaired frozen preparation (NOT AUTHORIZED) (windows-latest)", "conclusion": "success"},
+        {"job_id": 93427160832, "name": "M4.1 pre-claim regression (ubuntu-latest)", "conclusion": "success"},
+        {"job_id": 93427160843, "name": "M4.2 authorization preparation (NOT AUTHORIZED) (ubuntu-latest)", "conclusion": "success"},
+        {"job_id": 93427160845, "name": "historical-audit-cross-platform (ubuntu-latest)", "conclusion": "success"},
+        {"job_id": 93427160864, "name": "M4.2 repaired frozen preparation (NOT AUTHORIZED) (ubuntu-latest)", "conclusion": "success"},
+        {"job_id": 93427160865, "name": "M4.2 Gate IV-B protocol proof (NOT AUTHORIZED) (windows-latest)", "conclusion": "success"},
+        {"job_id": 93427160868, "name": "M4.2 Gate IV-A r2 review (NOT AUTHORIZED) (windows-latest)", "conclusion": "success"},
+        {"job_id": 93427160878, "name": "validate", "conclusion": "success"},
+        {"job_id": 93427160897, "name": "M4.1 pre-claim regression (windows-latest)", "conclusion": "success"},
+        {"job_id": 93427160908, "name": "historical-audit-cross-platform (windows-latest)", "conclusion": "success"}
+      ],
+      "raw_log": {
+        "byte_length": 2045877,
+        "sha256": "f1ad38ee2316c0147a5ee742bf634697457aa25cb9f7ff8f06522ba35bf80449",
+        "markers": {"FAIL:": 0, "FAILED (": 0, "Traceback": 0, "##[error]": 0}
+      }
+    },
+    "powershell_5_1": {
+      "runtime": "Windows PowerShell 5.1",
+      "status": "VERIFIED",
+      "checked_task_count": 60,
+      "mismatches": [],
+      "side_effects": []
+    },
+    "powershell_7": {
+      "runtime": "PowerShell 7 on Ubuntu",
+      "status": "VERIFIED",
+      "checked_task_count": 60,
+      "mismatches": [],
+      "side_effects": []
+    },
+    "semantic_results_match": true
+  },
+  "findings": [],
+  "auditor_side_effects": [],
+  "decision": "APPROVE_M4_2_SEPARATE_AUTHORIZATION_WORK_PACKAGE_ONLY",
+  "status": "M4_2_AUTHORIZATION_PREPARATION_PASSED_NOT_AUTHORIZED"
+}

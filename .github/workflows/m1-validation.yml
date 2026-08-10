@@ -87,7 +87,8 @@ jobs:
             evals/m4/build_m4_2_preparation.py \
             evals/m4/audit_m4_2_preparation.py \
             evals/m4/authorization/audit_m4_2_gate_iv_a_r2_review.py \
-            evals/m4/authorization/audit_m4_2_gate_iv_b_protocol_proof.py
+            evals/m4/authorization/audit_m4_2_gate_iv_b_protocol_proof.py \
+            evals/m4/authorization/audit_m4_2_authorization_preparation.py
       - name: Require immutable r5 evidence commit
         run: |
           git cat-file -e 1b696bce53ee0a11163bfe4f91a9a49ab3af6f49^{commit}
@@ -155,6 +156,16 @@ jobs:
           python -X utf8 -m unittest tests.test_m4_2_gate_iv_b_protocol_proof -v
           first="$(python -X utf8 evals/m4/authorization/audit_m4_2_gate_iv_b_protocol_proof.py)"
           second="$(python -X utf8 evals/m4/authorization/audit_m4_2_gate_iv_b_protocol_proof.py)"
+          test "$first" = "$second"
+          printf '%s\n' "$first"
+          python -X utf8 evals/m4/audit_results.py --expect-not-run
+      - name: Audit current M4.2 authorization preparation without issuance
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -X utf8 -m unittest tests.test_m4_2_authorization_preparation -v
+          first="$(python -X utf8 evals/m4/authorization/audit_m4_2_authorization_preparation.py)"
+          second="$(python -X utf8 evals/m4/authorization/audit_m4_2_authorization_preparation.py)"
           test "$first" = "$second"
           printf '%s\n' "$first"
           python -X utf8 evals/m4/audit_results.py --expect-not-run
@@ -475,6 +486,100 @@ jobs:
           if ($result.side_effects.Count -ne 0) { throw 'm4_2_protocol_side_effects_present' }
           $raw
       - name: Assert Gate IV-B proof remained read-only
+        run: >-
+          python -X utf8 -c "import subprocess;
+          status = subprocess.run(['git', 'status', '--porcelain', '--untracked-files=all'],
+          check=True, capture_output=True, text=True).stdout;
+          assert not status, status"
+
+  m4-2-authorization-preparation:
+    name: M4.2 authorization preparation (NOT AUTHORIZED) (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+          - windows-latest
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Validate preparation schemas projections lifecycle and zero authority
+        shell: bash
+        run: |
+          set -euo pipefail
+          git cat-file -e 'ad67a79f39685937466d3a49d30c6a5117e2810c^{commit}'
+          git merge-base --is-ancestor ad67a79f39685937466d3a49d30c6a5117e2810c HEAD
+          test "$(git rev-parse 'ad67a79f39685937466d3a49d30c6a5117e2810c:evals/m4/authorization/m4.2/gate-iv-b-protocol-proof.json')" = 'd3fe975431f2e4584a52ee5305b169f5b5d29268'
+          test "$(git rev-parse 'HEAD:evals/m4/authorization/m4.2/gate-iv-b-protocol-proof.json')" = 'd3fe975431f2e4584a52ee5305b169f5b5d29268'
+          python -m py_compile evals/m4/authorization/audit_m4_2_authorization_preparation.py evals/m4/authorization/audit_m4_2_gate_iv_b_protocol_proof.py
+          python -X utf8 -m unittest tests.test_m4_2_authorization_preparation tests.test_m4_2_gate_iv_b_protocol_proof -v
+          first="$(python -X utf8 evals/m4/authorization/audit_m4_2_authorization_preparation.py)"
+          second="$(python -X utf8 evals/m4/authorization/audit_m4_2_authorization_preparation.py)"
+          test "$first" = "$second"
+          printf '%s\n' "$first"
+          proof_first="$(python -X utf8 evals/m4/authorization/audit_m4_2_gate_iv_b_protocol_proof.py)"
+          proof_second="$(python -X utf8 evals/m4/authorization/audit_m4_2_gate_iv_b_protocol_proof.py)"
+          test "$proof_first" = "$proof_second"
+          printf '%s\n' "$proof_first"
+          python -X utf8 -c "import pathlib, sys, unittest; excluded = {'test_m4_1_preparation', 'test_m4_1_authorization_builder', 'test_m4_1_authorization', 'test_m4_1_execution', 'test_m4_1_launch_readiness', 'test_m4_2_preparation', 'test_m4_2_gate_iv_a_r2_review'}; modules = ['tests.' + path.stem for path in sorted(pathlib.Path('tests').glob('test_*.py')) if path.stem not in excluded]; suite = unittest.defaultTestLoader.loadTestsFromNames(modules); result = unittest.TextTestRunner(verbosity=2).run(suite); sys.exit(0 if result.wasSuccessful() else 1)"
+          python -X utf8 evals/m4/execution/audit_m4_1_terminal.py
+          python -X utf8 evals/m4/audit_results.py --expect-not-run
+          python -X utf8 -c "from pathlib import Path; exact = [Path('evals/m4/authorization/m4.2/execution-authorization.json'), Path('evals/m4/authorization/m4.2/execution-control.json'), Path('evals/m4/authorization/m4.2/authorization-token.json'), Path('evals/m4/authorization/m4.2/acceptance-claim.json'), Path('evals/m4/results-manifest.json')]; prefixes = [Path('evals/m4/execution/m4.2'), Path('evals/m4/results/m4.1'), Path('evals/m4/results/m4.2'), Path('evals/m5')]; present = [path.as_posix() for path in exact + prefixes if path.exists()]; assert not present, present; raw = Path('evals/m4/authorization/m4.2/authorization-preparation.json').read_bytes(); assert b'AUTHORIZED_UNCONSUMED' not in raw; assert b'sha256:' not in raw"
+          git diff --check
+      - name: Create isolated accepted Gate IV-B closure replay worktree
+        run: git worktree add --detach "${{ runner.temp }}/m4-2-gate-iv-b-closure" ad67a79f39685937466d3a49d30c6a5117e2810c
+      - name: Replay accepted Gate IV-B proof and NOT RUN state
+        shell: bash
+        working-directory: ${{ runner.temp }}/m4-2-gate-iv-b-closure
+        run: |
+          set -euo pipefail
+          python -X utf8 -m unittest tests.test_m4_2_gate_iv_b_protocol_proof -v
+          first="$(python -X utf8 evals/m4/authorization/audit_m4_2_gate_iv_b_protocol_proof.py)"
+          second="$(python -X utf8 evals/m4/authorization/audit_m4_2_gate_iv_b_protocol_proof.py)"
+          test "$first" = "$second"
+          printf '%s\n' "$first"
+          python -X utf8 evals/m4/audit_results.py --expect-not-run
+          test -z "$(git status --porcelain --untracked-files=all)"
+      - name: Remove isolated accepted Gate IV-B closure replay worktree
+        if: always()
+        run: git worktree remove --force "${{ runner.temp }}/m4-2-gate-iv-b-closure"
+      - name: Verify preparation request bindings with PowerShell 7
+        if: runner.os == 'Linux'
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          ./evals/m4/execution/prepare_m4_2_request_bundles.ps1 -SelfTest
+          if ($LASTEXITCODE -ne 0) { throw 'm4_2_preparation_self_test_failed' }
+          $raw = ./evals/m4/execution/prepare_m4_2_request_bundles.ps1 -CheckAll
+          if ($LASTEXITCODE -ne 0) { throw 'm4_2_preparation_request_check_failed' }
+          $result = $raw | ConvertFrom-Json
+          if ($result.status -ne 'VERIFIED') { throw 'm4_2_preparation_status_invalid' }
+          if ($result.checked_task_count -ne 60) { throw 'm4_2_preparation_task_count_invalid' }
+          if ($result.mismatches.Count -ne 0) { throw 'm4_2_preparation_mismatches_present' }
+          if ($result.side_effects.Count -ne 0) { throw 'm4_2_preparation_side_effects_present' }
+          $raw
+      - name: Verify preparation request bindings with Windows PowerShell 5.1
+        if: runner.os == 'Windows'
+        shell: powershell
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if ($PSVersionTable.PSVersion.Major -ne 5 -or $PSVersionTable.PSVersion.Minor -ne 1) { throw 'expected_windows_powershell_5_1' }
+          .\evals\m4\execution\prepare_m4_2_request_bundles.ps1 -SelfTest
+          if ($LASTEXITCODE -ne 0) { throw 'm4_2_preparation_self_test_failed' }
+          $raw = .\evals\m4\execution\prepare_m4_2_request_bundles.ps1 -CheckAll
+          if ($LASTEXITCODE -ne 0) { throw 'm4_2_preparation_request_check_failed' }
+          $result = $raw | ConvertFrom-Json
+          if ($result.status -ne 'VERIFIED') { throw 'm4_2_preparation_status_invalid' }
+          if ($result.checked_task_count -ne 60) { throw 'm4_2_preparation_task_count_invalid' }
+          if ($result.mismatches.Count -ne 0) { throw 'm4_2_preparation_mismatches_present' }
+          if ($result.side_effects.Count -ne 0) { throw 'm4_2_preparation_side_effects_present' }
+          $raw
+      - name: Assert authorization preparation validation remained read-only
         run: >-
           python -X utf8 -c "import subprocess;
           status = subprocess.run(['git', 'status', '--porcelain', '--untracked-files=all'],
