@@ -99,15 +99,18 @@ FROZEN_M4_1_PATHS = (
 )
 ALLOWED_CHANGE_PATHS = frozenset(
     {
+        ".gitattributes",
         ".github/workflows/m1-validation.yml",
         "STATUS.md",
         "docs/superpowers/plans/2026-08-09-m4.2-successor-preparation.md",
+        "docs/superpowers/plans/2026-08-10-m4.2-windows-lifecycle-repair.md",
         "evals/m4/audit_m4_2_preparation.py",
         "evals/m4/build_m4_2_preparation.py",
         "evals/m4/execution/prepare_m4_2_request_bundles.ps1",
         "evals/m4/revisions/m4.2/preparation-manifest.json",
         "evals/m4/revisions/m4.2/preparation-manifest.schema.json",
         "tests/test_m3_r5_erratum.py",
+        "tests/test_m3_raw_sha_eol_policy.py",
         "tests/test_m4_2_preparation.py",
     }
 )
@@ -122,6 +125,7 @@ RAW_LOCKED_PREFIXES = (
     "evals/m3/results/forward-r4/",
     "evals/m3/fixtures/",
     "evals/m3/forward-inputs-r5.1-f02/",
+    "evals/m3/results/diagnostics-r5.1/",
     "evals/m3/results/forward-r5.1-f02/",
     "evals/m3/forward-inputs-r5.2-f02/",
     "evals/m3/results/forward-r5.2-f02/",
