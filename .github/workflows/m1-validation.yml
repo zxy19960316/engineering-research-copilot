@@ -637,14 +637,186 @@ jobs:
         working-directory: ${{ runner.temp }}/m4-2-authorization-preparation-closure
         run: |
           set -euo pipefail
+          diagnostic_dir="${RUNNER_TEMP}/m4-2-push-context-frozen-replay"
+          mkdir -p "$diagnostic_dir"
+
+          capture_git_config() {
+            local label="$1"
+            shift
+            local output
+            local rc
+            if output="$("$@" 2>&1)"; then
+              rc=0
+            else
+              rc=$?
+            fi
+            printf 'git_config=%s return_code=%s\n%s\n' "$label" "$rc" "$output"
+          }
+
+          capture_git_context() {
+            local stage="$1"
+            {
+              printf 'stage=%s\n' "$stage"
+              printf '%s\n' '--- git status --porcelain=v2 --untracked-files=all ---'
+              git status --porcelain=v2 --untracked-files=all
+              printf '%s\n' '--- git diff 44e6cd6... HEAD ---'
+              git diff --name-only --no-renames 44e6cd611ce67f362015c431d3c1d6ba069ad345 HEAD --
+              printf '%s\n' '--- git diff ad67a79... HEAD ---'
+              git diff --name-only --no-renames ad67a79f39685937466d3a49d30c6a5117e2810c HEAD --
+              printf '%s\n' '--- repository identity ---'
+              git rev-parse HEAD
+              git rev-parse 'HEAD^{tree}'
+              git rev-parse --show-toplevel
+              git rev-parse --git-dir
+              git rev-parse --git-common-dir
+              git worktree list --porcelain
+              printf '%s\n' '--- Git configuration ---'
+              capture_git_config core.autocrlf git config --show-origin --get core.autocrlf
+              capture_git_config core.eol git config --show-origin --get core.eol
+              capture_git_config core.filemode git config --show-origin --get core.filemode
+              capture_git_config core.ignorecase git config --show-origin --get core.ignorecase
+              capture_git_config safe.directory git config --show-origin --get-regexp safe.directory
+              printf '%s\n' '--- git ls-files --eol ---'
+              git ls-files --eol -- \
+                evals/m4/authorization/m4.2/authorization-preparation.json \
+                evals/m4/authorization/m4.2/authorization-preparation.schema.json \
+                evals/m4/authorization/m4.2/execution-authorization.schema.json \
+                evals/m4/authorization/m4.2/execution-control.schema.json \
+                evals/m4/authorization/audit_m4_2_authorization_preparation.py \
+                tests/test_m4_2_authorization_preparation.py \
+                STATUS.md
+              printf '%s\n' '--- inherited GIT_* environment variable names ---'
+              while IFS='=' read -r name _; do
+                case "$name" in
+                  GIT_*) printf '%s\n' "$name" ;;
+                esac
+              done < <(env)
+              printf '%s\n' '--- environment paths ---'
+              printf 'HOME=%s\nUSERPROFILE=%s\nTEMP=%s\nTMP=%s\n' \
+                "${HOME-}" "${USERPROFILE-}" "${TEMP-}" "${TMP-}"
+              printf '%s\n' '--- working-tree and Git-object SHA-256 ---'
+              for path in \
+                evals/m4/authorization/m4.2/authorization-preparation.json \
+                evals/m4/authorization/m4.2/authorization-preparation.schema.json \
+                evals/m4/authorization/m4.2/execution-authorization.schema.json \
+                evals/m4/authorization/m4.2/execution-control.schema.json \
+                evals/m4/authorization/m4.2/gate-iv-b-protocol-proof.json
+              do
+                python -X utf8 - "$path" <<'PY'
+          import hashlib
+          import json
+          from pathlib import Path
+          import subprocess
+          import sys
+
+          path = sys.argv[1]
+          working = Path(path).read_bytes()
+          git_object = subprocess.run(
+              ["git", "show", f"HEAD:{path}"], check=True, capture_output=True
+          ).stdout
+          blob_oid = subprocess.run(
+              ["git", "rev-parse", f"HEAD:{path}"],
+              check=True,
+              capture_output=True,
+              text=True,
+              encoding="utf-8",
+          ).stdout.strip()
+          print(json.dumps({
+              "path": path,
+              "working_tree_byte_length": len(working),
+              "working_tree_sha256": hashlib.sha256(working).hexdigest(),
+              "git_object_byte_length": len(git_object),
+              "git_object_sha256": hashlib.sha256(git_object).hexdigest(),
+              "git_blob_oid": blob_oid,
+          }, sort_keys=True))
+          PY
+              done
+            } | tee "$diagnostic_dir/git-context-${stage}.txt"
+          }
+
+          preparation_first_stdout="$diagnostic_dir/preparation-first.stdout"
+          preparation_first_stderr="$diagnostic_dir/preparation-first.stderr"
+          preparation_second_stdout="$diagnostic_dir/preparation-second.stdout"
+          preparation_second_stderr="$diagnostic_dir/preparation-second.stderr"
+          preparation_before_status="$diagnostic_dir/preparation-before.status"
+          preparation_after_status="$diagnostic_dir/preparation-after.status"
+
+          git status --porcelain=v2 --untracked-files=all > "$preparation_before_status"
+          capture_git_context before
+          if python -X utf8 evals/m4/authorization/audit_m4_2_authorization_preparation.py > "$preparation_first_stdout" 2> "$preparation_first_stderr"; then
+            preparation_first_rc=0
+          else
+            preparation_first_rc=$?
+          fi
+          capture_git_context between
+          if python -X utf8 evals/m4/authorization/audit_m4_2_authorization_preparation.py > "$preparation_second_stdout" 2> "$preparation_second_stderr"; then
+            preparation_second_rc=0
+          else
+            preparation_second_rc=$?
+          fi
+          capture_git_context after
+          git status --porcelain=v2 --untracked-files=all > "$preparation_after_status"
+
+          printf 'preparation_first_return_code=%s\npreparation_second_return_code=%s\n' \
+            "$preparation_first_rc" "$preparation_second_rc"
+          for stream in \
+            "$preparation_first_stdout" "$preparation_first_stderr" \
+            "$preparation_second_stdout" "$preparation_second_stderr"
+          do
+            python -X utf8 - "$stream" <<'PY'
+          import hashlib
+          from pathlib import Path
+          import sys
+
+          path = Path(sys.argv[1])
+          raw = path.read_bytes()
+          print(f"stream={path.name} byte_length={len(raw)} sha256={hashlib.sha256(raw).hexdigest()}")
+          PY
+          done
+          printf '%s\n' '--- preparation first stdout ---'
+          cat "$preparation_first_stdout"
+          printf '%s\n' '--- preparation first stderr ---'
+          cat "$preparation_first_stderr"
+          printf '%s\n' '--- preparation second stdout ---'
+          cat "$preparation_second_stdout"
+          printf '%s\n' '--- preparation second stderr ---'
+          cat "$preparation_second_stderr"
+
+          if (( preparation_first_rc != 0 || preparation_second_rc != 0 )); then
+            python -X utf8 - "$preparation_first_stdout" "$preparation_second_stdout" <<'PY'
+          import json
+          from pathlib import Path
+          import sys
+
+          for label, value in zip(("first", "second"), sys.argv[1:]):
+              raw = Path(value).read_bytes()
+              try:
+                  payload = json.loads(raw.decode("utf-8"))
+              except Exception as exc:
+                  print(f"preparation_{label}_errors=INVALID_JSON:{type(exc).__name__}:{exc}")
+              else:
+                  print(f"preparation_{label}_errors={json.dumps(payload.get('errors'), separators=(',', ':'))}")
+          PY
+          fi
+
+          test "$preparation_first_rc" -eq 0
+          test "$preparation_second_rc" -eq 0
+          cmp --silent "$preparation_first_stdout" "$preparation_second_stdout"
+          python -X utf8 - "$preparation_first_stdout" "$preparation_second_stdout" <<'PY'
+          import json
+          from pathlib import Path
+          import sys
+
+          for value in sys.argv[1:]:
+              payload = json.loads(Path(value).read_text(encoding="utf-8"))
+              assert payload.get("errors") == [], payload.get("errors")
+          PY
+          cmp --silent "$preparation_before_status" "$preparation_after_status"
           python -X utf8 -m unittest tests.test_m4_2_authorization_preparation tests.test_m4_2_gate_iv_b_protocol_proof -v
-          preparation_first="$(python -X utf8 evals/m4/authorization/audit_m4_2_authorization_preparation.py)"
-          preparation_second="$(python -X utf8 evals/m4/authorization/audit_m4_2_authorization_preparation.py)"
-          test "$preparation_first" = "$preparation_second"
           proof_first="$(python -X utf8 evals/m4/authorization/audit_m4_2_gate_iv_b_protocol_proof.py)"
           proof_second="$(python -X utf8 evals/m4/authorization/audit_m4_2_gate_iv_b_protocol_proof.py)"
           test "$proof_first" = "$proof_second"
-          printf '%s\n%s\n' "$preparation_first" "$proof_first"
+          printf '%s\n' "$proof_first"
           python -X utf8 evals/m4/audit_results.py --expect-not-run
           test -z "$(git status --porcelain --untracked-files=all)"
       - name: Remove isolated authorization-preparation closure replay worktree

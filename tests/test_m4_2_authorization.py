@@ -535,6 +535,52 @@ class M42AuthorizationContractTests(unittest.TestCase):
         self.assertIn("expected_windows_powershell_5_1", job)
         self.assertNotIn("continue-on-error", job)
 
+        replay = job.split(
+            "- name: Replay frozen preparation and Gate IV-B proof semantics", 1
+        )[1].split(
+            "- name: Remove isolated authorization-preparation closure replay worktree", 1
+        )[0]
+        historical_test = (
+            "python -X utf8 -m unittest tests.test_m4_2_authorization_preparation "
+            "tests.test_m4_2_gate_iv_b_protocol_proof -v"
+        )
+        self.assertEqual(
+            replay.count(
+                "python -X utf8 evals/m4/authorization/"
+                "audit_m4_2_authorization_preparation.py >"
+            ),
+            2,
+        )
+        self.assertIn("preparation_first_rc=$?", replay)
+        self.assertIn("preparation_second_rc=$?", replay)
+        self.assertIn('test "$preparation_first_rc" -eq 0', replay)
+        self.assertIn('test "$preparation_second_rc" -eq 0', replay)
+        self.assertIn('cat "$preparation_first_stdout"', replay)
+        self.assertIn('cat "$preparation_second_stdout"', replay)
+        self.assertIn("preparation_{label}_errors=", replay)
+        self.assertIn('payload.get("errors") == []', replay)
+        self.assertIn(
+            'cmp --silent "$preparation_first_stdout" "$preparation_second_stdout"', replay
+        )
+        self.assertIn(
+            'cmp --silent "$preparation_before_status" "$preparation_after_status"', replay
+        )
+        self.assertIn(historical_test, replay)
+        self.assertLess(
+            replay.index('test "$preparation_first_rc" -eq 0'), replay.index(historical_test)
+        )
+        self.assertNotIn("continue-on-error", replay)
+        self.assertNotIn("|| true", replay)
+        self.assertNotIn("retry", replay.lower())
+        self.assertNotIn("sleep", replay.lower())
+        self.assertNotIn("--exclude", replay)
+        self.assertNotIn("-k ", replay)
+        self.assertIn("id: create_authorization_preparation_closure_worktree", job)
+        self.assertIn(
+            "if: always() && steps.create_authorization_preparation_closure_worktree.outcome == 'success'",
+            job,
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
