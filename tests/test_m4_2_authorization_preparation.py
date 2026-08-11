@@ -9,6 +9,7 @@ import unittest
 from pathlib import Path
 from types import ModuleType
 from typing import Any, Iterator
+from unittest import mock
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -358,6 +359,89 @@ class M42AuthorizationPreparationContractTests(unittest.TestCase):
         self.assertEqual(
             self.auditor.valid_successor_authorization_pair(REPO_ROOT), pair_present
         )
+
+    def test_schema_bindings_remain_frozen_across_successor_issuance(self) -> None:
+        self.assertEqual(
+            _git("rev-parse", f"{PREPARATION_CLOSURE_HEAD}^{{tree}}"),
+            PREPARATION_CLOSURE_TREE,
+        )
+        for relative in SUCCESSOR_PAIR:
+            with self.subTest(closure_instance=relative):
+                self.assertNotEqual(
+                    subprocess.run(
+                        [
+                            "git",
+                            "cat-file",
+                            "-e",
+                            f"{PREPARATION_CLOSURE_HEAD}:{relative}",
+                        ],
+                        cwd=REPO_ROOT,
+                        check=False,
+                        capture_output=True,
+                    ).returncode,
+                    0,
+                )
+
+        successor_instances = {
+            (REPO_ROOT / relative).resolve(strict=False) for relative in SUCCESSOR_PAIR
+        }
+        original_exists = Path.exists
+
+        def simulated_successor_exists(path: Path) -> bool:
+            if path.resolve(strict=False) in successor_instances:
+                return True
+            return original_exists(path)
+
+        binding_errors: list[str] = []
+        with (
+            mock.patch.object(Path, "exists", simulated_successor_exists),
+            mock.patch.object(
+                self.auditor, "valid_successor_authorization_pair", return_value=True
+            ),
+        ):
+            bindings = self.auditor.schema_bindings(REPO_ROOT, binding_errors)
+            result = self._audit(copy.deepcopy(self.artifact), verify_git=True)
+
+        executable_presence = {
+            binding["path"]: binding["executable_instance_present"]
+            for binding in bindings
+            if binding["path"]
+            in {
+                AUTHORIZATION_SCHEMA_PATH.relative_to(REPO_ROOT).as_posix(),
+                CONTROL_SCHEMA_PATH.relative_to(REPO_ROOT).as_posix(),
+            }
+        }
+        self.assertEqual(binding_errors, [])
+        self.assertEqual(
+            executable_presence,
+            {
+                AUTHORIZATION_SCHEMA_PATH.relative_to(REPO_ROOT).as_posix(): False,
+                CONTROL_SCHEMA_PATH.relative_to(REPO_ROOT).as_posix(): False,
+            },
+            "schema_bindings must not depend on live Path.exists successor state",
+        )
+        self.assertNotIn("schema_bindings_mismatch", result["errors"])
+        self.assertEqual(result["errors"], [])
+
+        rejected_states = (
+            ("partial", {SUCCESSOR_PAIR[0]}),
+            ("invalid_pair", set(SUCCESSOR_PAIR)),
+        )
+        for label, present_paths in rejected_states:
+            with (
+                self.subTest(successor_state=label),
+                mock.patch.object(
+                    self.auditor,
+                    "valid_successor_authorization_pair",
+                    return_value=False,
+                ),
+            ):
+                rejected = self._audit(
+                    copy.deepcopy(self.artifact),
+                    present_paths=present_paths,
+                )
+                self.assertEqual(rejected["status"], "BLOCKED")
+                self.assertIn("forbidden_future_path_present", rejected["errors"])
 
     def test_candidate_projections_are_pure_non_instances(self) -> None:
         authorization = self.auditor.candidate_authorization_projection(REPO_ROOT)

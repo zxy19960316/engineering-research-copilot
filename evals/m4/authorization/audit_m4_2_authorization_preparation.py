@@ -885,7 +885,60 @@ def schema_is_closed(value: object) -> bool:
     return True
 
 
+def git_object_path_exists(
+    repo_root: Path,
+    head: str,
+    path: Path,
+    errors: list[str],
+) -> bool:
+    completed = git(
+        repo_root,
+        "ls-tree",
+        "-z",
+        "--name-only",
+        head,
+        "--",
+        path.as_posix(),
+    )
+    if completed.returncode != 0:
+        add_error(errors, "preparation_closure_instance_query_failed")
+        return False
+    try:
+        entries = {
+            value.decode("utf-8", errors="strict")
+            for value in completed.stdout.split(b"\0")
+            if value
+        }
+    except UnicodeDecodeError:
+        add_error(errors, "preparation_closure_instance_query_failed")
+        return False
+    return path.as_posix() in entries
+
+
 def schema_bindings(repo_root: Path, errors: list[str]) -> list[dict[str, object]]:
+    if (
+        git(repo_root, "cat-file", "-e", f"{PREPARATION_CLOSURE_HEAD}^{{commit}}")
+        .returncode
+        != 0
+    ):
+        add_error(errors, "preparation_closure_head_unavailable")
+    if (
+        git_text(repo_root, "rev-parse", f"{PREPARATION_CLOSURE_HEAD}^{{tree}}")
+        != PREPARATION_CLOSURE_TREE
+    ):
+        add_error(errors, "preparation_closure_tree_mismatch")
+    executable_instances = {
+        path: git_object_path_exists(
+            repo_root,
+            PREPARATION_CLOSURE_HEAD,
+            path,
+            errors,
+        )
+        for path in (
+            SUCCESSOR_AUTHORIZATION_PATH,
+            SUCCESSOR_CONTROL_PATH,
+        )
+    }
     bindings: list[dict[str, object]] = []
     for relative in (
         PREPARATION_SCHEMA_PATH,
@@ -906,7 +959,7 @@ def schema_bindings(repo_root: Path, errors: list[str]) -> list[dict[str, object
             CONTROL_SCHEMA_PATH: FORBIDDEN_EXACT[1],
         }.get(relative)
         executable_present = bool(
-            instance_path is not None and (repo_root / instance_path).exists()
+            instance_path is not None and executable_instances[instance_path]
         )
         bindings.append(
             {
