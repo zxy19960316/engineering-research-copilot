@@ -103,24 +103,24 @@ class M3R5ErratumTests(unittest.TestCase):
     def test_status_top_preserves_terminal_history_during_m4_2_one_shot_authorization(self):
         text = (REPO_ROOT / "STATUS.md").read_text(encoding="utf-8")
         current = text.split("## M3 checklist", 1)[0]
-        issued = M4_2_AUTHORIZATION.exists() and M4_2_CONTROL.exists()
+        self.assertTrue(M4_2_AUTHORIZATION.is_file())
+        self.assertTrue(M4_2_CONTROL.is_file())
+        authorization = json.loads(M4_2_AUTHORIZATION.read_text(encoding="utf-8"))
+        control = json.loads(M4_2_CONTROL.read_text(encoding="utf-8"))
+        token = authorization["authorization_token"]
 
-        if issued:
-            self.assertIn(
-                "Active revision: `M4.2 ONE_SHOT_AUTHORIZATION; "
-                "M4_2_AUTHORIZED_UNCONSUMED_NOT_CLAIMED_NOT_EXECUTED; "
-                "decision=APPROVE_M4_2_SEPARATE_ONE_SHOT_CLAIM_AND_EXECUTION_"
-                "WORK_PACKAGE_ONLY; fresh_execution_authorized=true`",
-                current,
-            )
-        else:
-            self.assertIn(
-                "Active revision: `M4.2 ONE_SHOT_AUTHORIZATION_CANDIDATE; "
-                "M4_2_ONE_SHOT_AUTHORIZATION_CANDIDATE_READY_NOT_ISSUED; "
-                "decision=PENDING_CANDIDATE_EXACT_HEAD_PUSH_AND_PR_CI; "
-                "fresh_execution_authorized=false`",
-                current,
-            )
+        self.assertEqual(authorization["status"], "AUTHORIZED_UNCONSUMED")
+        self.assertEqual(control["status"], "READY_UNCONSUMED")
+        self.assertEqual(control["authorization"]["authorization_token"], token)
+        self.assertNotIn(token, current)
+        self.assertIn(token[:19] + "...", current)
+        self.assertIn(
+            "Active revision: `M4.2 ONE_SHOT_AUTHORIZATION; "
+            "M4_2_AUTHORIZED_UNCONSUMED_NOT_CLAIMED_NOT_EXECUTED; "
+            "decision=APPROVE_M4_2_SEPARATE_ONE_SHOT_CLAIM_AND_EXECUTION_"
+            "WORK_PACKAGE_ONLY; fresh_execution_authorized=true`",
+            current,
+        )
         self.assertIn(f"Historical r5 evidence HEAD: `{EVIDENCE_HEAD}`", current)
         self.assertIn(
             "Gate 3 accepted evidence baseline HEAD: "
@@ -143,6 +143,7 @@ class M3R5ErratumTests(unittest.TestCase):
             "M4_2_GATE_IV_A_REVIEW_PASSED_NOT_AUTHORIZED",
             "M4_2_GATE_IV_B_PROTOCOL_PROOF_PASSED_NOT_AUTHORIZED",
             "M4_2_AUTHORIZATION_PREPARATION_PASSED_NOT_AUTHORIZED",
+            "M4_2_AUTHORIZED_UNCONSUMED_NOT_CLAIMED_NOT_EXECUTED",
             "M4_FRESH_RESULTS_NOT_RUN",
         ):
             self.assertIn(preserved_status, current)
@@ -428,6 +429,110 @@ class M3R5ErratumTests(unittest.TestCase):
             "unauthorized_side_effects=0`",
             current,
         )
+        issuance_records = (
+            "M4.2 one-shot authorization accepted candidate: "
+            "`head=24197d67c7ffb654346bc670617844387909c9ae; "
+            "tree=4e0b4db540fbb72c338eec88b602e70ebfaf3278; "
+            "base_head=4efa75c542172a95c6c72c8c1450fea77a8e2ff1; "
+            "pre_issuance_status=M4_2_ONE_SHOT_AUTHORIZATION_CANDIDATE_READY_NOT_ISSUED`",
+            "M4.2 one-shot authorization preserved failed candidate: "
+            "`head=78c3bae5279f82f17d85b9530e457d50ea3147b5; immutable=true; "
+            "amended=false; rewritten=false; force_pushed=false`",
+            "M4.2 one-shot authorization candidate local gates: `PASSED; "
+            "authorization=19/19; authorization_preparation=24/24; "
+            "Gate_IV_B=28/28; successor_focused=52/52; closure_focused=71/71; "
+            "current_lifecycle=705/705; local_Windows_PowerShell_5_1=60/60; "
+            "audit_results=NOT_RUN; authorization_auditor=BYTE_IDENTICAL_TWICE; "
+            "authorization_pair_pre_issuance=ABSENT; forbidden_path_count=0`",
+            "M4.2 one-shot authorization candidate push exact-HEAD CI: `TRUE_GREEN; "
+            "run=31402033008; head=24197d67c7ffb654346bc670617844387909c9ae; "
+            "jobs=15/15; raw_log_bytes=2267949; "
+            "raw_log_sha256=fd66bcedc8462214b075ead27aaadade4f2741320286893d67f84f25abd5a06a; "
+            "markers=FAIL:0,FAILED (:0,Traceback:0,##[error]:0,"
+            "closure_change_set_mismatch:0,not a working tree:0`",
+            "M4.2 one-shot authorization candidate PR exact-HEAD CI: `TRUE_GREEN; "
+            "run=31402033463; head=24197d67c7ffb654346bc670617844387909c9ae; "
+            "jobs=15/15; raw_log_bytes=2291046; "
+            "raw_log_sha256=b5b1ffcf56bfc5336e79ab31c63657b321c56dead17fd5643d556453e09253d5; "
+            "markers=FAIL:0,FAILED (:0,Traceback:0,##[error]:0,"
+            "closure_change_set_mismatch:0,not a working tree:0`",
+            "M4.2 post-issuance schema-binding repair: "
+            "`head=c3ca5192b06fdb6fd1835119eb3f7bdb43320504; "
+            "parent=24197d67c7ffb654346bc670617844387909c9ae; issued "
+            "authorization/control pair preserved byte-identical`",
+            "M4.2 post-issuance repair push CI preserved: `run=31464382711; "
+            "head=c3ca5192b06fdb6fd1835119eb3f7bdb43320504; "
+            "attempt_1=FAILED_14_OF_15; attempt_2=FAILED_14_OF_15; failed_job=M4.2 "
+            "one-shot authorization lifecycle (windows-latest); "
+            "failed_stage=frozen_preparation_replay; exact_auditor_error=NOT_EXPOSED`",
+            "M4.2 post-issuance repair PR CI: `run=31464385707; attempt=1; "
+            "head=c3ca5192b06fdb6fd1835119eb3f7bdb43320504; jobs=15/15; "
+            "accepted_as_closure_evidence=false`",
+            "M4.2 post-issuance repair diagnostic: "
+            "`BLOCKED_DIAGNOSTIC_DID_NOT_EXPOSE_ERROR; "
+            "prior_failure_root_cause=UNRESOLVED; historical repair-head failures "
+            "preserved`",
+            "M4.2 diagnostic hardening accepted head: "
+            "`head=97a6dd819a54c9aef86a088807f356c24c2b66f1; "
+            "tree=c4d1470c8ea9b0a976ec02135d61e1e80e801122; "
+            "parent=c3ca5192b06fdb6fd1835119eb3f7bdb43320504; "
+            "fail_closed_diagnostic_hardening=RETAINED`",
+            "M4.2 diagnostic hardening push exact-HEAD CI: `TRUE_GREEN; "
+            "run=31470065659; attempt=1; "
+            "head=97a6dd819a54c9aef86a088807f356c24c2b66f1; jobs=15/15; "
+            "raw_log_bytes=2423844; "
+            "raw_log_sha256=c8059f79150082d73d97e1fc12939c3242062612d7c8e7ecd5ef0fb900bba681; "
+            "required_failure_markers=0`",
+            "M4.2 diagnostic hardening PR exact-HEAD CI: `TRUE_GREEN; "
+            "run=31470068037; attempt=1; "
+            "head=97a6dd819a54c9aef86a088807f356c24c2b66f1; jobs=15/15; "
+            "raw_log_bytes=2446447; "
+            "raw_log_sha256=d71eb9234b78a7d68308bb5487b99d1398e2823d804c9e8eca9c0d02ce858b91; "
+            "required_failure_markers=0`",
+            "M4.2 diagnostic conclusion: `prior_failure_root_cause=UNRESOLVED; "
+            "direct_frozen_auditor_return_codes=0,0; "
+            "direct_parsed_errors_first=[]; direct_parsed_errors_second=[]; "
+            "direct_outputs=858_bytes_each; "
+            "direct_output_sha256=f66f320d996dd60c7064a3866201324e2984a6bf0ae5f4adb268ece846be9866; "
+            "historical_pair=48/48; worktree_cleanup=SUCCEEDED; "
+            "fail_closed_diagnostic_hardening=RETAINED`",
+            "M4.2 issued-state closure local gates: `PASSED; authorization=19/19; "
+            "authorization_preparation=25/25; Gate_IV_B=28/28; successor=53/53; "
+            "combined_focused=72/72; local_Windows_PowerShell_5_1=60/60; "
+            "current_lifecycle=706/706; builder_check=PASS; "
+            "authorization_auditor=BYTE_IDENTICAL_TWICE; "
+            "preparation_auditor=BYTE_IDENTICAL_TWICE; "
+            "Gate_IV_B_auditor=BYTE_IDENTICAL_TWICE; audit_results=NOT_RUN; "
+            "git_diff_check=PASS; staging=EMPTY; unstaged_paths=EXACT_FOUR`",
+            "M4.2 one-shot authorization issuance: "
+            "`M4_2_AUTHORIZED_UNCONSUMED_NOT_CLAIMED_NOT_EXECUTED; "
+            "authorization/control pair=PRESENT; write_once_calls=1; "
+            "accepted_candidate_head=24197d67c7ffb654346bc670617844387909c9ae; "
+            "accepted_candidate_tree=4e0b4db540fbb72c338eec88b602e70ebfaf3278`",
+            "M4.2 one-shot authorization artifacts: "
+            "`authorization_blob=0b83a74642a89440cf7df22c3eeb92ec180c8d5a; "
+            "authorization_bytes=4955; "
+            "authorization_raw_sha256=dc73c9376bdd78cf7e0d355701c8c3fe6966c34db5a1203544b9d95ab88e719b; "
+            "control_blob=04ca77769553f50c0b74f50ab8f239950a2b9a6d; "
+            "control_bytes=51015; "
+            "control_raw_sha256=c482386a03895fb3820a8fd5b87f52cbd9ae80c5daeb64483dbfd7ea11c62b56`",
+            "M4.2 one-shot authorization token: `inline=true; status=UNCONSUMED; "
+            "fingerprint=sha256:38722c9e4b69...; claim=ABSENT; claim_count=0`",
+            "M4.2 one-shot authorization counters: `authorized_roster_tasks=60; "
+            "authorized_batches=6; acceptance_claims=0; contexts=0; dispatches=0; "
+            "executions=0; finalizations=0; results=0; judge_scores=0; "
+            "aggregation_calls=0; repairs=0; retries=0; unauthorized_side_effects=0`",
+            "M4.2 one-shot authorization permissions: `cross_task_visibility=false; "
+            "judge_authorization=false; aggregation_authorization=false; "
+            "M4_closure_authorization=false`",
+            "M4.2 one-shot authorization result boundary: `claim=ABSENT; "
+            "execution=NOT_RUN; results=NOT_RUN; results_manifest=ABSENT; M5=ABSENT`",
+            "M4.2 one-shot authorization decision: "
+            "`APPROVE_M4_2_SEPARATE_ONE_SHOT_CLAIM_AND_EXECUTION_WORK_PACKAGE_ONLY; "
+            "PR_9=OPEN_DRAFT_UNMERGED`",
+        )
+        for record in issuance_records:
+            self.assertIn(record, current)
         false_green_runs = {
             "31311637459": (
                 "be6039e7d2a682b2e001ee12dff5c1db5743b2ed",
@@ -503,10 +608,11 @@ class M3R5ErratumTests(unittest.TestCase):
             current,
         )
         self.assertIn(
-            "M4.2 authority state: `fresh_execution=false; tasks=false; "
-            "result_writes=false; retry=false; repair=false; "
-            "authorization_artifact=null; "
-            "model_binding_status=UNBOUND_UNTIL_SEPARATE_AUTHORIZATION`",
+            "M4.2 authority state: `fresh_execution=true; authorized_roster_tasks=60; "
+            "authorized_batches=6; authorization_artifact=PRESENT; "
+            "execution_control=PRESENT; inline_token=UNCONSUMED; claim=ABSENT; "
+            "cross_task_visibility=false; judge=false; aggregation=false; "
+            "M4_closure=false`",
             current,
         )
         self.assertIn(
@@ -517,9 +623,10 @@ class M3R5ErratumTests(unittest.TestCase):
             current,
         )
         self.assertIn(
-            "M4.2 absent artifacts: `M4.1 result_root=ABSENT; "
-            "M4.2 authorization=ABSENT; execution=ABSENT; "
-            "result_root=ABSENT; results_manifest=ABSENT`",
+            "M4.2 artifact state: `M4.1 result_root=ABSENT; "
+            "M4.2 authorization=PRESENT; execution_control=PRESENT; claim=ABSENT; "
+            "execution=ABSENT; result_root=ABSENT; results_manifest=ABSENT; "
+            "M5=ABSENT`",
             current,
         )
         self.assertIn(
@@ -528,11 +635,11 @@ class M3R5ErratumTests(unittest.TestCase):
             "Gate IV-A r2=PASSED_NOT_AUTHORIZED; "
             "Gate IV-B protocol proof=PASSED_NOT_AUTHORIZED; "
             "authorization preparation=PASSED_NOT_AUTHORIZED; "
-            "separate one-shot authorization=PERMITTED_NOT_STARTED; "
-            "authorization=ABSENT; execution=ABSENT; claim=ABSENT; "
-            "tasks=0; results=0; "
+            "separate one-shot authorization=AUTHORIZED_UNCONSUMED; "
+            "authorization=PRESENT; claim=ABSENT; contexts=0; dispatches=0; "
+            "executions=0; results=0; "
             "judge=NOT_RUN; aggregation=NOT_RUN; closure=NOT_RUN; "
-            "M5=NOT_STARTED`",
+            "M5=ABSENT`",
             current,
         )
         self.assertIn(
@@ -659,27 +766,23 @@ class M3R5ErratumTests(unittest.TestCase):
             "M4.2 PREPARED_NOT_AUTHORIZED; "
             "M4.2 WINDOWS_LIFECYCLE_REPAIR_ACCEPTED; "
             "M4.2 GATE_IV_A_REVIEW_PASSED_NOT_AUTHORIZED; "
+            "M4.2 GATE_IV_B_PROTOCOL_PROOF_PASSED_NOT_AUTHORIZED; "
+            "M4.2 AUTHORIZATION_PREPARATION_PASSED_NOT_AUTHORIZED; "
+            "M4.2 AUTHORIZED_UNCONSUMED_NOT_CLAIMED_NOT_EXECUTED; "
             "FRESH_RESULTS_NOT_RUN`",
             text,
         )
+        self.assertIn("- M5: `ABSENT; NOT_STARTED`", text)
         self.assertIn(
             "- Active local branch: "
-            "`codex/m4-cross-engineering-forward-evaluation-m4.2-gate-iv-a-r2`",
+            "`codex/m4-cross-engineering-forward-evaluation-m4.2-one-shot-authorization`",
             text,
         )
         self.assertNotIn("GATE_IV_B_LAUNCH_READINESS_LOCAL_READY", text)
-        if issued:
-            self.assertIn(
-                "M4_2_AUTHORIZED_UNCONSUMED_NOT_CLAIMED_NOT_EXECUTED", current
-            )
-            self.assertIn("claim_count=0", current)
-        else:
-            self.assertIn(
-                "M4_2_ONE_SHOT_AUTHORIZATION_CANDIDATE_READY_NOT_ISSUED", current
-            )
-            self.assertNotIn(
-                "M4_2_AUTHORIZED_UNCONSUMED_NOT_CLAIMED_NOT_EXECUTED", current
-            )
+        self.assertIn(
+            "M4_2_AUTHORIZED_UNCONSUMED_NOT_CLAIMED_NOT_EXECUTED", current
+        )
+        self.assertIn("claim_count=0", current)
 
         r5_1_terminal = json.loads(R5_1_TERMINAL.read_text(encoding="utf-8"))
         self.assertEqual(r5_1_terminal["status"], "terminal_not_accepted")
