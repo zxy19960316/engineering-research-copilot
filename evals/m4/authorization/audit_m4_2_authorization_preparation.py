@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import hashlib
+import importlib.util
 import json
 import os
 import subprocess
@@ -23,6 +24,8 @@ SUCCESSOR_BRANCH = (
     "codex/m4-cross-engineering-forward-evaluation-"
     "m4.2-authorization-preparation"
 )
+PREPARATION_CLOSURE_HEAD = "4efa75c542172a95c6c72c8c1450fea77a8e2ff1"
+PREPARATION_CLOSURE_TREE = "f7394004d9d5f0a9be22a62dca1d67bb5f2af52d"
 PROOF_PATH = Path("evals/m4/authorization/m4.2/gate-iv-b-protocol-proof.json")
 PROOF_BLOB = "d3fe975431f2e4584a52ee5305b169f5b5d29268"
 PROOF_SHA256 = "9d160de6893fbb6bd01158524a3a48931496b6d4cae1fdc4c9f0e736921068e0"
@@ -36,6 +39,15 @@ AUTHORIZATION_SCHEMA_PATH = Path(
 )
 CONTROL_SCHEMA_PATH = Path(
     "evals/m4/authorization/m4.2/execution-control.schema.json"
+)
+SUCCESSOR_AUTHORIZATION_PATH = Path(
+    "evals/m4/authorization/m4.2/execution-authorization.json"
+)
+SUCCESSOR_CONTROL_PATH = Path(
+    "evals/m4/authorization/m4.2/execution-control.json"
+)
+SUCCESSOR_AUDITOR_PATH = Path(
+    "evals/m4/authorization/audit_m4_2_authorization.py"
 )
 M42_MANIFEST_PATH = Path("evals/m4/revisions/m4.2/preparation-manifest.json")
 TASK_PROTOCOL_PATH = Path("evals/m4/task-protocol.md")
@@ -104,6 +116,12 @@ ALLOWED_CHANGE_PATHS = frozenset(
         "tests/test_m4_2_authorization_preparation.py",
         "tests/test_m4_2_gate_iv_b_protocol_proof.py",
         "tests/test_m3_r5_erratum.py",
+        "docs/superpowers/plans/2026-08-10-m4.2-one-shot-authorization.md",
+        "evals/m4/authorization/build_m4_2_authorization.py",
+        SUCCESSOR_AUDITOR_PATH.as_posix(),
+        "tests/test_m4_2_authorization.py",
+        SUCCESSOR_AUTHORIZATION_PATH.as_posix(),
+        SUCCESSOR_CONTROL_PATH.as_posix(),
     }
 )
 CLOSURE_CHANGE_PATHS = frozenset(
@@ -123,15 +141,19 @@ ALLOWED_M42_AUTHORIZATION_FILES = frozenset(
         PREPARATION_SCHEMA_PATH.as_posix(),
         AUTHORIZATION_SCHEMA_PATH.as_posix(),
         CONTROL_SCHEMA_PATH.as_posix(),
+        SUCCESSOR_AUTHORIZATION_PATH.as_posix(),
+        SUCCESSOR_CONTROL_PATH.as_posix(),
     }
 )
 FORBIDDEN_EXACT = (
-    Path("evals/m4/authorization/m4.2/execution-authorization.json"),
-    Path("evals/m4/authorization/m4.2/execution-control.json"),
+    SUCCESSOR_AUTHORIZATION_PATH,
+    SUCCESSOR_CONTROL_PATH,
     Path("evals/m4/authorization/m4.2/authorization-token.json"),
     Path("evals/m4/authorization/m4.2/acceptance-claim.json"),
     Path("evals/m4/results-manifest.json"),
 )
+
+_SUCCESSOR_AUDITOR: object | None = None
 FORBIDDEN_PREFIXES = (
     Path("evals/m4/execution/m4.2"),
     Path("evals/m4/results/m4.1"),
@@ -721,12 +743,48 @@ def policy_proofs() -> dict[str, object]:
     }
 
 
+def valid_successor_authorization_pair(repo_root: Path) -> bool:
+    global _SUCCESSOR_AUDITOR
+    authorization = repo_root / SUCCESSOR_AUTHORIZATION_PATH
+    control = repo_root / SUCCESSOR_CONTROL_PATH
+    if not authorization.is_file() and not control.is_file():
+        return False
+    if not authorization.is_file() or not control.is_file():
+        return False
+    if authorization.is_symlink() or control.is_symlink():
+        return False
+    if _SUCCESSOR_AUDITOR is None:
+        path = repo_root / SUCCESSOR_AUDITOR_PATH
+        if not path.is_file():
+            return False
+        spec = importlib.util.spec_from_file_location(
+            "m4_2_successor_authorization_auditor_for_preparation", path
+        )
+        if spec is None or spec.loader is None:
+            return False
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        _SUCCESSOR_AUDITOR = module
+    result = _SUCCESSOR_AUDITOR.audit_authorization(repo_root)
+    return bool(
+        result.get("status")
+        == "M4_2_AUTHORIZED_UNCONSUMED_NOT_CLAIMED_NOT_EXECUTED"
+        and result.get("errors") == []
+    )
+
+
 def discover_forbidden_paths(
     repo_root: Path,
     present_paths: set[str] | None = None,
 ) -> list[str]:
     found: set[str] = set()
+    successor_pair_valid = valid_successor_authorization_pair(repo_root)
     for relative in FORBIDDEN_EXACT:
+        if successor_pair_valid and relative in {
+            SUCCESSOR_AUTHORIZATION_PATH,
+            SUCCESSOR_CONTROL_PATH,
+        }:
+            continue
         if (repo_root / relative).exists():
             found.add(relative.as_posix())
     for relative in FORBIDDEN_PREFIXES:
@@ -827,7 +885,60 @@ def schema_is_closed(value: object) -> bool:
     return True
 
 
+def git_object_path_exists(
+    repo_root: Path,
+    head: str,
+    path: Path,
+    errors: list[str],
+) -> bool:
+    completed = git(
+        repo_root,
+        "ls-tree",
+        "-z",
+        "--name-only",
+        head,
+        "--",
+        path.as_posix(),
+    )
+    if completed.returncode != 0:
+        add_error(errors, "preparation_closure_instance_query_failed")
+        return False
+    try:
+        entries = {
+            value.decode("utf-8", errors="strict")
+            for value in completed.stdout.split(b"\0")
+            if value
+        }
+    except UnicodeDecodeError:
+        add_error(errors, "preparation_closure_instance_query_failed")
+        return False
+    return path.as_posix() in entries
+
+
 def schema_bindings(repo_root: Path, errors: list[str]) -> list[dict[str, object]]:
+    if (
+        git(repo_root, "cat-file", "-e", f"{PREPARATION_CLOSURE_HEAD}^{{commit}}")
+        .returncode
+        != 0
+    ):
+        add_error(errors, "preparation_closure_head_unavailable")
+    if (
+        git_text(repo_root, "rev-parse", f"{PREPARATION_CLOSURE_HEAD}^{{tree}}")
+        != PREPARATION_CLOSURE_TREE
+    ):
+        add_error(errors, "preparation_closure_tree_mismatch")
+    executable_instances = {
+        path: git_object_path_exists(
+            repo_root,
+            PREPARATION_CLOSURE_HEAD,
+            path,
+            errors,
+        )
+        for path in (
+            SUCCESSOR_AUTHORIZATION_PATH,
+            SUCCESSOR_CONTROL_PATH,
+        )
+    }
     bindings: list[dict[str, object]] = []
     for relative in (
         PREPARATION_SCHEMA_PATH,
@@ -848,7 +959,7 @@ def schema_bindings(repo_root: Path, errors: list[str]) -> list[dict[str, object
             CONTROL_SCHEMA_PATH: FORBIDDEN_EXACT[1],
         }.get(relative)
         executable_present = bool(
-            instance_path is not None and (repo_root / instance_path).exists()
+            instance_path is not None and executable_instances[instance_path]
         )
         bindings.append(
             {
@@ -1077,12 +1188,35 @@ def delivery_state(
             add_error(errors, "accepted_candidate_head_unavailable")
         if git(repo_root, "merge-base", "--is-ancestor", head, "HEAD").returncode != 0:
             add_error(errors, "accepted_candidate_head_not_ancestor")
+        successor = (
+            git(
+                repo_root,
+                "merge-base",
+                "--is-ancestor",
+                PREPARATION_CLOSURE_HEAD,
+                "HEAD",
+            ).returncode
+            == 0
+        )
+        closure_target = PREPARATION_CLOSURE_HEAD if successor else "HEAD"
         closure = git_text(
-            repo_root, "diff", "--name-only", "--no-renames", head, "HEAD", "--"
+            repo_root,
+            "diff",
+            "--name-only",
+            "--no-renames",
+            head,
+            closure_target,
+            "--",
         )
         closure_paths = set(closure.splitlines()) if closure else set()
         if closure_paths != CLOSURE_CHANGE_PATHS:
             add_error(errors, "closure_change_set_mismatch")
+        if successor:
+            closure_tree = git_text(
+                repo_root, "rev-parse", f"{PREPARATION_CLOSURE_HEAD}^{{tree}}"
+            )
+            if closure_tree != PREPARATION_CLOSURE_TREE:
+                add_error(errors, "preparation_closure_tree_mismatch")
     return "FINAL"
 
 

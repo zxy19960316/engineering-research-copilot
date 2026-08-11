@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import hashlib
+import importlib.util
 import json
 import os
 import subprocess
@@ -38,6 +39,15 @@ R2_REVIEW_PATH = Path(
 )
 R2_SCHEMA_PATH = Path(
     "evals/m4/authorization/m4.2/gate-iv-a-review-r2.schema.json"
+)
+SUCCESSOR_AUTHORIZATION_PATH = Path(
+    "evals/m4/authorization/m4.2/execution-authorization.json"
+)
+SUCCESSOR_CONTROL_PATH = Path(
+    "evals/m4/authorization/m4.2/execution-control.json"
+)
+SUCCESSOR_AUDITOR_PATH = Path(
+    "evals/m4/authorization/audit_m4_2_authorization.py"
 )
 PRIOR_REVIEW_PATH = Path(
     "evals/m4/authorization/m4.2/gate-iv-a-review.json"
@@ -199,6 +209,12 @@ ALLOWED_CHANGE_PATHS = frozenset(
         "evals/m4/authorization/m4.2/execution-control.schema.json",
         "evals/m4/authorization/audit_m4_2_authorization_preparation.py",
         "tests/test_m4_2_authorization_preparation.py",
+        "docs/superpowers/plans/2026-08-10-m4.2-one-shot-authorization.md",
+        "evals/m4/authorization/build_m4_2_authorization.py",
+        SUCCESSOR_AUDITOR_PATH.as_posix(),
+        "tests/test_m4_2_authorization.py",
+        SUCCESSOR_AUTHORIZATION_PATH.as_posix(),
+        SUCCESSOR_CONTROL_PATH.as_posix(),
     }
 )
 SUCCESSOR_PREPARATION_FILES = frozenset(
@@ -211,6 +227,8 @@ SUCCESSOR_PREPARATION_FILES = frozenset(
         "evals/m4/authorization/m4.2/authorization-preparation.schema.json",
         "evals/m4/authorization/m4.2/execution-authorization.schema.json",
         "evals/m4/authorization/m4.2/execution-control.schema.json",
+        SUCCESSOR_AUTHORIZATION_PATH.as_posix(),
+        SUCCESSOR_CONTROL_PATH.as_posix(),
     }
 )
 CLOSURE_CHANGE_PATHS = frozenset(
@@ -220,6 +238,8 @@ CLOSURE_CHANGE_PATHS = frozenset(
         "tests/test_m3_r5_erratum.py",
     }
 )
+
+_SUCCESSOR_AUDITOR: object | None = None
 
 
 class DuplicateKeyError(ValueError):
@@ -772,11 +792,42 @@ def visibility_projection() -> dict[str, object]:
     }
 
 
+def valid_successor_authorization_pair(repo_root: Path) -> bool:
+    global _SUCCESSOR_AUDITOR
+    authorization = repo_root / SUCCESSOR_AUTHORIZATION_PATH
+    control = repo_root / SUCCESSOR_CONTROL_PATH
+    if not authorization.is_file() and not control.is_file():
+        return False
+    if not authorization.is_file() or not control.is_file():
+        return False
+    if authorization.is_symlink() or control.is_symlink():
+        return False
+    if _SUCCESSOR_AUDITOR is None:
+        path = repo_root / SUCCESSOR_AUDITOR_PATH
+        if not path.is_file():
+            return False
+        spec = importlib.util.spec_from_file_location(
+            "m4_2_successor_authorization_auditor_for_gate_iv_b", path
+        )
+        if spec is None or spec.loader is None:
+            return False
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        _SUCCESSOR_AUDITOR = module
+    result = _SUCCESSOR_AUDITOR.audit_authorization(repo_root)
+    return bool(
+        result.get("status")
+        == "M4_2_AUTHORIZED_UNCONSUMED_NOT_CLAIMED_NOT_EXECUTED"
+        and result.get("errors") == []
+    )
+
+
 def discover_forbidden_paths(
     repo_root: Path,
     present_paths: set[str] | None = None,
 ) -> list[str]:
     found: set[str] = set()
+    successor_pair_valid = valid_successor_authorization_pair(repo_root)
     exact = (
         Path("evals/m4/authorization/m4.2/execution-authorization.json"),
         Path("evals/m4/authorization/m4.2/execution-control.json"),
@@ -791,6 +842,11 @@ def discover_forbidden_paths(
         Path("evals/m5"),
     )
     for relative in exact:
+        if successor_pair_valid and relative in {
+            SUCCESSOR_AUTHORIZATION_PATH,
+            SUCCESSOR_CONTROL_PATH,
+        }:
+            continue
         if (repo_root / relative).exists():
             found.add(relative.as_posix())
     for relative in prefixes:

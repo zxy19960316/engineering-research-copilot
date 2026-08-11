@@ -9,6 +9,7 @@ import unittest
 from pathlib import Path
 from types import ModuleType
 from typing import Any, Iterator
+from unittest import mock
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -27,6 +28,9 @@ BASELINE_HEAD = "ad67a79f39685937466d3a49d30c6a5117e2810c"
 BASELINE_TREE = "7f5d7c2e15616e4e52f45c0366f8b347211e8849"
 B3_HEAD = "249e28d07d5e52cd9cec9b7e110f6159e6046222"
 B3_TREE = "dacb6e5048a54c3f242add441dd1a36255f80dc4"
+ACCEPTED_CANDIDATE_HEAD = "44e6cd611ce67f362015c431d3c1d6ba069ad345"
+PREPARATION_CLOSURE_HEAD = "4efa75c542172a95c6c72c8c1450fea77a8e2ff1"
+PREPARATION_CLOSURE_TREE = "f7394004d9d5f0a9be22a62dca1d67bb5f2af52d"
 PROOF_BLOB = "d3fe975431f2e4584a52ee5305b169f5b5d29268"
 PROOF_SHA256 = "9d160de6893fbb6bd01158524a3a48931496b6d4cae1fdc4c9f0e736921068e0"
 PROOF_BYTE_LENGTH = 33204
@@ -40,11 +44,13 @@ BASE_BRANCH = (
 )
 
 FORBIDDEN_EXACT = (
-    "evals/m4/authorization/m4.2/execution-authorization.json",
-    "evals/m4/authorization/m4.2/execution-control.json",
     "evals/m4/authorization/m4.2/authorization-token.json",
     "evals/m4/authorization/m4.2/acceptance-claim.json",
     "evals/m4/results-manifest.json",
+)
+SUCCESSOR_PAIR = (
+    "evals/m4/authorization/m4.2/execution-authorization.json",
+    "evals/m4/authorization/m4.2/execution-control.json",
 )
 FORBIDDEN_PREFIXES = (
     "evals/m4/execution/m4.2",
@@ -73,6 +79,11 @@ ROOT_KEYS = {
     "status",
 }
 ZERO_MARKERS = {"FAIL:": 0, "FAILED (": 0, "Traceback": 0, "##[error]": 0}
+CLOSURE_CHANGE_PATHS = {
+    "STATUS.md",
+    "evals/m4/authorization/m4.2/authorization-preparation.json",
+    "tests/test_m3_r5_erratum.py",
+}
 PROVISIONAL_DECISION = "PENDING_M4_2_AUTHORIZATION_PREPARATION_EXACT_HEAD_CI"
 PROVISIONAL_STATUS = (
     "M4_2_AUTHORIZATION_PREPARATION_LOCAL_PASSED_NOT_AUTHORIZED"
@@ -168,8 +179,10 @@ class M42AuthorizationPreparationRedFirstTests(unittest.TestCase):
             0,
         )
 
-    def test_actual_authorization_execution_and_result_paths_are_absent(self) -> None:
+    def test_claim_execution_and_result_paths_are_absent(self) -> None:
         self.assertEqual(_present_forbidden(), [])
+        present = [(REPO_ROOT / relative).is_file() for relative in SUCCESSOR_PAIR]
+        self.assertIn(present, ([False, False], [True, True]))
 
     def test_preparation_files_exist(self) -> None:
         missing = [
@@ -286,6 +299,150 @@ class M42AuthorizationPreparationContractTests(unittest.TestCase):
         self.assertEqual(result["launch_claim"], "ABSENT")
         self.assertEqual(result["result_root"], "ABSENT")
 
+    def test_committed_successor_anchors_historical_closure_change_set(self) -> None:
+        current_head = _git("rev-parse", "HEAD")
+        if current_head == PREPARATION_CLOSURE_HEAD:
+            self.skipTest("committed successor required")
+        self.assertEqual(
+            _git("rev-parse", f"{PREPARATION_CLOSURE_HEAD}^{{tree}}"),
+            PREPARATION_CLOSURE_TREE,
+        )
+        self.assertEqual(
+            subprocess.run(
+                [
+                    "git",
+                    "merge-base",
+                    "--is-ancestor",
+                    PREPARATION_CLOSURE_HEAD,
+                    "HEAD",
+                ],
+                cwd=REPO_ROOT,
+                check=False,
+            ).returncode,
+            0,
+        )
+        closure_paths = set(
+            _git(
+                "diff",
+                "--name-only",
+                "--no-renames",
+                ACCEPTED_CANDIDATE_HEAD,
+                PREPARATION_CLOSURE_HEAD,
+                "--",
+            ).splitlines()
+        )
+        successor_paths = set(
+            _git(
+                "diff",
+                "--name-only",
+                "--no-renames",
+                ACCEPTED_CANDIDATE_HEAD,
+                "HEAD",
+                "--",
+            ).splitlines()
+        )
+        self.assertEqual(closure_paths, CLOSURE_CHANGE_PATHS)
+        self.assertNotEqual(successor_paths, CLOSURE_CHANGE_PATHS)
+        result = self._audit(copy.deepcopy(self.artifact), verify_git=True)
+        self.assertNotIn("closure_change_set_mismatch", result["errors"])
+
+    def test_successor_authorization_change_set_is_explicit_and_pair_gated(self) -> None:
+        required = {
+            "docs/superpowers/plans/2026-08-10-m4.2-one-shot-authorization.md",
+            "evals/m4/authorization/build_m4_2_authorization.py",
+            "evals/m4/authorization/audit_m4_2_authorization.py",
+            "tests/test_m4_2_authorization.py",
+            *SUCCESSOR_PAIR,
+        }
+        self.assertTrue(required <= self.auditor.ALLOWED_CHANGE_PATHS)
+        pair_present = all((REPO_ROOT / relative).is_file() for relative in SUCCESSOR_PAIR)
+        self.assertEqual(
+            self.auditor.valid_successor_authorization_pair(REPO_ROOT), pair_present
+        )
+
+    def test_schema_bindings_remain_frozen_across_successor_issuance(self) -> None:
+        self.assertEqual(
+            _git("rev-parse", f"{PREPARATION_CLOSURE_HEAD}^{{tree}}"),
+            PREPARATION_CLOSURE_TREE,
+        )
+        for relative in SUCCESSOR_PAIR:
+            with self.subTest(closure_instance=relative):
+                self.assertNotEqual(
+                    subprocess.run(
+                        [
+                            "git",
+                            "cat-file",
+                            "-e",
+                            f"{PREPARATION_CLOSURE_HEAD}:{relative}",
+                        ],
+                        cwd=REPO_ROOT,
+                        check=False,
+                        capture_output=True,
+                    ).returncode,
+                    0,
+                )
+
+        successor_instances = {
+            (REPO_ROOT / relative).resolve(strict=False) for relative in SUCCESSOR_PAIR
+        }
+        original_exists = Path.exists
+
+        def simulated_successor_exists(path: Path) -> bool:
+            if path.resolve(strict=False) in successor_instances:
+                return True
+            return original_exists(path)
+
+        binding_errors: list[str] = []
+        with (
+            mock.patch.object(Path, "exists", simulated_successor_exists),
+            mock.patch.object(
+                self.auditor, "valid_successor_authorization_pair", return_value=True
+            ),
+        ):
+            bindings = self.auditor.schema_bindings(REPO_ROOT, binding_errors)
+            result = self._audit(copy.deepcopy(self.artifact), verify_git=True)
+
+        executable_presence = {
+            binding["path"]: binding["executable_instance_present"]
+            for binding in bindings
+            if binding["path"]
+            in {
+                AUTHORIZATION_SCHEMA_PATH.relative_to(REPO_ROOT).as_posix(),
+                CONTROL_SCHEMA_PATH.relative_to(REPO_ROOT).as_posix(),
+            }
+        }
+        self.assertEqual(binding_errors, [])
+        self.assertEqual(
+            executable_presence,
+            {
+                AUTHORIZATION_SCHEMA_PATH.relative_to(REPO_ROOT).as_posix(): False,
+                CONTROL_SCHEMA_PATH.relative_to(REPO_ROOT).as_posix(): False,
+            },
+            "schema_bindings must not depend on live Path.exists successor state",
+        )
+        self.assertNotIn("schema_bindings_mismatch", result["errors"])
+        self.assertEqual(result["errors"], [])
+
+        rejected_states = (
+            ("partial", {SUCCESSOR_PAIR[0]}),
+            ("invalid_pair", set(SUCCESSOR_PAIR)),
+        )
+        for label, present_paths in rejected_states:
+            with (
+                self.subTest(successor_state=label),
+                mock.patch.object(
+                    self.auditor,
+                    "valid_successor_authorization_pair",
+                    return_value=False,
+                ),
+            ):
+                rejected = self._audit(
+                    copy.deepcopy(self.artifact),
+                    present_paths=present_paths,
+                )
+                self.assertEqual(rejected["status"], "BLOCKED")
+                self.assertIn("forbidden_future_path_present", rejected["errors"])
+
     def test_candidate_projections_are_pure_non_instances(self) -> None:
         authorization = self.auditor.candidate_authorization_projection(REPO_ROOT)
         control = self.auditor.candidate_control_projection(REPO_ROOT)
@@ -357,6 +514,34 @@ class M42AuthorizationPreparationContractTests(unittest.TestCase):
         self.assertIn("git status", job)
         self.assertNotIn("continue-on-error", job)
 
+    def test_worktree_cleanup_requires_successful_creation(self) -> None:
+        workflow = WORKFLOW_PATH.read_text(encoding="utf-8")
+        cases = (
+            (
+                "Create isolated accepted Gate IV-B closure replay worktree",
+                "create_gate_iv_b_closure_worktree",
+                "Remove isolated accepted Gate IV-B closure replay worktree",
+            ),
+            (
+                "Create isolated authorization-preparation closure replay worktree",
+                "create_authorization_preparation_closure_worktree",
+                "Remove isolated authorization-preparation closure replay worktree",
+            ),
+        )
+        for create_name, create_id, cleanup_name in cases:
+            with self.subTest(cleanup=cleanup_name):
+                create_step = workflow.split(f"- name: {create_name}", 1)[1].split(
+                    "- name:", 1
+                )[0]
+                cleanup_step = workflow.split(f"- name: {cleanup_name}", 1)[1].split(
+                    "- name:", 1
+                )[0]
+                self.assertIn(f"id: {create_id}", create_step)
+                self.assertIn(
+                    f"if: always() && steps.{create_id}.outcome == 'success'",
+                    cleanup_step,
+                )
+
     def test_auditor_is_offline_read_only_and_no_authorization_writer_exists(self) -> None:
         source = AUDITOR_PATH.read_text(encoding="utf-8")
         for forbidden in (
@@ -374,7 +559,8 @@ class M42AuthorizationPreparationContractTests(unittest.TestCase):
         ):
             with self.subTest(forbidden=forbidden):
                 self.assertNotIn(forbidden, source)
-        self.assertFalse((AUTHORIZATION_ROOT / "build_m4_2_authorization.py").exists())
+        self.assertTrue((AUTHORIZATION_ROOT / "build_m4_2_authorization.py").is_file())
+        self.assertTrue((AUTHORIZATION_ROOT / "audit_m4_2_authorization.py").is_file())
 
     def test_cli_is_byte_repeatable_and_read_only(self) -> None:
         before = subprocess.run(
