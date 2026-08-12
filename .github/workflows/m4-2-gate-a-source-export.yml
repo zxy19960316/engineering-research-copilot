@@ -1,0 +1,48 @@
+name: M4.2 Gate A source export
+
+on:
+  push:
+    branches:
+      - codex/m4-cross-engineering-forward-evaluation-m4.2-one-shot-claim-and-execution
+    paths:
+      - .github/workflows/m4-2-gate-a-source-export.yml
+
+permissions:
+  contents: read
+
+concurrency:
+  group: m4-2-gate-a-source-export
+  cancel-in-progress: false
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Archive exact accepted repair head
+        shell: bash
+        env:
+          SOURCE_HEAD: 8ffc4b53f79a5018588703c562945d9240506990
+          SOURCE_TREE: 047c30a5c07308f620fda31d3b6c787953d738be
+        run: |
+          set -euo pipefail
+          git cat-file -e "${SOURCE_HEAD}^{commit}"
+          test "$(git rev-parse "${SOURCE_HEAD}^{tree}")" = "$SOURCE_TREE"
+          git archive --format=zip --output="${RUNNER_TEMP}/engineering-research-copilot-${SOURCE_HEAD}.zip" "$SOURCE_HEAD"
+          python -X utf8 - "${RUNNER_TEMP}/engineering-research-copilot-${SOURCE_HEAD}.zip" <<'PY'
+          import hashlib
+          from pathlib import Path
+          import sys
+
+          path = Path(sys.argv[1])
+          raw = path.read_bytes()
+          print(f"archive={path.name} byte_length={len(raw)} sha256={hashlib.sha256(raw).hexdigest()}")
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: m4-2-gate-a-source-8ffc4b53
+          path: ${{ runner.temp }}/engineering-research-copilot-8ffc4b53f79a5018588703c562945d9240506990.zip
+          if-no-files-found: error
+          retention-days: 1
