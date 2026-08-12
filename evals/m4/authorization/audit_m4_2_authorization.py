@@ -97,6 +97,7 @@ GATE_A_STATIC_PATHS = frozenset(
         "tests/test_m4_2_execution.py",
         "tests/test_m4_2_launch_readiness.py",
         "tests/test_m3_r5_erratum.py",
+        "tests/test_m4_2_authorization_preparation.py",
     }
 )
 ALLOWED_CHANGE_PATHS = frozenset(
