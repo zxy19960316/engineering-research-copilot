@@ -15,24 +15,29 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  repair:
+  export-patched-blob:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
           ref: codex/m4-cross-engineering-forward-evaluation-m4.2-one-shot-claim-and-execution
-      - name: Apply exact fail-closed repair and remove helper
+      - name: Export exact patched workflow blob without updating a branch
         shell: bash
         env:
-          EXPECTED_PARENT: 517bfb373ff357a3637d442d71813742d1620fa1
+          EXPECTED_PARENT: cbe485e3b0db451f8efeb3218f682224e975ca23
           EXPECTED_WORKFLOW_BLOB: eb73c26d998968c9da3340bad90532c9a853a4a2
           TARGET_BRANCH: codex/m4-cross-engineering-forward-evaluation-m4.2-one-shot-claim-and-execution
+          BLOB_TAG: m4-2-gate-a-patched-workflow-blob-20260812-v1
         run: |
           set -euo pipefail
           test "$(git rev-parse HEAD^)" = "$EXPECTED_PARENT"
           test "$(git rev-parse HEAD:.github/workflows/m1-validation.yml)" = "$EXPECTED_WORKFLOW_BLOB"
           test "$(git branch --show-current)" = "$TARGET_BRANCH"
+          if git ls-remote --exit-code --tags origin "refs/tags/${BLOB_TAG}" >/dev/null 2>&1; then
+            printf 'ref_already_exists:%s\n' "$BLOB_TAG" >&2
+            exit 1
+          fi
           python -X utf8 - <<'PY'
           from pathlib import Path
 
@@ -56,13 +61,11 @@ jobs:
           if new in raw:
               raise SystemExit('replacement_already_present')
           path.write_bytes(raw.replace(old, new, 1))
-          Path('.github/workflows/m4-2-gate-a-remote-repair.yml').unlink()
           PY
-          test "$(git diff --name-only | sort)" = $'.github/workflows/m1-validation.yml\n.github/workflows/m4-2-gate-a-remote-repair.yml'
+          test "$(git diff --name-only)" = '.github/workflows/m1-validation.yml'
           test "$(git diff --numstat -- .github/workflows/m1-validation.yml)" = $'1\t1\t.github/workflows/m1-validation.yml'
           git diff --check
-          git config user.name github-actions[bot]
-          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-          git add .github/workflows/m1-validation.yml .github/workflows/m4-2-gate-a-remote-repair.yml
-          git commit -m "fix(ci): align frozen M4.2 worktree line endings"
-          git push origin "HEAD:refs/heads/${TARGET_BRANCH}"
+          patched_blob="$(git hash-object -w .github/workflows/m1-validation.yml)"
+          git cat-file -e "${patched_blob}^{blob}"
+          printf 'PATCHED_WORKFLOW_BLOB=%s\n' "$patched_blob"
+          git push origin "${patched_blob}:refs/tags/${BLOB_TAG}"
