@@ -1,0 +1,68 @@
+name: M4.2 Gate A remote CI repair
+
+on:
+  push:
+    branches:
+      - codex/m4-cross-engineering-forward-evaluation-m4.2-one-shot-claim-and-execution
+    paths:
+      - .github/workflows/m4-2-gate-a-remote-repair.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: m4-2-gate-a-remote-ci-repair
+  cancel-in-progress: false
+
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: codex/m4-cross-engineering-forward-evaluation-m4.2-one-shot-claim-and-execution
+      - name: Apply exact fail-closed repair and remove helper
+        shell: bash
+        env:
+          EXPECTED_PARENT: 517bfb373ff357a3637d442d71813742d1620fa1
+          EXPECTED_WORKFLOW_BLOB: eb73c26d998968c9da3340bad90532c9a853a4a2
+          TARGET_BRANCH: codex/m4-cross-engineering-forward-evaluation-m4.2-one-shot-claim-and-execution
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD^)" = "$EXPECTED_PARENT"
+          test "$(git rev-parse HEAD:.github/workflows/m1-validation.yml)" = "$EXPECTED_WORKFLOW_BLOB"
+          test "$(git branch --show-current)" = "$TARGET_BRANCH"
+          python -X utf8 - <<'PY'
+          from pathlib import Path
+
+          path = Path('.github/workflows/m1-validation.yml')
+          token = '$' + '{{ runner.temp }}'
+          old = (
+              '        run: git worktree add --detach "'
+              + token
+              + '/m4-2-authorization-preparation-closure" '
+              + '4efa75c542172a95c6c72c8c1450fea77a8e2ff1'
+          ).encode('utf-8')
+          new = (
+              '        run: git -c core.autocrlf=false worktree add --detach "'
+              + token
+              + '/m4-2-authorization-preparation-closure" '
+              + '4efa75c542172a95c6c72c8c1450fea77a8e2ff1'
+          ).encode('utf-8')
+          raw = path.read_bytes()
+          if raw.count(old) != 1:
+              raise SystemExit(f'expected_exact_old_line_once:{raw.count(old)}')
+          if new in raw:
+              raise SystemExit('replacement_already_present')
+          path.write_bytes(raw.replace(old, new, 1))
+          Path('.github/workflows/m4-2-gate-a-remote-repair.yml').unlink()
+          PY
+          test "$(git diff --name-only | sort)" = $'.github/workflows/m1-validation.yml\n.github/workflows/m4-2-gate-a-remote-repair.yml'
+          test "$(git diff --numstat -- .github/workflows/m1-validation.yml)" = $'1\t1\t.github/workflows/m1-validation.yml'
+          git diff --check
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add .github/workflows/m1-validation.yml .github/workflows/m4-2-gate-a-remote-repair.yml
+          git commit -m "fix(ci): align frozen M4.2 worktree line endings"
+          git push origin "HEAD:refs/heads/${TARGET_BRANCH}"
