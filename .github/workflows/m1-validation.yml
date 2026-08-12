@@ -631,7 +631,7 @@ jobs:
           git diff --check
       - name: Create isolated authorization-preparation closure replay worktree
         id: create_authorization_preparation_closure_worktree
-        run: git worktree add --detach "${{ runner.temp }}/m4-2-authorization-preparation-closure" 4efa75c542172a95c6c72c8c1450fea77a8e2ff1
+        run: git -c core.autocrlf=false worktree add --detach "${{ runner.temp }}/m4-2-authorization-preparation-closure" 4efa75c542172a95c6c72c8c1450fea77a8e2ff1
       - name: Replay frozen preparation and Gate IV-B proof semantics
         shell: bash
         working-directory: ${{ runner.temp }}/m4-2-authorization-preparation-closure
