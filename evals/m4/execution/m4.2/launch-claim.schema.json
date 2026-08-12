@@ -1,0 +1,464 @@
+{
+  "$id": "m4.2-launch-claim.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "authorization": {
+      "additionalProperties": false,
+      "properties": {
+        "branch": {
+          "const": "codex/m4-cross-engineering-forward-evaluation-m4.2-one-shot-authorization"
+        },
+        "claim_consumes_entire_authorization": {
+          "const": true
+        },
+        "closure_head": {
+          "pattern": "^[0-9a-f]{40}$",
+          "type": "string"
+        },
+        "closure_tree": {
+          "pattern": "^[0-9a-f]{40}$",
+          "type": "string"
+        },
+        "execution_authorization": {
+          "additionalProperties": false,
+          "properties": {
+            "git_blob_oid": {
+              "pattern": "^[0-9a-f]{40}$",
+              "type": "string"
+            },
+            "path": {
+              "minLength": 1,
+              "type": "string"
+            },
+            "raw_sha256": {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            }
+          },
+          "required": [
+            "path",
+            "git_blob_oid",
+            "raw_sha256"
+          ],
+          "type": "object"
+        },
+        "execution_control": {
+          "additionalProperties": false,
+          "properties": {
+            "git_blob_oid": {
+              "pattern": "^[0-9a-f]{40}$",
+              "type": "string"
+            },
+            "path": {
+              "minLength": 1,
+              "type": "string"
+            },
+            "raw_sha256": {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            }
+          },
+          "required": [
+            "path",
+            "git_blob_oid",
+            "raw_sha256"
+          ],
+          "type": "object"
+        },
+        "token_fingerprint": {
+          "pattern": "^sha256:[0-9a-f]{12}\\.\\.\\.$",
+          "type": "string"
+        },
+        "token_status_after_claim": {
+          "const": "CONSUMED"
+        },
+        "token_status_before_claim": {
+          "const": "UNCONSUMED"
+        }
+      },
+      "required": [
+        "closure_head",
+        "closure_tree",
+        "branch",
+        "execution_authorization",
+        "execution_control",
+        "token_fingerprint",
+        "token_status_before_claim",
+        "token_status_after_claim",
+        "claim_consumes_entire_authorization"
+      ],
+      "type": "object"
+    },
+    "batch_order": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 6,
+      "minItems": 6,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "batches": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "batch_id": {
+            "pattern": "^M4\\.2-BATCH-[A-Z]{3}$",
+            "type": "string"
+          },
+          "planned_task_count": {
+            "const": 10,
+            "type": "integer"
+          },
+          "sequence": {
+            "maximum": 6,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "task_ids": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 10,
+            "minItems": 10,
+            "type": "array",
+            "uniqueItems": true
+          }
+        },
+        "required": [
+          "batch_id",
+          "sequence",
+          "planned_task_count",
+          "task_ids"
+        ],
+        "type": "object"
+      },
+      "maxItems": 6,
+      "minItems": 6,
+      "type": "array"
+    },
+    "claim_count": {
+      "const": 1,
+      "type": "integer"
+    },
+    "claim_id": {
+      "format": "uuid",
+      "type": "string"
+    },
+    "claimed_at_utc": {
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$",
+      "type": "string"
+    },
+    "configured_defaults": {
+      "additionalProperties": false,
+      "properties": {
+        "configured_default_check": {
+          "const": "MATCHED"
+        },
+        "create_thread_model_field": {
+          "const": "OMITTED"
+        },
+        "create_thread_thinking_field": {
+          "const": "OMITTED"
+        },
+        "exact_model_id": {
+          "const": "gpt-5.6-sol"
+        },
+        "reasoning_effort": {
+          "const": "max"
+        }
+      },
+      "required": [
+        "exact_model_id",
+        "reasoning_effort",
+        "configured_default_check",
+        "create_thread_model_field",
+        "create_thread_thinking_field"
+      ],
+      "type": "object"
+    },
+    "creation_semantics": {
+      "additionalProperties": false,
+      "properties": {
+        "mechanism": {
+          "const": "python_os_open_O_CREAT_O_EXCL"
+        },
+        "overwrite_allowed": {
+          "const": false
+        },
+        "target_path": {
+          "const": "evals/m4/execution/m4.2/launch-claim.json"
+        },
+        "target_preexisted": {
+          "const": false
+        }
+      },
+      "required": [
+        "mechanism",
+        "target_path",
+        "target_preexisted",
+        "overwrite_allowed"
+      ],
+      "type": "object"
+    },
+    "gate_a_acceptance": {
+      "additionalProperties": false,
+      "properties": {
+        "candidate_head": {
+          "pattern": "^[0-9a-f]{40}$",
+          "type": "string"
+        },
+        "candidate_tree": {
+          "pattern": "^[0-9a-f]{40}$",
+          "type": "string"
+        },
+        "decision": {
+          "const": "APPROVE_M4_2_ATOMIC_WHOLE_MATRIX_CLAIM_AND_EXECUTION_ONLY"
+        },
+        "pr_conclusion": {
+          "const": "success"
+        },
+        "pr_run_id": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "push_conclusion": {
+          "const": "success"
+        },
+        "push_run_id": {
+          "minimum": 1,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "candidate_head",
+        "candidate_tree",
+        "push_run_id",
+        "push_conclusion",
+        "pr_run_id",
+        "pr_conclusion",
+        "decision"
+      ],
+      "type": "object"
+    },
+    "limits": {
+      "additionalProperties": false,
+      "properties": {
+        "aggregation_calls": {
+          "const": 0,
+          "type": "integer"
+        },
+        "attempts_per_task_id": {
+          "const": 1,
+          "type": "integer"
+        },
+        "blind_map_reads": {
+          "const": 0,
+          "type": "integer"
+        },
+        "cross_task_result_reads": {
+          "const": 0,
+          "type": "integer"
+        },
+        "followups": {
+          "const": 0,
+          "type": "integer"
+        },
+        "judge_calls": {
+          "const": 0,
+          "type": "integer"
+        },
+        "repairs": {
+          "const": 0,
+          "type": "integer"
+        },
+        "retries": {
+          "const": 0,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "attempts_per_task_id",
+        "retries",
+        "repairs",
+        "followups",
+        "judge_calls",
+        "aggregation_calls",
+        "cross_task_result_reads",
+        "blind_map_reads"
+      ],
+      "type": "object"
+    },
+    "milestone": {
+      "const": "M4"
+    },
+    "permissions_still_closed": {
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "project": {
+      "additionalProperties": false,
+      "properties": {
+        "environment": {
+          "const": "worktree"
+        },
+        "is_git_repository": {
+          "const": true
+        },
+        "project_id": {
+          "const": "ff35b25f-4644-41c8-9073-74c697559439"
+        },
+        "starting_branch": {
+          "const": "codex/m4-cross-engineering-forward-evaluation-m4.2-one-shot-authorization"
+        },
+        "starting_head": {
+          "pattern": "^[0-9a-f]{40}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "project_id",
+        "is_git_repository",
+        "environment",
+        "starting_branch",
+        "starting_head"
+      ],
+      "type": "object"
+    },
+    "request_binding_aggregate": {
+      "additionalProperties": false,
+      "properties": {
+        "algorithm": {
+          "const": "sha256-canonical-json-task-request-bindings-v1"
+        },
+        "ordered_pair_count": {
+          "const": 60,
+          "type": "integer"
+        },
+        "sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "algorithm",
+        "ordered_pair_count",
+        "sha256"
+      ],
+      "type": "object"
+    },
+    "revision": {
+      "const": "M4.2"
+    },
+    "schema_version": {
+      "const": "m4.2-launch-claim-v1"
+    },
+    "status": {
+      "const": "CLAIMED"
+    },
+    "task_claims": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "batch_id": {
+            "pattern": "^M4\\.2-BATCH-[A-Z]{3}$",
+            "type": "string"
+          },
+          "batch_sequence": {
+            "maximum": 6,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "blind_id": {
+            "pattern": "^M4-J\\d{3}$",
+            "type": "string"
+          },
+          "context_id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "dispatch_sequence": {
+            "maximum": 60,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "finalization_id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "request_binding_sha256": {
+            "pattern": "^[0-9a-f]{64}$",
+            "type": "string"
+          },
+          "result_root": {
+            "pattern": "^evals/m4/results/m4\\.2/M4\\.2-",
+            "type": "string"
+          },
+          "task_id": {
+            "pattern": "^M4\\.2-[A-Z]{3}-[AB]-(?:F|N|A[123])$",
+            "type": "string"
+          },
+          "task_sequence_in_batch": {
+            "maximum": 10,
+            "minimum": 1,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "task_id",
+          "batch_id",
+          "batch_sequence",
+          "task_sequence_in_batch",
+          "dispatch_sequence",
+          "blind_id",
+          "request_binding_sha256",
+          "result_root",
+          "context_id",
+          "finalization_id"
+        ],
+        "type": "object"
+      },
+      "maxItems": 60,
+      "minItems": 60,
+      "type": "array"
+    },
+    "task_ids": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 60,
+      "minItems": 60,
+      "type": "array",
+      "uniqueItems": true
+    }
+  },
+  "required": [
+    "schema_version",
+    "milestone",
+    "revision",
+    "status",
+    "claim_id",
+    "claimed_at_utc",
+    "claim_count",
+    "creation_semantics",
+    "authorization",
+    "gate_a_acceptance",
+    "project",
+    "configured_defaults",
+    "request_binding_aggregate",
+    "batch_order",
+    "batches",
+    "task_ids",
+    "task_claims",
+    "limits",
+    "permissions_still_closed"
+  ],
+  "title": "M4.2 whole-matrix launch claim",
+  "type": "object",
+  "x-real-instance-allowed-in-gate-a": false
+}

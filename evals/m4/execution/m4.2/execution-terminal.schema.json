@@ -1,0 +1,376 @@
+{
+  "$id": "m4.2-execution-terminal.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "attempted_task_ids": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array",
+      "uniqueItems": true
+    },
+    "batch_order": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 6,
+      "minItems": 6,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "counts": {
+      "additionalProperties": false,
+      "properties": {
+        "aggregation_calls": {
+          "const": 0,
+          "type": "integer"
+        },
+        "attempts": {
+          "maximum": 60,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "finalizations": {
+          "maximum": 60,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "followups": {
+          "const": 0,
+          "type": "integer"
+        },
+        "judge_calls": {
+          "const": 0,
+          "type": "integer"
+        },
+        "repairs": {
+          "const": 0,
+          "type": "integer"
+        },
+        "results": {
+          "maximum": 60,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "retries": {
+          "const": 0,
+          "type": "integer"
+        },
+        "side_effects": {
+          "const": 0,
+          "type": "integer"
+        },
+        "tasks": {
+          "maximum": 60,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "threads": {
+          "maximum": 60,
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "tasks",
+        "threads",
+        "finalizations",
+        "attempts",
+        "retries",
+        "repairs",
+        "followups",
+        "results",
+        "judge_calls",
+        "aggregation_calls",
+        "side_effects"
+      ],
+      "type": "object"
+    },
+    "create_thread_responses": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "attestation_path": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string"
+          },
+          "raw_sha256": {
+            "pattern": "^[0-9a-f]{64}$",
+            "type": "string"
+          },
+          "task_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "task_id",
+          "path",
+          "attestation_path",
+          "raw_sha256"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "dispatch_receipts": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "path": {
+            "type": "string"
+          },
+          "raw_sha256": {
+            "pattern": "^[0-9a-f]{64}$",
+            "type": "string"
+          },
+          "task_id": {
+            "type": "string"
+          },
+          "thread_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "task_id",
+          "thread_id",
+          "path",
+          "raw_sha256"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "failed_batch": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "failed_stage": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "failed_task_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "failure_evidence": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "diagnostic": {
+              "minLength": 1,
+              "type": "string"
+            },
+            "failure_class": {
+              "enum": [
+                "PROTOCOL_FAILURE",
+                "INFRASTRUCTURE_FAILURE"
+              ]
+            },
+            "raw_evidence_byte_length": {
+              "minimum": 1,
+              "type": "integer"
+            },
+            "raw_evidence_path": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "raw_evidence_sha256": {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            }
+          },
+          "required": [
+            "failure_class",
+            "raw_evidence_sha256",
+            "raw_evidence_byte_length",
+            "raw_evidence_path",
+            "diagnostic"
+          ],
+          "type": "object"
+        }
+      ]
+    },
+    "gate_a_acceptance": {
+      "additionalProperties": false,
+      "properties": {
+        "candidate_head": {
+          "pattern": "^[0-9a-f]{40}$",
+          "type": "string"
+        },
+        "pr_run_id": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "push_run_id": {
+          "minimum": 1,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "candidate_head",
+        "push_run_id",
+        "pr_run_id"
+      ],
+      "type": "object"
+    },
+    "last_completed_batch": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "later_batches_not_started": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array",
+      "uniqueItems": true
+    },
+    "launch_claim": {
+      "additionalProperties": false,
+      "properties": {
+        "claim_id": {
+          "format": "uuid",
+          "type": "string"
+        },
+        "path": {
+          "const": "evals/m4/execution/m4.2/launch-claim.json"
+        },
+        "raw_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "claim_id",
+        "path",
+        "raw_sha256"
+      ],
+      "type": "object"
+    },
+    "milestone": {
+      "const": "M4"
+    },
+    "permissions_still_closed": {
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "raw_finals": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "byte_length": {
+            "minimum": 1,
+            "type": "integer"
+          },
+          "finalization_id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "observed_at_utc": {
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$",
+            "type": "string"
+          },
+          "path": {
+            "type": "string"
+          },
+          "protocol_errors": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "protocol_validation": {
+            "enum": [
+              "VALID",
+              "INVALID"
+            ]
+          },
+          "raw_sha256": {
+            "pattern": "^[0-9a-f]{64}$",
+            "type": "string"
+          },
+          "task_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "task_id",
+          "finalization_id",
+          "path",
+          "byte_length",
+          "raw_sha256",
+          "protocol_validation",
+          "protocol_errors",
+          "observed_at_utc"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "recorded_at_utc": {
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$",
+      "type": "string"
+    },
+    "revision": {
+      "const": "M4.2"
+    },
+    "schema_version": {
+      "const": "m4.2-execution-terminal-v1"
+    },
+    "successor_revision_required": {
+      "type": "boolean"
+    },
+    "terminal_state": {
+      "enum": [
+        "COMPLETE_UNJUDGED",
+        "STOPPED_PROTOCOL_OR_INFRASTRUCTURE_FAILURE"
+      ]
+    }
+  },
+  "required": [
+    "schema_version",
+    "milestone",
+    "revision",
+    "terminal_state",
+    "recorded_at_utc",
+    "launch_claim",
+    "gate_a_acceptance",
+    "batch_order",
+    "last_completed_batch",
+    "failed_batch",
+    "failed_task_id",
+    "failed_stage",
+    "attempted_task_ids",
+    "dispatch_receipts",
+    "create_thread_responses",
+    "raw_finals",
+    "counts",
+    "failure_evidence",
+    "later_batches_not_started",
+    "successor_revision_required",
+    "permissions_still_closed"
+  ],
+  "title": "M4.2 execution terminal",
+  "type": "object",
+  "x-real-instance-allowed-in-gate-a": false
+}

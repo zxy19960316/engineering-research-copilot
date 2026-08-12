@@ -1,0 +1,119 @@
+{
+  "$id": "m4.2-create-thread-response-attestation.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "byte_length": {
+      "minimum": 0,
+      "type": "integer"
+    },
+    "canonical_response_sha256": {
+      "anyOf": [
+        {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "captured_at_utc": {
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$",
+      "type": "string"
+    },
+    "checkout_sha_validated": {
+      "type": "boolean"
+    },
+    "client_thread_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "errors": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array",
+      "uniqueItems": true
+    },
+    "host_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "milestone": {
+      "const": "M4"
+    },
+    "raw_response_path": {
+      "type": "string"
+    },
+    "raw_response_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "ready_identifiers_validated": {
+      "type": "boolean"
+    },
+    "resolved_checkout_sha": {
+      "anyOf": [
+        {
+          "pattern": "^[0-9a-f]{40}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "resolved_checkout_sha_exposed": {
+      "type": "boolean"
+    },
+    "revision": {
+      "const": "M4.2"
+    },
+    "schema_version": {
+      "const": "m4.2-create-thread-response-attestation-v1"
+    },
+    "status": {
+      "enum": [
+        "VALID",
+        "INVALID"
+      ]
+    },
+    "task_id": {
+      "type": "string"
+    },
+    "thread_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  },
+  "required": [
+    "byte_length",
+    "canonical_response_sha256",
+    "captured_at_utc",
+    "checkout_sha_validated",
+    "client_thread_id",
+    "host_id",
+    "milestone",
+    "raw_response_path",
+    "raw_response_sha256",
+    "ready_identifiers_validated",
+    "resolved_checkout_sha",
+    "resolved_checkout_sha_exposed",
+    "revision",
+    "schema_version",
+    "task_id",
+    "thread_id",
+    "status",
+    "errors"
+  ],
+  "title": "M4.2 create-thread raw response attestation",
+  "type": "object",
+  "x-real-instance-allowed-in-gate-a": false
+}

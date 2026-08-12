@@ -1,0 +1,236 @@
+{
+  "$id": "m4.2-dispatch-receipt.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "attempt_index": {
+      "const": 1,
+      "type": "integer"
+    },
+    "batch_id": {
+      "type": "string"
+    },
+    "batch_sequence": {
+      "maximum": 6,
+      "minimum": 1,
+      "type": "integer"
+    },
+    "blind_id": {
+      "type": "string"
+    },
+    "claim": {
+      "additionalProperties": false,
+      "properties": {
+        "claim_id": {
+          "format": "uuid",
+          "type": "string"
+        },
+        "path": {
+          "const": "evals/m4/execution/m4.2/launch-claim.json"
+        },
+        "raw_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "claim_id",
+        "path",
+        "raw_sha256"
+      ],
+      "type": "object"
+    },
+    "context_id": {
+      "format": "uuid",
+      "type": "string"
+    },
+    "created_at_utc": {
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$",
+      "type": "string"
+    },
+    "dispatch_sequence": {
+      "maximum": 60,
+      "minimum": 1,
+      "type": "integer"
+    },
+    "errors": {
+      "maxItems": 0,
+      "type": "array"
+    },
+    "finalization_id": {
+      "format": "uuid",
+      "type": "string"
+    },
+    "milestone": {
+      "const": "M4"
+    },
+    "repair_count": {
+      "const": 0,
+      "type": "integer"
+    },
+    "request": {
+      "additionalProperties": false,
+      "properties": {
+        "environment_type": {
+          "const": "worktree"
+        },
+        "followup_count": {
+          "const": 0,
+          "type": "integer"
+        },
+        "initial_request_count": {
+          "const": 1,
+          "type": "integer"
+        },
+        "initial_request_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "model_field": {
+          "const": "OMITTED"
+        },
+        "project_id": {
+          "const": "ff35b25f-4644-41c8-9073-74c697559439"
+        },
+        "request_envelope_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "starting_branch": {
+          "const": "codex/m4-cross-engineering-forward-evaluation-m4.2-one-shot-authorization"
+        },
+        "starting_head": {
+          "pattern": "^[0-9a-f]{40}$",
+          "type": "string"
+        },
+        "surface": {
+          "const": "codex_app.create_thread"
+        },
+        "target_type": {
+          "const": "project"
+        },
+        "thinking_field": {
+          "const": "OMITTED"
+        }
+      },
+      "required": [
+        "surface",
+        "project_id",
+        "target_type",
+        "environment_type",
+        "starting_branch",
+        "starting_head",
+        "initial_request_sha256",
+        "request_envelope_sha256",
+        "model_field",
+        "thinking_field",
+        "initial_request_count",
+        "followup_count"
+      ],
+      "type": "object"
+    },
+    "request_binding_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "response": {
+      "additionalProperties": false,
+      "properties": {
+        "client_thread_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "host_id": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "ready": {
+          "const": true
+        },
+        "thread_id": {
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "thread_id",
+        "host_id",
+        "client_thread_id",
+        "ready"
+      ],
+      "type": "object"
+    },
+    "response_attestation": {
+      "additionalProperties": false,
+      "properties": {
+        "canonical_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "path": {
+          "type": "string"
+        },
+        "raw_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "path",
+        "raw_sha256",
+        "canonical_sha256"
+      ],
+      "type": "object"
+    },
+    "retry_count": {
+      "const": 0,
+      "type": "integer"
+    },
+    "revision": {
+      "const": "M4.2"
+    },
+    "schema_version": {
+      "const": "m4.2-dispatch-receipt-v1"
+    },
+    "status": {
+      "const": "DISPATCHED"
+    },
+    "task_id": {
+      "type": "string"
+    },
+    "task_sequence_in_batch": {
+      "maximum": 10,
+      "minimum": 1,
+      "type": "integer"
+    }
+  },
+  "required": [
+    "schema_version",
+    "milestone",
+    "revision",
+    "status",
+    "claim",
+    "task_id",
+    "batch_id",
+    "batch_sequence",
+    "task_sequence_in_batch",
+    "dispatch_sequence",
+    "request_binding_sha256",
+    "blind_id",
+    "context_id",
+    "finalization_id",
+    "request",
+    "response",
+    "response_attestation",
+    "created_at_utc",
+    "attempt_index",
+    "retry_count",
+    "repair_count",
+    "errors"
+  ],
+  "title": "M4.2 dispatch receipt",
+  "type": "object",
+  "x-real-instance-allowed-in-gate-a": false
+}

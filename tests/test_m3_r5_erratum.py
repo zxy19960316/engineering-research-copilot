@@ -115,10 +115,11 @@ class M3R5ErratumTests(unittest.TestCase):
         self.assertNotIn(token, current)
         self.assertIn(token[:19] + "...", current)
         self.assertIn(
-            "Active revision: `M4.2 ONE_SHOT_AUTHORIZATION; "
-            "M4_2_AUTHORIZED_UNCONSUMED_NOT_CLAIMED_NOT_EXECUTED; "
-            "decision=APPROVE_M4_2_SEPARATE_ONE_SHOT_CLAIM_AND_EXECUTION_"
-            "WORK_PACKAGE_ONLY; fresh_execution_authorized=true`",
+            "Active revision: `M4.2 GATE_A_LAUNCH_READINESS; "
+            "M4_2_GATE_A_IMPLEMENTED_PENDING_EXACT_HEAD_CI; "
+            "decision=PENDING_M4_2_GATE_A_EXACT_HEAD_CI; "
+            "authorization_token=UNCONSUMED; claim=ABSENT; "
+            "gate_b_authorized=false`",
             current,
         )
         self.assertIn(f"Historical r5 evidence HEAD: `{EVIDENCE_HEAD}`", current)
@@ -144,6 +145,7 @@ class M3R5ErratumTests(unittest.TestCase):
             "M4_2_GATE_IV_B_PROTOCOL_PROOF_PASSED_NOT_AUTHORIZED",
             "M4_2_AUTHORIZATION_PREPARATION_PASSED_NOT_AUTHORIZED",
             "M4_2_AUTHORIZED_UNCONSUMED_NOT_CLAIMED_NOT_EXECUTED",
+            "M4_2_GATE_A_IMPLEMENTED_PENDING_EXACT_HEAD_CI",
             "M4_FRESH_RESULTS_NOT_RUN",
         ):
             self.assertIn(preserved_status, current)
@@ -533,6 +535,44 @@ class M3R5ErratumTests(unittest.TestCase):
         )
         for record in issuance_records:
             self.assertIn(record, current)
+
+        self.assertIn(
+            "M4.2 Gate A accepted admission repairs: "
+            "`static_eol_head=8ffc4b53f79a5018588703c562945d9240506990; "
+            "static_eol_tree=047c30a5c07308f620fda31d3b6c787953d738be; "
+            "static_eol_push_run=31582089322; static_eol_PR_run=31582092920; "
+            "preparation_compatibility_head=214acacfb984b3f9e41d35dde8841a4ffb342b34; "
+            "preparation_compatibility_tree=7671e69844ea59a84411b6bcbfb9abf0feb64ae9; "
+            "preparation_compatibility_push_run=31584859594; "
+            "preparation_compatibility_PR_run=31584862968; all_jobs=15/15; "
+            "attempts=1; Windows_frozen_replay=PASSED`",
+            current,
+        )
+        self.assertIn(
+            "M4.2 Gate A decision: `PENDING_M4_2_GATE_A_EXACT_HEAD_CI; "
+            "Gate_B_not_authorized; no claim or execution permitted by this candidate`",
+            current,
+        )
+        for relative in (
+            "evals/m4/execution/m4.2/launch-claim.json",
+            "evals/m4/execution/m4.2/execution-terminal.json",
+            "evals/m4/execution/m4.2/platform-observations",
+            "evals/m4/results/m4.2",
+            "evals/m4/results-manifest.json",
+            "evals/m5",
+        ):
+            self.assertFalse((REPO_ROOT / relative).exists(), relative)
+        for relative in (
+            "evals/m4/execution/m4.2/launch-claim.schema.json",
+            "evals/m4/execution/m4.2/dispatch-receipt.schema.json",
+            "evals/m4/execution/m4.2/create-thread-response-attestation.schema.json",
+            "evals/m4/execution/m4.2/execution-terminal.schema.json",
+            "evals/m4/execution/audit_m4_2.py",
+            "evals/m4/execution/build_m4_2_launch_claim.py",
+            "evals/m4/execution/record_m4_2_execution_evidence.py",
+            "evals/m4/execution/audit_m4_2_launch_readiness.py",
+        ):
+            self.assertTrue((REPO_ROOT / relative).is_file(), relative)
         false_green_runs = {
             "31311637459": (
                 "be6039e7d2a682b2e001ee12dff5c1db5743b2ed",
