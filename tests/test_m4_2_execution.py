@@ -1,10 +1,12 @@
 from __future__ import annotations
 
 import copy
+import io
 import json
 import sys
 import tempfile
 import unittest
+from contextlib import redirect_stdout
 from pathlib import Path
 
 
@@ -397,10 +399,25 @@ class M42ExecutionProtocolTests(unittest.TestCase):
         self.assertNotIn("authorization_token", first["authorization"])
 
     def test_exclusive_claim_consumes_once_and_uses_only_postclaim_execution_auditor(self) -> None:
+        preclaim = recorder.next_action(self.repo.root, **self.repo.audit_kwargs())
+        self.assertEqual(preclaim["mode"], "NEXT_ACTION")
+        self.assertEqual(preclaim["status"], "READY_UNCLAIMED")
+        self.assertEqual(preclaim["action"], "CONSUME_CLAIM")
+        self.assertIsNone(preclaim["task_id"])
+        self.assertEqual(preclaim["writes"], 0)
         first = self.repo.consume()
         self.assertEqual(first["status"], "CLAIMED_IN_PROGRESS")
         self.assertEqual(first["errors"], [])
         self.assertIs(first["preclaim_authorization_auditor_reused"], False)
+        postclaim = recorder.next_action(self.repo.root, **self.repo.audit_kwargs())
+        self.assertEqual(postclaim["action"], "CREATE_THREAD")
+        self.assertEqual(postclaim["task_id"], self.repo.tasks[0]["task_id"])
+        self.assertEqual(postclaim["batch_id"], protocol.BATCH_ORDER[0])
+        self.assertEqual(postclaim["global_sequence"], 1)
+        self.assertEqual(set(postclaim["create_thread_arguments"]), {"prompt", "target", "title"})
+        self.assertNotIn("model", postclaim["create_thread_arguments"])
+        self.assertNotIn("thinking", postclaim["create_thread_arguments"])
+        self.assertEqual(postclaim["writes"], 0)
         raw = self.repo.claim_path.read_bytes()
         second = self.repo.consume()
         self.assertEqual(second["status"], "ALREADY_CLAIMED")
@@ -420,27 +437,62 @@ class M42ExecutionProtocolTests(unittest.TestCase):
         self.assertEqual(self.repo.consume()["status"], "CLAIMED_IN_PROGRESS")
         task_id = self.repo.tasks[0]["task_id"]
         response_raw = self.repo.response_raw(0)
-        dispatched = recorder.record_dispatch(
-            self.repo.root,
-            task_id=task_id,
-            response_raw=response_raw,
-            captured_at_utc="2026-08-12T12:01:00Z",
-            **self.repo.audit_kwargs(),
-        )
+        response_file = self.repo.root / "synthetic-inputs" / "response.bin"
+        response_file.parent.mkdir(parents=True)
+        response_file.write_bytes(response_raw)
+        output = io.StringIO()
+        with redirect_stdout(output):
+            exit_code = recorder.main(
+                [
+                    "--record-dispatch",
+                    "--task-id",
+                    task_id,
+                    "--response-file",
+                    str(response_file),
+                    "--captured-at-utc",
+                    "2026-08-12T12:01:00Z",
+                ],
+                repo_root=self.repo.root,
+                audit_kwargs=self.repo.audit_kwargs(),
+            )
+        self.assertEqual(exit_code, 0)
+        dispatched = json.loads(output.getvalue())
+        self.assertEqual(dispatched["mode"], "RECORD_DISPATCH")
+        self.assertEqual(response_file.read_bytes(), response_raw)
         self.assertEqual(dispatched["status"], "CLAIMED_IN_PROGRESS")
         self.assertEqual(dispatched["tasks"], 1)
+        awaiting_final = recorder.next_action(self.repo.root, **self.repo.audit_kwargs())
+        self.assertEqual(awaiting_final["action"], "RECORD_FINAL")
+        self.assertEqual(awaiting_final["task_id"], task_id)
+        self.assertEqual(awaiting_final["global_sequence"], 1)
+        self.assertIsNone(awaiting_final["create_thread_arguments"])
+        self.assertEqual(awaiting_final["writes"], 0)
         self.assertEqual(
             (self.repo.observations / task_id / recorder.RAW_RESPONSE_NAME).read_bytes(),
             response_raw,
         )
         final_raw = self.repo.final_raw(0, response="poor quality but protocol valid")
-        finalized = recorder.record_final(
-            self.repo.root,
-            task_id=task_id,
-            final_raw=final_raw,
-            observed_at_utc="2026-08-12T12:02:00Z",
-            **self.repo.audit_kwargs(),
-        )
+        final_file = self.repo.root / "synthetic-inputs" / "final.bin"
+        final_file.write_bytes(final_raw)
+        output = io.StringIO()
+        with redirect_stdout(output):
+            exit_code = recorder.main(
+                [
+                    "--record-final",
+                    "--task-id",
+                    task_id,
+                    "--final-file",
+                    str(final_file),
+                    "--observed-at-utc",
+                    "2026-08-12T12:02:00Z",
+                ],
+                repo_root=self.repo.root,
+                audit_kwargs=self.repo.audit_kwargs(),
+            )
+        self.assertEqual(exit_code, 0)
+        finalized = json.loads(output.getvalue())
+        self.assertEqual(finalized["mode"], "RECORD_FINAL")
+        self.assertEqual(final_file.read_bytes(), final_raw)
         self.assertEqual(finalized["status"], "PROTOCOL_VALID_CONTINUE")
         self.assertEqual(
             (self.repo.results / task_id / recorder.RAW_FINAL_NAME).read_bytes(),
@@ -455,6 +507,7 @@ class M42ExecutionProtocolTests(unittest.TestCase):
         )
         self.assertEqual(wrong["status"], "INVALID")
         self.assertEqual(wrong["errors"], ["dispatch_not_next_frozen_task"])
+        self.assertEqual(wrong["writes"], 0)
 
     def test_checkout_mismatch_preserves_response_and_creates_unique_terminal(self) -> None:
         self.repo.consume()
@@ -517,6 +570,35 @@ class M42ExecutionProtocolTests(unittest.TestCase):
         )
         self.assertEqual(repeated["status"], "STOPPED_PROTOCOL_OR_INFRASTRUCTURE_FAILURE")
         self.assertEqual(final_path.read_bytes(), raw)
+        with tempfile.TemporaryDirectory() as directory:
+            candidate = SyntheticGateARepository(Path(directory))
+            candidate.consume()
+            mismatch_task_id = candidate.tasks[0]["task_id"]
+            recorder.record_dispatch(
+                candidate.root,
+                task_id=mismatch_task_id,
+                response_raw=candidate.response_raw(0),
+                captured_at_utc="2026-08-12T12:01:00Z",
+                **candidate.audit_kwargs(),
+            )
+            mismatch = protocol.parse_json_object(candidate.final_raw(0))
+            mismatch["task_id"] = candidate.tasks[1]["task_id"]
+            mismatch_raw = protocol.json_bytes(mismatch)
+            stopped = recorder.record_final(
+                candidate.root,
+                task_id=mismatch_task_id,
+                final_raw=mismatch_raw,
+                observed_at_utc="2026-08-12T12:02:00Z",
+                **candidate.audit_kwargs(),
+            )
+            self.assertEqual(
+                stopped["status"], "STOPPED_PROTOCOL_OR_INFRASTRUCTURE_FAILURE"
+            )
+            self.assertEqual(
+                (candidate.results / mismatch_task_id / recorder.RAW_FINAL_NAME).read_bytes(),
+                mismatch_raw,
+            )
+            self.assertTrue(candidate.terminal_path.is_file())
 
     def test_untrusted_task_id_cannot_escape_or_create_target(self) -> None:
         self.repo.consume()
@@ -534,9 +616,38 @@ class M42ExecutionProtocolTests(unittest.TestCase):
         self.assertEqual(before, after)
 
     def test_full_synthetic_matrix_closes_only_as_complete_unjudged(self) -> None:
+        self.assertEqual(
+            recorder.next_action(self.repo.root, **self.repo.audit_kwargs())["action"],
+            "CONSUME_CLAIM",
+        )
         self.repo.consume()
+        claim = protocol.parse_json_object(self.repo.claim_path.read_bytes())
+        self.assertEqual(len({item["context_id"] for item in claim["task_claims"]}), 60)
+        self.assertEqual(len({item["finalization_id"] for item in claim["task_claims"]}), 60)
+        self.assertEqual(
+            [task["batch_id"] for task in self.repo.tasks[::10]],
+            list(protocol.BATCH_ORDER),
+        )
         for index, task in enumerate(self.repo.tasks):
             task_id = task["task_id"]
+            action = recorder.next_action(self.repo.root, **self.repo.audit_kwargs())
+            self.assertEqual(action["action"], "CREATE_THREAD")
+            self.assertEqual(action["task_id"], task_id)
+            self.assertEqual(action["batch_id"], task["batch_id"])
+            self.assertEqual(action["global_sequence"], index + 1)
+            self.assertEqual(set(action["create_thread_arguments"]), {"prompt", "target", "title"})
+            self.assertEqual(action["writes"], 0)
+            if index == 10:
+                for wrong_index in (11, 20):
+                    rejected = recorder.record_dispatch(
+                        self.repo.root,
+                        task_id=self.repo.tasks[wrong_index]["task_id"],
+                        response_raw=self.repo.response_raw(wrong_index),
+                        captured_at_utc="2026-08-12T12:09:00Z",
+                        **self.repo.audit_kwargs(),
+                    )
+                    self.assertEqual(rejected["status"], "INVALID")
+                    self.assertEqual(rejected["writes"], 0)
             dispatched = recorder.record_dispatch(
                 self.repo.root,
                 task_id=task_id,
@@ -545,6 +656,11 @@ class M42ExecutionProtocolTests(unittest.TestCase):
                 **self.repo.audit_kwargs(),
             )
             self.assertEqual(dispatched["status"], "CLAIMED_IN_PROGRESS")
+            final_action = recorder.next_action(self.repo.root, **self.repo.audit_kwargs())
+            self.assertEqual(final_action["action"], "RECORD_FINAL")
+            self.assertEqual(final_action["task_id"], task_id)
+            self.assertEqual(final_action["global_sequence"], index + 1)
+            self.assertEqual(final_action["writes"], 0)
             finalized = recorder.record_final(
                 self.repo.root,
                 task_id=task_id,
@@ -554,12 +670,25 @@ class M42ExecutionProtocolTests(unittest.TestCase):
             )
             expected = "READY_TO_RECORD_COMPLETE_TERMINAL" if index == 59 else "PROTOCOL_VALID_CONTINUE"
             self.assertEqual(finalized["status"], expected)
-        terminal = recorder.record_terminal(
-            self.repo.root,
-            state="COMPLETE_UNJUDGED",
-            recorded_at_utc="2026-08-12T12:30:00Z",
-            **self.repo.audit_kwargs(),
-        )
+        complete_action = recorder.next_action(self.repo.root, **self.repo.audit_kwargs())
+        self.assertEqual(complete_action["action"], "RECORD_COMPLETE_TERMINAL")
+        self.assertEqual(complete_action["writes"], 0)
+        output = io.StringIO()
+        with redirect_stdout(output):
+            exit_code = recorder.main(
+                [
+                    "--record-terminal",
+                    "--state",
+                    "COMPLETE_UNJUDGED",
+                    "--recorded-at-utc",
+                    "2026-08-12T12:30:00Z",
+                ],
+                repo_root=self.repo.root,
+                audit_kwargs=self.repo.audit_kwargs(),
+            )
+        self.assertEqual(exit_code, 0)
+        terminal = json.loads(output.getvalue())
+        self.assertEqual(terminal["mode"], "RECORD_TERMINAL")
         self.assertEqual(terminal["status"], "COMPLETE_UNJUDGED")
         self.assertEqual(terminal["tasks"], 60)
         self.assertEqual(terminal["threads"], 60)
@@ -567,6 +696,22 @@ class M42ExecutionProtocolTests(unittest.TestCase):
         self.assertEqual(terminal["results"], 60)
         self.assertEqual(terminal["judge_calls"], 0)
         self.assertEqual(terminal["aggregation_calls"], 0)
+        self.assertEqual(terminal["attempts"], 60)
+        self.assertEqual(terminal["retries"], 0)
+        self.assertEqual(terminal["repairs"], 0)
+        self.assertEqual(terminal["followups"], 0)
+        self.assertEqual(terminal["side_effects"], 0)
+        self.assertEqual(
+            recorder.next_action(self.repo.root, **self.repo.audit_kwargs())["action"],
+            "STOP",
+        )
+        thread_ids = {
+            protocol.parse_json_object(
+                (self.repo.observations / task["task_id"] / recorder.RAW_RESPONSE_NAME).read_bytes()
+            )["threadId"]
+            for task in self.repo.tasks
+        }
+        self.assertEqual(len(thread_ids), 60)
         self.assertFalse(self.repo.results_manifest.exists())
         self.assertFalse(self.repo.m5.exists())
 
@@ -692,6 +837,59 @@ class M42ExecutionProtocolTests(unittest.TestCase):
                     raw,
                 )
                 self.assertTrue(candidate.terminal_path.is_file())
+        with tempfile.TemporaryDirectory() as directory:
+            candidate = SyntheticGateARepository(Path(directory))
+            candidate.consume()
+            output = io.StringIO()
+            with redirect_stdout(output):
+                exit_code = recorder.main(
+                    [
+                        "--record-terminal",
+                        "--state",
+                        "STOPPED_PROTOCOL_OR_INFRASTRUCTURE_FAILURE",
+                        "--failed-stage",
+                        "create_thread_before_dispatch",
+                        "--failure-class",
+                        "INFRASTRUCTURE_FAILURE",
+                        "--recorded-at-utc",
+                        "2026-08-12T12:01:00Z",
+                    ],
+                    repo_root=candidate.root,
+                    audit_kwargs=candidate.audit_kwargs(),
+                )
+            self.assertEqual(exit_code, 0)
+            stopped = json.loads(output.getvalue())
+            self.assertEqual(stopped["mode"], "RECORD_TERMINAL")
+            self.assertEqual(stopped["status"], "STOPPED_PROTOCOL_OR_INFRASTRUCTURE_FAILURE")
+            self.assertEqual(stopped["attempts"], 0)
+            self.assertEqual(stopped["retries"], 0)
+            self.assertEqual(stopped["repairs"], 0)
+            self.assertEqual(stopped["followups"], 0)
+            self.assertTrue(candidate.terminal_path.is_file())
+            self.assertEqual(
+                recorder.next_action(candidate.root, **candidate.audit_kwargs())["action"],
+                "STOP",
+            )
+        with tempfile.TemporaryDirectory() as directory:
+            candidate = SyntheticGateARepository(Path(directory))
+            output = io.StringIO()
+            with redirect_stdout(output):
+                exit_code = recorder.main(
+                    [
+                        "--record-terminal",
+                        "--state",
+                        "UNAUTHORIZED_TERMINAL",
+                        "--recorded-at-utc",
+                        "2026-08-12T12:01:00Z",
+                    ],
+                    repo_root=candidate.root,
+                    audit_kwargs=candidate.audit_kwargs(),
+                )
+            invalid = json.loads(output.getvalue())
+            self.assertEqual(exit_code, 1)
+            self.assertEqual(invalid["status"], "INVALID")
+            self.assertEqual(invalid["writes"], 0)
+            self.assertFalse(candidate.terminal_path.exists())
 
     def test_writer_refuses_preexisting_response_attestation_receipt_and_final(self) -> None:
         for name in (
@@ -739,6 +937,22 @@ class M42ExecutionProtocolTests(unittest.TestCase):
         )
         self.assertEqual(result["status"], "INVALID")
         self.assertEqual(final_path.read_bytes(), b"preserve")
+        with tempfile.TemporaryDirectory() as directory:
+            candidate = SyntheticGateARepository(Path(directory))
+            candidate.consume()
+            candidate.terminal_path.parent.mkdir(parents=True, exist_ok=True)
+            candidate.terminal_path.write_bytes(b"preserve")
+            result = recorder.record_terminal(
+                candidate.root,
+                state="STOPPED_PROTOCOL_OR_INFRASTRUCTURE_FAILURE",
+                failed_stage="synthetic_terminal_preexisting",
+                failure_class="INFRASTRUCTURE_FAILURE",
+                recorded_at_utc="2026-08-12T12:03:00Z",
+                **candidate.audit_kwargs(),
+            )
+            self.assertEqual(result["status"], "TERMINAL_ALREADY_EXISTS")
+            self.assertEqual(result["writes"], 0)
+            self.assertEqual(candidate.terminal_path.read_bytes(), b"preserve")
 
     def test_terminal_tamper_fails_closed(self) -> None:
         self.repo.consume()

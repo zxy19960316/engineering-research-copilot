@@ -66,6 +66,7 @@ class M42LaunchReadinessTests(unittest.TestCase):
         self.assertEqual(first["claim_builder_check"], "READY_TO_CONSUME")
         self.assertEqual(first["recorder_check"], "READY_UNCLAIMED")
         self.assertEqual(first["writer_check"], "DETERMINISTIC_CHECK_ONLY")
+        self.assertEqual(first["coordinator_check"], "PRODUCTION_CLI_FROZEN")
         self.assertEqual(first["prompt_check"], "60_DETERMINISTIC_ISOLATED_REQUESTS")
         self.assertEqual(first["token"], "UNCONSUMED")
         self.assertEqual(first["launch_claim"], "ABSENT")
@@ -269,6 +270,12 @@ class M42LaunchReadinessTests(unittest.TestCase):
         ):
             step = workflow.split(f"- name: {marker}", 1)[1].split("- name:", 1)[0]
             self.assertIn(preclaim_route, step)
+        gate_a_step = workflow.split(
+            "- name: Validate Gate A closed contracts and no-write lifecycle", 1
+        )[1].split("- name:", 1)[0]
+        self.assertIn("--next-action", gate_a_step)
+        self.assertIn("CONSUME_CLAIM", gate_a_step)
+        self.assertIn("writes", gate_a_step)
         for marker in (
             "Resolve committed M4.2 postclaim lifecycle bindings",
             "Validate current M4.2 committed terminal lifecycle",
@@ -342,11 +349,34 @@ class M42LaunchReadinessTests(unittest.TestCase):
                 results_manifest_path=self.repo.results_manifest,
                 m5_path=self.repo.m5,
             ),
+            recorder.next_action(
+                self.repo.root,
+                verify_git=False,
+                enforce_frozen_hashes=False,
+                authorization_path=self.repo.authorization_path,
+                control_path=self.repo.control_path,
+                claim_path=self.repo.claim_path,
+                observations_base=self.repo.observations,
+                results_base=self.repo.results,
+                terminal_path=self.repo.terminal_path,
+                results_manifest_path=self.repo.results_manifest,
+                m5_path=self.repo.m5,
+            ),
         ):
             rendered = json.dumps(value, sort_keys=True, separators=(",", ":"))
             self.assertEqual(json.loads(rendered), value)
             self.assertNotIn("\n", rendered)
             self.assertNotIn("sha256:" + "a" * 64, rendered)
+        source = Path(recorder.__file__).read_text(encoding="utf-8")
+        for marker in (
+            "--check",
+            "--next-action",
+            "--record-dispatch",
+            "--record-final",
+            "--record-terminal",
+            "Path.read_bytes",
+        ):
+            self.assertIn(marker, source)
 
 
 if __name__ == "__main__":

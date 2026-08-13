@@ -4,7 +4,7 @@
 
 `M4 — Cross-engineering forward evaluation`
 
-Active revision: `M4.2 GATE_A_LAUNCH_READINESS; M4_2_GATE_A_IMPLEMENTED_PENDING_EXACT_HEAD_CI; decision=PENDING_M4_2_GATE_A_EXACT_HEAD_CI; authorization_token=UNCONSUMED; claim=ABSENT; gate_b_authorized=false`
+Active revision: `M4.2 GATE_B_PRODUCTION_COORDINATOR_CLI_FREEZE_REPAIR; base_head=bbee750c54ca98716da393249209224cf36c42d8; decision=PENDING_M4_2_GATE_B_COORDINATOR_CLI_REPAIR_EXACT_HEAD_CI; authorization_token=UNCONSUMED; claim=ABSENT; gate_b_authorized=false`
 
 Historical r5 evidence HEAD: `1b696bce53ee0a11163bfe4f91a9a49ab3af6f49`
 
@@ -266,11 +266,15 @@ M4.2 Gate A plan and branch: `plan=docs/superpowers/plans/2026-08-12-m4.2-one-sh
 
 M4.2 Gate A accepted admission repairs: `static_eol_head=8ffc4b53f79a5018588703c562945d9240506990; static_eol_tree=047c30a5c07308f620fda31d3b6c787953d738be; static_eol_push_run=31582089322; static_eol_PR_run=31582092920; preparation_compatibility_head=214acacfb984b3f9e41d35dde8841a4ffb342b34; preparation_compatibility_tree=7671e69844ea59a84411b6bcbfb9abf0feb64ae9; preparation_compatibility_push_run=31584859594; preparation_compatibility_PR_run=31584862968; all_jobs=15/15; attempts=1; Windows_frozen_replay=PASSED`
 
-M4.2 Gate A implementation candidate: `M4_2_GATE_A_IMPLEMENTED_PENDING_EXACT_HEAD_CI; exact_changed_paths=14; schemas=4; read_only_auditors=2; check_only_exclusive_writers=2; focused_synthetic_tests=31; authorization_token=UNCONSUMED; claim=ABSENT; claim_count=0; actual_counters=ALL_ZERO`
+M4.2 Gate A accepted implementation: `READY_FOR_ATOMIC_CLAIM; head=fd6f680eee71448217fc8fffd7d48f55dd0b0291; tree=a2cadcf7112e372619370a32b5e9cd53aa1285f8; exact_changed_paths=14; schemas=4; read_only_auditors=2; check_only_exclusive_writers=2; focused_synthetic_tests=31; authorization_token=UNCONSUMED; claim=ABSENT; claim_count=0; actual_counters=ALL_ZERO`
+
+M4.2 Gate A exact-HEAD CI: `TRUE_GREEN; push_run=31607667257; PR_run=31607673481; attempts=1; jobs=17/17; PR_10=OPEN_DRAFT_UNMERGED`
+
+M4.2 Gate B production coordinator CLI freeze repair: `base_head=bbee750c54ca98716da393249209224cf36c42d8; base_tree=b9e02060a759d9ec583d5132097eaa35e09e4acf; production_cli=evals/m4/execution/record_m4_2_execution_evidence.py; modes=check,next-action,record-dispatch,record-final,record-terminal; authorized_research_tasks=60; batches=6; tasks_per_batch=10; test_selectors=111; coordinator_check=PRODUCTION_CLI_FROZEN; exact_head_CI=PENDING`
 
 M4.2 Gate A runtime boundary: `launch_claim=ABSENT; platform_observations=ABSENT; dispatch_receipts=0; raw_finals=0; execution_terminal=ABSENT; result_root=ABSENT; results_manifest=ABSENT; judge=NOT_RUN; aggregation=NOT_RUN; M4_closure=NOT_RUN; M5=NOT_STARTED`
 
-M4.2 Gate A decision: `PENDING_M4_2_GATE_A_EXACT_HEAD_CI; Gate_B_not_authorized; no claim or execution permitted by this candidate`
+M4.2 Gate A decision: `READY_FOR_ATOMIC_CLAIM; Gate_B_not_authorized; coordinator_CLI_repair_does_not_authorize_claim_or_execution`
 
 M4.2 predecessor closure baseline: `e6ae2be7695ce1d2613dcd39e379ff458c1b60fe` (GitHub Actions run `31301984766`; `success`)
 

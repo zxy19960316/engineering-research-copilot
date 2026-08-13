@@ -115,9 +115,9 @@ class M3R5ErratumTests(unittest.TestCase):
         self.assertNotIn(token, current)
         self.assertIn(token[:19] + "...", current)
         self.assertIn(
-            "Active revision: `M4.2 GATE_A_LAUNCH_READINESS; "
-            "M4_2_GATE_A_IMPLEMENTED_PENDING_EXACT_HEAD_CI; "
-            "decision=PENDING_M4_2_GATE_A_EXACT_HEAD_CI; "
+            "Active revision: `M4.2 GATE_B_PRODUCTION_COORDINATOR_CLI_FREEZE_REPAIR; "
+            "base_head=bbee750c54ca98716da393249209224cf36c42d8; "
+            "decision=PENDING_M4_2_GATE_B_COORDINATOR_CLI_REPAIR_EXACT_HEAD_CI; "
             "authorization_token=UNCONSUMED; claim=ABSENT; "
             "gate_b_authorized=false`",
             current,
@@ -549,8 +549,9 @@ class M3R5ErratumTests(unittest.TestCase):
             current,
         )
         self.assertIn(
-            "M4.2 Gate A decision: `PENDING_M4_2_GATE_A_EXACT_HEAD_CI; "
-            "Gate_B_not_authorized; no claim or execution permitted by this candidate`",
+            "M4.2 Gate A decision: `READY_FOR_ATOMIC_CLAIM; "
+            "Gate_B_not_authorized; "
+            "coordinator_CLI_repair_does_not_authorize_claim_or_execution`",
             current,
         )
         for relative in (

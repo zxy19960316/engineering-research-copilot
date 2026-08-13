@@ -32,7 +32,7 @@ def _git_identity(repo_root: Path) -> tuple[str | None, str | None]:
     return head, tree
 
 
-def _source_contract(errors: list[str]) -> None:
+def _source_contract(errors: list[str]) -> str:
     sources = {
         "claim_builder": Path(claim_builder.__file__).read_text(encoding="utf-8"),
         "recorder": Path(recorder.__file__).read_text(encoding="utf-8"),
@@ -48,6 +48,26 @@ def _source_contract(errors: list[str]) -> None:
         for marker in forbidden:
             if marker in source:
                 _add(errors, f"{label}_destructive_primitive:{marker}")
+    coordinator_errors: list[str] = []
+    recorder_source = sources["recorder"]
+    for marker in (
+        "--check",
+        "--next-action",
+        "--record-dispatch",
+        "--record-final",
+        "--record-terminal",
+        "record_dispatch(",
+        "record_final(",
+        "record_terminal(",
+        "Path.read_bytes",
+    ):
+        if marker not in recorder_source:
+            code = f"recorder_production_cli_marker_missing:{marker}"
+            _add(errors, code)
+            _add(coordinator_errors, code)
+    for marker in forbidden:
+        if marker in recorder_source:
+            _add(coordinator_errors, f"recorder_destructive_primitive:{marker}")
     if "os.O_EXCL" not in Path(protocol.__file__).read_text(encoding="utf-8"):
         _add(errors, "exclusive_create_primitive_missing")
     claim_source = sources["claim_builder"]
@@ -55,6 +75,7 @@ def _source_contract(errors: list[str]) -> None:
         _add(errors, "preclaim_authorization_auditor_imported_postclaim")
     if "post-claim execution auditor" not in claim_source:
         _add(errors, "postclaim_execution_auditor_guard_missing")
+    return "PRODUCTION_CLI_FROZEN" if not coordinator_errors else "INVALID"
 
 
 def audit_launch_readiness(
@@ -132,7 +153,7 @@ def audit_launch_readiness(
             _add(errors, f"schema_gate_a_instance_policy_invalid:{relative.as_posix()}")
         if not protocol.recursively_closed_schema(schema):
             _add(errors, f"schema_not_recursively_closed:{relative.as_posix()}")
-    _source_contract(errors)
+    coordinator_check = _source_contract(errors)
 
     authorization, control, authorization_raw, control_raw, tasks, source_errors = (
         protocol.load_frozen_inputs(
@@ -230,6 +251,7 @@ def audit_launch_readiness(
         "claim_builder_check": claim_check["status"],
         "recorder_check": recorder_check["status"],
         "writer_check": writer_check,
+        "coordinator_check": coordinator_check,
         "prompt_check": prompt_check,
         "token": state["token"],
         "launch_claim": "ABSENT" if not state["launch_claim_present"] else "PRESENT",

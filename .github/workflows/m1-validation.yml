@@ -926,6 +926,9 @@ jobs:
           printf '%s\n' "$execution_first"
           python -X utf8 evals/m4/execution/build_m4_2_launch_claim.py --check
           python -X utf8 evals/m4/execution/record_m4_2_execution_evidence.py --check
+          next_action="$(python -X utf8 evals/m4/execution/record_m4_2_execution_evidence.py --next-action)"
+          printf '%s\n' "$next_action"
+          python -X utf8 -c 'import json, sys; value = json.loads(sys.argv[1]); assert value["action"] == "CONSUME_CLAIM", value; assert value["writes"] == 0, value' "$next_action"
           readiness_first="$(python -X utf8 evals/m4/execution/audit_m4_2_launch_readiness.py)"
           readiness_second="$(python -X utf8 evals/m4/execution/audit_m4_2_launch_readiness.py)"
           test "$readiness_first" = "$readiness_second"

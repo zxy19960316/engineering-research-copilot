@@ -20,6 +20,7 @@ RAW_RESPONSE_NAME = "create-thread-response.json"
 RESPONSE_ATTESTATION_NAME = "create-thread-response-attestation.json"
 RECEIPT_NAME = "dispatch-receipt.json"
 RAW_FINAL_NAME = "raw-final.txt"
+SOURCE_READER = Path.read_bytes
 
 
 def _compact(value: object) -> str:
@@ -218,6 +219,127 @@ def check_recorder(
         "followups": state["followups"],
         "writes": 0,
     }
+
+
+def _next_action_result(
+    *,
+    status: str,
+    action: str,
+    errors: Sequence[str] = (),
+    task: Mapping[str, Any] | None = None,
+    global_sequence: int | None = None,
+    create_thread_arguments: Mapping[str, Any] | None = None,
+) -> dict[str, Any]:
+    return {
+        "mode": "NEXT_ACTION",
+        "status": status,
+        "action": action,
+        "task_id": None if task is None else task.get("task_id"),
+        "batch_id": None if task is None else task.get("batch_id"),
+        "global_sequence": global_sequence,
+        "create_thread_arguments": (
+            None if create_thread_arguments is None else dict(create_thread_arguments)
+        ),
+        "errors": list(errors),
+        "writes": 0,
+    }
+
+
+def next_action(
+    repo_root: Path = protocol.REPO_ROOT,
+    **audit_kwargs: Any,
+) -> dict[str, Any]:
+    """Return the sole permitted next coordinator action without writing."""
+    state = protocol.audit_execution(repo_root, **audit_kwargs)
+    status = str(state["status"])
+    errors = list(state["errors"])
+    if status == "READY_UNCLAIMED" and not errors:
+        return _next_action_result(
+            status=status,
+            action="CONSUME_CLAIM",
+        )
+    if status in {
+        "COMPLETE_UNJUDGED",
+        "STOPPED_PROTOCOL_OR_INFRASTRUCTURE_FAILURE",
+    } and not errors:
+        return _next_action_result(status=status, action="STOP")
+    complete_without_terminal = (
+        status == "INVALID"
+        and errors == ["complete_matrix_without_terminal"]
+        and state["tasks"] == 60
+        and state["finalizations"] == 60
+        and not state["terminal_present"]
+    )
+    if complete_without_terminal:
+        return _next_action_result(
+            status="READY_TO_RECORD_COMPLETE_TERMINAL",
+            action="RECORD_COMPLETE_TERMINAL",
+        )
+    if status != "CLAIMED_IN_PROGRESS" or errors:
+        return _next_action_result(status="INVALID", action="INVALID", errors=errors)
+
+    paths = _paths(
+        repo_root,
+        claim_path=audit_kwargs.get("claim_path"),
+        observations_base=audit_kwargs.get("observations_base"),
+        results_base=audit_kwargs.get("results_base"),
+        terminal_path=audit_kwargs.get("terminal_path"),
+        results_manifest_path=audit_kwargs.get("results_manifest_path"),
+        m5_path=audit_kwargs.get("m5_path"),
+    )
+    try:
+        claim, _, tasks = _claim_and_tasks(
+            repo_root,
+            paths,
+            verify_git=bool(audit_kwargs.get("verify_git", True)),
+            enforce_frozen_hashes=bool(
+                audit_kwargs.get("enforce_frozen_hashes", True)
+            ),
+            authorization_path=audit_kwargs.get("authorization_path"),
+            control_path=audit_kwargs.get("control_path"),
+        )
+    except (OSError, protocol.ContractError) as error:
+        code = error.code if isinstance(error, protocol.ContractError) else type(error).__name__
+        return _next_action_result(status="INVALID", action="INVALID", errors=[code])
+
+    receipt_count = int(state["tasks"])
+    final_count = int(state["finalizations"])
+    if receipt_count == final_count and receipt_count < len(tasks):
+        task = tasks[receipt_count]
+        task_claim = claim["task_claims"][receipt_count]
+        try:
+            request = protocol.expected_create_thread_arguments(
+                repo_root, task, task_claim
+            )
+        except protocol.ContractError as error:
+            return _next_action_result(
+                status="INVALID", action="INVALID", errors=[error.code]
+            )
+        if set(request) != {"prompt", "target", "title"}:
+            return _next_action_result(
+                status="INVALID",
+                action="INVALID",
+                errors=["create_thread_arguments_invalid"],
+            )
+        return _next_action_result(
+            status=status,
+            action="CREATE_THREAD",
+            task=task,
+            global_sequence=receipt_count + 1,
+            create_thread_arguments=request,
+        )
+    if receipt_count == final_count + 1 and final_count < len(tasks):
+        return _next_action_result(
+            status=status,
+            action="RECORD_FINAL",
+            task=tasks[final_count],
+            global_sequence=final_count + 1,
+        )
+    return _next_action_result(
+        status="INVALID",
+        action="INVALID",
+        errors=["coordinator_lifecycle_prefix_invalid"],
+    )
 
 
 def _paths(
@@ -880,13 +1002,161 @@ def record_terminal(
     return {**result, "writes": 1}
 
 
-def main(argv: Sequence[str] | None = None) -> int:
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--check", action="store_true")
-    args = parser.parse_args(argv)
-    result = check_recorder(protocol.REPO_ROOT)
+class _ArgumentParser(argparse.ArgumentParser):
+    def error(self, message: str) -> None:
+        raise protocol.ContractError("argument_error:" + message)
+
+
+def _invalid_cli(code: str, *, mode: str = "INVALID") -> dict[str, Any]:
+    return {"mode": mode, "status": "INVALID", "errors": [code], "writes": 0}
+
+
+def _missing(args: argparse.Namespace, *names: str) -> str | None:
+    for name in names:
+        if getattr(args, name) is None:
+            return "argument_required:" + name.replace("_", "-")
+    return None
+
+
+def _cli_result(
+    args: argparse.Namespace,
+    *,
+    repo_root: Path,
+    audit_kwargs: Mapping[str, Any],
+) -> dict[str, Any]:
+    if args.next_action:
+        return next_action(repo_root, **audit_kwargs)
+    if args.record_dispatch:
+        missing = _missing(args, "task_id", "response_file", "captured_at_utc")
+        if missing:
+            return _invalid_cli(missing, mode="RECORD_DISPATCH")
+        try:
+            response_raw = SOURCE_READER(Path(args.response_file))
+        except OSError as error:
+            return _invalid_cli(
+                "response_file_read_failed:" + type(error).__name__,
+                mode="RECORD_DISPATCH",
+            )
+        return {
+            "mode": "RECORD_DISPATCH",
+            **record_dispatch(
+                repo_root,
+                task_id=args.task_id,
+                response_raw=response_raw,
+                captured_at_utc=args.captured_at_utc,
+                **audit_kwargs,
+            ),
+        }
+    if args.record_final:
+        missing = _missing(args, "task_id", "final_file", "observed_at_utc")
+        if missing:
+            return _invalid_cli(missing, mode="RECORD_FINAL")
+        try:
+            final_raw = SOURCE_READER(Path(args.final_file))
+        except OSError as error:
+            return _invalid_cli(
+                "final_file_read_failed:" + type(error).__name__, mode="RECORD_FINAL"
+            )
+        return {
+            "mode": "RECORD_FINAL",
+            **record_final(
+                repo_root,
+                task_id=args.task_id,
+                final_raw=final_raw,
+                observed_at_utc=args.observed_at_utc,
+                **audit_kwargs,
+            ),
+        }
+    if args.record_terminal:
+        missing = _missing(args, "state", "recorded_at_utc")
+        if missing:
+            return _invalid_cli(missing, mode="RECORD_TERMINAL")
+        if args.state not in {
+            "COMPLETE_UNJUDGED",
+            "STOPPED_PROTOCOL_OR_INFRASTRUCTURE_FAILURE",
+        }:
+            return _invalid_cli("terminal_state_invalid", mode="RECORD_TERMINAL")
+        if args.failure_class not in {
+            None,
+            "PROTOCOL_FAILURE",
+            "INFRASTRUCTURE_FAILURE",
+        }:
+            return _invalid_cli("failure_class_invalid", mode="RECORD_TERMINAL")
+        if args.state == "STOPPED_PROTOCOL_OR_INFRASTRUCTURE_FAILURE":
+            missing = _missing(args, "failed_stage", "failure_class")
+            if missing:
+                return _invalid_cli(missing, mode="RECORD_TERMINAL")
+        failure_raw = None
+        if args.failure_file is not None:
+            try:
+                failure_raw = SOURCE_READER(Path(args.failure_file))
+            except OSError as error:
+                return _invalid_cli(
+                    "failure_file_read_failed:" + type(error).__name__,
+                    mode="RECORD_TERMINAL",
+                )
+        return {
+            "mode": "RECORD_TERMINAL",
+            **record_terminal(
+                repo_root,
+                state=args.state,
+                failed_task_id=args.failed_task_id,
+                failed_stage=args.failed_stage,
+                failure_class=args.failure_class,
+                failure_evidence_raw=failure_raw,
+                failure_evidence_path=args.failure_file,
+                attempt_included=args.attempt_included,
+                recorded_at_utc=args.recorded_at_utc,
+                **audit_kwargs,
+            ),
+        }
+    return {"mode": "CHECK_ONLY", **check_recorder(repo_root, **audit_kwargs)}
+
+
+def main(
+    argv: Sequence[str] | None = None,
+    *,
+    repo_root: Path = protocol.REPO_ROOT,
+    audit_kwargs: Mapping[str, Any] | None = None,
+) -> int:
+    parser = _ArgumentParser()
+    modes = parser.add_mutually_exclusive_group()
+    modes.add_argument("--check", action="store_true")
+    modes.add_argument("--next-action", action="store_true")
+    modes.add_argument("--record-dispatch", action="store_true")
+    modes.add_argument("--record-final", action="store_true")
+    modes.add_argument("--record-terminal", action="store_true")
+    parser.add_argument("--task-id")
+    parser.add_argument("--response-file")
+    parser.add_argument("--captured-at-utc")
+    parser.add_argument("--final-file")
+    parser.add_argument("--observed-at-utc")
+    parser.add_argument("--state")
+    parser.add_argument("--recorded-at-utc")
+    parser.add_argument("--failed-task-id")
+    parser.add_argument("--failed-stage")
+    parser.add_argument("--failure-class")
+    parser.add_argument("--failure-file")
+    parser.add_argument("--attempt-included", action="store_true")
+    try:
+        args = parser.parse_args(argv)
+        result = _cli_result(
+            args,
+            repo_root=repo_root,
+            audit_kwargs={} if audit_kwargs is None else audit_kwargs,
+        )
+    except protocol.ContractError as error:
+        result = _invalid_cli(error.code)
     print(_compact(result))
-    return 0 if result["status"] != "INVALID" else 1
+    successful_statuses = {
+        "READY_UNCLAIMED",
+        "CLAIMED_IN_PROGRESS",
+        "PROTOCOL_VALID_CONTINUE",
+        "READY_TO_RECORD_COMPLETE_TERMINAL",
+        "COMPLETE_UNJUDGED",
+        "STOPPED_PROTOCOL_OR_INFRASTRUCTURE_FAILURE",
+    }
+    return 0 if result["status"] in successful_statuses else 1
 
 
 if __name__ == "__main__":
