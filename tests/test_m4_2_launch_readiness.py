@@ -249,6 +249,71 @@ class M42LaunchReadinessTests(unittest.TestCase):
         self.assertEqual(state["authorization_audit_status"], "CONSUMED_BY_CLAIM")
         self.assertEqual(state["status"], "CLAIMED_IN_PROGRESS")
 
+        workflow = (
+            CANDIDATE_ROOT / ".github" / "workflows" / "m1-validation.yml"
+        ).read_text(encoding="utf-8")
+        claim_path = "evals/m4/execution/m4.2/launch-claim.json"
+        preclaim_route = f"if: hashFiles('{claim_path}') == ''"
+        postclaim_route = f"if: hashFiles('{claim_path}') != ''"
+        self.assertGreaterEqual(workflow.count(preclaim_route), 8)
+        self.assertGreaterEqual(workflow.count(postclaim_route), 7)
+        for marker in (
+            "Audit current M4.2 Gate IV-B protocol proof without authority",
+            "Audit current M4.2 authorization preparation without issuance",
+            "Current lifecycle unit tests",
+            "Validate Gate IV-B offline proof and zero authority",
+            "Validate preparation schemas projections lifecycle and zero authority",
+            "Validate deterministic candidate or issued-unconsumed lifecycle",
+            "Validate Gate A closed contracts and no-write lifecycle",
+            "Assert M4 results remain not run",
+        ):
+            step = workflow.split(f"- name: {marker}", 1)[1].split("- name:", 1)[0]
+            self.assertIn(preclaim_route, step)
+        for marker in (
+            "Resolve committed M4.2 postclaim lifecycle bindings",
+            "Validate current M4.2 committed terminal lifecycle",
+            "Create isolated claim-bound Gate A replay worktree",
+            "Replay exact claim-bound Gate A preclaim semantics",
+            "Verify claim-bound Gate A request bindings with PowerShell 7",
+            "Verify claim-bound Gate A request bindings with Windows PowerShell 5.1",
+            "Remove isolated claim-bound Gate A replay worktree",
+        ):
+            self.assertIn(marker, workflow)
+        postclaim = workflow.split(
+            "- name: Resolve committed M4.2 postclaim lifecycle bindings", 1
+        )[1].split("- name: Assert Gate A remained read-only", 1)[0]
+        self.assertIn("gate_a_acceptance.candidate_head", postclaim)
+        self.assertIn("gate_a_acceptance.candidate_tree", postclaim)
+        self.assertIn("gate_a_acceptance.push_run_id", postclaim)
+        self.assertIn("gate_a_acceptance.pr_run_id", postclaim)
+        self.assertIn("audit_m4_2.py", postclaim)
+        self.assertIn("COMPLETE_UNJUDGED", postclaim)
+        self.assertIn("STOPPED_PROTOCOL_OR_INFRASTRUCTURE_FAILURE", postclaim)
+        self.assertIn("raw-final.txt is permitted unjudged execution evidence", postclaim)
+        self.assertIn("evals/m4/results-manifest.json", postclaim)
+        self.assertIn("judge_calls", postclaim)
+        self.assertIn("aggregation_calls", postclaim)
+        self.assertIn("M4 closure", postclaim)
+        self.assertIn("evals/m5", postclaim)
+        current_runtime = workflow.split(
+            "- name: Validate current M4.2 committed terminal lifecycle", 1
+        )[1].split("- name: Create isolated claim-bound Gate A replay worktree", 1)[0]
+        self.assertIn("evals/m4/execution/audit_m4_2.py", current_runtime)
+        self.assertNotIn("audit_m4_2_authorization.py", current_runtime)
+        self.assertNotIn("audit_m4_2_launch_readiness.py", current_runtime)
+        self.assertNotIn("audit_results.py", current_runtime)
+        frozen_replay = workflow.split(
+            "- name: Replay exact claim-bound Gate A preclaim semantics", 1
+        )[1].split(
+            "- name: Verify claim-bound Gate A request bindings with PowerShell 7", 1
+        )[0]
+        self.assertIn(
+            "audit_m4_2_authorization.py --expect-authorized-unconsumed",
+            frozen_replay,
+        )
+        self.assertIn("audit_m4_2_launch_readiness.py", frozen_replay)
+        self.assertIn("audit_results.py --expect-not-run", frozen_replay)
+
     def test_cli_format_is_compact_closed_json_for_check_helpers(self) -> None:
         for value in (
             claim_builder.check_claim_readiness(
