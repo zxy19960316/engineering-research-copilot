@@ -88,7 +88,11 @@ jobs:
             evals/m4/audit_m4_2_preparation.py \
             evals/m4/authorization/audit_m4_2_gate_iv_a_r2_review.py \
             evals/m4/authorization/audit_m4_2_gate_iv_b_protocol_proof.py \
-            evals/m4/authorization/audit_m4_2_authorization_preparation.py
+            evals/m4/authorization/audit_m4_2_authorization_preparation.py \
+            evals/m4/execution/audit_m4_2.py \
+            evals/m4/execution/build_m4_2_launch_claim.py \
+            evals/m4/execution/record_m4_2_execution_evidence.py \
+            evals/m4/execution/audit_m4_2_launch_readiness.py
       - name: Require immutable r5 evidence commit
         run: |
           git cat-file -e 1b696bce53ee0a11163bfe4f91a9a49ab3af6f49^{commit}
@@ -150,6 +154,7 @@ jobs:
         if: always()
         run: git worktree remove --force "${{ runner.temp }}/m4-2-gate-iv-a-r2-baseline"
       - name: Audit current M4.2 Gate IV-B protocol proof without authority
+        if: hashFiles('evals/m4/execution/m4.2/launch-claim.json') == ''
         shell: bash
         run: |
           set -euo pipefail
@@ -160,6 +165,7 @@ jobs:
           printf '%s\n' "$first"
           python -X utf8 evals/m4/audit_results.py --expect-not-run
       - name: Audit current M4.2 authorization preparation without issuance
+        if: hashFiles('evals/m4/execution/m4.2/launch-claim.json') == ''
         shell: bash
         run: |
           set -euo pipefail
@@ -170,12 +176,29 @@ jobs:
           printf '%s\n' "$first"
           python -X utf8 evals/m4/audit_results.py --expect-not-run
       - name: Current lifecycle unit tests
+        if: hashFiles('evals/m4/execution/m4.2/launch-claim.json') == ''
         run: >-
           python -X utf8 -c "import pathlib, sys, unittest;
           excluded = {'test_m4_1_preparation', 'test_m4_1_authorization_builder',
           'test_m4_1_authorization', 'test_m4_1_execution',
           'test_m4_1_launch_readiness', 'test_m4_2_preparation',
           'test_m4_2_gate_iv_a_r2_review'};
+          modules = ['tests.' + path.stem for path in
+          sorted(pathlib.Path('tests').glob('test_*.py')) if path.stem not in excluded];
+          suite = unittest.defaultTestLoader.loadTestsFromNames(modules);
+          result = unittest.TextTestRunner(verbosity=2).run(suite);
+          sys.exit(0 if result.wasSuccessful() else 1)"
+      - name: Current lifecycle unit tests excluding frozen M4.2 preclaim modules
+        if: hashFiles('evals/m4/execution/m4.2/launch-claim.json') != ''
+        run: >-
+          python -X utf8 -c "import pathlib, sys, unittest;
+          excluded = {'test_m4_1_preparation', 'test_m4_1_authorization_builder',
+          'test_m4_1_authorization', 'test_m4_1_execution',
+          'test_m4_1_launch_readiness', 'test_m4_2_preparation',
+          'test_m4_2_gate_iv_a_r2_review', 'test_m4_2_execution',
+          'test_m4_2_launch_readiness', 'test_m4_2_authorization',
+          'test_m4_2_authorization_preparation',
+          'test_m4_2_gate_iv_b_protocol_proof'};
           modules = ['tests.' + path.stem for path in
           sorted(pathlib.Path('tests').glob('test_*.py')) if path.stem not in excluded];
           suite = unittest.defaultTestLoader.loadTestsFromNames(modules);
@@ -260,6 +283,7 @@ jobs:
           present = [path.as_posix() for path in forbidden if path.exists()];
           assert not present, present"
       - name: Assert M4 results remain not run
+        if: hashFiles('evals/m4/execution/m4.2/launch-claim.json') == ''
         run: python -X utf8 evals/m4/audit_results.py --expect-not-run
 
   m4-1-preclaim-regression:
@@ -441,6 +465,7 @@ jobs:
         with:
           python-version: "3.13"
       - name: Validate Gate IV-B offline proof and zero authority
+        if: hashFiles('evals/m4/execution/m4.2/launch-claim.json') == ''
         shell: bash
         run: |
           set -euo pipefail
@@ -509,6 +534,7 @@ jobs:
         with:
           python-version: "3.13"
       - name: Validate preparation schemas projections lifecycle and zero authority
+        if: hashFiles('evals/m4/execution/m4.2/launch-claim.json') == ''
         shell: bash
         run: |
           set -euo pipefail
@@ -530,7 +556,7 @@ jobs:
           python -X utf8 evals/m4/execution/audit_m4_1_terminal.py
           python -X utf8 evals/m4/audit_results.py --expect-not-run
           python -X utf8 evals/m4/authorization/audit_m4_2_authorization.py
-          python -X utf8 -c "from pathlib import Path; pair = [Path('evals/m4/authorization/m4.2/execution-authorization.json'), Path('evals/m4/authorization/m4.2/execution-control.json')]; exact = [Path('evals/m4/authorization/m4.2/authorization-token.json'), Path('evals/m4/authorization/m4.2/acceptance-claim.json'), Path('evals/m4/results-manifest.json')]; prefixes = [Path('evals/m4/execution/m4.2'), Path('evals/m4/results/m4.1'), Path('evals/m4/results/m4.2'), Path('evals/m5')]; present = [path.as_posix() for path in exact + prefixes if path.exists()]; assert not present, present; assert pair[0].is_file() == pair[1].is_file(); raw = Path('evals/m4/authorization/m4.2/authorization-preparation.json').read_bytes(); assert b'AUTHORIZED_UNCONSUMED' not in raw; assert b'sha256:' not in raw"
+          python -X utf8 -c "from pathlib import Path; pair = [Path('evals/m4/authorization/m4.2/execution-authorization.json'), Path('evals/m4/authorization/m4.2/execution-control.json')]; static = {'evals/m4/execution/m4.2/launch-claim.schema.json','evals/m4/execution/m4.2/dispatch-receipt.schema.json','evals/m4/execution/m4.2/create-thread-response-attestation.schema.json','evals/m4/execution/m4.2/execution-terminal.schema.json'}; root = Path('evals/m4/execution/m4.2'); runtime = [item.as_posix() for item in root.rglob('*') if (item.is_file() or item.is_symlink()) and item.as_posix() not in static] if root.exists() else []; exact = [Path('evals/m4/authorization/m4.2/authorization-token.json'), Path('evals/m4/authorization/m4.2/acceptance-claim.json'), Path('evals/m4/results-manifest.json'), Path('evals/m4/results/m4.1'), Path('evals/m4/results/m4.2'), Path('evals/m5')]; present = runtime + [path.as_posix() for path in exact if path.exists()]; assert not present, present; assert pair[0].is_file() == pair[1].is_file(); raw = Path('evals/m4/authorization/m4.2/authorization-preparation.json').read_bytes(); assert b'AUTHORIZED_UNCONSUMED' not in raw; assert b'sha256:' not in raw"
           git diff --check
       - name: Create isolated accepted Gate IV-B closure replay worktree
         id: create_gate_iv_b_closure_worktree
@@ -605,6 +631,7 @@ jobs:
         with:
           python-version: "3.13"
       - name: Validate deterministic candidate or issued-unconsumed lifecycle
+        if: hashFiles('evals/m4/execution/m4.2/launch-claim.json') == ''
         shell: bash
         run: |
           set -euo pipefail
@@ -627,11 +654,11 @@ jobs:
           python -X utf8 evals/m4/authorization/audit_m4_2_authorization_preparation.py
           python -X utf8 evals/m4/authorization/audit_m4_2_gate_iv_b_protocol_proof.py
           python -X utf8 evals/m4/audit_results.py --expect-not-run
-          python -X utf8 -c "from pathlib import Path; pair = [Path('evals/m4/authorization/m4.2/execution-authorization.json'), Path('evals/m4/authorization/m4.2/execution-control.json')]; exact = [Path('evals/m4/authorization/m4.2/authorization-token.json'), Path('evals/m4/authorization/m4.2/acceptance-claim.json'), Path('evals/m4/results-manifest.json')]; prefixes = [Path('evals/m4/execution/m4.2'), Path('evals/m4/results/m4.2'), Path('evals/m5')]; assert pair[0].is_file() == pair[1].is_file(); present = [path.as_posix() for path in exact + prefixes if path.exists()]; assert not present, present"
+          python -X utf8 -c "from pathlib import Path; pair = [Path('evals/m4/authorization/m4.2/execution-authorization.json'), Path('evals/m4/authorization/m4.2/execution-control.json')]; static = {'evals/m4/execution/m4.2/launch-claim.schema.json','evals/m4/execution/m4.2/dispatch-receipt.schema.json','evals/m4/execution/m4.2/create-thread-response-attestation.schema.json','evals/m4/execution/m4.2/execution-terminal.schema.json'}; root = Path('evals/m4/execution/m4.2'); runtime = [item.as_posix() for item in root.rglob('*') if (item.is_file() or item.is_symlink()) and item.as_posix() not in static] if root.exists() else []; exact = [Path('evals/m4/authorization/m4.2/authorization-token.json'), Path('evals/m4/authorization/m4.2/acceptance-claim.json'), Path('evals/m4/results-manifest.json'), Path('evals/m4/results/m4.2'), Path('evals/m5')]; assert pair[0].is_file() == pair[1].is_file(); present = runtime + [path.as_posix() for path in exact if path.exists()]; assert not present, present"
           git diff --check
       - name: Create isolated authorization-preparation closure replay worktree
         id: create_authorization_preparation_closure_worktree
-        run: git worktree add --detach "${{ runner.temp }}/m4-2-authorization-preparation-closure" 4efa75c542172a95c6c72c8c1450fea77a8e2ff1
+        run: git -c core.autocrlf=false worktree add --detach "${{ runner.temp }}/m4-2-authorization-preparation-closure" 4efa75c542172a95c6c72c8c1450fea77a8e2ff1
       - name: Replay frozen preparation and Gate IV-B proof semantics
         shell: bash
         working-directory: ${{ runner.temp }}/m4-2-authorization-preparation-closure
@@ -860,6 +887,307 @@ jobs:
           check=True, capture_output=True, text=True).stdout;
           assert not status, status"
 
+  m4-2-gate-a-launch-readiness:
+    name: M4.2 Gate A launch readiness (NO CLAIM) (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+          - windows-latest
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Validate Gate A closed contracts and no-write lifecycle
+        if: hashFiles('evals/m4/execution/m4.2/launch-claim.json') == ''
+        shell: bash
+        run: |
+          set -euo pipefail
+          git cat-file -e '214acacfb984b3f9e41d35dde8841a4ffb342b34^{commit}'
+          test "$(git rev-parse '214acacfb984b3f9e41d35dde8841a4ffb342b34^{tree}')" = '7671e69844ea59a84411b6bcbfb9abf0feb64ae9'
+          git merge-base --is-ancestor 214acacfb984b3f9e41d35dde8841a4ffb342b34 HEAD
+          python -m py_compile \
+            evals/m4/execution/audit_m4_2.py \
+            evals/m4/execution/build_m4_2_launch_claim.py \
+            evals/m4/execution/record_m4_2_execution_evidence.py \
+            evals/m4/execution/audit_m4_2_launch_readiness.py
+          python -X utf8 -m unittest tests.test_m4_2_execution tests.test_m4_2_launch_readiness -v
+          python -X utf8 -m unittest tests.test_m4_2_authorization tests.test_m4_2_authorization_preparation tests.test_m4_2_gate_iv_b_protocol_proof -v
+          python -X utf8 evals/m4/authorization/build_m4_2_authorization.py --check
+          python -X utf8 evals/m4/authorization/audit_m4_2_authorization.py --expect-authorized-unconsumed
+          execution_first="$(python -X utf8 evals/m4/execution/audit_m4_2.py --expect-ready-unclaimed)"
+          execution_second="$(python -X utf8 evals/m4/execution/audit_m4_2.py --expect-ready-unclaimed)"
+          test "$execution_first" = "$execution_second"
+          printf '%s\n' "$execution_first"
+          python -X utf8 evals/m4/execution/build_m4_2_launch_claim.py --check
+          python -X utf8 evals/m4/execution/record_m4_2_execution_evidence.py --check
+          next_action="$(python -X utf8 evals/m4/execution/record_m4_2_execution_evidence.py --next-action)"
+          printf '%s\n' "$next_action"
+          python -X utf8 -c 'import json, sys; value = json.loads(sys.argv[1]); assert value["action"] == "CONSUME_CLAIM", value; assert value["writes"] == 0, value' "$next_action"
+          readiness_first="$(python -X utf8 evals/m4/execution/audit_m4_2_launch_readiness.py)"
+          readiness_second="$(python -X utf8 evals/m4/execution/audit_m4_2_launch_readiness.py)"
+          test "$readiness_first" = "$readiness_second"
+          printf '%s\n' "$readiness_first"
+          python -X utf8 evals/m4/audit_results.py --expect-not-run
+          python -X utf8 -c "from pathlib import Path; exact = [Path('evals/m4/execution/m4.2/launch-claim.json'), Path('evals/m4/execution/m4.2/execution-terminal.json'), Path('evals/m4/execution/m4.2/platform-observations'), Path('evals/m4/results/m4.2'), Path('evals/m4/results-manifest.json'), Path('evals/m5')]; present = [path.as_posix() for path in exact if path.exists()]; assert not present, present"
+          test -z "$(git status --porcelain --untracked-files=all)"
+      - name: Resolve committed M4.2 postclaim lifecycle bindings
+        id: m4_2_postclaim
+        if: hashFiles('evals/m4/execution/m4.2/launch-claim.json') != ''
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -X utf8 - "$GITHUB_OUTPUT" <<'PY'
+          import json
+          import re
+          import subprocess
+          import sys
+          from pathlib import Path
+
+          class DuplicateKeyError(ValueError):
+              pass
+
+          def reject_duplicates(pairs):
+              value = {}
+              for key, item in pairs:
+                  if key in value:
+                      raise DuplicateKeyError(f"duplicate_key:{key}")
+                  value[key] = item
+              return value
+
+          def require(mapping, key, label):
+              if not isinstance(mapping, dict) or key not in mapping:
+                  raise SystemExit(f"missing_binding:{label}")
+              return mapping[key]
+
+          claim_path = Path("evals/m4/execution/m4.2/launch-claim.json")
+          try:
+              claim = json.loads(
+                  claim_path.read_bytes().decode("utf-8", errors="strict"),
+                  object_pairs_hook=reject_duplicates,
+                  parse_constant=lambda value: (_ for _ in ()).throw(
+                      ValueError(f"nonfinite:{value}")
+                  ),
+              )
+          except (OSError, UnicodeError, ValueError, json.JSONDecodeError) as error:
+              raise SystemExit(f"launch_claim_parse_failed:{type(error).__name__}") from error
+          gate_a = require(claim, "gate_a_acceptance", "gate_a_acceptance")
+          head = require(gate_a, "candidate_head", "gate_a_acceptance.candidate_head")
+          tree = require(gate_a, "candidate_tree", "gate_a_acceptance.candidate_tree")
+          push_run_id = require(gate_a, "push_run_id", "gate_a_acceptance.push_run_id")
+          pr_run_id = require(gate_a, "pr_run_id", "gate_a_acceptance.pr_run_id")
+          if not isinstance(head, str) or re.fullmatch(r"[0-9a-f]{40}", head) is None:
+              raise SystemExit("gate_a_candidate_head_invalid")
+          if not isinstance(tree, str) or re.fullmatch(r"[0-9a-f]{40}", tree) is None:
+              raise SystemExit("gate_a_candidate_tree_invalid")
+          for label, value in (("push_run_id", push_run_id), ("pr_run_id", pr_run_id)):
+              if isinstance(value, bool) or not isinstance(value, int) or value < 1:
+                  raise SystemExit(f"gate_a_{label}_invalid")
+          subprocess.run(
+              ["git", "cat-file", "-e", f"{head}^{{commit}}"], check=True
+          )
+          observed_tree = subprocess.run(
+              ["git", "rev-parse", f"{head}^{{tree}}"],
+              check=True,
+              capture_output=True,
+              text=True,
+              encoding="utf-8",
+          ).stdout.strip()
+          if observed_tree != tree:
+              raise SystemExit("gate_a_claim_tree_mismatch")
+          with Path(sys.argv[1]).open("a", encoding="utf-8", newline="\n") as output:
+              output.write(f"gate_a_candidate_head={head}\n")
+              output.write(f"gate_a_candidate_tree={tree}\n")
+              output.write(f"gate_a_push_run_id={push_run_id}\n")
+              output.write(f"gate_a_pr_run_id={pr_run_id}\n")
+          PY
+      - name: Validate current M4.2 committed terminal lifecycle
+        if: hashFiles('evals/m4/execution/m4.2/launch-claim.json') != ''
+        shell: bash
+        run: |
+          set -euo pipefail
+          first="${RUNNER_TEMP}/m4-2-postclaim-audit-first.json"
+          second="${RUNNER_TEMP}/m4-2-postclaim-audit-second.json"
+          python -B -X utf8 evals/m4/execution/audit_m4_2.py > "$first"
+          python -B -X utf8 evals/m4/execution/audit_m4_2.py > "$second"
+          cmp --silent "$first" "$second"
+          cat "$first"
+          python -B -X utf8 - "$first" <<'PY'
+          import json
+          import sys
+          from pathlib import Path
+
+          payload = json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
+          assert payload.get("errors") == [], payload.get("errors")
+          assert payload.get("status") in {
+              "COMPLETE_UNJUDGED",
+              "STOPPED_PROTOCOL_OR_INFRASTRUCTURE_FAILURE",
+          }, payload.get("status")
+          assert payload.get("token") == "CONSUMED", payload
+          assert payload.get("claim_count") == 1, payload
+          assert payload.get("launch_claim_present") is True, payload
+          assert payload.get("terminal_present") is True, payload
+          for key in (
+              "retries",
+              "repairs",
+              "followups",
+              "judge_calls",
+              "aggregation_calls",
+              "side_effects",
+          ):
+              assert payload.get(key) == 0, (key, payload.get(key))
+
+          terminal = Path("evals/m4/execution/m4.2/execution-terminal.json")
+          terminals = sorted(
+              Path("evals/m4/execution/m4.2").rglob("execution-terminal.json")
+          )
+          assert terminals == [terminal], [path.as_posix() for path in terminals]
+          later_paths = [
+              Path("evals/m4/results-manifest.json"),
+              Path("evals/m5"),
+          ]
+          assert not [path.as_posix() for path in later_paths if path.exists()]
+          allowed_static = {
+              "evals/m4/judge-rubric.json",
+              "evals/m4/schemas/judge-score.schema.json",
+          }
+          later_keywords = (
+              "judge-score",
+              "judge_score",
+              "blind-map",
+              "blind_map",
+              "unblind",
+              "aggregation",
+              "m4-closure",
+              "m4_closure",
+          )
+          later_evidence = []
+          for path in Path("evals/m4").rglob("*"):
+              if not (path.is_file() or path.is_symlink()):
+                  continue
+              relative = path.as_posix()
+              if relative in allowed_static:
+                  continue
+              if any(keyword in relative.lower() for keyword in later_keywords):
+                  later_evidence.append(relative)
+          assert not later_evidence, later_evidence
+          # raw-final.txt is permitted unjudged execution evidence here.
+          # Judge, blind-map access, aggregation, M4 closure, and M5 remain closed.
+          PY
+          test -z "$(git status --porcelain --untracked-files=all)"
+      - name: Create isolated claim-bound Gate A replay worktree
+        id: create_claim_bound_gate_a_worktree
+        if: hashFiles('evals/m4/execution/m4.2/launch-claim.json') != ''
+        shell: bash
+        env:
+          GATE_A_CANDIDATE_HEAD: ${{ steps.m4_2_postclaim.outputs.gate_a_candidate_head }}
+          GATE_A_CANDIDATE_TREE: ${{ steps.m4_2_postclaim.outputs.gate_a_candidate_tree }}
+        run: |
+          set -euo pipefail
+          git cat-file -e "${GATE_A_CANDIDATE_HEAD}^{commit}"
+          test "$(git rev-parse "${GATE_A_CANDIDATE_HEAD}^{tree}")" = "$GATE_A_CANDIDATE_TREE"
+          git -c core.autocrlf=false worktree add --detach \
+            "${RUNNER_TEMP}/m4-2-postclaim-gate-a" "$GATE_A_CANDIDATE_HEAD"
+          test "$(git -C "${RUNNER_TEMP}/m4-2-postclaim-gate-a" rev-parse HEAD)" = "$GATE_A_CANDIDATE_HEAD"
+          test "$(git -C "${RUNNER_TEMP}/m4-2-postclaim-gate-a" rev-parse 'HEAD^{tree}')" = "$GATE_A_CANDIDATE_TREE"
+      - name: Replay exact claim-bound Gate A preclaim semantics
+        if: hashFiles('evals/m4/execution/m4.2/launch-claim.json') != ''
+        shell: bash
+        working-directory: ${{ runner.temp }}/m4-2-postclaim-gate-a
+        run: |
+          set -euo pipefail
+          python -B -X utf8 -m unittest \
+            tests.test_m4_2_execution \
+            tests.test_m4_2_launch_readiness \
+            tests.test_m4_2_authorization \
+            tests.test_m4_2_authorization_preparation \
+            tests.test_m4_2_gate_iv_b_protocol_proof -v
+          python -B -X utf8 evals/m4/authorization/build_m4_2_authorization.py --check
+          authorization_first="$(python -B -X utf8 evals/m4/authorization/audit_m4_2_authorization.py --expect-authorized-unconsumed)"
+          authorization_second="$(python -B -X utf8 evals/m4/authorization/audit_m4_2_authorization.py --expect-authorized-unconsumed)"
+          test "$authorization_first" = "$authorization_second"
+          printf '%s\n' "$authorization_first"
+          python -B -X utf8 evals/m4/authorization/audit_m4_2_authorization_preparation.py
+          python -B -X utf8 evals/m4/authorization/audit_m4_2_gate_iv_b_protocol_proof.py
+          execution_first="$(python -B -X utf8 evals/m4/execution/audit_m4_2.py --expect-ready-unclaimed)"
+          execution_second="$(python -B -X utf8 evals/m4/execution/audit_m4_2.py --expect-ready-unclaimed)"
+          test "$execution_first" = "$execution_second"
+          printf '%s\n' "$execution_first"
+          python -B -X utf8 evals/m4/execution/build_m4_2_launch_claim.py --check
+          python -B -X utf8 evals/m4/execution/record_m4_2_execution_evidence.py --check
+          readiness_first="$(python -B -X utf8 evals/m4/execution/audit_m4_2_launch_readiness.py)"
+          readiness_second="$(python -B -X utf8 evals/m4/execution/audit_m4_2_launch_readiness.py)"
+          test "$readiness_first" = "$readiness_second"
+          printf '%s\n' "$readiness_first"
+          python -B -X utf8 evals/m4/audit_results.py --expect-not-run
+          test -z "$(git status --porcelain --untracked-files=all)"
+      - name: Verify claim-bound Gate A request bindings with PowerShell 7
+        if: hashFiles('evals/m4/execution/m4.2/launch-claim.json') != '' && runner.os == 'Linux'
+        shell: pwsh
+        working-directory: ${{ runner.temp }}/m4-2-postclaim-gate-a
+        run: |
+          $ErrorActionPreference = 'Stop'
+          ./evals/m4/execution/prepare_m4_2_request_bundles.ps1 -SelfTest
+          if ($LASTEXITCODE -ne 0) { throw 'm4_2_postclaim_gate_a_self_test_failed' }
+          $raw = ./evals/m4/execution/prepare_m4_2_request_bundles.ps1 -CheckAll
+          if ($LASTEXITCODE -ne 0) { throw 'm4_2_postclaim_gate_a_request_check_failed' }
+          $result = $raw | ConvertFrom-Json
+          if ($result.status -ne 'VERIFIED' -or $result.checked_task_count -ne 60 -or $result.mismatches.Count -ne 0 -or $result.side_effects.Count -ne 0) { throw 'm4_2_postclaim_gate_a_request_verification_invalid' }
+          $raw
+      - name: Verify claim-bound Gate A request bindings with Windows PowerShell 5.1
+        if: hashFiles('evals/m4/execution/m4.2/launch-claim.json') != '' && runner.os == 'Windows'
+        shell: powershell
+        working-directory: ${{ runner.temp }}/m4-2-postclaim-gate-a
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if ($PSVersionTable.PSVersion.Major -ne 5 -or $PSVersionTable.PSVersion.Minor -ne 1) { throw 'expected_windows_powershell_5_1' }
+          .\evals\m4\execution\prepare_m4_2_request_bundles.ps1 -SelfTest
+          if ($LASTEXITCODE -ne 0) { throw 'm4_2_postclaim_gate_a_self_test_failed' }
+          $raw = .\evals\m4\execution\prepare_m4_2_request_bundles.ps1 -CheckAll
+          if ($LASTEXITCODE -ne 0) { throw 'm4_2_postclaim_gate_a_request_check_failed' }
+          $result = $raw | ConvertFrom-Json
+          if ($result.status -ne 'VERIFIED' -or $result.checked_task_count -ne 60 -or $result.mismatches.Count -ne 0 -or $result.side_effects.Count -ne 0) { throw 'm4_2_postclaim_gate_a_request_verification_invalid' }
+          $raw
+      - name: Remove isolated claim-bound Gate A replay worktree
+        if: hashFiles('evals/m4/execution/m4.2/launch-claim.json') != '' && always() && steps.create_claim_bound_gate_a_worktree.outcome == 'success'
+        run: git worktree remove --force "${{ runner.temp }}/m4-2-postclaim-gate-a"
+      - name: Verify Gate A request bindings with PowerShell 7
+        if: runner.os == 'Linux' && hashFiles('evals/m4/execution/m4.2/launch-claim.json') == ''
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          ./evals/m4/execution/prepare_m4_2_request_bundles.ps1 -SelfTest
+          if ($LASTEXITCODE -ne 0) { throw 'm4_2_gate_a_self_test_failed' }
+          $raw = ./evals/m4/execution/prepare_m4_2_request_bundles.ps1 -CheckAll
+          if ($LASTEXITCODE -ne 0) { throw 'm4_2_gate_a_request_check_failed' }
+          $result = $raw | ConvertFrom-Json
+          if ($result.status -ne 'VERIFIED' -or $result.checked_task_count -ne 60 -or $result.mismatches.Count -ne 0 -or $result.side_effects.Count -ne 0) { throw 'm4_2_gate_a_request_verification_invalid' }
+          $raw
+      - name: Verify Gate A request bindings with Windows PowerShell 5.1
+        if: runner.os == 'Windows' && hashFiles('evals/m4/execution/m4.2/launch-claim.json') == ''
+        shell: powershell
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if ($PSVersionTable.PSVersion.Major -ne 5 -or $PSVersionTable.PSVersion.Minor -ne 1) { throw 'expected_windows_powershell_5_1' }
+          .\evals\m4\execution\prepare_m4_2_request_bundles.ps1 -SelfTest
+          if ($LASTEXITCODE -ne 0) { throw 'm4_2_gate_a_self_test_failed' }
+          $raw = .\evals\m4\execution\prepare_m4_2_request_bundles.ps1 -CheckAll
+          if ($LASTEXITCODE -ne 0) { throw 'm4_2_gate_a_request_check_failed' }
+          $result = $raw | ConvertFrom-Json
+          if ($result.status -ne 'VERIFIED' -or $result.checked_task_count -ne 60 -or $result.mismatches.Count -ne 0 -or $result.side_effects.Count -ne 0) { throw 'm4_2_gate_a_request_verification_invalid' }
+          $raw
+      - name: Assert Gate A remained read-only
+        run: >-
+          python -X utf8 -c "import subprocess;
+          status = subprocess.run(['git', 'status', '--porcelain', '--untracked-files=all'],
+          check=True, capture_output=True, text=True).stdout;
+          assert not status, status"
+
   historical-audit-cross-platform:
     strategy:
       fail-fast: false
@@ -925,4 +1253,6 @@ jobs:
           git diff --raw --exit-code 80b54697c3e27a5dad0a24d5318ce26c8fe46141 HEAD -- evals/m4/execution/m4.1/launch-claim.json evals/m4/execution/m4.1/execution-terminal.json
           git diff --exit-code 80b54697c3e27a5dad0a24d5318ce26c8fe46141 HEAD -- evals/m4/execution/m4.1/launch-claim.json evals/m4/execution/m4.1/execution-terminal.json
           python -X utf8 evals/m4/execution/audit_m4_1_terminal.py
-          python -X utf8 evals/m4/audit_results.py --expect-not-run
+      - name: Assert current M4 results remain not run before an M4.2 claim
+        if: hashFiles('evals/m4/execution/m4.2/launch-claim.json') == ''
+        run: python -X utf8 evals/m4/audit_results.py --expect-not-run
