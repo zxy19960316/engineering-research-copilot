@@ -16,6 +16,8 @@ R5_2_TERMINAL = REPO_ROOT / "evals" / "m3" / "results" / "forward-r5.2-f02" / "t
 CLOSURE_MANIFEST = REPO_ROOT / "evals" / "m3" / "results" / "forward-r5.2-aggregate" / "m3-closure-manifest.json"
 M4_2_AUTHORIZATION = REPO_ROOT / "evals" / "m4" / "authorization" / "m4.2" / "execution-authorization.json"
 M4_2_CONTROL = REPO_ROOT / "evals" / "m4" / "authorization" / "m4.2" / "execution-control.json"
+M4_2_CLAIM = REPO_ROOT / "evals" / "m4" / "execution" / "m4.2" / "launch-claim.json"
+M4_2_TERMINAL = REPO_ROOT / "evals" / "m4" / "execution" / "m4.2" / "execution-terminal.json"
 
 
 class M3R5ErratumTests(unittest.TestCase):
@@ -115,11 +117,13 @@ class M3R5ErratumTests(unittest.TestCase):
         self.assertNotIn(token, current)
         self.assertIn(token[:19] + "...", current)
         self.assertIn(
-            "Active revision: `M4.2 GATE_B_PRODUCTION_COORDINATOR_CLI_FREEZE_REPAIR; "
-            "base_head=bbee750c54ca98716da393249209224cf36c42d8; "
-            "decision=PENDING_M4_2_GATE_B_COORDINATOR_CLI_REPAIR_EXACT_HEAD_CI; "
-            "authorization_token=UNCONSUMED; claim=ABSENT; "
-            "gate_b_authorized=false`",
+            "Active revision: `M4.2 "
+            "GATE_B_STOPPED_PROTOCOL_OR_INFRASTRUCTURE_FAILURE; "
+            "accepted_head=9869aa4b22b5097619ce18b896a1c2b6e631e58b; "
+            "accepted_tree=b652942e38e81716e16065c4b32d4bb059326012; "
+            "decision=M4_2_TERMINAL_FAILURE_PRESERVED_SUCCESSOR_REVISION_REQUIRED; "
+            "authorization_token=CONSUMED; claim=PRESENT; terminal=PRESENT; "
+            "continuation_forbidden=true`",
             current,
         )
         self.assertIn(f"Historical r5 evidence HEAD: `{EVIDENCE_HEAD}`", current)
@@ -145,7 +149,10 @@ class M3R5ErratumTests(unittest.TestCase):
             "M4_2_GATE_IV_B_PROTOCOL_PROOF_PASSED_NOT_AUTHORIZED",
             "M4_2_AUTHORIZATION_PREPARATION_PASSED_NOT_AUTHORIZED",
             "M4_2_AUTHORIZED_UNCONSUMED_NOT_CLAIMED_NOT_EXECUTED",
-            "M4_2_GATE_A_IMPLEMENTED_PENDING_EXACT_HEAD_CI",
+            "M4_2_GATE_A_ACCEPTED",
+            "M4_2_GATE_B_STOPPED_PROTOCOL_OR_INFRASTRUCTURE_FAILURE",
+            "M4_2_AUTHORIZATION_CONSUMED",
+            "M4_2_TASKS_NOT_DISPATCHED",
             "M4_FRESH_RESULTS_NOT_RUN",
         ):
             self.assertIn(preserved_status, current)
@@ -549,14 +556,101 @@ class M3R5ErratumTests(unittest.TestCase):
             current,
         )
         self.assertIn(
-            "M4.2 Gate A decision: `READY_FOR_ATOMIC_CLAIM; "
-            "Gate_B_not_authorized; "
-            "coordinator_CLI_repair_does_not_authorize_claim_or_execution`",
+            "M4.2 Gate B decision: "
+            "`M4_2_TERMINAL_FAILURE_PRESERVED_SUCCESSOR_REVISION_REQUIRED; "
+            "PR_10=OPEN_DRAFT_UNMERGED`",
             current,
         )
+        self.assertTrue(M4_2_CLAIM.is_file())
+        self.assertTrue(M4_2_TERMINAL.is_file())
+        claim = json.loads(M4_2_CLAIM.read_text(encoding="utf-8"))
+        terminal = json.loads(M4_2_TERMINAL.read_text(encoding="utf-8"))
+        self.assertEqual(
+            hashlib.sha256(M4_2_CLAIM.read_bytes()).hexdigest(),
+            "bfd80ebba9b8e672f19a9837391cce1d0b41826cd3d04b8f0f1953f5b94bb3b8",
+        )
+        self.assertEqual(
+            hashlib.sha256(M4_2_TERMINAL.read_bytes()).hexdigest(),
+            "bd9cdc5d7d9ffd68b5e502c36ac743eeb9bd28e7899cf2f50d6c01a607f96cc7",
+        )
+        self.assertEqual(claim["schema_version"], "m4.2-launch-claim-v1")
+        self.assertEqual(claim["status"], "CLAIMED")
+        self.assertEqual(
+            claim["claim_id"], "a5827070-eb51-597b-ad26-5cf19fc51929"
+        )
+        self.assertEqual(claim["claim_count"], 1)
+        self.assertEqual(claim["claimed_at_utc"], "2026-08-13T09:07:51Z")
+        self.assertEqual(
+            claim["authorization"]["token_status_before_claim"], "UNCONSUMED"
+        )
+        self.assertEqual(
+            claim["authorization"]["token_status_after_claim"], "CONSUMED"
+        )
+        self.assertTrue(
+            claim["authorization"]["claim_consumes_entire_authorization"]
+        )
+        self.assertEqual(
+            claim["gate_a_acceptance"]["candidate_head"],
+            "9869aa4b22b5097619ce18b896a1c2b6e631e58b",
+        )
+        self.assertEqual(
+            claim["gate_a_acceptance"]["candidate_tree"],
+            "b652942e38e81716e16065c4b32d4bb059326012",
+        )
+        self.assertEqual(claim["gate_a_acceptance"]["push_run_id"], 31683141775)
+        self.assertEqual(claim["gate_a_acceptance"]["pr_run_id"], 31683144534)
+        self.assertEqual(len(claim["batch_order"]), 6)
+        self.assertEqual(len(claim["batches"]), 6)
+        self.assertEqual(len(claim["task_claims"]), 60)
+        self.assertEqual(len(claim["task_ids"]), 60)
+
+        self.assertEqual(
+            terminal["schema_version"], "m4.2-execution-terminal-v1"
+        )
+        self.assertEqual(
+            terminal["terminal_state"],
+            "STOPPED_PROTOCOL_OR_INFRASTRUCTURE_FAILURE",
+        )
+        self.assertEqual(terminal["recorded_at_utc"], "2026-08-13T09:11:01Z")
+        self.assertEqual(terminal["attempted_task_ids"], ["M4.2-NUC-A-F"])
+        self.assertIsNone(terminal["last_completed_batch"])
+        self.assertEqual(terminal["failed_batch"], "M4.2-BATCH-NUC")
+        self.assertEqual(terminal["failed_task_id"], "M4.2-NUC-A-F")
+        self.assertEqual(
+            terminal["failed_stage"], "create_thread_response_raw_capture"
+        )
+        self.assertEqual(
+            terminal["failure_evidence"]["failure_class"],
+            "INFRASTRUCTURE_FAILURE",
+        )
+        self.assertEqual(
+            terminal["failure_evidence"]["raw_evidence_byte_length"], 258
+        )
+        self.assertEqual(
+            terminal["failure_evidence"]["raw_evidence_sha256"],
+            "0aec98854d451f36e8b903707eaf7708bfba68e004c8d0189976bf7bdcda166c",
+        )
+        self.assertEqual(terminal["create_thread_responses"], [])
+        self.assertEqual(terminal["dispatch_receipts"], [])
+        self.assertEqual(terminal["raw_finals"], [])
+        self.assertEqual(
+            terminal["counts"],
+            {
+                "aggregation_calls": 0,
+                "attempts": 1,
+                "finalizations": 0,
+                "followups": 0,
+                "judge_calls": 0,
+                "repairs": 0,
+                "results": 0,
+                "retries": 0,
+                "side_effects": 0,
+                "tasks": 0,
+                "threads": 0,
+            },
+        )
+        self.assertTrue(terminal["successor_revision_required"])
         for relative in (
-            "evals/m4/execution/m4.2/launch-claim.json",
-            "evals/m4/execution/m4.2/execution-terminal.json",
             "evals/m4/execution/m4.2/platform-observations",
             "evals/m4/results/m4.2",
             "evals/m4/results-manifest.json",
@@ -649,9 +743,10 @@ class M3R5ErratumTests(unittest.TestCase):
             current,
         )
         self.assertIn(
-            "M4.2 authority state: `fresh_execution=true; authorized_roster_tasks=60; "
+            "M4.2 authority state: `fresh_execution=false; authorized_roster_tasks=60; "
             "authorized_batches=6; authorization_artifact=PRESENT; "
-            "execution_control=PRESENT; inline_token=UNCONSUMED; claim=ABSENT; "
+            "execution_control=PRESENT; inline_token=CONSUMED; claim=PRESENT; "
+            "claim_count=1; continuation=false; "
             "cross_task_visibility=false; judge=false; aggregation=false; "
             "M4_closure=false`",
             current,
@@ -665,9 +760,10 @@ class M3R5ErratumTests(unittest.TestCase):
         )
         self.assertIn(
             "M4.2 artifact state: `M4.1 result_root=ABSENT; "
-            "M4.2 authorization=PRESENT; execution_control=PRESENT; claim=ABSENT; "
-            "execution=ABSENT; result_root=ABSENT; results_manifest=ABSENT; "
-            "M5=ABSENT`",
+            "M4.2 authorization=PRESENT; execution_control=PRESENT; claim=PRESENT; "
+            "execution_terminal=PRESENT; platform_observations=ABSENT; "
+            "dispatch_receipts=0; create_thread_responses=0; raw_finals=0; "
+            "result_root=ABSENT; results_manifest=ABSENT; M5=ABSENT`",
             current,
         )
         self.assertIn(
@@ -676,9 +772,10 @@ class M3R5ErratumTests(unittest.TestCase):
             "Gate IV-A r2=PASSED_NOT_AUTHORIZED; "
             "Gate IV-B protocol proof=PASSED_NOT_AUTHORIZED; "
             "authorization preparation=PASSED_NOT_AUTHORIZED; "
-            "separate one-shot authorization=AUTHORIZED_UNCONSUMED; "
-            "authorization=PRESENT; claim=ABSENT; contexts=0; dispatches=0; "
-            "executions=0; results=0; "
+            "separate one-shot authorization=CONSUMED; "
+            "authorization=PRESENT; claim=PRESENT; "
+            "terminal=STOPPED_PROTOCOL_OR_INFRASTRUCTURE_FAILURE; "
+            "contexts=0; dispatches=0; executions=0; results=0; "
             "judge=NOT_RUN; aggregation=NOT_RUN; closure=NOT_RUN; "
             "M5=ABSENT`",
             current,
@@ -810,20 +907,26 @@ class M3R5ErratumTests(unittest.TestCase):
             "M4.2 GATE_IV_B_PROTOCOL_PROOF_PASSED_NOT_AUTHORIZED; "
             "M4.2 AUTHORIZATION_PREPARATION_PASSED_NOT_AUTHORIZED; "
             "M4.2 AUTHORIZED_UNCONSUMED_NOT_CLAIMED_NOT_EXECUTED; "
+            "M4.2 GATE_A_ACCEPTED; "
+            "M4.2 GATE_B_STOPPED_PROTOCOL_OR_INFRASTRUCTURE_FAILURE; "
+            "M4.2 AUTHORIZATION_CONSUMED; M4.2 TASKS_NOT_DISPATCHED; "
             "FRESH_RESULTS_NOT_RUN`",
             text,
         )
         self.assertIn("- M5: `ABSENT; NOT_STARTED`", text)
         self.assertIn(
             "- Active local branch: "
-            "`codex/m4-cross-engineering-forward-evaluation-m4.2-one-shot-authorization`",
+            "`codex/m4-cross-engineering-forward-evaluation-m4.2-one-shot-claim-and-execution`",
             text,
         )
         self.assertNotIn("GATE_IV_B_LAUNCH_READINESS_LOCAL_READY", text)
         self.assertIn(
             "M4_2_AUTHORIZED_UNCONSUMED_NOT_CLAIMED_NOT_EXECUTED", current
         )
-        self.assertIn("claim_count=0", current)
+        self.assertIn(
+            "M4_2_TERMINAL_FAILURE_PRESERVED_SUCCESSOR_REVISION_REQUIRED", current
+        )
+        self.assertIn("claim_count=1", current)
 
         r5_1_terminal = json.loads(R5_1_TERMINAL.read_text(encoding="utf-8"))
         self.assertEqual(r5_1_terminal["status"], "terminal_not_accepted")
