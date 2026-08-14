@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://engineering-research-copilot.local/m4/execution-control.schema.json",
+  "title": "M4 Gate IV execution control",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "milestone",
+    "revision",
+    "status",
+    "authorization",
+    "preparation",
+    "task_protocol",
+    "request_policy",
+    "execution_constraints",
+    "batch_order",
+    "batches",
+    "tasks",
+    "launch_claim",
+    "permissions",
+    "prelaunch_counters",
+    "does_not_authorize"
+  ],
+  "properties": {
+    "schema_version": {"const": "m4-execution-control-v1"},
+    "milestone": {"const": "M4"},
+    "revision": {"const": "M4.0"},
+    "status": {"const": "READY_UNCONSUMED"},
+    "authorization": {"type": "object"},
+    "preparation": {"type": "object"},
+    "task_protocol": {"type": "object"},
+    "request_policy": {"type": "object"},
+    "execution_constraints": {"type": "object"},
+    "batch_order": {"type": "array", "minItems": 6, "maxItems": 6, "uniqueItems": true, "items": {"type": "string"}},
+    "batches": {"type": "array", "minItems": 6, "maxItems": 6},
+    "tasks": {"type": "array", "minItems": 60, "maxItems": 60},
+    "launch_claim": {"type": "object"},
+    "permissions": {"type": "object"},
+    "prelaunch_counters": {"type": "object"},
+    "does_not_authorize": {"type": "array", "minItems": 1, "items": {"type": "string"}}
+  }
+}

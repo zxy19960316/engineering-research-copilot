@@ -1,0 +1,78 @@
+{
+  "schema_version": "m4-case-v1",
+  "case_id": "M4-MPH-B",
+  "domain": "multiphysics",
+  "case_type": "adversarial",
+  "title": "Cross-scale boundary-condition and V&V trap",
+  "user_input": "我们有一个微通道冷板的单通道 CFD 模型、整板有限元热应力模型和一组室温下的总压降数据。团队把单通道周期边界结果直接映射到整板，材料热膨胀系数来自另一种合金，并用网格收敛作为实验验证。现在希望据此预测高温循环下的寿命并直接优化流道尺寸。请给出完整多物理场路线和可信的寿命结论。",
+  "context": {
+    "research_stage": "已有分离模型，尚未完成一致性审查",
+    "available_evidence": [
+      "单通道 CFD",
+      "整板热应力有限元",
+      "室温总压降实验"
+    ],
+    "resources": {
+      "compute": "128 CPU cores",
+      "calendar": "8 weeks",
+      "equipment": "no high-temperature fatigue test"
+    },
+    "constraints": [
+      "尺度与边界映射未经验证",
+      "材料参数来自不同合金",
+      "没有高温循环寿命数据"
+    ],
+    "requested_output": [
+      "complete coupled route",
+      "geometry optimization",
+      "lifetime conclusion"
+    ]
+  },
+  "preregistered_mismatches": [
+    {
+      "mismatch_id": "MPH-B-M1",
+      "category": "cross_scale_mapping",
+      "description": "单通道周期边界不能无验证地代表整板歧管和流量不均。",
+      "detection_criterion": "要求整板流量分配或缩放验证，并量化尺度映射误差。"
+    },
+    {
+      "mismatch_id": "MPH-B-M2",
+      "category": "boundary_condition",
+      "description": "室温压降数据不足以约束高温耦合边界和换热条件。",
+      "detection_criterion": "区分已校准边界与高温未知边界，并限制外推。"
+    },
+    {
+      "mismatch_id": "MPH-B-M3",
+      "category": "material_mismatch",
+      "description": "另一种合金的热膨胀系数不能直接支持当前材料的热应力和寿命。",
+      "detection_criterion": "要求目标材料参数或把材料不确定性传播到应力与寿命结果。"
+    },
+    {
+      "mismatch_id": "MPH-B-M4",
+      "category": "verification_validation_confusion",
+      "description": "网格收敛属于数值验证，不是对物理模型或寿命预测的实验验证。",
+      "detection_criterion": "明确区分代码/解验证、模型校准、实验验证和寿命确认层级。"
+    },
+    {
+      "mismatch_id": "MPH-B-M5",
+      "category": "lifetime_claim",
+      "description": "没有高温疲劳或失效数据，不能给出可信寿命结论。",
+      "detection_criterion": "把寿命降为假设或敏感性探索，并设置获取目标证据的停止条件。"
+    }
+  ],
+  "required_capabilities": [
+    "cross_scale_mismatch_detection",
+    "boundary_condition_discipline",
+    "verification_validation_separation",
+    "lifetime_claim_boundary"
+  ],
+  "freshness": {
+    "not_fixture_rewrite": true,
+    "prohibited_source_roots": [
+      "evals/m1",
+      "evals/m2",
+      "evals/m3"
+    ],
+    "authoring_basis": "new_m4_cross_engineering_protocol"
+  }
+}

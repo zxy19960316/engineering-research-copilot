@@ -1,0 +1,6 @@
+interface:
+  display_name: "Research Direction Evidence"
+  short_description: "Compare directions with evidence graphs and falsifiers"
+  default_prompt: "Use $research-direction-evidence to compare my main, adjacent, and transfer research directions with an evidence graph."
+policy:
+  allow_implicit_invocation: true

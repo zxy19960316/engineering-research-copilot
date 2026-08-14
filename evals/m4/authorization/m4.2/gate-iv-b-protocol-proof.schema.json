@@ -1,0 +1,1016 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/schemas/m4.2-gate-iv-b-protocol-proof.schema.json",
+  "title": "M4.2 Gate IV-B offline protocol proof",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "milestone",
+    "revision",
+    "proof_kind",
+    "baseline",
+    "source_artifacts",
+    "matrix_proof",
+    "request_binding_proof",
+    "candidate_authorization_fixture",
+    "claim_semantics",
+    "pre_dispatch_proofs",
+    "batch_failure_proofs",
+    "visibility_proof",
+    "negative_authority",
+    "delivery",
+    "findings",
+    "reviewer_side_effects",
+    "decision",
+    "status"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "m4.2-gate-iv-b-protocol-proof-v1"
+    },
+    "milestone": {
+      "const": "M4"
+    },
+    "revision": {
+      "const": "M4.2"
+    },
+    "proof_kind": {
+      "const": "OFFLINE_PROTOCOL_PROOF_NOT_EXECUTION_AUTHORIZATION"
+    },
+    "baseline": {
+      "$ref": "#/$defs/baseline"
+    },
+    "source_artifacts": {
+      "type": "array",
+      "minItems": 31,
+      "maxItems": 31,
+      "items": {
+        "$ref": "#/$defs/artifactBinding"
+      }
+    },
+    "matrix_proof": {
+      "$ref": "#/$defs/matrixProof"
+    },
+    "request_binding_proof": {
+      "$ref": "#/$defs/requestBindingProof"
+    },
+    "candidate_authorization_fixture": {
+      "$ref": "#/$defs/candidateFixture"
+    },
+    "claim_semantics": {
+      "$ref": "#/$defs/claimSemantics"
+    },
+    "pre_dispatch_proofs": {
+      "type": "array",
+      "minItems": 6,
+      "maxItems": 6,
+      "items": {
+        "$ref": "#/$defs/preDispatchProof"
+      }
+    },
+    "batch_failure_proofs": {
+      "type": "array",
+      "minItems": 6,
+      "maxItems": 6,
+      "items": {
+        "$ref": "#/$defs/batchFailureProof"
+      }
+    },
+    "visibility_proof": {
+      "$ref": "#/$defs/visibilityProof"
+    },
+    "negative_authority": {
+      "$ref": "#/$defs/negativeAuthority"
+    },
+    "delivery": {
+      "$ref": "#/$defs/delivery"
+    },
+    "findings": {
+      "type": "array",
+      "maxItems": 0
+    },
+    "reviewer_side_effects": {
+      "type": "array",
+      "maxItems": 0
+    },
+    "decision": {
+      "enum": [
+        "PENDING_M4_2_GATE_IV_B_EXACT_HEAD_CI",
+        "APPROVE_M4_2_AUTHORIZATION_PREPARATION_ONLY"
+      ]
+    },
+    "status": {
+      "enum": [
+        "M4_2_GATE_IV_B_LOCAL_PROTOCOL_PROOF_PASSED_PENDING_EXACT_HEAD_CI",
+        "M4_2_GATE_IV_B_PROTOCOL_PROOF_PASSED_NOT_AUTHORIZED"
+      ]
+    }
+  },
+  "$defs": {
+    "artifactBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "head",
+        "path",
+        "git_blob_oid",
+        "raw_sha256",
+        "byte_length"
+      ],
+      "properties": {
+        "head": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "git_blob_oid": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "raw_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "byte_length": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "priorReview": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "head",
+        "pull_request",
+        "decision",
+        "status",
+        "finding_count",
+        "preserved"
+      ],
+      "properties": {
+        "head": {
+          "const": "ac6cc70714a90f73b4de09eaf0e521e699296890"
+        },
+        "pull_request": {
+          "const": 4
+        },
+        "decision": {
+          "const": "BLOCKED"
+        },
+        "status": {
+          "const": "BLOCKED"
+        },
+        "finding_count": {
+          "const": 3
+        },
+        "preserved": {
+          "const": true
+        }
+      }
+    },
+    "repairEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "head",
+        "pull_request",
+        "push_run_id",
+        "pull_request_run_id",
+        "preserved"
+      ],
+      "properties": {
+        "head": {
+          "const": "44d1004da1cbb2681ee0d423d1748f98fbaa13e4"
+        },
+        "pull_request": {
+          "const": 5
+        },
+        "push_run_id": {
+          "const": 31354780589
+        },
+        "pull_request_run_id": {
+          "const": 31354802277
+        },
+        "preserved": {
+          "const": true
+        }
+      }
+    },
+    "r2Delivery": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "accepted_review_head",
+        "push_run_id",
+        "pull_request_run_id",
+        "preserved"
+      ],
+      "properties": {
+        "accepted_review_head": {
+          "const": "caf2f579556d6df0dff88af246e51ed3ae6438b9"
+        },
+        "push_run_id": {
+          "const": 31359218501
+        },
+        "pull_request_run_id": {
+          "const": 31359221182
+        },
+        "preserved": {
+          "const": true
+        }
+      }
+    },
+    "baseline": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "required_ancestor_head",
+        "required_ancestor_tree",
+        "source_branch",
+        "gate_iv_a_r2_artifact",
+        "gate_iv_a_r2_decision",
+        "gate_iv_a_r2_status",
+        "fresh_execution_authorized",
+        "prior_blocked_review",
+        "repair_evidence",
+        "r2_delivery",
+        "zero_state_preserved"
+      ],
+      "properties": {
+        "required_ancestor_head": {
+          "const": "988b4332504549df2038f51532175effd696a445"
+        },
+        "required_ancestor_tree": {
+          "const": "38b1aeacd54b5e5a9ac115be1816206a7a3f8a4f"
+        },
+        "source_branch": {
+          "const": "codex/m4-cross-engineering-forward-evaluation-m4.2-gate-iv-a-r2"
+        },
+        "gate_iv_a_r2_artifact": {
+          "$ref": "#/$defs/artifactBinding"
+        },
+        "gate_iv_a_r2_decision": {
+          "const": "APPROVE_M4_2_GATE_IV_B_PROTOCOL_PROOF_ONLY"
+        },
+        "gate_iv_a_r2_status": {
+          "const": "M4_2_GATE_IV_A_REVIEW_PASSED_NOT_AUTHORIZED"
+        },
+        "fresh_execution_authorized": {
+          "const": false
+        },
+        "prior_blocked_review": {
+          "$ref": "#/$defs/priorReview"
+        },
+        "repair_evidence": {
+          "$ref": "#/$defs/repairEvidence"
+        },
+        "r2_delivery": {
+          "$ref": "#/$defs/r2Delivery"
+        },
+        "zero_state_preserved": {
+          "const": true
+        }
+      }
+    },
+    "matrixProof": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "algorithm",
+        "case_count",
+        "arm_count",
+        "planned_task_count",
+        "batch_count",
+        "tasks_per_batch",
+        "unique_task_id_count",
+        "unique_blind_id_count",
+        "unique_batch_id_count",
+        "task_order_sha256",
+        "batch_order_sha256",
+        "matrix_binding_sha256",
+        "passed"
+      ],
+      "properties": {
+        "algorithm": {
+          "const": "m4.2-protocol-matrix-binding-v1"
+        },
+        "case_count": {
+          "const": 12
+        },
+        "arm_count": {
+          "const": 5
+        },
+        "planned_task_count": {
+          "const": 60
+        },
+        "batch_count": {
+          "const": 6
+        },
+        "tasks_per_batch": {
+          "const": 10
+        },
+        "unique_task_id_count": {
+          "const": 60
+        },
+        "unique_blind_id_count": {
+          "const": 60
+        },
+        "unique_batch_id_count": {
+          "const": 6
+        },
+        "task_order_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "batch_order_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "matrix_binding_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "passed": {
+          "const": true
+        }
+      }
+    },
+    "requestBindingProof": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "algorithm",
+        "independently_recomputed",
+        "matched",
+        "unique",
+        "aggregate_sha256",
+        "source_bytes_verified",
+        "passed"
+      ],
+      "properties": {
+        "algorithm": {
+          "const": "m4.2-request-binding-v1"
+        },
+        "independently_recomputed": {
+          "const": 60
+        },
+        "matched": {
+          "const": 60
+        },
+        "unique": {
+          "const": 60
+        },
+        "aggregate_sha256": {
+          "const": "5bc47878e3c13afd9dafc4d17ca742ce4d29c8a2a00d70a53fc1753b11329142"
+        },
+        "source_bytes_verified": {
+          "const": 60
+        },
+        "passed": {
+          "const": true
+        }
+      }
+    },
+    "candidateFixture": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "fixture_kind",
+        "fresh_execution_authorized",
+        "result_writes_authorized",
+        "authorization_token_status",
+        "claim_authorized",
+        "authorized_task_count",
+        "matrix_authority_task_count_if_later_authorized",
+        "partial_authorization_allowed"
+      ],
+      "properties": {
+        "fixture_kind": {
+          "const": "NON_EXECUTABLE_PROTOCOL_FIXTURE"
+        },
+        "fresh_execution_authorized": {
+          "const": false
+        },
+        "result_writes_authorized": {
+          "const": false
+        },
+        "authorization_token_status": {
+          "const": "NOT_ISSUED"
+        },
+        "claim_authorized": {
+          "const": false
+        },
+        "authorized_task_count": {
+          "const": 0
+        },
+        "matrix_authority_task_count_if_later_authorized": {
+          "const": 60
+        },
+        "partial_authorization_allowed": {
+          "const": false
+        }
+      }
+    },
+    "preconditions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "model_binding_matches",
+        "project_matches",
+        "worktree_matches",
+        "request_bindings_match",
+        "head_is_fresh",
+        "prerequisites_present"
+      ],
+      "properties": {
+        "model_binding_matches": {
+          "type": "boolean"
+        },
+        "project_matches": {
+          "type": "boolean"
+        },
+        "worktree_matches": {
+          "type": "boolean"
+        },
+        "request_bindings_match": {
+          "type": "boolean"
+        },
+        "head_is_fresh": {
+          "type": "boolean"
+        },
+        "prerequisites_present": {
+          "type": "boolean"
+        }
+      }
+    },
+    "claimInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "virtual_state",
+        "preconditions",
+        "requested_task_count",
+        "post_claim_failure"
+      ],
+      "properties": {
+        "virtual_state": {
+          "enum": [
+            "VIRTUAL_UNCONSUMED",
+            "VIRTUAL_CONSUMED",
+            "VIRTUAL_TERMINAL_FAILED"
+          ]
+        },
+        "preconditions": {
+          "$ref": "#/$defs/preconditions"
+        },
+        "requested_task_count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 60
+        },
+        "post_claim_failure": {
+          "type": "boolean"
+        }
+      }
+    },
+    "transition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "decision",
+        "virtual_state_before",
+        "virtual_state_after",
+        "simulated_claim_count_delta",
+        "simulated_matrix_authority_consumed_count",
+        "simulated_dispatched_tasks",
+        "simulated_retry_count",
+        "simulated_repair_count",
+        "simulated_followup_count",
+        "successor_revision_required"
+      ],
+      "properties": {
+        "decision": {
+          "enum": [
+            "SIMULATED_CLAIM_ACCEPTED",
+            "REJECTED_ALREADY_CONSUMED",
+            "REJECTED_PARTIAL_AUTHORITY",
+            "REJECTED_PRE_DISPATCH",
+            "STOPPED_PROTOCOL_OR_INFRASTRUCTURE_FAILURE"
+          ]
+        },
+        "virtual_state_before": {
+          "type": "string"
+        },
+        "virtual_state_after": {
+          "type": "string"
+        },
+        "simulated_claim_count_delta": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "simulated_matrix_authority_consumed_count": {
+          "enum": [0, 60]
+        },
+        "simulated_dispatched_tasks": {
+          "const": 0
+        },
+        "simulated_retry_count": {
+          "const": 0
+        },
+        "simulated_repair_count": {
+          "const": 0
+        },
+        "simulated_followup_count": {
+          "const": 0
+        },
+        "successor_revision_required": {
+          "type": "boolean"
+        }
+      }
+    },
+    "claimScenario": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "input",
+        "output"
+      ],
+      "properties": {
+        "name": {
+          "enum": [
+            "first_claim",
+            "second_claim",
+            "partial_authority",
+            "post_claim_failure"
+          ]
+        },
+        "input": {
+          "$ref": "#/$defs/claimInput"
+        },
+        "output": {
+          "$ref": "#/$defs/transition"
+        }
+      }
+    },
+    "claimSemantics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "simulator",
+        "scenarios",
+        "passed"
+      ],
+      "properties": {
+        "simulator": {
+          "const": "m4.2-offline-claim-state-machine-v1"
+        },
+        "scenarios": {
+          "type": "array",
+          "minItems": 4,
+          "maxItems": 4,
+          "items": {
+            "$ref": "#/$defs/claimScenario"
+          }
+        },
+        "passed": {
+          "const": true
+        }
+      }
+    },
+    "preDispatchProof": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "failed_precondition",
+        "input",
+        "output"
+      ],
+      "properties": {
+        "name": {
+          "enum": [
+            "model_binding_mismatch",
+            "project_mismatch",
+            "worktree_mismatch",
+            "request_binding_mismatch",
+            "stale_head",
+            "missing_prerequisite"
+          ]
+        },
+        "failed_precondition": {
+          "enum": [
+            "model_binding_matches",
+            "project_matches",
+            "worktree_matches",
+            "request_bindings_match",
+            "head_is_fresh",
+            "prerequisites_present"
+          ]
+        },
+        "input": {
+          "$ref": "#/$defs/claimInput"
+        },
+        "output": {
+          "$ref": "#/$defs/transition"
+        }
+      }
+    },
+    "batchFailureInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "failed_batch_sequence"
+      ],
+      "properties": {
+        "failed_batch_sequence": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 6
+        }
+      }
+    },
+    "batchFailureOutput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "decision",
+        "failed_batch",
+        "failed_batch_sequence",
+        "completed_prior_batches",
+        "simulated_tasks_dispatched_before_failure",
+        "later_batches_not_started",
+        "simulated_retry_count",
+        "simulated_repair_count",
+        "simulated_followup_count",
+        "successor_revision_required"
+      ],
+      "properties": {
+        "decision": {
+          "const": "STOPPED_PROTOCOL_OR_INFRASTRUCTURE_FAILURE"
+        },
+        "failed_batch": {
+          "type": "string"
+        },
+        "failed_batch_sequence": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 6
+        },
+        "completed_prior_batches": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 5
+        },
+        "simulated_tasks_dispatched_before_failure": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 50,
+          "multipleOf": 10
+        },
+        "later_batches_not_started": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 5
+        },
+        "simulated_retry_count": {
+          "const": 0
+        },
+        "simulated_repair_count": {
+          "const": 0
+        },
+        "simulated_followup_count": {
+          "const": 0
+        },
+        "successor_revision_required": {
+          "const": true
+        }
+      }
+    },
+    "batchFailureProof": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "input",
+        "output"
+      ],
+      "properties": {
+        "input": {
+          "$ref": "#/$defs/batchFailureInput"
+        },
+        "output": {
+          "$ref": "#/$defs/batchFailureOutput"
+        }
+      }
+    },
+    "visibilityProof": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "task_context_allowed_inputs",
+        "visible_result_task_ids",
+        "cross_task_results_visible",
+        "blind_mapping_available_to_task",
+        "judge_available",
+        "unblinding_available",
+        "aggregation_available",
+        "passed"
+      ],
+      "properties": {
+        "task_context_allowed_inputs": {
+          "const": [
+            "case",
+            "task_protocol",
+            "selected_variant_instruction"
+          ]
+        },
+        "visible_result_task_ids": {
+          "type": "array",
+          "maxItems": 0
+        },
+        "cross_task_results_visible": {
+          "const": false
+        },
+        "blind_mapping_available_to_task": {
+          "const": false
+        },
+        "judge_available": {
+          "const": false
+        },
+        "unblinding_available": {
+          "const": false
+        },
+        "aggregation_available": {
+          "const": false
+        },
+        "passed": {
+          "const": true
+        }
+      }
+    },
+    "negativeAuthority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "authorized_tasks",
+        "created_contexts",
+        "dispatched_tasks",
+        "finalizations",
+        "results_observed",
+        "judge_scores",
+        "retries",
+        "repairs",
+        "unauthorized_side_effects",
+        "raw_model_finals",
+        "aggregation_calls",
+        "acceptance_claims",
+        "authorization_artifact",
+        "execution_control",
+        "authorization_token_status",
+        "launch_claim",
+        "result_root",
+        "judge",
+        "aggregation",
+        "closure",
+        "m5",
+        "forbidden_paths",
+        "forbidden_states",
+        "passed"
+      ],
+      "properties": {
+        "authorized_tasks": {"const": 0},
+        "created_contexts": {"const": 0},
+        "dispatched_tasks": {"const": 0},
+        "finalizations": {"const": 0},
+        "results_observed": {"const": 0},
+        "judge_scores": {"const": 0},
+        "retries": {"const": 0},
+        "repairs": {"const": 0},
+        "unauthorized_side_effects": {"const": 0},
+        "raw_model_finals": {"const": 0},
+        "aggregation_calls": {"const": 0},
+        "acceptance_claims": {"const": 0},
+        "authorization_artifact": {"const": "ABSENT"},
+        "execution_control": {"const": "ABSENT"},
+        "authorization_token_status": {"const": "NOT_ISSUED"},
+        "launch_claim": {"const": "ABSENT"},
+        "result_root": {"const": "ABSENT"},
+        "judge": {"const": "NOT_RUN"},
+        "aggregation": {"const": "NOT_RUN"},
+        "closure": {"const": "NOT_RUN"},
+        "m5": {"const": "NOT_STARTED"},
+        "forbidden_paths": {
+          "type": "array",
+          "maxItems": 0
+        },
+        "forbidden_states": {
+          "type": "array",
+          "maxItems": 0
+        },
+        "passed": {"const": true}
+      }
+    },
+    "job": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "job_id",
+        "name",
+        "conclusion"
+      ],
+      "properties": {
+        "job_id": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "conclusion": {
+          "const": "success"
+        }
+      }
+    },
+    "rawLog": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "byte_length",
+        "sha256",
+        "markers"
+      ],
+      "properties": {
+        "byte_length": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "markers": {
+          "$ref": "#/$defs/markers"
+        }
+      }
+    },
+    "markers": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "FAIL:",
+        "FAILED (",
+        "Traceback",
+        "##[error]"
+      ],
+      "properties": {
+        "FAIL:": {"const": 0},
+        "FAILED (": {"const": 0},
+        "Traceback": {"const": 0},
+        "##[error]": {"const": 0}
+      }
+    },
+    "deliveryRun": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "run_id",
+        "event",
+        "head",
+        "branch",
+        "conclusion",
+        "job_count",
+        "jobs",
+        "raw_log"
+      ],
+      "properties": {
+        "run_id": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "event": {
+          "enum": ["push", "pull_request"]
+        },
+        "head": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "branch": {
+          "const": "codex/m4-cross-engineering-forward-evaluation-m4.2-gate-iv-b-protocol-proof"
+        },
+        "conclusion": {
+          "const": "success"
+        },
+        "job_count": {
+          "type": "integer",
+          "minimum": 2
+        },
+        "jobs": {
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "$ref": "#/$defs/job"
+          }
+        },
+        "raw_log": {
+          "$ref": "#/$defs/rawLog"
+        }
+      }
+    },
+    "runtimeResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "runtime",
+        "status",
+        "checked_task_count",
+        "mismatches",
+        "side_effects"
+      ],
+      "properties": {
+        "runtime": {
+          "enum": [
+            "Windows PowerShell 5.1",
+            "PowerShell 7 on Ubuntu"
+          ]
+        },
+        "status": {
+          "const": "VERIFIED"
+        },
+        "checked_task_count": {
+          "const": 60
+        },
+        "mismatches": {
+          "type": "array",
+          "maxItems": 0
+        },
+        "side_effects": {
+          "type": "array",
+          "maxItems": 0
+        }
+      }
+    },
+    "delivery": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "accepted_proof_head",
+        "push",
+        "pull_request",
+        "powershell_5_1",
+        "powershell_7",
+        "semantic_results_match"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "PENDING_EXACT_HEAD_CI",
+            "VERIFIED_TRUE_GREEN"
+          ]
+        },
+        "accepted_proof_head": {
+          "type": ["string", "null"],
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "push": {
+          "anyOf": [
+            {"type": "null"},
+            {"$ref": "#/$defs/deliveryRun"}
+          ]
+        },
+        "pull_request": {
+          "anyOf": [
+            {"type": "null"},
+            {"$ref": "#/$defs/deliveryRun"}
+          ]
+        },
+        "powershell_5_1": {
+          "anyOf": [
+            {"type": "null"},
+            {"$ref": "#/$defs/runtimeResult"}
+          ]
+        },
+        "powershell_7": {
+          "anyOf": [
+            {"type": "null"},
+            {"$ref": "#/$defs/runtimeResult"}
+          ]
+        },
+        "semantic_results_match": {
+          "type": ["boolean", "null"]
+        }
+      }
+    }
+  }
+}

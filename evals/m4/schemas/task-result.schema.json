@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://engineering-research-copilot.local/m4/task-result.schema.json",
+  "title": "M4 task result",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "task_id", "blind_id", "context_id", "finalization_id", "attempt_index", "retry_count", "independent_finalization", "visible_result_task_ids", "response", "citations", "machine_metrics", "detected_mismatch_ids", "side_effects", "terminal_state"],
+  "properties": {
+    "schema_version": {"const": "m4-task-result-v1"},
+    "task_id": {"type": "string", "minLength": 1},
+    "blind_id": {"type": "string", "pattern": "^M4-J[0-9]{3}$"},
+    "context_id": {"type": "string", "minLength": 1},
+    "finalization_id": {"type": "string", "minLength": 1},
+    "attempt_index": {"const": 1},
+    "retry_count": {"const": 0},
+    "independent_finalization": {"const": true},
+    "visible_result_task_ids": {"const": []},
+    "response": {"type": "string"},
+    "citations": {"type": "array", "items": {"type": "object"}},
+    "machine_metrics": {"type": "object"},
+    "detected_mismatch_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+    "side_effects": {"type": "array"},
+    "terminal_state": {"enum": ["finalized", "infrastructure_failed", "protocol_failed", "schema_invalid"]}
+  }
+}

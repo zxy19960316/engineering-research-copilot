@@ -1,0 +1,48 @@
+{
+  "schema_version": "m4-case-v1",
+  "case_id": "M4-ELE-A",
+  "domain": "electrical_engineering",
+  "case_type": "ordinary",
+  "title": "SiC inverter degradation study",
+  "user_input": "我在做 SiC 逆变器功率循环退化研究，已有 20 个器件在三种结温摆幅下的导通电阻、热阻和开关波形，每个器件都有失效或右删失时间。希望比较物理退化模型、统计生存模型和小样本混合模型三个方向。请说明量纲处理、器件级划分、基线、校准与外推不确定性，以及在六周内可完成的最小决定性测试。",
+  "context": {
+    "research_stage": "完成首轮功率循环，准备确定分析方法",
+    "available_evidence": [
+      "20 个独立器件",
+      "三种结温摆幅",
+      "失效与右删失时间",
+      "电阻、热阻和波形特征"
+    ],
+    "resources": {
+      "compute": "CPU workstation",
+      "calendar": "6 weeks",
+      "equipment": "existing power-cycling data only"
+    },
+    "constraints": [
+      "保留右删失信息",
+      "按器件划分",
+      "外推必须报告区间和适用范围"
+    ],
+    "requested_output": [
+      "three-direction comparison",
+      "dimension and censoring treatment",
+      "minimum decisive test"
+    ]
+  },
+  "preregistered_mismatches": [],
+  "required_capabilities": [
+    "units_and_dimensions",
+    "censoring_awareness",
+    "calibration",
+    "extrapolation_uncertainty"
+  ],
+  "freshness": {
+    "not_fixture_rewrite": true,
+    "prohibited_source_roots": [
+      "evals/m1",
+      "evals/m2",
+      "evals/m3"
+    ],
+    "authoring_basis": "new_m4_cross_engineering_protocol"
+  }
+}

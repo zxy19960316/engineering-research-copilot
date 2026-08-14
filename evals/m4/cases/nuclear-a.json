@@ -1,0 +1,47 @@
+{
+  "schema_version": "m4-case-v1",
+  "case_id": "M4-NUC-A",
+  "domain": "nuclear_engineering",
+  "case_type": "ordinary",
+  "title": "Molten-salt loop temperature-field surrogate feasibility",
+  "user_input": "我正在做一个非安全级实验熔盐回路的温度场代理模型选题。现有数据包括 360 组已收敛 CFD 工况、24 个热电偶通道和 18 组独立稳态实验；可用两张 24 GB GPU，周期 8 周。请先比较一个主方向、一个邻近备选和一个迁移探索方向，说明证据边界、数据前提和最小决定性测试。若需要完整实验或仿真路线，请先让我确认方向，不要替我执行训练或仿真。",
+  "context": {
+    "research_stage": "硕士课题立项，已有模拟与小规模装置测量",
+    "available_evidence": [
+      "360 组已收敛 CFD 工况",
+      "18 组独立稳态实验",
+      "24 通道热电偶记录及校准日志"
+    ],
+    "resources": {
+      "compute": "2 x 24 GB GPU",
+      "calendar": "8 weeks",
+      "equipment": "existing non-safety experimental loop only"
+    },
+    "constraints": [
+      "不得声称核安全验证或装置推广",
+      "不得下载模型或启动外部服务",
+      "方向确认前不得给出完整路线"
+    ],
+    "requested_output": [
+      "three-direction portfolio",
+      "evidence and uncertainty limits",
+      "minimum decisive test"
+    ]
+  },
+  "preregistered_mismatches": [],
+  "required_capabilities": [
+    "direction_feasibility",
+    "resource_bounding",
+    "uncertainty_separation",
+    "direction_confirmation_gate"
+  ],
+  "freshness": {
+    "not_fixture_rewrite": true,
+    "prohibited_source_roots": [
+      "evals/m1",
+      "evals/m2",
+      "evals/m3"
+    ],
+    "authoring_basis": "new_m4_cross_engineering_protocol"
+  }
+}

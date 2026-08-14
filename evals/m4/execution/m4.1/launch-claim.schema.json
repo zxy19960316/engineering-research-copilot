@@ -1,0 +1,256 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:engineering-research-copilot:m4.1:launch-claim",
+  "title": "M4.1 one-shot matrix launch claim",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "milestone",
+    "revision",
+    "status",
+    "claim_id",
+    "claimed_at_utc",
+    "claim_count",
+    "creation_semantics",
+    "authorization",
+    "execution_protocol",
+    "project",
+    "configured_defaults",
+    "frozen_bindings",
+    "request_binding_aggregate",
+    "batch_order",
+    "batches",
+    "task_ids",
+    "task_claims",
+    "limits",
+    "does_not_authorize"
+  ],
+  "properties": {
+    "schema_version": {"const": "m4.1-launch-claim-v1"},
+    "milestone": {"const": "M4"},
+    "revision": {"const": "M4.1"},
+    "status": {"const": "CLAIMED"},
+    "claim_id": {"type": "string", "minLength": 1},
+    "claimed_at_utc": {"$ref": "#/$defs/timestamp"},
+    "claim_count": {"const": 1},
+    "creation_semantics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mechanism", "target_path", "target_preexisted", "overwrite_allowed"],
+      "properties": {
+        "mechanism": {"const": "python_os_open_O_CREAT_O_EXCL"},
+        "target_path": {"const": "evals/m4/execution/m4.1/launch-claim.json"},
+        "target_preexisted": {"const": false},
+        "overwrite_allowed": {"const": false}
+      }
+    },
+    "authorization": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "head",
+        "branch",
+        "ci_run_id",
+        "ci_conclusion",
+        "token",
+        "token_status_before_claim",
+        "token_status_after_claim",
+        "claim_consumes_entire_authorization"
+      ],
+      "properties": {
+        "head": {"const": "ae1ad43cca52ae450e146e952e3b108792b2b665"},
+        "branch": {"const": "codex/m4-cross-engineering-forward-evaluation-m4.1-one-shot-authorization"},
+        "ci_run_id": {"const": 31251141941},
+        "ci_conclusion": {"const": "success"},
+        "token": {"const": "sha256:b5fe4ee85f59935a32d6b1a93cf7a5ec64fdbb51348fab624d83c4292f646109"},
+        "token_status_before_claim": {"const": "UNCONSUMED"},
+        "token_status_after_claim": {"const": "CONSUMED"},
+        "claim_consumes_entire_authorization": {"const": true}
+      }
+    },
+    "execution_protocol": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["head", "branch", "ci_run_id", "ci_conclusion"],
+      "properties": {
+        "head": {"$ref": "#/$defs/gitCommit"},
+        "branch": {"const": "codex/m4-cross-engineering-forward-evaluation-m4.1-one-shot-execution"},
+        "ci_run_id": {"type": "integer", "minimum": 1},
+        "ci_conclusion": {"const": "success"}
+      }
+    },
+    "project": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["project_id", "is_git_repository", "environment", "starting_branch", "starting_head"],
+      "properties": {
+        "project_id": {"const": "ff35b25f-4644-41c8-9073-74c697559439"},
+        "is_git_repository": {"const": true},
+        "environment": {"const": "worktree"},
+        "starting_branch": {"const": "codex/m4-cross-engineering-forward-evaluation-m4.1-one-shot-authorization"},
+        "starting_head": {"const": "ae1ad43cca52ae450e146e952e3b108792b2b665"}
+      }
+    },
+    "configured_defaults": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "exact_model_id",
+        "reasoning_effort",
+        "configured_default_check",
+        "create_thread_model_field",
+        "create_thread_thinking_field"
+      ],
+      "properties": {
+        "exact_model_id": {"const": "gpt-5.6-sol"},
+        "reasoning_effort": {"const": "max"},
+        "configured_default_check": {"const": "MATCHED"},
+        "create_thread_model_field": {"const": "OMITTED"},
+        "create_thread_thinking_field": {"const": "OMITTED"}
+      }
+    },
+    "frozen_bindings": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["authorization", "execution_control", "preparation_manifest", "execution_helper"],
+      "properties": {
+        "authorization": {"$ref": "#/$defs/boundFile"},
+        "execution_control": {"$ref": "#/$defs/boundFile"},
+        "preparation_manifest": {"$ref": "#/$defs/boundFile"},
+        "execution_helper": {"$ref": "#/$defs/boundFile"}
+      }
+    },
+    "request_binding_aggregate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["algorithm", "ordered_pair_count", "sha256"],
+      "properties": {
+        "algorithm": {"const": "sha256-canonical-json-task-request-bindings-v1"},
+        "ordered_pair_count": {"const": 60},
+        "sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "batch_order": {
+      "const": [
+        "M4.1-BATCH-NUC",
+        "M4.1-BATCH-MEC",
+        "M4.1-BATCH-ELE",
+        "M4.1-BATCH-AUT",
+        "M4.1-BATCH-COM",
+        "M4.1-BATCH-MPH"
+      ]
+    },
+    "batches": {
+      "type": "array",
+      "minItems": 6,
+      "maxItems": 6,
+      "items": {"$ref": "#/$defs/batch"}
+    },
+    "task_ids": {
+      "type": "array",
+      "minItems": 60,
+      "maxItems": 60,
+      "uniqueItems": true,
+      "items": {"type": "string", "pattern": "^M4\\.1-(?:NUC|MEC|ELE|AUT|COM|MPH)-[AB]-(?:N|F|A1|A2|A3)$"}
+    },
+    "task_claims": {
+      "type": "array",
+      "minItems": 60,
+      "maxItems": 60,
+      "items": {"$ref": "#/$defs/taskClaim"}
+    },
+    "limits": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "tasks",
+        "threads",
+        "initial_requests",
+        "finalizations",
+        "attempts_per_task_id",
+        "retries",
+        "repairs",
+        "followups",
+        "judge_calls",
+        "aggregation_calls",
+        "side_effects"
+      ],
+      "properties": {
+        "tasks": {"const": 60},
+        "threads": {"const": 60},
+        "initial_requests": {"const": 60},
+        "finalizations": {"const": 60},
+        "attempts_per_task_id": {"const": 1},
+        "retries": {"const": 0},
+        "repairs": {"const": 0},
+        "followups": {"const": 0},
+        "judge_calls": {"const": 0},
+        "aggregation_calls": {"const": 0},
+        "side_effects": {"const": 0}
+      }
+    },
+    "does_not_authorize": {
+      "type": "array",
+      "minItems": 8,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    }
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "gitCommit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "timestamp": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?Z$"
+    },
+    "boundFile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "raw_sha256"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "raw_sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "batch": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["batch_id", "sequence", "task_ids", "planned_task_count"],
+      "properties": {
+        "batch_id": {"type": "string", "pattern": "^M4\\.1-BATCH-(?:NUC|MEC|ELE|AUT|COM|MPH)$"},
+        "sequence": {"type": "integer", "minimum": 1, "maximum": 6},
+        "task_ids": {
+          "type": "array",
+          "minItems": 10,
+          "maxItems": 10,
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "planned_task_count": {"const": 10}
+      }
+    },
+    "taskClaim": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "task_id",
+        "batch_id",
+        "request_binding_sha256",
+        "result_root",
+        "context_id",
+        "finalization_id"
+      ],
+      "properties": {
+        "task_id": {"type": "string", "minLength": 1},
+        "batch_id": {"type": "string", "minLength": 1},
+        "request_binding_sha256": {"$ref": "#/$defs/sha256"},
+        "result_root": {"type": "string", "pattern": "^evals/m4/results/m4\\.1/M4\\.1-[A-Z0-9.-]+$"},
+        "context_id": {"type": "string", "minLength": 1},
+        "finalization_id": {"type": "string", "minLength": 1}
+      }
+    }
+  },
+  "x-claim-create-mode": "exclusive-create-only",
+  "x-real-instance-allowed-in-gate-iv-a": false
+}

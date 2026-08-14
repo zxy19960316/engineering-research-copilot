@@ -1,4 +1,4 @@
-name: M1, M2.1.1, and M3.1.1 Validation
+name: M1, M2.1.1, M3.1.1, and M4 Validation
 
 on:
   push:
@@ -67,13 +67,145 @@ jobs:
             evals/m3/audit_forward_r5_2_aggregate.py \
             evals/m3/audit_m3_closure.py \
             evals/m3/audit_immutable_forward_evidence.py \
-            evals/m3/audit_skill_package.py
+            evals/m3/audit_skill_package.py \
+            evals/m4/variants/build_variants.py \
+            evals/m4/build_preparation.py \
+            evals/m4/audit_preparation.py \
+            evals/m4/audit_results.py \
+            evals/m4/authorization/build_authorization.py \
+            evals/m4/authorization/audit_authorization.py \
+            evals/m4/execution/audit_m4_0.py \
+            evals/m4/build_m4_1_preparation.py \
+            evals/m4/audit_m4_1_preparation.py \
+            evals/m4/authorization/build_m4_1_authorization.py \
+            evals/m4/authorization/audit_m4_1_authorization.py \
+            evals/m4/execution/audit_m4_1.py \
+            evals/m4/execution/build_m4_1_launch_claim.py \
+            evals/m4/execution/record_m4_1_execution_evidence.py \
+            evals/m4/execution/audit_m4_1_launch_readiness.py \
+            evals/m4/execution/audit_m4_1_terminal.py \
+            evals/m4/build_m4_2_preparation.py \
+            evals/m4/audit_m4_2_preparation.py \
+            evals/m4/authorization/audit_m4_2_gate_iv_a_r2_review.py \
+            evals/m4/authorization/audit_m4_2_gate_iv_b_protocol_proof.py \
+            evals/m4/authorization/audit_m4_2_authorization_preparation.py \
+            evals/m4/execution/audit_m4_2.py \
+            evals/m4/execution/build_m4_2_launch_claim.py \
+            evals/m4/execution/record_m4_2_execution_evidence.py \
+            evals/m4/execution/audit_m4_2_launch_readiness.py
       - name: Require immutable r5 evidence commit
         run: |
           git cat-file -e 1b696bce53ee0a11163bfe4f91a9a49ab3af6f49^{commit}
           git cat-file -e 1b696bce53ee0a11163bfe4f91a9a49ab3af6f49:evals/m3/results/forward-r5/acceptance-manifest-consumed.json
-      - name: Unit tests
-        run: python -m unittest discover -s tests -p "test_*.py" -v
+      - name: Require green M4.0 terminal baseline to be an ancestor
+        run: |
+          git cat-file -e 'f48ab8d7e835e9a57e65b75458faa786d696316d^{commit}'
+          git merge-base --is-ancestor f48ab8d7e835e9a57e65b75458faa786d696316d HEAD
+      - name: Require green M4.1 preparation baseline to be an ancestor
+        run: |
+          git cat-file -e 'fedc5cdeebd7a2943afeb6767d39841305c55444^{commit}'
+          git merge-base --is-ancestor fedc5cdeebd7a2943afeb6767d39841305c55444 HEAD
+      - name: Require M4.1 preparation artifacts to remain blob-identical
+        run: |
+          git cat-file -e fedc5cdeebd7a2943afeb6767d39841305c55444:evals/m4/build_m4_1_preparation.py
+          git cat-file -e fedc5cdeebd7a2943afeb6767d39841305c55444:evals/m4/audit_m4_1_preparation.py
+          git cat-file -e fedc5cdeebd7a2943afeb6767d39841305c55444:evals/m4/execution/prepare_m4_1_request_bundles.ps1
+          git cat-file -e fedc5cdeebd7a2943afeb6767d39841305c55444:evals/m4/revisions/m4.1/preparation-manifest.json
+          git cat-file -e fedc5cdeebd7a2943afeb6767d39841305c55444:evals/m4/revisions/m4.1/preparation-manifest.schema.json
+          git cat-file -e fedc5cdeebd7a2943afeb6767d39841305c55444:tests/test_m4_1_preparation.py
+          git diff --raw --exit-code fedc5cdeebd7a2943afeb6767d39841305c55444 HEAD -- evals/m4/build_m4_1_preparation.py evals/m4/audit_m4_1_preparation.py evals/m4/execution/prepare_m4_1_request_bundles.ps1 evals/m4/revisions/m4.1/preparation-manifest.json evals/m4/revisions/m4.1/preparation-manifest.schema.json tests/test_m4_1_preparation.py
+          git diff --exit-code fedc5cdeebd7a2943afeb6767d39841305c55444 HEAD -- evals/m4/build_m4_1_preparation.py evals/m4/audit_m4_1_preparation.py evals/m4/execution/prepare_m4_1_request_bundles.ps1 evals/m4/revisions/m4.1/preparation-manifest.json evals/m4/revisions/m4.1/preparation-manifest.schema.json tests/test_m4_1_preparation.py
+      - name: Require independent M4.1 review to remain blob-identical
+        run: |
+          git cat-file -e '4fe3785ffd4db9cbf966d8c7ec1451079717da24^{commit}'
+          git merge-base --is-ancestor 4fe3785ffd4db9cbf966d8c7ec1451079717da24 HEAD
+          git cat-file -e 'e38f3fc2305efefb070e3be20413c55156e8b186^{blob}'
+          git cat-file -e 4fe3785ffd4db9cbf966d8c7ec1451079717da24:evals/m4/authorization/m4.1/gate-iv-review.json
+          git diff --raw --exit-code 4fe3785ffd4db9cbf966d8c7ec1451079717da24 HEAD -- evals/m4/authorization/m4.1/gate-iv-review.json
+          git diff --exit-code 4fe3785ffd4db9cbf966d8c7ec1451079717da24 HEAD -- evals/m4/authorization/m4.1/gate-iv-review.json
+      - name: Require M4.1 authorization schemas to remain blob-identical
+        run: |
+          git cat-file -e '5d781ea352e67ab44631844c37cf9b6552cfce77^{commit}'
+          git merge-base --is-ancestor 5d781ea352e67ab44631844c37cf9b6552cfce77 HEAD
+          git cat-file -e 5d781ea352e67ab44631844c37cf9b6552cfce77:evals/m4/authorization/m4.1/execution-authorization.schema.json
+          git cat-file -e 5d781ea352e67ab44631844c37cf9b6552cfce77:evals/m4/authorization/m4.1/execution-control.schema.json
+          git diff --raw --exit-code 5d781ea352e67ab44631844c37cf9b6552cfce77 HEAD -- evals/m4/authorization/m4.1/execution-authorization.schema.json evals/m4/authorization/m4.1/execution-control.schema.json
+          git diff --exit-code 5d781ea352e67ab44631844c37cf9b6552cfce77 HEAD -- evals/m4/authorization/m4.1/execution-authorization.schema.json evals/m4/authorization/m4.1/execution-control.schema.json
+      - name: Require M4.1 authorization delivery HEAD and artifacts to remain preserved
+        run: |
+          git cat-file -e 'ae1ad43cca52ae450e146e952e3b108792b2b665^{commit}'
+          git merge-base --is-ancestor ae1ad43cca52ae450e146e952e3b108792b2b665 HEAD
+          git diff --raw --exit-code ae1ad43cca52ae450e146e952e3b108792b2b665 HEAD -- evals/m4/authorization/m4.1/gate-iv-review.json evals/m4/authorization/m4.1/execution-authorization.schema.json evals/m4/authorization/m4.1/execution-control.schema.json evals/m4/authorization/m4.1/execution-authorization.json evals/m4/authorization/m4.1/execution-control.json evals/m4/authorization/build_m4_1_authorization.py evals/m4/authorization/audit_m4_1_authorization.py tests/test_m4_1_authorization_builder.py tests/test_m4_1_authorization.py
+          git diff --exit-code ae1ad43cca52ae450e146e952e3b108792b2b665 HEAD -- evals/m4/authorization/m4.1/gate-iv-review.json evals/m4/authorization/m4.1/execution-authorization.schema.json evals/m4/authorization/m4.1/execution-control.schema.json evals/m4/authorization/m4.1/execution-authorization.json evals/m4/authorization/m4.1/execution-control.json evals/m4/authorization/build_m4_1_authorization.py evals/m4/authorization/audit_m4_1_authorization.py tests/test_m4_1_authorization_builder.py tests/test_m4_1_authorization.py
+      - name: Create isolated Gate IV-A r2 baseline worktree
+        run: git worktree add --detach "${{ runner.temp }}/m4-2-gate-iv-a-r2-baseline" 988b4332504549df2038f51532175effd696a445
+      - name: Audit frozen M4.2 Gate IV-A r2 independent review
+        shell: bash
+        working-directory: ${{ runner.temp }}/m4-2-gate-iv-a-r2-baseline
+        run: |
+          set -euo pipefail
+          git cat-file -e '44d1004da1cbb2681ee0d423d1748f98fbaa13e4^{commit}'
+          git cat-file -e 'ac6cc70714a90f73b4de09eaf0e521e699296890^{commit}'
+          git merge-base --is-ancestor 44d1004da1cbb2681ee0d423d1748f98fbaa13e4 HEAD
+          python -X utf8 -m unittest tests.test_m4_2_gate_iv_a_r2_review -v
+          python -X utf8 evals/m4/authorization/audit_m4_2_gate_iv_a_r2_review.py
+          python -X utf8 -c "from pathlib import Path; forbidden = [Path('evals/m4/authorization/m4.2/execution-authorization.json'), Path('evals/m4/authorization/m4.2/execution-control.json'), Path('evals/m4/execution/m4.2'), Path('evals/m4/results/m4.1'), Path('evals/m4/results/m4.2'), Path('evals/m4/results-manifest.json')]; present = [path.as_posix() for path in forbidden if path.exists()]; assert not present, present"
+      - name: Remove isolated Gate IV-A r2 baseline worktree
+        if: always()
+        run: git worktree remove --force "${{ runner.temp }}/m4-2-gate-iv-a-r2-baseline"
+      - name: Audit current M4.2 Gate IV-B protocol proof without authority
+        if: hashFiles('evals/m4/execution/m4.2/launch-claim.json') == ''
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -X utf8 -m unittest tests.test_m4_2_gate_iv_b_protocol_proof -v
+          first="$(python -X utf8 evals/m4/authorization/audit_m4_2_gate_iv_b_protocol_proof.py)"
+          second="$(python -X utf8 evals/m4/authorization/audit_m4_2_gate_iv_b_protocol_proof.py)"
+          test "$first" = "$second"
+          printf '%s\n' "$first"
+          python -X utf8 evals/m4/audit_results.py --expect-not-run
+      - name: Audit current M4.2 authorization preparation without issuance
+        if: hashFiles('evals/m4/execution/m4.2/launch-claim.json') == ''
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -X utf8 -m unittest tests.test_m4_2_authorization_preparation -v
+          first="$(python -X utf8 evals/m4/authorization/audit_m4_2_authorization_preparation.py)"
+          second="$(python -X utf8 evals/m4/authorization/audit_m4_2_authorization_preparation.py)"
+          test "$first" = "$second"
+          printf '%s\n' "$first"
+          python -X utf8 evals/m4/audit_results.py --expect-not-run
+      - name: Current lifecycle unit tests
+        if: hashFiles('evals/m4/execution/m4.2/launch-claim.json') == ''
+        run: >-
+          python -X utf8 -c "import pathlib, sys, unittest;
+          excluded = {'test_m4_1_preparation', 'test_m4_1_authorization_builder',
+          'test_m4_1_authorization', 'test_m4_1_execution',
+          'test_m4_1_launch_readiness', 'test_m4_2_preparation',
+          'test_m4_2_gate_iv_a_r2_review', 'test_m4_preparation',
+          'test_m4_authorization', 'test_m4_execution'};
+          modules = ['tests.' + path.stem for path in
+          sorted(pathlib.Path('tests').glob('test_*.py')) if path.stem not in excluded];
+          suite = unittest.defaultTestLoader.loadTestsFromNames(modules);
+          result = unittest.TextTestRunner(verbosity=2).run(suite);
+          sys.exit(0 if result.wasSuccessful() else 1)"
+      - name: Current lifecycle unit tests excluding frozen M4.2 preclaim modules
+        if: hashFiles('evals/m4/execution/m4.2/launch-claim.json') != ''
+        run: >-
+          python -X utf8 -c "import pathlib, sys, unittest;
+          excluded = {'test_m4_1_preparation', 'test_m4_1_authorization_builder',
+          'test_m4_1_authorization', 'test_m4_1_execution',
+          'test_m4_1_launch_readiness', 'test_m4_2_preparation',
+          'test_m4_2_gate_iv_a_r2_review', 'test_m4_2_execution',
+          'test_m4_2_launch_readiness', 'test_m4_2_authorization',
+          'test_m4_2_authorization_preparation',
+          'test_m4_2_gate_iv_b_protocol_proof', 'test_m4_preparation',
+          'test_m4_authorization', 'test_m4_execution'};
+          modules = ['tests.' + path.stem for path in
+          sorted(pathlib.Path('tests').glob('test_*.py')) if path.stem not in excluded];
+          suite = unittest.defaultTestLoader.loadTestsFromNames(modules);
+          result = unittest.TextTestRunner(verbosity=2).run(suite);
+          sys.exit(0 if result.wasSuccessful() else 1)"
       - name: Replay fixtures
         run: python evals/m1/replay_offline_results.py
       - name: Replay machine artifacts
@@ -102,6 +234,968 @@ jobs:
         run: python -X utf8 evals/m3/audit_forward_r5_2_aggregate.py
       - name: Audit M3 cross-revision closure
         run: python -X utf8 evals/m3/audit_m3_closure.py
+      - name: Preserve S1 boundary and enter terminal M4 predecessor for legacy checks
+        run: |
+          successor_head="$(git rev-parse HEAD)"
+          git cat-file -e 'c21c24e079631d2396a3989045c9f0945e17c24e^{commit}'
+          git diff --raw --exit-code c21c24e079631d2396a3989045c9f0945e17c24e "$successor_head" -- evals/m4 'tests/test_m4*.py'
+          git diff --exit-code c21c24e079631d2396a3989045c9f0945e17c24e "$successor_head" -- evals/m4 'tests/test_m4*.py'
+          git switch --detach c21c24e079631d2396a3989045c9f0945e17c24e
+      - name: Require M4 variant regeneration diff to be empty
+        run: python -X utf8 evals/m4/variants/build_variants.py --check
+      - name: Require M4 preparation regeneration diff to be empty
+        run: python -X utf8 evals/m4/build_preparation.py --check
+      - name: Audit M4 preparation
+        run: python -X utf8 evals/m4/audit_preparation.py
+      - name: Require shared and M4.0 terminal artifacts to remain unchanged
+        run: git diff --raw --exit-code f48ab8d7e835e9a57e65b75458faa786d696316d HEAD -- evals/m3 skills/engineering-research-copilot evals/m4/cases evals/m4/variants evals/m4/schemas evals/m4/preparation-manifest.json evals/m4/build_preparation.py evals/m4/audit_preparation.py evals/m4/audit_results.py evals/m4/task-protocol.md evals/m4/judge-rubric.json tests/test_m4_preparation.py tests/test_m4_results.py evals/m4/authorization/gate-iv-review.json evals/m4/authorization/execution-authorization.json evals/m4/authorization/execution-control.json evals/m4/authorization/build_authorization.py evals/m4/authorization/audit_authorization.py evals/m4/authorization/execution-authorization.schema.json evals/m4/authorization/execution-control.schema.json tests/test_m4_authorization.py evals/m4/execution/m4.0/launch-claim.json evals/m4/execution/m4.0/pre-dispatch-failure.json evals/m4/execution/audit_m4_0.py tests/test_m4_execution.py
+      - name: Require consumed M4 authorization artifacts to remain unchanged
+        run: git diff --exit-code e3542201f96218f340a09f77458661822c98d876 HEAD -- evals/m4/authorization/gate-iv-review.json evals/m4/authorization/execution-authorization.json evals/m4/authorization/execution-control.json
+      - name: Audit M4.0 pre-dispatch failure is preserved
+        run: python -X utf8 evals/m4/execution/audit_m4_0.py
+      - name: Require green M4.1 Gate IV-A protocol baseline to remain frozen
+        run: |
+          git cat-file -e 'bb1b8a5e4bab46d625c637d564d8132dc69a21ab^{commit}'
+          git merge-base --is-ancestor bb1b8a5e4bab46d625c637d564d8132dc69a21ab HEAD
+          git diff --raw --exit-code bb1b8a5e4bab46d625c637d564d8132dc69a21ab HEAD -- docs/superpowers/plans/2026-08-08-m4.1-gate-iv-fresh-execution.md evals/m4/execution/m4.1/launch-claim.schema.json evals/m4/execution/m4.1/dispatch-receipt.schema.json evals/m4/execution/m4.1/execution-terminal.schema.json evals/m4/execution/audit_m4_1.py tests/test_m4_1_execution.py
+          git diff --exit-code bb1b8a5e4bab46d625c637d564d8132dc69a21ab HEAD -- docs/superpowers/plans/2026-08-08-m4.1-gate-iv-fresh-execution.md evals/m4/execution/m4.1/launch-claim.schema.json evals/m4/execution/m4.1/dispatch-receipt.schema.json evals/m4/execution/m4.1/execution-terminal.schema.json evals/m4/execution/audit_m4_1.py tests/test_m4_1_execution.py
+      - name: Require green M4.1 Gate IV-B predecessor baseline to remain frozen
+        run: |
+          git cat-file -e 'c370a3ce21661f0dbf2cdd153b8761d8fce71f9b^{commit}'
+          git merge-base --is-ancestor c370a3ce21661f0dbf2cdd153b8761d8fce71f9b HEAD
+          git diff --raw --exit-code c370a3ce21661f0dbf2cdd153b8761d8fce71f9b HEAD -- docs/superpowers/plans/2026-08-08-m4.1-gate-iv-b-launch-readiness.md evals/m4/execution/m4.1/gate-iv-b-review.json evals/m4/execution/build_m4_1_launch_claim.py evals/m4/execution/record_m4_1_execution_evidence.py evals/m4/execution/audit_m4_1_launch_readiness.py tests/test_m4_1_launch_readiness.py
+          git diff --exit-code c370a3ce21661f0dbf2cdd153b8761d8fce71f9b HEAD -- docs/superpowers/plans/2026-08-08-m4.1-gate-iv-b-launch-readiness.md evals/m4/execution/m4.1/gate-iv-b-review.json evals/m4/execution/build_m4_1_launch_claim.py evals/m4/execution/record_m4_1_execution_evidence.py evals/m4/execution/audit_m4_1_launch_readiness.py tests/test_m4_1_launch_readiness.py
+      - name: Require M4.1 claim and terminal evidence to remain byte-identical
+        run: |
+          git cat-file -e '80b54697c3e27a5dad0a24d5318ce26c8fe46141^{commit}'
+          git merge-base --is-ancestor 80b54697c3e27a5dad0a24d5318ce26c8fe46141 HEAD
+          git diff --raw --exit-code 80b54697c3e27a5dad0a24d5318ce26c8fe46141 HEAD -- evals/m4/execution/m4.1/launch-claim.json evals/m4/execution/m4.1/execution-terminal.json
+          git diff --exit-code 80b54697c3e27a5dad0a24d5318ce26c8fe46141 HEAD -- evals/m4/execution/m4.1/launch-claim.json evals/m4/execution/m4.1/execution-terminal.json
+      - name: Audit M4.1 stopped terminal preservation
+        run: |
+          python -X utf8 -m unittest tests.test_m4_1_terminal -v
+          python -X utf8 evals/m4/execution/audit_m4_1_terminal.py
+      - name: Assert M4.1 authorization is consumed exactly once
+        run: >-
+          python -X utf8 -c "import json, pathlib;
+          claim = json.loads(pathlib.Path('evals/m4/execution/m4.1/launch-claim.json').read_text(encoding='utf-8'));
+          assert claim['claim_count'] == 1, claim['claim_count'];
+          assert claim['authorization']['token_status_after_claim'] == 'CONSUMED', claim['authorization']"
+      - name: Assert M4.1 execution and result state remains zero
+        run: >-
+          python -X utf8 -c "import json, pathlib;
+          terminal = json.loads(pathlib.Path('evals/m4/execution/m4.1/execution-terminal.json').read_text(encoding='utf-8'));
+          zero = {'tasks', 'threads', 'finalizations', 'attempts', 'retries', 'repairs', 'followups', 'results', 'judge_calls', 'aggregation_calls', 'side_effects'};
+          assert all(terminal['counts'][name] == 0 for name in zero), terminal['counts'];
+          assert terminal['attempted_task_ids'] == terminal['dispatch_receipts'] == terminal['raw_finals'] == [], terminal;
+          forbidden = [pathlib.Path('evals/m4/execution/m4.1/platform-observations'), pathlib.Path('evals/m4/results/m4.1'), pathlib.Path('evals/m4/results-manifest.json')];
+          present = [path.as_posix() for path in forbidden if path.exists()];
+          assert not present, present"
+      - name: Assert M4 results remain not run
+        if: hashFiles('evals/m4/execution/m4.2/launch-claim.json') == ''
+        run: python -X utf8 evals/m4/audit_results.py --expect-not-run
+
+  m4-1-preclaim-regression:
+    name: M4.1 pre-claim regression (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+          - windows-latest
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Create isolated green pre-claim worktree
+        run: git -c core.autocrlf=false worktree add --detach "${{ runner.temp }}/m4-1-preclaim" c370a3ce21661f0dbf2cdd153b8761d8fce71f9b
+      - name: Validate predecessor preparation authorization execution and readiness
+        working-directory: ${{ runner.temp }}/m4-1-preclaim
+        run: |
+          python -X utf8 -m unittest tests.test_m4_1_preparation tests.test_m4_1_authorization_builder tests.test_m4_1_authorization tests.test_m4_1_execution tests.test_m4_1_launch_readiness -v
+          python -X utf8 evals/m4/build_m4_1_preparation.py --check
+          python -X utf8 evals/m4/audit_m4_1_preparation.py
+          python -X utf8 evals/m4/authorization/build_m4_1_authorization.py --check
+          python -X utf8 evals/m4/authorization/audit_m4_1_authorization.py --configured-model gpt-5.6-sol --configured-reasoning-effort max --require-configured-defaults
+          python -X utf8 evals/m4/execution/audit_m4_1.py
+          python -X utf8 evals/m4/execution/build_m4_1_launch_claim.py --check
+          python -X utf8 evals/m4/execution/record_m4_1_execution_evidence.py --check
+          python -X utf8 evals/m4/execution/audit_m4_1_launch_readiness.py
+          python -X utf8 -c "from pathlib import Path; forbidden = [Path('evals/m4/execution/m4.1/launch-claim.json'), Path('evals/m4/execution/m4.1/execution-terminal.json'), Path('evals/m4/execution/m4.1/platform-observations'), Path('evals/m4/results/m4.1'), Path('evals/m4/results-manifest.json')]; present = [path.as_posix() for path in forbidden if path.exists()]; assert not present, present"
+      - name: Verify predecessor request preflight with PowerShell 7
+        if: runner.os == 'Linux'
+        shell: pwsh
+        working-directory: ${{ runner.temp }}/m4-1-preclaim
+        run: |
+          ./evals/m4/execution/prepare_m4_1_request_bundles.ps1 -SelfTest
+          ./evals/m4/execution/prepare_m4_1_request_bundles.ps1 -CheckAll
+      - name: Verify predecessor request preflight with Windows PowerShell 5.1
+        if: runner.os == 'Windows'
+        shell: powershell
+        working-directory: ${{ runner.temp }}/m4-1-preclaim
+        run: |
+          if ($PSVersionTable.PSVersion.Major -ne 5) { throw 'expected_windows_powershell_5_1' }
+          .\evals\m4\execution\prepare_m4_1_request_bundles.ps1 -SelfTest
+          .\evals\m4\execution\prepare_m4_1_request_bundles.ps1 -CheckAll
+      - name: Remove isolated green pre-claim worktree
+        if: always()
+        run: git worktree remove --force "${{ runner.temp }}/m4-1-preclaim"
+
+  m4-2-preparation:
+    name: M4.2 repaired frozen preparation (NOT AUTHORIZED) (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+          - windows-latest
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Create isolated repaired baseline worktree
+        run: git -c core.autocrlf=false worktree add --detach "${{ runner.temp }}/m4-2-repaired-baseline" 44d1004da1cbb2681ee0d423d1748f98fbaa13e4
+      - name: Validate repaired M4.2 preparation-only contract
+        shell: bash
+        working-directory: ${{ runner.temp }}/m4-2-repaired-baseline
+        run: |
+          set -euo pipefail
+          python -m py_compile evals/m4/build_m4_2_preparation.py evals/m4/audit_m4_2_preparation.py
+          python -X utf8 -m unittest tests.test_m4_2_preparation -v
+          python -X utf8 evals/m4/build_m4_2_preparation.py --check
+          python -X utf8 evals/m4/audit_m4_2_preparation.py
+          python -X utf8 evals/m4/audit_results.py --expect-not-run
+          python -X utf8 -c "from pathlib import Path; forbidden = [Path('evals/m4/results/m4.1'), Path('evals/m4/authorization/m4.2'), Path('evals/m4/execution/m4.2'), Path('evals/m4/results/m4.2'), Path('evals/m4/results-manifest.json')]; present = [path.as_posix() for path in forbidden if path.exists()]; assert not present, present"
+      - name: Verify M4.2 request preflight with PowerShell 7
+        if: runner.os == 'Linux'
+        shell: pwsh
+        working-directory: ${{ runner.temp }}/m4-2-repaired-baseline
+        run: |
+          ./evals/m4/execution/prepare_m4_2_request_bundles.ps1 -SelfTest
+          ./evals/m4/execution/prepare_m4_2_request_bundles.ps1 -CheckAll
+      - name: Verify M4.2 request preflight with Windows PowerShell 5.1
+        if: runner.os == 'Windows'
+        shell: powershell
+        working-directory: ${{ runner.temp }}/m4-2-repaired-baseline
+        run: |
+          if ($PSVersionTable.PSVersion.Major -ne 5) { throw 'expected_windows_powershell_5_1' }
+          .\evals\m4\execution\prepare_m4_2_request_bundles.ps1 -SelfTest
+          .\evals\m4\execution\prepare_m4_2_request_bundles.ps1 -CheckAll
+      - name: Assert repaired M4.2 preparation validation remained read-only
+        working-directory: ${{ runner.temp }}/m4-2-repaired-baseline
+        run: >-
+          python -X utf8 -c "import subprocess;
+          status = subprocess.run(['git', 'status', '--porcelain', '--untracked-files=all'],
+          check=True, capture_output=True, text=True).stdout;
+          assert not status, status"
+      - name: Remove isolated repaired baseline worktree
+        if: always()
+        run: git worktree remove --force "${{ runner.temp }}/m4-2-repaired-baseline"
+
+  m4-2-gate-iv-a-r2-review:
+    name: M4.2 Gate IV-A r2 review (NOT AUTHORIZED) (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+          - windows-latest
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Create isolated Gate IV-A r2 baseline worktree
+        run: git worktree add --detach "${{ runner.temp }}/m4-2-gate-iv-a-r2-baseline" 988b4332504549df2038f51532175effd696a445
+      - name: Validate frozen Gate IV-A r2 review and lifecycle
+        shell: bash
+        working-directory: ${{ runner.temp }}/m4-2-gate-iv-a-r2-baseline
+        run: |
+          set -euo pipefail
+          python -m py_compile evals/m4/authorization/audit_m4_2_gate_iv_a_r2_review.py
+          python -X utf8 -m unittest tests.test_m4_2_gate_iv_a_r2_review -v
+          python -X utf8 evals/m4/authorization/audit_m4_2_gate_iv_a_r2_review.py
+          python -X utf8 -c "import pathlib, sys, unittest; excluded = {'test_m4_1_preparation', 'test_m4_1_authorization_builder', 'test_m4_1_authorization', 'test_m4_1_execution', 'test_m4_1_launch_readiness', 'test_m4_2_preparation', 'test_m4_2_gate_iv_a_r2_review'}; modules = ['tests.' + path.stem for path in sorted(pathlib.Path('tests').glob('test_*.py')) if path.stem not in excluded]; suite = unittest.defaultTestLoader.loadTestsFromNames(modules); result = unittest.TextTestRunner(verbosity=2).run(suite); sys.exit(0 if result.wasSuccessful() else 1)"
+          python -X utf8 evals/m4/execution/audit_m4_1_terminal.py
+          python -X utf8 evals/m4/audit_results.py --expect-not-run
+          python -X utf8 -c "from pathlib import Path; forbidden = [Path('evals/m4/authorization/m4.2/execution-authorization.json'), Path('evals/m4/authorization/m4.2/execution-control.json'), Path('evals/m4/execution/m4.2'), Path('evals/m4/results/m4.1'), Path('evals/m4/results/m4.2'), Path('evals/m4/results-manifest.json')]; present = [path.as_posix() for path in forbidden if path.exists()]; assert not present, present"
+          git diff --check
+      - name: Verify reviewed request bindings with PowerShell 7
+        if: runner.os == 'Linux'
+        shell: pwsh
+        working-directory: ${{ runner.temp }}/m4-2-gate-iv-a-r2-baseline
+        run: |
+          ./evals/m4/execution/prepare_m4_2_request_bundles.ps1 -SelfTest
+          ./evals/m4/execution/prepare_m4_2_request_bundles.ps1 -CheckAll
+      - name: Verify reviewed request bindings with Windows PowerShell 5.1
+        if: runner.os == 'Windows'
+        shell: powershell
+        working-directory: ${{ runner.temp }}/m4-2-gate-iv-a-r2-baseline
+        run: |
+          if ($PSVersionTable.PSVersion.Major -ne 5) { throw 'expected_windows_powershell_5_1' }
+          .\evals\m4\execution\prepare_m4_2_request_bundles.ps1 -SelfTest
+          .\evals\m4\execution\prepare_m4_2_request_bundles.ps1 -CheckAll
+      - name: Assert Gate IV-A r2 review remained read-only
+        working-directory: ${{ runner.temp }}/m4-2-gate-iv-a-r2-baseline
+        run: >-
+          python -X utf8 -c "import subprocess;
+          status = subprocess.run(['git', 'status', '--porcelain', '--untracked-files=all'],
+          check=True, capture_output=True, text=True).stdout;
+          assert not status, status"
+      - name: Remove isolated Gate IV-A r2 baseline worktree
+        if: always()
+        run: git worktree remove --force "${{ runner.temp }}/m4-2-gate-iv-a-r2-baseline"
+
+  m4-2-gate-iv-b-protocol-proof:
+    name: M4.2 Gate IV-B protocol proof (NOT AUTHORIZED) (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+          - windows-latest
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Validate Gate IV-B offline proof and zero authority
+        if: hashFiles('evals/m4/execution/m4.2/launch-claim.json') == ''
+        shell: bash
+        run: |
+          set -euo pipefail
+          git cat-file -e '988b4332504549df2038f51532175effd696a445^{commit}'
+          git merge-base --is-ancestor 988b4332504549df2038f51532175effd696a445 HEAD
+          test "$(git rev-parse 'HEAD:evals/m4/authorization/m4.2/gate-iv-a-review-r2.json')" = '734918bd5de16ea6f7595e206c3cd313ba041fa7'
+          python -m py_compile evals/m4/authorization/audit_m4_2_gate_iv_b_protocol_proof.py
+          python -X utf8 -m unittest tests.test_m4_2_gate_iv_b_protocol_proof -v
+          first="$(python -X utf8 evals/m4/authorization/audit_m4_2_gate_iv_b_protocol_proof.py)"
+          second="$(python -X utf8 evals/m4/authorization/audit_m4_2_gate_iv_b_protocol_proof.py)"
+          test "$first" = "$second"
+          printf '%s\n' "$first"
+          python -X utf8 evals/m4/audit_results.py --expect-not-run
+      - name: Verify Gate IV-B request bindings with PowerShell 7
+        if: runner.os == 'Linux'
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          ./evals/m4/execution/prepare_m4_2_request_bundles.ps1 -SelfTest
+          if ($LASTEXITCODE -ne 0) { throw 'm4_2_protocol_self_test_failed' }
+          $raw = ./evals/m4/execution/prepare_m4_2_request_bundles.ps1 -CheckAll
+          if ($LASTEXITCODE -ne 0) { throw 'm4_2_protocol_request_check_failed' }
+          $result = $raw | ConvertFrom-Json
+          if ($result.status -ne 'VERIFIED') { throw 'm4_2_protocol_status_invalid' }
+          if ($result.checked_task_count -ne 60) { throw 'm4_2_protocol_task_count_invalid' }
+          if ($result.mismatches.Count -ne 0) { throw 'm4_2_protocol_mismatches_present' }
+          if ($result.side_effects.Count -ne 0) { throw 'm4_2_protocol_side_effects_present' }
+          $raw
+      - name: Verify Gate IV-B request bindings with Windows PowerShell 5.1
+        if: runner.os == 'Windows'
+        shell: powershell
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if ($PSVersionTable.PSVersion.Major -ne 5 -or $PSVersionTable.PSVersion.Minor -ne 1) { throw 'expected_windows_powershell_5_1' }
+          .\evals\m4\execution\prepare_m4_2_request_bundles.ps1 -SelfTest
+          if ($LASTEXITCODE -ne 0) { throw 'm4_2_protocol_self_test_failed' }
+          $raw = .\evals\m4\execution\prepare_m4_2_request_bundles.ps1 -CheckAll
+          if ($LASTEXITCODE -ne 0) { throw 'm4_2_protocol_request_check_failed' }
+          $result = $raw | ConvertFrom-Json
+          if ($result.status -ne 'VERIFIED') { throw 'm4_2_protocol_status_invalid' }
+          if ($result.checked_task_count -ne 60) { throw 'm4_2_protocol_task_count_invalid' }
+          if ($result.mismatches.Count -ne 0) { throw 'm4_2_protocol_mismatches_present' }
+          if ($result.side_effects.Count -ne 0) { throw 'm4_2_protocol_side_effects_present' }
+          $raw
+      - name: Assert Gate IV-B proof remained read-only
+        run: >-
+          python -X utf8 -c "import subprocess;
+          status = subprocess.run(['git', 'status', '--porcelain', '--untracked-files=all'],
+          check=True, capture_output=True, text=True).stdout;
+          assert not status, status"
+
+  m4-2-authorization-preparation:
+    name: M4.2 authorization preparation (NOT AUTHORIZED) (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+          - windows-latest
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Validate preparation schemas projections lifecycle and zero authority
+        if: hashFiles('evals/m4/execution/m4.2/launch-claim.json') == ''
+        shell: bash
+        run: |
+          set -euo pipefail
+          git cat-file -e 'ad67a79f39685937466d3a49d30c6a5117e2810c^{commit}'
+          git merge-base --is-ancestor ad67a79f39685937466d3a49d30c6a5117e2810c HEAD
+          test "$(git rev-parse 'ad67a79f39685937466d3a49d30c6a5117e2810c:evals/m4/authorization/m4.2/gate-iv-b-protocol-proof.json')" = 'd3fe975431f2e4584a52ee5305b169f5b5d29268'
+          test "$(git rev-parse 'HEAD:evals/m4/authorization/m4.2/gate-iv-b-protocol-proof.json')" = 'd3fe975431f2e4584a52ee5305b169f5b5d29268'
+          python -m py_compile evals/m4/authorization/audit_m4_2_authorization_preparation.py evals/m4/authorization/audit_m4_2_gate_iv_b_protocol_proof.py
+          python -X utf8 -m unittest tests.test_m4_2_authorization_preparation tests.test_m4_2_gate_iv_b_protocol_proof -v
+          first="$(python -X utf8 evals/m4/authorization/audit_m4_2_authorization_preparation.py)"
+          second="$(python -X utf8 evals/m4/authorization/audit_m4_2_authorization_preparation.py)"
+          test "$first" = "$second"
+          printf '%s\n' "$first"
+          proof_first="$(python -X utf8 evals/m4/authorization/audit_m4_2_gate_iv_b_protocol_proof.py)"
+          proof_second="$(python -X utf8 evals/m4/authorization/audit_m4_2_gate_iv_b_protocol_proof.py)"
+          test "$proof_first" = "$proof_second"
+          printf '%s\n' "$proof_first"
+          python -X utf8 -c "import pathlib, sys, unittest; excluded = {'test_m4_1_preparation', 'test_m4_1_authorization_builder', 'test_m4_1_authorization', 'test_m4_1_execution', 'test_m4_1_launch_readiness', 'test_m4_2_preparation', 'test_m4_2_gate_iv_a_r2_review'}; modules = ['tests.' + path.stem for path in sorted(pathlib.Path('tests').glob('test_*.py')) if path.stem not in excluded]; suite = unittest.defaultTestLoader.loadTestsFromNames(modules); result = unittest.TextTestRunner(verbosity=2).run(suite); sys.exit(0 if result.wasSuccessful() else 1)"
+          python -X utf8 evals/m4/execution/audit_m4_1_terminal.py
+          python -X utf8 evals/m4/audit_results.py --expect-not-run
+          python -X utf8 evals/m4/authorization/audit_m4_2_authorization.py
+          python -X utf8 -c "from pathlib import Path; pair = [Path('evals/m4/authorization/m4.2/execution-authorization.json'), Path('evals/m4/authorization/m4.2/execution-control.json')]; static = {'evals/m4/execution/m4.2/launch-claim.schema.json','evals/m4/execution/m4.2/dispatch-receipt.schema.json','evals/m4/execution/m4.2/create-thread-response-attestation.schema.json','evals/m4/execution/m4.2/execution-terminal.schema.json'}; root = Path('evals/m4/execution/m4.2'); runtime = [item.as_posix() for item in root.rglob('*') if (item.is_file() or item.is_symlink()) and item.as_posix() not in static] if root.exists() else []; exact = [Path('evals/m4/authorization/m4.2/authorization-token.json'), Path('evals/m4/authorization/m4.2/acceptance-claim.json'), Path('evals/m4/results-manifest.json'), Path('evals/m4/results/m4.1'), Path('evals/m4/results/m4.2'), Path('evals/m5')]; present = runtime + [path.as_posix() for path in exact if path.exists()]; assert not present, present; assert pair[0].is_file() == pair[1].is_file(); raw = Path('evals/m4/authorization/m4.2/authorization-preparation.json').read_bytes(); assert b'AUTHORIZED_UNCONSUMED' not in raw; assert b'sha256:' not in raw"
+          git diff --check
+      - name: Create isolated accepted Gate IV-B closure replay worktree
+        id: create_gate_iv_b_closure_worktree
+        run: git worktree add --detach "${{ runner.temp }}/m4-2-gate-iv-b-closure" ad67a79f39685937466d3a49d30c6a5117e2810c
+      - name: Replay accepted Gate IV-B proof and NOT RUN state
+        shell: bash
+        working-directory: ${{ runner.temp }}/m4-2-gate-iv-b-closure
+        run: |
+          set -euo pipefail
+          python -X utf8 -m unittest tests.test_m4_2_gate_iv_b_protocol_proof -v
+          first="$(python -X utf8 evals/m4/authorization/audit_m4_2_gate_iv_b_protocol_proof.py)"
+          second="$(python -X utf8 evals/m4/authorization/audit_m4_2_gate_iv_b_protocol_proof.py)"
+          test "$first" = "$second"
+          printf '%s\n' "$first"
+          python -X utf8 evals/m4/audit_results.py --expect-not-run
+          test -z "$(git status --porcelain --untracked-files=all)"
+      - name: Remove isolated accepted Gate IV-B closure replay worktree
+        if: always() && steps.create_gate_iv_b_closure_worktree.outcome == 'success'
+        run: git worktree remove --force "${{ runner.temp }}/m4-2-gate-iv-b-closure"
+      - name: Verify preparation request bindings with PowerShell 7
+        if: runner.os == 'Linux'
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          ./evals/m4/execution/prepare_m4_2_request_bundles.ps1 -SelfTest
+          if ($LASTEXITCODE -ne 0) { throw 'm4_2_preparation_self_test_failed' }
+          $raw = ./evals/m4/execution/prepare_m4_2_request_bundles.ps1 -CheckAll
+          if ($LASTEXITCODE -ne 0) { throw 'm4_2_preparation_request_check_failed' }
+          $result = $raw | ConvertFrom-Json
+          if ($result.status -ne 'VERIFIED') { throw 'm4_2_preparation_status_invalid' }
+          if ($result.checked_task_count -ne 60) { throw 'm4_2_preparation_task_count_invalid' }
+          if ($result.mismatches.Count -ne 0) { throw 'm4_2_preparation_mismatches_present' }
+          if ($result.side_effects.Count -ne 0) { throw 'm4_2_preparation_side_effects_present' }
+          $raw
+      - name: Verify preparation request bindings with Windows PowerShell 5.1
+        if: runner.os == 'Windows'
+        shell: powershell
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if ($PSVersionTable.PSVersion.Major -ne 5 -or $PSVersionTable.PSVersion.Minor -ne 1) { throw 'expected_windows_powershell_5_1' }
+          .\evals\m4\execution\prepare_m4_2_request_bundles.ps1 -SelfTest
+          if ($LASTEXITCODE -ne 0) { throw 'm4_2_preparation_self_test_failed' }
+          $raw = .\evals\m4\execution\prepare_m4_2_request_bundles.ps1 -CheckAll
+          if ($LASTEXITCODE -ne 0) { throw 'm4_2_preparation_request_check_failed' }
+          $result = $raw | ConvertFrom-Json
+          if ($result.status -ne 'VERIFIED') { throw 'm4_2_preparation_status_invalid' }
+          if ($result.checked_task_count -ne 60) { throw 'm4_2_preparation_task_count_invalid' }
+          if ($result.mismatches.Count -ne 0) { throw 'm4_2_preparation_mismatches_present' }
+          if ($result.side_effects.Count -ne 0) { throw 'm4_2_preparation_side_effects_present' }
+          $raw
+      - name: Assert authorization preparation validation remained read-only
+        run: >-
+          python -X utf8 -c "import subprocess;
+          status = subprocess.run(['git', 'status', '--porcelain', '--untracked-files=all'],
+          check=True, capture_output=True, text=True).stdout;
+          assert not status, status"
+
+  m4-2-one-shot-authorization:
+    name: M4.2 one-shot authorization lifecycle (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+          - windows-latest
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Validate deterministic candidate or issued-unconsumed lifecycle
+        if: hashFiles('evals/m4/execution/m4.2/launch-claim.json') == ''
+        shell: bash
+        run: |
+          set -euo pipefail
+          git cat-file -e '4efa75c542172a95c6c72c8c1450fea77a8e2ff1^{commit}'
+          test "$(git rev-parse '4efa75c542172a95c6c72c8c1450fea77a8e2ff1^{tree}')" = 'f7394004d9d5f0a9be22a62dca1d67bb5f2af52d'
+          git merge-base --is-ancestor 4efa75c542172a95c6c72c8c1450fea77a8e2ff1 HEAD
+          python -m py_compile evals/m4/authorization/build_m4_2_authorization.py evals/m4/authorization/audit_m4_2_authorization.py
+          python -X utf8 -m unittest tests.test_m4_2_authorization tests.test_m4_2_authorization_preparation tests.test_m4_2_gate_iv_b_protocol_proof -v
+          if test -f evals/m4/authorization/m4.2/execution-authorization.json; then
+            python -X utf8 evals/m4/authorization/build_m4_2_authorization.py --check
+            python -X utf8 evals/m4/authorization/audit_m4_2_authorization.py --expect-authorized-unconsumed
+          else
+            python -X utf8 evals/m4/authorization/build_m4_2_authorization.py --dry-run
+            python -X utf8 evals/m4/authorization/audit_m4_2_authorization.py --expect-candidate-not-issued
+          fi
+          first="$(python -X utf8 evals/m4/authorization/audit_m4_2_authorization.py)"
+          second="$(python -X utf8 evals/m4/authorization/audit_m4_2_authorization.py)"
+          test "$first" = "$second"
+          printf '%s\n' "$first"
+          python -X utf8 evals/m4/authorization/audit_m4_2_authorization_preparation.py
+          python -X utf8 evals/m4/authorization/audit_m4_2_gate_iv_b_protocol_proof.py
+          python -X utf8 evals/m4/audit_results.py --expect-not-run
+          python -X utf8 -c "from pathlib import Path; pair = [Path('evals/m4/authorization/m4.2/execution-authorization.json'), Path('evals/m4/authorization/m4.2/execution-control.json')]; static = {'evals/m4/execution/m4.2/launch-claim.schema.json','evals/m4/execution/m4.2/dispatch-receipt.schema.json','evals/m4/execution/m4.2/create-thread-response-attestation.schema.json','evals/m4/execution/m4.2/execution-terminal.schema.json'}; root = Path('evals/m4/execution/m4.2'); runtime = [item.as_posix() for item in root.rglob('*') if (item.is_file() or item.is_symlink()) and item.as_posix() not in static] if root.exists() else []; exact = [Path('evals/m4/authorization/m4.2/authorization-token.json'), Path('evals/m4/authorization/m4.2/acceptance-claim.json'), Path('evals/m4/results-manifest.json'), Path('evals/m4/results/m4.2'), Path('evals/m5')]; assert pair[0].is_file() == pair[1].is_file(); present = runtime + [path.as_posix() for path in exact if path.exists()]; assert not present, present"
+          git diff --check
+      - name: Create isolated authorization-preparation closure replay worktree
+        id: create_authorization_preparation_closure_worktree
+        run: git -c core.autocrlf=false worktree add --detach "${{ runner.temp }}/m4-2-authorization-preparation-closure" 4efa75c542172a95c6c72c8c1450fea77a8e2ff1
+      - name: Replay frozen preparation and Gate IV-B proof semantics
+        shell: bash
+        working-directory: ${{ runner.temp }}/m4-2-authorization-preparation-closure
+        run: |
+          set -euo pipefail
+          diagnostic_dir="${RUNNER_TEMP}/m4-2-push-context-frozen-replay"
+          mkdir -p "$diagnostic_dir"
+
+          capture_git_config() {
+            local label="$1"
+            shift
+            local output
+            local rc
+            if output="$("$@" 2>&1)"; then
+              rc=0
+            else
+              rc=$?
+            fi
+            printf 'git_config=%s return_code=%s\n%s\n' "$label" "$rc" "$output"
+          }
+
+          capture_git_context() {
+            local stage="$1"
+            {
+              printf 'stage=%s\n' "$stage"
+              printf '%s\n' '--- git status --porcelain=v2 --untracked-files=all ---'
+              git status --porcelain=v2 --untracked-files=all
+              printf '%s\n' '--- git diff 44e6cd6... HEAD ---'
+              git diff --name-only --no-renames 44e6cd611ce67f362015c431d3c1d6ba069ad345 HEAD --
+              printf '%s\n' '--- git diff ad67a79... HEAD ---'
+              git diff --name-only --no-renames ad67a79f39685937466d3a49d30c6a5117e2810c HEAD --
+              printf '%s\n' '--- repository identity ---'
+              git rev-parse HEAD
+              git rev-parse 'HEAD^{tree}'
+              git rev-parse --show-toplevel
+              git rev-parse --git-dir
+              git rev-parse --git-common-dir
+              git worktree list --porcelain
+              printf '%s\n' '--- Git configuration ---'
+              capture_git_config core.autocrlf git config --show-origin --get core.autocrlf
+              capture_git_config core.eol git config --show-origin --get core.eol
+              capture_git_config core.filemode git config --show-origin --get core.filemode
+              capture_git_config core.ignorecase git config --show-origin --get core.ignorecase
+              capture_git_config safe.directory git config --show-origin --get-regexp safe.directory
+              printf '%s\n' '--- git ls-files --eol ---'
+              git ls-files --eol -- \
+                evals/m4/authorization/m4.2/authorization-preparation.json \
+                evals/m4/authorization/m4.2/authorization-preparation.schema.json \
+                evals/m4/authorization/m4.2/execution-authorization.schema.json \
+                evals/m4/authorization/m4.2/execution-control.schema.json \
+                evals/m4/authorization/audit_m4_2_authorization_preparation.py \
+                tests/test_m4_2_authorization_preparation.py \
+                STATUS.md
+              printf '%s\n' '--- inherited GIT_* environment variable names ---'
+              while IFS='=' read -r name _; do
+                case "$name" in
+                  GIT_*) printf '%s\n' "$name" ;;
+                esac
+              done < <(env)
+              printf '%s\n' '--- environment paths ---'
+              printf 'HOME=%s\nUSERPROFILE=%s\nTEMP=%s\nTMP=%s\n' \
+                "${HOME-}" "${USERPROFILE-}" "${TEMP-}" "${TMP-}"
+              printf '%s\n' '--- working-tree and Git-object SHA-256 ---'
+              for path in \
+                evals/m4/authorization/m4.2/authorization-preparation.json \
+                evals/m4/authorization/m4.2/authorization-preparation.schema.json \
+                evals/m4/authorization/m4.2/execution-authorization.schema.json \
+                evals/m4/authorization/m4.2/execution-control.schema.json \
+                evals/m4/authorization/m4.2/gate-iv-b-protocol-proof.json
+              do
+                python -X utf8 - "$path" <<'PY'
+          import hashlib
+          import json
+          from pathlib import Path
+          import subprocess
+          import sys
+
+          path = sys.argv[1]
+          working = Path(path).read_bytes()
+          git_object = subprocess.run(
+              ["git", "show", f"HEAD:{path}"], check=True, capture_output=True
+          ).stdout
+          blob_oid = subprocess.run(
+              ["git", "rev-parse", f"HEAD:{path}"],
+              check=True,
+              capture_output=True,
+              text=True,
+              encoding="utf-8",
+          ).stdout.strip()
+          print(json.dumps({
+              "path": path,
+              "working_tree_byte_length": len(working),
+              "working_tree_sha256": hashlib.sha256(working).hexdigest(),
+              "git_object_byte_length": len(git_object),
+              "git_object_sha256": hashlib.sha256(git_object).hexdigest(),
+              "git_blob_oid": blob_oid,
+          }, sort_keys=True))
+          PY
+              done
+            } | tee "$diagnostic_dir/git-context-${stage}.txt"
+          }
+
+          preparation_first_stdout="$diagnostic_dir/preparation-first.stdout"
+          preparation_first_stderr="$diagnostic_dir/preparation-first.stderr"
+          preparation_second_stdout="$diagnostic_dir/preparation-second.stdout"
+          preparation_second_stderr="$diagnostic_dir/preparation-second.stderr"
+          preparation_before_status="$diagnostic_dir/preparation-before.status"
+          preparation_after_status="$diagnostic_dir/preparation-after.status"
+
+          git status --porcelain=v2 --untracked-files=all > "$preparation_before_status"
+          capture_git_context before
+          if python -X utf8 evals/m4/authorization/audit_m4_2_authorization_preparation.py > "$preparation_first_stdout" 2> "$preparation_first_stderr"; then
+            preparation_first_rc=0
+          else
+            preparation_first_rc=$?
+          fi
+          capture_git_context between
+          if python -X utf8 evals/m4/authorization/audit_m4_2_authorization_preparation.py > "$preparation_second_stdout" 2> "$preparation_second_stderr"; then
+            preparation_second_rc=0
+          else
+            preparation_second_rc=$?
+          fi
+          capture_git_context after
+          git status --porcelain=v2 --untracked-files=all > "$preparation_after_status"
+
+          printf 'preparation_first_return_code=%s\npreparation_second_return_code=%s\n' \
+            "$preparation_first_rc" "$preparation_second_rc"
+          for stream in \
+            "$preparation_first_stdout" "$preparation_first_stderr" \
+            "$preparation_second_stdout" "$preparation_second_stderr"
+          do
+            python -X utf8 - "$stream" <<'PY'
+          import hashlib
+          from pathlib import Path
+          import sys
+
+          path = Path(sys.argv[1])
+          raw = path.read_bytes()
+          print(f"stream={path.name} byte_length={len(raw)} sha256={hashlib.sha256(raw).hexdigest()}")
+          PY
+          done
+          printf '%s\n' '--- preparation first stdout ---'
+          cat "$preparation_first_stdout"
+          printf '%s\n' '--- preparation first stderr ---'
+          cat "$preparation_first_stderr"
+          printf '%s\n' '--- preparation second stdout ---'
+          cat "$preparation_second_stdout"
+          printf '%s\n' '--- preparation second stderr ---'
+          cat "$preparation_second_stderr"
+
+          if (( preparation_first_rc != 0 || preparation_second_rc != 0 )); then
+            python -X utf8 - "$preparation_first_stdout" "$preparation_second_stdout" <<'PY'
+          import json
+          from pathlib import Path
+          import sys
+
+          for label, value in zip(("first", "second"), sys.argv[1:]):
+              raw = Path(value).read_bytes()
+              try:
+                  payload = json.loads(raw.decode("utf-8"))
+              except Exception as exc:
+                  print(f"preparation_{label}_errors=INVALID_JSON:{type(exc).__name__}:{exc}")
+              else:
+                  print(f"preparation_{label}_errors={json.dumps(payload.get('errors'), separators=(',', ':'))}")
+          PY
+          fi
+
+          test "$preparation_first_rc" -eq 0
+          test "$preparation_second_rc" -eq 0
+          cmp --silent "$preparation_first_stdout" "$preparation_second_stdout"
+          python -X utf8 - "$preparation_first_stdout" "$preparation_second_stdout" <<'PY'
+          import json
+          from pathlib import Path
+          import sys
+
+          for value in sys.argv[1:]:
+              payload = json.loads(Path(value).read_text(encoding="utf-8"))
+              assert payload.get("errors") == [], payload.get("errors")
+          PY
+          cmp --silent "$preparation_before_status" "$preparation_after_status"
+          python -X utf8 -m unittest tests.test_m4_2_authorization_preparation tests.test_m4_2_gate_iv_b_protocol_proof -v
+          proof_first="$(python -X utf8 evals/m4/authorization/audit_m4_2_gate_iv_b_protocol_proof.py)"
+          proof_second="$(python -X utf8 evals/m4/authorization/audit_m4_2_gate_iv_b_protocol_proof.py)"
+          test "$proof_first" = "$proof_second"
+          printf '%s\n' "$proof_first"
+          python -X utf8 evals/m4/audit_results.py --expect-not-run
+          test -z "$(git status --porcelain --untracked-files=all)"
+      - name: Remove isolated authorization-preparation closure replay worktree
+        if: always() && steps.create_authorization_preparation_closure_worktree.outcome == 'success'
+        run: git worktree remove --force "${{ runner.temp }}/m4-2-authorization-preparation-closure"
+      - name: Verify authorization request bindings with PowerShell 7
+        if: runner.os == 'Linux'
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          ./evals/m4/execution/prepare_m4_2_request_bundles.ps1 -SelfTest
+          if ($LASTEXITCODE -ne 0) { throw 'm4_2_authorization_self_test_failed' }
+          $raw = ./evals/m4/execution/prepare_m4_2_request_bundles.ps1 -CheckAll
+          if ($LASTEXITCODE -ne 0) { throw 'm4_2_authorization_request_check_failed' }
+          $result = $raw | ConvertFrom-Json
+          if ($result.status -ne 'VERIFIED') { throw 'm4_2_authorization_status_invalid' }
+          if ($result.checked_task_count -ne 60) { throw 'm4_2_authorization_task_count_invalid' }
+          if ($result.mismatches.Count -ne 0) { throw 'm4_2_authorization_mismatches_present' }
+          if ($result.side_effects.Count -ne 0) { throw 'm4_2_authorization_side_effects_present' }
+          $raw
+      - name: Verify authorization request bindings with Windows PowerShell 5.1
+        if: runner.os == 'Windows'
+        shell: powershell
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if ($PSVersionTable.PSVersion.Major -ne 5 -or $PSVersionTable.PSVersion.Minor -ne 1) { throw 'expected_windows_powershell_5_1' }
+          .\evals\m4\execution\prepare_m4_2_request_bundles.ps1 -SelfTest
+          if ($LASTEXITCODE -ne 0) { throw 'm4_2_authorization_self_test_failed' }
+          $raw = .\evals\m4\execution\prepare_m4_2_request_bundles.ps1 -CheckAll
+          if ($LASTEXITCODE -ne 0) { throw 'm4_2_authorization_request_check_failed' }
+          $result = $raw | ConvertFrom-Json
+          if ($result.status -ne 'VERIFIED') { throw 'm4_2_authorization_status_invalid' }
+          if ($result.checked_task_count -ne 60) { throw 'm4_2_authorization_task_count_invalid' }
+          if ($result.mismatches.Count -ne 0) { throw 'm4_2_authorization_mismatches_present' }
+          if ($result.side_effects.Count -ne 0) { throw 'm4_2_authorization_side_effects_present' }
+          $raw
+      - name: Assert authorization lifecycle validation remained read-only
+        run: >-
+          python -X utf8 -c "import subprocess;
+          status = subprocess.run(['git', 'status', '--porcelain', '--untracked-files=all'],
+          check=True, capture_output=True, text=True).stdout;
+          assert not status, status"
+
+  m4-2-gate-a-launch-readiness:
+    name: M4.2 Gate A launch readiness (NO CLAIM) (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+          - windows-latest
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Validate Gate A closed contracts and no-write lifecycle
+        if: hashFiles('evals/m4/execution/m4.2/launch-claim.json') == ''
+        shell: bash
+        run: |
+          set -euo pipefail
+          git cat-file -e '214acacfb984b3f9e41d35dde8841a4ffb342b34^{commit}'
+          test "$(git rev-parse '214acacfb984b3f9e41d35dde8841a4ffb342b34^{tree}')" = '7671e69844ea59a84411b6bcbfb9abf0feb64ae9'
+          git merge-base --is-ancestor 214acacfb984b3f9e41d35dde8841a4ffb342b34 HEAD
+          python -m py_compile \
+            evals/m4/execution/audit_m4_2.py \
+            evals/m4/execution/build_m4_2_launch_claim.py \
+            evals/m4/execution/record_m4_2_execution_evidence.py \
+            evals/m4/execution/audit_m4_2_launch_readiness.py
+          python -X utf8 -m unittest tests.test_m4_2_execution tests.test_m4_2_launch_readiness -v
+          python -X utf8 -m unittest tests.test_m4_2_authorization tests.test_m4_2_authorization_preparation tests.test_m4_2_gate_iv_b_protocol_proof -v
+          python -X utf8 evals/m4/authorization/build_m4_2_authorization.py --check
+          python -X utf8 evals/m4/authorization/audit_m4_2_authorization.py --expect-authorized-unconsumed
+          execution_first="$(python -X utf8 evals/m4/execution/audit_m4_2.py --expect-ready-unclaimed)"
+          execution_second="$(python -X utf8 evals/m4/execution/audit_m4_2.py --expect-ready-unclaimed)"
+          test "$execution_first" = "$execution_second"
+          printf '%s\n' "$execution_first"
+          python -X utf8 evals/m4/execution/build_m4_2_launch_claim.py --check
+          python -X utf8 evals/m4/execution/record_m4_2_execution_evidence.py --check
+          next_action="$(python -X utf8 evals/m4/execution/record_m4_2_execution_evidence.py --next-action)"
+          printf '%s\n' "$next_action"
+          python -X utf8 -c 'import json, sys; value = json.loads(sys.argv[1]); assert value["action"] == "CONSUME_CLAIM", value; assert value["writes"] == 0, value' "$next_action"
+          readiness_first="$(python -X utf8 evals/m4/execution/audit_m4_2_launch_readiness.py)"
+          readiness_second="$(python -X utf8 evals/m4/execution/audit_m4_2_launch_readiness.py)"
+          test "$readiness_first" = "$readiness_second"
+          printf '%s\n' "$readiness_first"
+          python -X utf8 evals/m4/audit_results.py --expect-not-run
+          python -X utf8 -c "from pathlib import Path; exact = [Path('evals/m4/execution/m4.2/launch-claim.json'), Path('evals/m4/execution/m4.2/execution-terminal.json'), Path('evals/m4/execution/m4.2/platform-observations'), Path('evals/m4/results/m4.2'), Path('evals/m4/results-manifest.json'), Path('evals/m5')]; present = [path.as_posix() for path in exact if path.exists()]; assert not present, present"
+          test -z "$(git status --porcelain --untracked-files=all)"
+      - name: Resolve committed M4.2 postclaim lifecycle bindings
+        id: m4_2_postclaim
+        if: hashFiles('evals/m4/execution/m4.2/launch-claim.json') != ''
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -X utf8 - "$GITHUB_OUTPUT" <<'PY'
+          import json
+          import re
+          import subprocess
+          import sys
+          from pathlib import Path
+
+          class DuplicateKeyError(ValueError):
+              pass
+
+          def reject_duplicates(pairs):
+              value = {}
+              for key, item in pairs:
+                  if key in value:
+                      raise DuplicateKeyError(f"duplicate_key:{key}")
+                  value[key] = item
+              return value
+
+          def require(mapping, key, label):
+              if not isinstance(mapping, dict) or key not in mapping:
+                  raise SystemExit(f"missing_binding:{label}")
+              return mapping[key]
+
+          claim_path = Path("evals/m4/execution/m4.2/launch-claim.json")
+          try:
+              claim = json.loads(
+                  claim_path.read_bytes().decode("utf-8", errors="strict"),
+                  object_pairs_hook=reject_duplicates,
+                  parse_constant=lambda value: (_ for _ in ()).throw(
+                      ValueError(f"nonfinite:{value}")
+                  ),
+              )
+          except (OSError, UnicodeError, ValueError, json.JSONDecodeError) as error:
+              raise SystemExit(f"launch_claim_parse_failed:{type(error).__name__}") from error
+          gate_a = require(claim, "gate_a_acceptance", "gate_a_acceptance")
+          head = require(gate_a, "candidate_head", "gate_a_acceptance.candidate_head")
+          tree = require(gate_a, "candidate_tree", "gate_a_acceptance.candidate_tree")
+          push_run_id = require(gate_a, "push_run_id", "gate_a_acceptance.push_run_id")
+          pr_run_id = require(gate_a, "pr_run_id", "gate_a_acceptance.pr_run_id")
+          if not isinstance(head, str) or re.fullmatch(r"[0-9a-f]{40}", head) is None:
+              raise SystemExit("gate_a_candidate_head_invalid")
+          if not isinstance(tree, str) or re.fullmatch(r"[0-9a-f]{40}", tree) is None:
+              raise SystemExit("gate_a_candidate_tree_invalid")
+          for label, value in (("push_run_id", push_run_id), ("pr_run_id", pr_run_id)):
+              if isinstance(value, bool) or not isinstance(value, int) or value < 1:
+                  raise SystemExit(f"gate_a_{label}_invalid")
+          subprocess.run(
+              ["git", "cat-file", "-e", f"{head}^{{commit}}"], check=True
+          )
+          observed_tree = subprocess.run(
+              ["git", "rev-parse", f"{head}^{{tree}}"],
+              check=True,
+              capture_output=True,
+              text=True,
+              encoding="utf-8",
+          ).stdout.strip()
+          if observed_tree != tree:
+              raise SystemExit("gate_a_claim_tree_mismatch")
+          with Path(sys.argv[1]).open("a", encoding="utf-8", newline="\n") as output:
+              output.write(f"gate_a_candidate_head={head}\n")
+              output.write(f"gate_a_candidate_tree={tree}\n")
+              output.write(f"gate_a_push_run_id={push_run_id}\n")
+              output.write(f"gate_a_pr_run_id={pr_run_id}\n")
+          PY
+      - name: Validate current M4.2 committed terminal lifecycle
+        if: hashFiles('evals/m4/execution/m4.2/launch-claim.json') != ''
+        shell: bash
+        run: |
+          set -euo pipefail
+          first="${RUNNER_TEMP}/m4-2-postclaim-audit-first.json"
+          second="${RUNNER_TEMP}/m4-2-postclaim-audit-second.json"
+          python -B -X utf8 evals/m4/execution/audit_m4_2.py > "$first"
+          python -B -X utf8 evals/m4/execution/audit_m4_2.py > "$second"
+          cmp --silent "$first" "$second"
+          cat "$first"
+          python -B -X utf8 - "$first" <<'PY'
+          import json
+          import sys
+          from pathlib import Path
+
+          payload = json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
+          assert payload.get("errors") == [], payload.get("errors")
+          assert payload.get("status") in {
+              "COMPLETE_UNJUDGED",
+              "STOPPED_PROTOCOL_OR_INFRASTRUCTURE_FAILURE",
+          }, payload.get("status")
+          assert payload.get("token") == "CONSUMED", payload
+          assert payload.get("claim_count") == 1, payload
+          assert payload.get("launch_claim_present") is True, payload
+          assert payload.get("terminal_present") is True, payload
+          for key in (
+              "retries",
+              "repairs",
+              "followups",
+              "judge_calls",
+              "aggregation_calls",
+              "side_effects",
+          ):
+              assert payload.get(key) == 0, (key, payload.get(key))
+
+          terminal = Path("evals/m4/execution/m4.2/execution-terminal.json")
+          terminals = sorted(
+              Path("evals/m4/execution/m4.2").rglob("execution-terminal.json")
+          )
+          assert terminals == [terminal], [path.as_posix() for path in terminals]
+          later_paths = [
+              Path("evals/m4/results-manifest.json"),
+              Path("evals/m5"),
+          ]
+          assert not [path.as_posix() for path in later_paths if path.exists()]
+          allowed_static = {
+              "evals/m4/judge-rubric.json",
+              "evals/m4/schemas/judge-score.schema.json",
+          }
+          later_keywords = (
+              "judge-score",
+              "judge_score",
+              "blind-map",
+              "blind_map",
+              "unblind",
+              "aggregation",
+              "m4-closure",
+              "m4_closure",
+          )
+          later_evidence = []
+          for path in Path("evals/m4").rglob("*"):
+              if not (path.is_file() or path.is_symlink()):
+                  continue
+              relative = path.as_posix()
+              if relative in allowed_static:
+                  continue
+              if any(keyword in relative.lower() for keyword in later_keywords):
+                  later_evidence.append(relative)
+          assert not later_evidence, later_evidence
+          # raw-final.txt is permitted unjudged execution evidence here.
+          # Judge, blind-map access, aggregation, M4 closure, and M5 remain closed.
+          PY
+          test -z "$(git status --porcelain --untracked-files=all)"
+      - name: Create isolated claim-bound Gate A replay worktree
+        id: create_claim_bound_gate_a_worktree
+        if: hashFiles('evals/m4/execution/m4.2/launch-claim.json') != ''
+        shell: bash
+        env:
+          GATE_A_CANDIDATE_HEAD: ${{ steps.m4_2_postclaim.outputs.gate_a_candidate_head }}
+          GATE_A_CANDIDATE_TREE: ${{ steps.m4_2_postclaim.outputs.gate_a_candidate_tree }}
+        run: |
+          set -euo pipefail
+          git cat-file -e "${GATE_A_CANDIDATE_HEAD}^{commit}"
+          test "$(git rev-parse "${GATE_A_CANDIDATE_HEAD}^{tree}")" = "$GATE_A_CANDIDATE_TREE"
+          git -c core.autocrlf=false worktree add --detach \
+            "${RUNNER_TEMP}/m4-2-postclaim-gate-a" "$GATE_A_CANDIDATE_HEAD"
+          test "$(git -C "${RUNNER_TEMP}/m4-2-postclaim-gate-a" rev-parse HEAD)" = "$GATE_A_CANDIDATE_HEAD"
+          test "$(git -C "${RUNNER_TEMP}/m4-2-postclaim-gate-a" rev-parse 'HEAD^{tree}')" = "$GATE_A_CANDIDATE_TREE"
+      - name: Replay exact claim-bound Gate A preclaim semantics
+        if: hashFiles('evals/m4/execution/m4.2/launch-claim.json') != ''
+        shell: bash
+        working-directory: ${{ runner.temp }}/m4-2-postclaim-gate-a
+        run: |
+          set -euo pipefail
+          python -B -X utf8 -m unittest \
+            tests.test_m4_2_execution \
+            tests.test_m4_2_launch_readiness \
+            tests.test_m4_2_authorization \
+            tests.test_m4_2_authorization_preparation \
+            tests.test_m4_2_gate_iv_b_protocol_proof -v
+          python -B -X utf8 evals/m4/authorization/build_m4_2_authorization.py --check
+          authorization_first="$(python -B -X utf8 evals/m4/authorization/audit_m4_2_authorization.py --expect-authorized-unconsumed)"
+          authorization_second="$(python -B -X utf8 evals/m4/authorization/audit_m4_2_authorization.py --expect-authorized-unconsumed)"
+          test "$authorization_first" = "$authorization_second"
+          printf '%s\n' "$authorization_first"
+          python -B -X utf8 evals/m4/authorization/audit_m4_2_authorization_preparation.py
+          python -B -X utf8 evals/m4/authorization/audit_m4_2_gate_iv_b_protocol_proof.py
+          execution_first="$(python -B -X utf8 evals/m4/execution/audit_m4_2.py --expect-ready-unclaimed)"
+          execution_second="$(python -B -X utf8 evals/m4/execution/audit_m4_2.py --expect-ready-unclaimed)"
+          test "$execution_first" = "$execution_second"
+          printf '%s\n' "$execution_first"
+          python -B -X utf8 evals/m4/execution/build_m4_2_launch_claim.py --check
+          python -B -X utf8 evals/m4/execution/record_m4_2_execution_evidence.py --check
+          readiness_first="$(python -B -X utf8 evals/m4/execution/audit_m4_2_launch_readiness.py)"
+          readiness_second="$(python -B -X utf8 evals/m4/execution/audit_m4_2_launch_readiness.py)"
+          test "$readiness_first" = "$readiness_second"
+          printf '%s\n' "$readiness_first"
+          python -B -X utf8 evals/m4/audit_results.py --expect-not-run
+          test -z "$(git status --porcelain --untracked-files=all)"
+      - name: Verify claim-bound Gate A request bindings with PowerShell 7
+        if: hashFiles('evals/m4/execution/m4.2/launch-claim.json') != '' && runner.os == 'Linux'
+        shell: pwsh
+        working-directory: ${{ runner.temp }}/m4-2-postclaim-gate-a
+        run: |
+          $ErrorActionPreference = 'Stop'
+          ./evals/m4/execution/prepare_m4_2_request_bundles.ps1 -SelfTest
+          if ($LASTEXITCODE -ne 0) { throw 'm4_2_postclaim_gate_a_self_test_failed' }
+          $raw = ./evals/m4/execution/prepare_m4_2_request_bundles.ps1 -CheckAll
+          if ($LASTEXITCODE -ne 0) { throw 'm4_2_postclaim_gate_a_request_check_failed' }
+          $result = $raw | ConvertFrom-Json
+          if ($result.status -ne 'VERIFIED' -or $result.checked_task_count -ne 60 -or $result.mismatches.Count -ne 0 -or $result.side_effects.Count -ne 0) { throw 'm4_2_postclaim_gate_a_request_verification_invalid' }
+          $raw
+      - name: Verify claim-bound Gate A request bindings with Windows PowerShell 5.1
+        if: hashFiles('evals/m4/execution/m4.2/launch-claim.json') != '' && runner.os == 'Windows'
+        shell: powershell
+        working-directory: ${{ runner.temp }}/m4-2-postclaim-gate-a
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if ($PSVersionTable.PSVersion.Major -ne 5 -or $PSVersionTable.PSVersion.Minor -ne 1) { throw 'expected_windows_powershell_5_1' }
+          .\evals\m4\execution\prepare_m4_2_request_bundles.ps1 -SelfTest
+          if ($LASTEXITCODE -ne 0) { throw 'm4_2_postclaim_gate_a_self_test_failed' }
+          $raw = .\evals\m4\execution\prepare_m4_2_request_bundles.ps1 -CheckAll
+          if ($LASTEXITCODE -ne 0) { throw 'm4_2_postclaim_gate_a_request_check_failed' }
+          $result = $raw | ConvertFrom-Json
+          if ($result.status -ne 'VERIFIED' -or $result.checked_task_count -ne 60 -or $result.mismatches.Count -ne 0 -or $result.side_effects.Count -ne 0) { throw 'm4_2_postclaim_gate_a_request_verification_invalid' }
+          $raw
+      - name: Remove isolated claim-bound Gate A replay worktree
+        if: hashFiles('evals/m4/execution/m4.2/launch-claim.json') != '' && always() && steps.create_claim_bound_gate_a_worktree.outcome == 'success'
+        run: git worktree remove --force "${{ runner.temp }}/m4-2-postclaim-gate-a"
+      - name: Verify Gate A request bindings with PowerShell 7
+        if: runner.os == 'Linux' && hashFiles('evals/m4/execution/m4.2/launch-claim.json') == ''
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          ./evals/m4/execution/prepare_m4_2_request_bundles.ps1 -SelfTest
+          if ($LASTEXITCODE -ne 0) { throw 'm4_2_gate_a_self_test_failed' }
+          $raw = ./evals/m4/execution/prepare_m4_2_request_bundles.ps1 -CheckAll
+          if ($LASTEXITCODE -ne 0) { throw 'm4_2_gate_a_request_check_failed' }
+          $result = $raw | ConvertFrom-Json
+          if ($result.status -ne 'VERIFIED' -or $result.checked_task_count -ne 60 -or $result.mismatches.Count -ne 0 -or $result.side_effects.Count -ne 0) { throw 'm4_2_gate_a_request_verification_invalid' }
+          $raw
+      - name: Verify Gate A request bindings with Windows PowerShell 5.1
+        if: runner.os == 'Windows' && hashFiles('evals/m4/execution/m4.2/launch-claim.json') == ''
+        shell: powershell
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if ($PSVersionTable.PSVersion.Major -ne 5 -or $PSVersionTable.PSVersion.Minor -ne 1) { throw 'expected_windows_powershell_5_1' }
+          .\evals\m4\execution\prepare_m4_2_request_bundles.ps1 -SelfTest
+          if ($LASTEXITCODE -ne 0) { throw 'm4_2_gate_a_self_test_failed' }
+          $raw = .\evals\m4\execution\prepare_m4_2_request_bundles.ps1 -CheckAll
+          if ($LASTEXITCODE -ne 0) { throw 'm4_2_gate_a_request_check_failed' }
+          $result = $raw | ConvertFrom-Json
+          if ($result.status -ne 'VERIFIED' -or $result.checked_task_count -ne 60 -or $result.mismatches.Count -ne 0 -or $result.side_effects.Count -ne 0) { throw 'm4_2_gate_a_request_verification_invalid' }
+          $raw
+      - name: Assert Gate A remained read-only
+        run: >-
+          python -X utf8 -c "import subprocess;
+          status = subprocess.run(['git', 'status', '--porcelain', '--untracked-files=all'],
+          check=True, capture_output=True, text=True).stdout;
+          assert not status, status"
 
   historical-audit-cross-platform:
     strategy:
@@ -118,7 +1212,16 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.13"
-      - name: Audit historical M3 inputs and Gate 4 contracts on LF and CRLF worktrees
+      - name: Require S1 successor to preserve the terminal M4 tree
+        run: |
+          git cat-file -e 'c21c24e079631d2396a3989045c9f0945e17c24e^{commit}'
+          git merge-base --is-ancestor c21c24e079631d2396a3989045c9f0945e17c24e HEAD
+          git diff --raw --exit-code c21c24e079631d2396a3989045c9f0945e17c24e HEAD -- evals/m4 'tests/test_m4*.py'
+          git diff --exit-code c21c24e079631d2396a3989045c9f0945e17c24e HEAD -- evals/m4 'tests/test_m4*.py'
+      - name: Create isolated terminal M4 predecessor worktree
+        run: git worktree add --detach "${{ runner.temp }}/s1-terminal-m4" c21c24e079631d2396a3989045c9f0945e17c24e
+      - name: Audit historical M3 M4.0 and current M4.1 terminal on LF and CRLF worktrees
+        working-directory: ${{ runner.temp }}/s1-terminal-m4
         run: |
           python -X utf8 -m unittest tests.test_audit_m3_forward_inputs -v
           python -X utf8 -m unittest tests.test_audit_m3_forward_r5_2_f02_preparation -v
@@ -126,3 +1229,51 @@ jobs:
           python -X utf8 -m unittest tests.test_audit_m3_forward_r5_2_f02_terminal -v
           python -X utf8 -m unittest tests.test_audit_m3_forward_r5_2_aggregate -v
           python -X utf8 -m unittest tests.test_audit_m3_closure -v
+          python -X utf8 -m unittest tests.test_m4_preparation tests.test_m4_results tests.test_m4_authorization tests.test_m4_execution tests.test_m4_1_terminal -v
+          git cat-file -e 'f48ab8d7e835e9a57e65b75458faa786d696316d^{commit}'
+          git merge-base --is-ancestor f48ab8d7e835e9a57e65b75458faa786d696316d HEAD
+          git cat-file -e 'fedc5cdeebd7a2943afeb6767d39841305c55444^{commit}'
+          git merge-base --is-ancestor fedc5cdeebd7a2943afeb6767d39841305c55444 HEAD
+          git cat-file -e fedc5cdeebd7a2943afeb6767d39841305c55444:evals/m4/build_m4_1_preparation.py
+          git cat-file -e fedc5cdeebd7a2943afeb6767d39841305c55444:evals/m4/audit_m4_1_preparation.py
+          git cat-file -e fedc5cdeebd7a2943afeb6767d39841305c55444:evals/m4/execution/prepare_m4_1_request_bundles.ps1
+          git cat-file -e fedc5cdeebd7a2943afeb6767d39841305c55444:evals/m4/revisions/m4.1/preparation-manifest.json
+          git cat-file -e fedc5cdeebd7a2943afeb6767d39841305c55444:evals/m4/revisions/m4.1/preparation-manifest.schema.json
+          git cat-file -e fedc5cdeebd7a2943afeb6767d39841305c55444:tests/test_m4_1_preparation.py
+          git diff --raw --exit-code fedc5cdeebd7a2943afeb6767d39841305c55444 HEAD -- evals/m4/build_m4_1_preparation.py evals/m4/audit_m4_1_preparation.py evals/m4/execution/prepare_m4_1_request_bundles.ps1 evals/m4/revisions/m4.1/preparation-manifest.json evals/m4/revisions/m4.1/preparation-manifest.schema.json tests/test_m4_1_preparation.py
+          git diff --exit-code fedc5cdeebd7a2943afeb6767d39841305c55444 HEAD -- evals/m4/build_m4_1_preparation.py evals/m4/audit_m4_1_preparation.py evals/m4/execution/prepare_m4_1_request_bundles.ps1 evals/m4/revisions/m4.1/preparation-manifest.json evals/m4/revisions/m4.1/preparation-manifest.schema.json tests/test_m4_1_preparation.py
+          git cat-file -e '4fe3785ffd4db9cbf966d8c7ec1451079717da24^{commit}'
+          git merge-base --is-ancestor 4fe3785ffd4db9cbf966d8c7ec1451079717da24 HEAD
+          git cat-file -e 'e38f3fc2305efefb070e3be20413c55156e8b186^{blob}'
+          git cat-file -e 4fe3785ffd4db9cbf966d8c7ec1451079717da24:evals/m4/authorization/m4.1/gate-iv-review.json
+          git diff --raw --exit-code 4fe3785ffd4db9cbf966d8c7ec1451079717da24 HEAD -- evals/m4/authorization/m4.1/gate-iv-review.json
+          git diff --exit-code 4fe3785ffd4db9cbf966d8c7ec1451079717da24 HEAD -- evals/m4/authorization/m4.1/gate-iv-review.json
+          git cat-file -e '5d781ea352e67ab44631844c37cf9b6552cfce77^{commit}'
+          git merge-base --is-ancestor 5d781ea352e67ab44631844c37cf9b6552cfce77 HEAD
+          git cat-file -e 5d781ea352e67ab44631844c37cf9b6552cfce77:evals/m4/authorization/m4.1/execution-authorization.schema.json
+          git cat-file -e 5d781ea352e67ab44631844c37cf9b6552cfce77:evals/m4/authorization/m4.1/execution-control.schema.json
+          git diff --raw --exit-code 5d781ea352e67ab44631844c37cf9b6552cfce77 HEAD -- evals/m4/authorization/m4.1/execution-authorization.schema.json evals/m4/authorization/m4.1/execution-control.schema.json
+          git diff --exit-code 5d781ea352e67ab44631844c37cf9b6552cfce77 HEAD -- evals/m4/authorization/m4.1/execution-authorization.schema.json evals/m4/authorization/m4.1/execution-control.schema.json
+          git cat-file -e 'ae1ad43cca52ae450e146e952e3b108792b2b665^{commit}'
+          git merge-base --is-ancestor ae1ad43cca52ae450e146e952e3b108792b2b665 HEAD
+          git diff --raw --exit-code ae1ad43cca52ae450e146e952e3b108792b2b665 HEAD -- evals/m4/authorization/m4.1/gate-iv-review.json evals/m4/authorization/m4.1/execution-authorization.schema.json evals/m4/authorization/m4.1/execution-control.schema.json evals/m4/authorization/m4.1/execution-authorization.json evals/m4/authorization/m4.1/execution-control.json evals/m4/authorization/build_m4_1_authorization.py evals/m4/authorization/audit_m4_1_authorization.py tests/test_m4_1_authorization_builder.py tests/test_m4_1_authorization.py
+          git diff --exit-code ae1ad43cca52ae450e146e952e3b108792b2b665 HEAD -- evals/m4/authorization/m4.1/gate-iv-review.json evals/m4/authorization/m4.1/execution-authorization.schema.json evals/m4/authorization/m4.1/execution-control.schema.json evals/m4/authorization/m4.1/execution-authorization.json evals/m4/authorization/m4.1/execution-control.json evals/m4/authorization/build_m4_1_authorization.py evals/m4/authorization/audit_m4_1_authorization.py tests/test_m4_1_authorization_builder.py tests/test_m4_1_authorization.py
+          git cat-file -e 'bb1b8a5e4bab46d625c637d564d8132dc69a21ab^{commit}'
+          git merge-base --is-ancestor bb1b8a5e4bab46d625c637d564d8132dc69a21ab HEAD
+          git diff --raw --exit-code bb1b8a5e4bab46d625c637d564d8132dc69a21ab HEAD -- docs/superpowers/plans/2026-08-08-m4.1-gate-iv-fresh-execution.md evals/m4/execution/m4.1/launch-claim.schema.json evals/m4/execution/m4.1/dispatch-receipt.schema.json evals/m4/execution/m4.1/execution-terminal.schema.json evals/m4/execution/audit_m4_1.py tests/test_m4_1_execution.py
+          git diff --exit-code bb1b8a5e4bab46d625c637d564d8132dc69a21ab HEAD -- docs/superpowers/plans/2026-08-08-m4.1-gate-iv-fresh-execution.md evals/m4/execution/m4.1/launch-claim.schema.json evals/m4/execution/m4.1/dispatch-receipt.schema.json evals/m4/execution/m4.1/execution-terminal.schema.json evals/m4/execution/audit_m4_1.py tests/test_m4_1_execution.py
+          python -X utf8 evals/m4/audit_preparation.py
+          git diff --raw --exit-code f48ab8d7e835e9a57e65b75458faa786d696316d HEAD -- evals/m3 skills/engineering-research-copilot evals/m4/cases evals/m4/variants evals/m4/schemas evals/m4/preparation-manifest.json evals/m4/build_preparation.py evals/m4/audit_preparation.py evals/m4/audit_results.py evals/m4/task-protocol.md evals/m4/judge-rubric.json tests/test_m4_preparation.py tests/test_m4_results.py evals/m4/authorization/gate-iv-review.json evals/m4/authorization/execution-authorization.json evals/m4/authorization/execution-control.json evals/m4/authorization/build_authorization.py evals/m4/authorization/audit_authorization.py evals/m4/authorization/execution-authorization.schema.json evals/m4/authorization/execution-control.schema.json tests/test_m4_authorization.py evals/m4/execution/m4.0/launch-claim.json evals/m4/execution/m4.0/pre-dispatch-failure.json evals/m4/execution/audit_m4_0.py tests/test_m4_execution.py
+          git diff --exit-code e3542201f96218f340a09f77458661822c98d876 HEAD -- evals/m4/authorization/gate-iv-review.json evals/m4/authorization/execution-authorization.json evals/m4/authorization/execution-control.json
+          python -X utf8 evals/m4/execution/audit_m4_0.py
+          git cat-file -e '80b54697c3e27a5dad0a24d5318ce26c8fe46141^{commit}'
+          git merge-base --is-ancestor 80b54697c3e27a5dad0a24d5318ce26c8fe46141 HEAD
+          git diff --raw --exit-code 80b54697c3e27a5dad0a24d5318ce26c8fe46141 HEAD -- evals/m4/execution/m4.1/launch-claim.json evals/m4/execution/m4.1/execution-terminal.json
+          git diff --exit-code 80b54697c3e27a5dad0a24d5318ce26c8fe46141 HEAD -- evals/m4/execution/m4.1/launch-claim.json evals/m4/execution/m4.1/execution-terminal.json
+          python -X utf8 evals/m4/execution/audit_m4_1_terminal.py
+      - name: Assert current M4 results remain not run before an M4.2 claim
+        if: hashFiles('evals/m4/execution/m4.2/launch-claim.json') == ''
+        run: python -X utf8 evals/m4/audit_results.py --expect-not-run
+      - name: Remove isolated terminal M4 predecessor worktree
+        if: always()
+        run: git worktree remove --force "${{ runner.temp }}/s1-terminal-m4"

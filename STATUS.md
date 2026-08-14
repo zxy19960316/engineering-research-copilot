@@ -2,9 +2,37 @@
 
 ## Active milestone
 
-`M3 — Engineering method cards`
+`S1.1 — Portable Agent-host projections`
 
-Active revision: `M3.1.1 r5+r5.2 cross-revision aggregate and M3 closure`
+Successor baseline: `c21c24e079631d2396a3989045c9f0945e17c24e`
+
+Successor branch: `codex/research-skill-cluster-strengthening`
+
+Successor status: `S1_FOUNDATION_IMPLEMENTED; S1_1_HOST_ADAPTER_IMPLEMENTED; LOCAL_GATES_PASSED; DELIVERY_AUTHORIZED; REAL_HOST_RUNTIME_UNCLAIMED`
+
+Authorized successor scope: `one umbrella router plus eight focused Skills; shared evidence/readiness/permission/review/handoff contracts; direction-graph.v1; scientific-figure workflow; Codex, Claude Code, OpenCode, Hermes, OpenClaw, and GitHub Copilot host projections; native plugin manifests; local validation; commit; push; pull request; merge to remote main`
+
+Successor research inputs: `docs/research/2026-08-14-scientific-figure-workflow-survey.md sha256=4fcbc1169613ade1d065008a284419cee9caa5c2831a7c400c781cc717885bea; docs/research/2026-08-14-research-skill-ecosystem-survey.md sha256=3b484ed3494ea55cabc61992060048bf748ab051411a46e2fca363854d9aa207; docs/research/2026-08-14-agent-host-compatibility-survey.md sha256=57778b596dcbc4ef22827ff48a8e463a6498f5601c74fe1038d74ed74c9be470`
+
+Successor authority state: `repository_file_write=true; local_validation=true; commit=true; push=true; pull_request=true; merge_main=true; real_host_install=false; host_config_write=false; research_material_download=false; research_material_upload=false; experiment=false; simulation=false; training=false; publication=false; external_communication=git_delivery_only`
+
+Successor boundary: `not a continuation, retry, repair, or relabeling of M4.2; no M4 authorization, claim, execution, result, terminal, or frozen evaluation artifact may be modified or consumed`
+
+Successor local gates: `host_projection_focused=15/15; S1_cluster=47/47; S1_M1_M2_non_M4=210/210; M3_core_non_M4=179/179; standard_skill_validator=9/9; codex_plugin_validator=PASS; git_diff_check=PASS; remote CI must pass on the PR before merge`
+
+Successor scope audit: `evals/m4 changes=0; downloads=0; uploads=0; experiments=0; simulations=0; training_runs=0; publications=0; external_communications=0`
+
+Successor preserved limitations: `the first 47-case cluster run failed only because the compatibility-report SHA-256 was transcribed four characters short; the report bytes were not changed and the corrected binding passed; two broad combined current-lifecycle/non-M4 wrappers and one historical M3 audit wrapper were terminated or timed out without results and are not counted as passes; Claude Code, OpenCode, Hermes, OpenClaw, and Copilot executables are absent; Codex is present but no external model invocation was authorized; native runtime activation therefore remains unclaimed`
+
+Successor first remote CI: `PRESERVED_FAILED; head=a6cab47197890f9fe35e026b0394b2a65b7a57f5; push_run=31810242065; pull_request_run=31810344557; failures=validate,historical-audit-cross-platform-ubuntu; causes=undeclared_PyYAML_test_dependency,legacy_M4_skill_tree_identity_checks_run_at_successor_HEAD; M4 artifacts and tests changed=0`
+
+Successor CI repair: `IMPLEMENTED_PENDING_EXACT_HEAD_REMOTE_CONFIRMATION; cluster tests now use a standard-library parser; current S1/M1/M2/M3 checks remain on successor HEAD; legacy M4 checks replay only in isolated terminal predecessor c21c24e079631d2396a3989045c9f0945e17c24e; current successor must have an empty diff from that predecessor under evals/m4 and tests/test_m4*.py; no failed evidence was relabeled`
+
+Successor delivery boundary: `integrate origin/main without rebasing frozen history; push the named feature branch; require PR checks; merge through the PR; real-data plotting still requires a Python-or-R choice; repository license decision remains open`
+
+Terminal predecessor milestone: `M4 — Cross-engineering forward evaluation`
+
+Active revision: `M4.2 GATE_B_STOPPED_PROTOCOL_OR_INFRASTRUCTURE_FAILURE; accepted_head=9869aa4b22b5097619ce18b896a1c2b6e631e58b; accepted_tree=b652942e38e81716e16065c4b32d4bb059326012; decision=M4_2_TERMINAL_FAILURE_PRESERVED_SUCCESSOR_REVISION_REQUIRED; authorization_token=CONSUMED; claim=PRESENT; terminal=PRESENT; continuation_forbidden=true`
 
 Historical r5 evidence HEAD: `1b696bce53ee0a11163bfe4f91a9a49ab3af6f49`
 
@@ -12,7 +40,7 @@ Gate 3 accepted evidence baseline HEAD: `ea8a7bbb8b365aded89f9ddb5c784f6e95a51d3
 
 Gate 3 accepted evidence baseline exact-HEAD CI: `PASSED` (GitHub Actions run `31192712555`)
 
-Status: `GATE_4_COMPLETE; CROSS_REVISION_AGGREGATE_ACCEPTED; M3_CLOSED; M4_NOT_STARTED`
+Status: `M3_CLOSED; M4_0_PRE_DISPATCH_FAILED_PRESERVED; M4_1_STOPPED_PROTOCOL_FAILURE_PRESERVED; M4_1_AUTHORIZATION_CONSUMED; M4_1_TASKS_NOT_DISPATCHED; M4_2_PREPARED_NOT_AUTHORIZED; M4_2_WINDOWS_LIFECYCLE_REPAIR_ACCEPTED; M4_2_GATE_IV_A_REVIEW_PASSED_NOT_AUTHORIZED; M4_2_GATE_IV_B_PROTOCOL_PROOF_PASSED_NOT_AUTHORIZED; M4_2_AUTHORIZATION_PREPARATION_PASSED_NOT_AUTHORIZED; M4_2_AUTHORIZED_UNCONSUMED_NOT_CLAIMED_NOT_EXECUTED; M4_2_GATE_A_ACCEPTED; M4_2_GATE_B_STOPPED_PROTOCOL_OR_INFRASTRUCTURE_FAILURE; M4_2_AUTHORIZATION_CONSUMED; M4_2_TASKS_NOT_DISPATCHED; M4_FRESH_RESULTS_NOT_RUN`
 
 Historical r5 status: `BLOCKED_NOT_ACCEPTED`
 
@@ -36,7 +64,371 @@ Historical immutable-r5 exact-HEAD CI: `FAILED` (GitHub Actions run `31096079186
 
 M3: `CLOSED`
 
-M4: `NOT_STARTED`
+M4: `M4_1_STOPPED_PROTOCOL_FAILURE_PRESERVED; M4_1_AUTHORIZATION_CONSUMED; M4_2_PREPARED_NOT_AUTHORIZED; M4_2_WINDOWS_LIFECYCLE_REPAIR_ACCEPTED; M4_2_GATE_IV_A_REVIEW_PASSED_NOT_AUTHORIZED; M4_2_GATE_IV_B_PROTOCOL_PROOF_PASSED_NOT_AUTHORIZED; M4_2_AUTHORIZATION_PREPARATION_PASSED_NOT_AUTHORIZED; M4_2_AUTHORIZED_UNCONSUMED_NOT_CLAIMED_NOT_EXECUTED; M4_2_GATE_A_ACCEPTED; M4_2_GATE_B_STOPPED_PROTOCOL_OR_INFRASTRUCTURE_FAILURE; M4_2_AUTHORIZATION_CONSUMED; M4_2_TASKS_NOT_DISPATCHED`
+
+M4 fresh tasks authorized: `false; the fixed 60-task M4.2 authorization was consumed by the sole whole-matrix claim; same-revision continuation, retry, repair, or second claim is forbidden; recorded contexts, dispatches, threads, finalizations, and results remain zero; judge, aggregation, M4 closure, and M5 remain unauthorized or NOT_RUN; M4.0, M4.1, and M4.2 remain consumed and terminal`
+
+M4 preparation protocol: `COMPLETE; OFFLINE_ONLY`
+
+M4 preparation manifest: `evals/m4/preparation-manifest.json`
+
+M4 preparation matrix: `12 cases; 5 arms; 60 planned tasks; 6 domain batches`
+
+M4 preparation counters: `authorized=0; contexts=0; dispatched=0; finalizations=0; results=0; judge_scores=0; retries=0; repairs=0; unauthorized_side_effects=0`
+
+M4 result state: `NOT_RUN`
+
+M4 preparation local gates: `PASSED; focused=27/27; full=606/606; preparation_audit=PASSED; results_audit=NOT_RUN`
+
+M4 Gate IV independent review: `PASSED; findings=0`
+
+M4 Gate IV preparation baseline: `c56c3c1ab384f65e51a70e9582672c6320d19121` (GitHub Actions run `31237480839`; `success`)
+
+M4 Gate IV authorization artifact: `evals/m4/authorization/execution-authorization.json`
+
+M4 Gate IV execution control: `evals/m4/authorization/execution-control.json`
+
+M4 Gate IV model binding: `gpt-5.6-sol; reasoning_effort=max; configured defaults must match`
+
+M4 Gate IV authorized roster: `60 task IDs; 60 fresh contexts maximum; 60 independent finalizations maximum; 6 domain batches; 1 attempt/task`
+
+M4 Gate IV authorization token: `sha256:09c940955104f2ae9278b55d155bc43a47d43a0eb9e80e4f90d7425eb3c0e292`
+
+M4 Gate IV authorization token status: `CONSUMED; claim_count=1; terminal for M4.0`
+
+M4 Gate IV launch claim: `PRESENT; claim_id=507b5fef-c05f-4ede-ad06-b6694203cfe1; sha256=5690177383c44a30e808533ebdfe0b504c6da2abf8e61a1d0303d4c439c3ecec`
+
+M4 Gate IV observed counters: `create_thread_calls=0; contexts=0; dispatched=0; finalizations=0; results=0; retries=0; repairs=0; followups=0; judge_scores=0; unauthorized_side_effects=0`
+
+M4 Gate IV authorization local gates before claim: `PASSED; focused=42/42; full=618/618; authorization_audit=READY_UNCONSUMED; configured_default_check=MATCHED; results_audit=NOT_RUN`
+
+M4 Gate IV judge and later gates: `judge_execution=false; blind_mapping_access=false; aggregation=false; closure=false`
+
+M4 separate fresh-execution authorization: `CONSUMED; SAME_REVISION_CONTINUATION_FORBIDDEN`
+
+M4.0 pre-dispatch failure: `PRESERVED; failed_stage=frozen_request_bundle_hash_verification; batch=M4-BATCH-NUC; task_id=null; System.Convert.ToHexString unavailable on PowerShell 5.1 / CLR 4.0`
+
+M4.0 failure evidence: `evals/m4/execution/m4.0/pre-dispatch-failure.json; sha256=8ef9487ce617aeafefc6d665a981581ffc046b541cf426f22d434be689f007ff`
+
+M4.0 fresh result state: `NOT_RUN; result_roots=0; results_manifest=ABSENT`
+
+M4.0 terminal local gate: `PASSED; focused=8/8; execution_audit=PRE_DISPATCH_FAILED_PRESERVED; first exact-HEAD CI=FAILED on c5c25c5a4e8439bf3b54e16e6e65237911ed99b4 (GitHub Actions run 31244970922; Linux single-branch authorization ref lookup); compatibility-fix exact-HEAD CI=PASSED on f48ab8d7e835e9a57e65b75458faa786d696316d (GitHub Actions run 31246286753)`
+
+M4.1 current terminal state: `M4_1_STOPPED_PROTOCOL_FAILURE_PRESERVED; M4_1_AUTHORIZATION_CONSUMED; M4_1_TASKS_NOT_DISPATCHED; M4_2_REQUIRED`
+
+M4.1 terminal evidence baseline: `80b54697c3e27a5dad0a24d5318ce26c8fe46141`
+
+M4.1 terminal-closure branch: `codex/m4-cross-engineering-forward-evaluation-m4.1-terminal-closure`
+
+M4.1 terminal-closure plan: `docs/superpowers/plans/2026-08-09-m4.1-terminal-closure.md`
+
+M4.1 launch claim: `PRESENT; claim_id=32e0df57-a8d2-5c19-9ffc-da69997686e8; sha256=c16a2e53aa2e9215e2325464d547356afdb73897bfc7d29605e0105b9987b3c6; claimed_at_utc=2026-08-08T14:28:37Z; claim_count=1`
+
+M4.1 execution terminal: `PRESENT; terminal_state=STOPPED_PROTOCOL_OR_INFRASTRUCTURE_FAILURE; sha256=7305d71ba94cd209f5bb0cb2c977db3bb157d95b907f8f59df9133c192f4d66e; recorded_at_utc=2026-08-08T14:28:37Z`
+
+M4.1 failed stage: `post_claim_dual_confirmation; failed_batch=M4.1-BATCH-NUC; failed_task_id=M4.1-NUC-A-F; failure_class=PROTOCOL_FAILURE; authorization_already_claimed observed`
+
+M4.1 failure evidence: `raw_evidence_sha256=61a18842ac13637f9ba71a5dac6547d1fcbd4355127f97ea213e0ea44941f9c5; immutable; no repair or retry`
+
+M4.1 execution and result counters: `tasks=0; threads=0; attempts=0; finalizations=0; results=0; retries=0; repairs=0; followups=0; judge_calls=0; aggregation_calls=0; side_effects=0`
+
+M4.1 absent artifacts: `dispatch_receipts=0; raw_finals=0; platform_observations=ABSENT; result_root=ABSENT; results_manifest=ABSENT`
+
+M4.1 continuation policy: `FORBIDDEN; authorization token consumed once; no continuation; no rerun; successor_revision_required=true`
+
+M4.1 continuation or rerun is forbidden
+
+M4.1 consumed-state exact-HEAD CI: `FAILED` on HEAD `80b54697c3e27a5dad0a24d5318ce26c8fe46141` (GitHub Actions run `31262297707`; validate job `93114901246` failed; Ubuntu job `93114901218` failed; Windows job `93114901228` passed; predecessor claim-absence assertions intentionally preserved as red evidence)
+
+M4.1 terminal-preservation audit: `PASSED; status=M4_1_STOPPED_PROTOCOL_FAILURE_PRESERVED; focused=6/6; read_only=true; repeatable=true; claim_and_terminal_sha256_exact=true`
+
+M4.1 terminal-closure exact-HEAD CI: `PASSED` on HEAD `8cfb04f0d7f3631609659e903841a1a75b73d750` (GitHub Actions run `31300657717`; validate job `93212781724` success; terminal Ubuntu job `93212781738` success; terminal Windows job `93212781741` success; pre-claim Ubuntu job `93212781752` success; pre-claim Windows job `93212781765` success)
+
+M4.1 terminal-closure follow-up exact-HEAD CI: `PASSED` on HEAD `e6ae2be7695ce1d2613dcd39e379ff458c1b60fe` (GitHub Actions run `31301984766`; five lifecycle-aware jobs succeeded)
+
+M4.2 state: `M4_2_PREPARED_NOT_AUTHORIZED; M4_2_WINDOWS_LIFECYCLE_REPAIR_ACCEPTED; M4_2_GATE_IV_A_REVIEW_PASSED_NOT_AUTHORIZED; M4_2_GATE_IV_B_PROTOCOL_PROOF_PASSED_NOT_AUTHORIZED; M4_2_AUTHORIZATION_PREPARATION_PASSED_NOT_AUTHORIZED; M4_2_AUTHORIZED_UNCONSUMED_NOT_CLAIMED_NOT_EXECUTED; M4_2_GATE_A_ACCEPTED; M4_2_GATE_B_STOPPED_PROTOCOL_OR_INFRASTRUCTURE_FAILURE; M4_2_AUTHORIZATION_CONSUMED; M4_2_TASKS_NOT_DISPATCHED; fresh_execution_authorized=false; gate_b_authority_consumed=true; successor_revision_required=true`
+
+M4.2 successor-preparation branch: `codex/m4-cross-engineering-forward-evaluation-m4.2-successor-preparation`
+
+M4.2 successor-preparation plan: `docs/superpowers/plans/2026-08-09-m4.2-successor-preparation.md`
+
+M4.2 Gate IV-A r1 preserved blocked branch: `codex/m4-cross-engineering-forward-evaluation-m4.2-gate-iv-a-independent-review`
+
+M4.2 Gate IV-A r1 terminal evidence: `head=ac6cc70714a90f73b4de09eaf0e521e699296890; tree=3ee67b0c5ffa53fc2676381e9ab9b79499e2cf6e; pull_request=4; artifact=evals/m4/authorization/m4.2/gate-iv-a-review.json; artifact_blob=9af5710dfba68ee5038f0c9e832591181d41835e; artifact_sha256=cd68d10a140606d4f7dd0ee6d09ebe49c1b4566aa54345cfe91728eaac06b373; findings=3; reviewer_side_effects=[]; decision=BLOCKED; status=BLOCKED; immutable=true`
+
+M4.2 Gate IV-A r1 blocked exact-HEAD CI: `review_head=0cc2364aa7833cc410d3133d33597d552b02153d; push_run=31320763394; pull_request_run=31320783288; Windows_current_lifecycle=631/632; markers=FAIL:1,FAILED (:1,Traceback:1,##[error]:1; preparation_repair=NOT_AUTHORIZED`
+
+M4.2 Windows lifecycle repair branch: `codex/m4-cross-engineering-forward-evaluation-m4.2-windows-lifecycle-repair`
+
+M4.2 Windows lifecycle repair plan: `docs/superpowers/plans/2026-08-10-m4.2-windows-lifecycle-repair.md`
+
+M4.2 Windows lifecycle repair exact HEAD: `44d1004da1cbb2681ee0d423d1748f98fbaa13e4; tree=9845b1a05e23fa84e55ad20399ec1b86bc861e44; parent=941602180c75c4ae16edfc927f6c39b8420fb45c; pull_request=5`
+
+M4.2 Windows lifecycle repair root cause: `CONFIRMED; error=supersession_policy_sha256_mismatch; Windows working-tree SHA-256=97572f161efa3c4daa2029bd1c7e9b765ae866e7448c4c0d2c0a0f585f007092; Git blob SHA-256=08cdbbe01612c9337c381b69620128a1e58d879b1aa92a561c325ec3104cc1ae; worktree_bytes=4848; blob_bytes=4775; worktree_CRLF=73; blob_LF=73; bytes_equal=false`
+
+M4.2 Windows lifecycle repair scope: `EXACT; changed_paths=.gitattributes,docs/superpowers/plans/2026-08-10-m4.2-windows-lifecycle-repair.md,evals/m4/audit_m4_2_preparation.py,tests/test_m3_raw_sha_eol_policy.py; historical_M3_changed_paths=[]; diagnostics_policy=/evals/m3/results/diagnostics-r5.1/** text eol=lf`
+
+M4.2 Windows lifecycle repair local acceptance: `PASSED; Windows_current_lifecycle=655/655; Ubuntu_current_lifecycle=655/655; focused_historical_M3=6/6; M4.2_focused=21/21; request_bindings=60/60; PowerShell_5_1=PASSED; M4.1_terminal=M4_1_STOPPED_PROTOCOL_FAILURE_PRESERVED; results=NOT_RUN; forbidden_path_count=0; working_tree_after_auditors=clean`
+
+M4.2 Windows lifecycle repair push exact-HEAD CI: `ALL_GREEN; run=31354780589; head=44d1004da1cbb2681ee0d423d1748f98fbaa13e4; jobs=7/7; raw_log_bytes=685943; raw_log_sha256=6b8bd910c89b5f17510c542f3a2418e20ded2c547d5cef69ff78aa32f78be29d; markers=FAIL:0,FAILED (:0,Traceback:0,##[error]:0`
+
+M4.2 Windows lifecycle repair PR exact-HEAD CI: `ALL_GREEN; run=31354802277; head=44d1004da1cbb2681ee0d423d1748f98fbaa13e4; jobs=7/7; raw_log_bytes=695517; raw_log_sha256=5f63879f748cecfc0ca8ddc4ac3b9686fb83aa1fd5683468f22b2e88b0a5a7f2; markers=FAIL:0,FAILED (:0,Traceback:0,##[error]:0`
+
+M4.2 Gate IV-A r2 branch: `codex/m4-cross-engineering-forward-evaluation-m4.2-gate-iv-a-r2`
+
+M4.2 Gate IV-A r2 plan: `docs/superpowers/plans/2026-08-10-m4.2-gate-iv-a-r2-independent-review.md`
+
+M4.2 Gate IV-A r2 reviewed repair: `head=44d1004da1cbb2681ee0d423d1748f98fbaa13e4; tree=9845b1a05e23fa84e55ad20399ec1b86bc861e44; .gitattributes=REVIEWED; repair_artifacts=REVIEWED`
+
+M4.2 Gate IV-A r2 artifact: `evals/m4/authorization/m4.2/gate-iv-a-review-r2.json; findings=[]; reviewer_side_effects=[]; decision=APPROVE_M4_2_GATE_IV_B_PROTOCOL_PROOF_ONLY; status=M4_2_GATE_IV_A_REVIEW_PASSED_NOT_AUTHORIZED`
+
+M4.2 Gate IV-A r2 delivery: `VERIFIED_TRUE_GREEN; accepted_review_head=caf2f579556d6df0dff88af246e51ed3ae6438b9; push_run=31359218501; push_jobs=9/9; push_raw_log_bytes=1217964; push_raw_log_sha256=933554d4e16e839f6f8de3cc7ed52ae7a4abf7e894458a699d869b8621985a60; pull_request_run=31359221182; pull_request_jobs=9/9; pull_request_raw_log_bytes=1231978; pull_request_raw_log_sha256=0efaf0ba5135fea86f4c0d32788c02e5b2555c392802ee3fe11f59daaf65ae0d; markers=FAIL:0,FAILED (:0,Traceback:0,##[error]:0`
+
+M4.2 Gate IV-A r2 review evidence: `PASSED_NOT_AUTHORIZED; reviewed_repair_head=44d1004da1cbb2681ee0d423d1748f98fbaa13e4; focused_review=30/30; Windows_current_lifecycle=634/634; Linux_current_lifecycle=634/634; repaired_baseline=21/21; request_bindings=60/60; Windows_PowerShell_5_1=60/60; GitHub_Ubuntu_PowerShell_7=60/60; M4.1_terminal=M4_1_STOPPED_PROTOCOL_FAILURE_PRESERVED; results=NOT_RUN; forbidden_path_count=0; findings=[]; reviewer_side_effects=[]; read_only=true; repeatable=true`
+
+M4.2 Gate IV-A r2 closure exact-HEAD CI: `PASSED; closure_head=988b4332504549df2038f51532175effd696a445; push_run=31359667359; pull_request_run=31359670122; both_success=true`
+
+M4.2 Gate IV-B protocol-proof branch: `codex/m4-cross-engineering-forward-evaluation-m4.2-gate-iv-b-protocol-proof`
+
+M4.2 Gate IV-B protocol-proof plan: `docs/superpowers/plans/2026-08-10-m4.2-gate-iv-b-protocol-proof.md`
+
+M4.2 Gate IV-B proof baseline: `head=988b4332504549df2038f51532175effd696a445; tree=38b1aeacd54b5e5a9ac115be1816206a7a3f8a4f; r2_artifact_blob=734918bd5de16ea6f7595e206c3cd313ba041fa7; r2_decision=APPROVE_M4_2_GATE_IV_B_PROTOCOL_PROOF_ONLY`
+
+M4.2 Gate IV-B proof artifact: `evals/m4/authorization/m4.2/gate-iv-b-protocol-proof.json; proof_kind=OFFLINE_PROTOCOL_PROOF_NOT_EXECUTION_AUTHORIZATION; findings=[]; reviewer_side_effects=[]`
+
+M4.2 Gate IV-B matrix proof: `PASSED; cases=12; arms=5; planned_tasks=60; batches=6; tasks_per_batch=10; unique_task_ids=60; unique_blind_ids=60; matrix_binding_sha256=2bdb12d7290b2026b41280a6a25e963491201f8c57aa9bcc958e9dcf61e60180`
+
+M4.2 Gate IV-B request-binding proof: `PASSED; independently_recomputed=60; matched=60; unique=60; source_bytes_verified=60; aggregate_sha256=5bc47878e3c13afd9dafc4d17ca742ce4d29c8a2a00d70a53fc1753b11329142`
+
+M4.2 Gate IV-B virtual-claim proof: `PASSED; first whole-matrix claim consumes 60 virtual slots exactly once; second and partial claims rejected; post-claim failure terminal; simulated dispatch=0; retry=0; repair=0; followup=0; successor revision required after terminal failure`
+
+M4.2 Gate IV-B pre-dispatch proof: `PASSED; model,project,worktree,request,HEAD,prerequisite mismatches each reject before claim and dispatch; actual claim=ABSENT; actual tasks=0`
+
+M4.2 Gate IV-B visibility proof: `PASSED; task sees only case,task_protocol,selected_variant_instruction; cross-task results=false; blind map=false; judge=false; unblinding=false; aggregation=false`
+
+M4.2 Gate IV-B first B3 CI evidence: `PRESERVED_NOT_ACCEPTED; head=cf1dbc0c60a3dc5424fdf88da9e4deaa5a8bd1de; push_run=31369859743; pull_request_run=31369911612; Gate_IV_B_Ubuntu_and_Windows_jobs=PASSED; Windows_r2_lifecycle=FAILED; failed_test=tests.test_replay_m2_offline_results.M2OfflineResultsReplayTests.test_fixture_builder_is_byte_deterministic; root_cause=isolated_r2_worktree_forced_LF_while_Windows_builder_materialized_CRLF; no authorization or execution side effect`
+
+M4.2 Gate IV-B B3 CI repair: `head=249e28d07d5e52cd9cec9b7e110f6159e6046222; parent=cf1dbc0c60a3dc5424fdf88da9e4deaa5a8bd1de; scope=.github/workflows/m1-validation.yml,tests/test_m4_2_gate_iv_b_protocol_proof.py; r2_worktree_inherits_runner_platform_EOL; M4 byte-sensitive paths remain LF-pinned by .gitattributes; no test weakened`
+
+M4.2 Gate IV-B local proof gates: `PASSED; focused=27/27; current_lifecycle=661/661; frozen_r2_review=30/30; targeted_r2_plus_M2_EOL_replay=33/33; local_Windows_PowerShell_5_1=60/60; audit_results=NOT_RUN; forbidden_path_count=0; read_only=true; repeatable=true`
+
+M4.2 Gate IV-B delivery: `VERIFIED_TRUE_GREEN; accepted_proof_head=249e28d07d5e52cd9cec9b7e110f6159e6046222; push_run=31370941146; push_jobs=11/11; push_raw_log_bytes=1362037; push_raw_log_sha256=5a0984715457dbdea9217a57239eedac707fb6407e2cb274f61afebdbe5338bd; pull_request_run=31370945548; pull_request_jobs=11/11; pull_request_raw_log_bytes=1378502; pull_request_raw_log_sha256=6e483e7d9a897cb8dfc2254b1217089ad2213f30d8f9bc3ecfbbd05124faa471; markers=FAIL:0,FAILED (:0,Traceback:0,##[error]:0`
+
+M4.2 Gate IV-B runtime parity: `PASSED; Windows_PowerShell_5_1=VERIFIED_60_OF_60; Ubuntu_PowerShell_7=VERIFIED_60_OF_60; semantic_results_match=true; mismatches=[]; side_effects=[]`
+
+M4.2 Gate IV-B decision: `APPROVE_M4_2_AUTHORIZATION_PREPARATION_ONLY; status=M4_2_GATE_IV_B_PROTOCOL_PROOF_PASSED_NOT_AUTHORIZED; this is not execution authorization`
+
+M4.2 Gate IV-B negative authority: `authorization_artifact=ABSENT; execution_control=ABSENT; authorization_token=NOT_ISSUED; launch_claim=ABSENT; result_root=ABSENT; authorized_tasks=0; created_contexts=0; dispatched_tasks=0; finalizations=0; results_observed=0; judge_scores=0; retries=0; repairs=0; raw_model_finals=0; aggregation_calls=0; acceptance_claims=0; unauthorized_side_effects=0`
+
+M4.2 authorization-preparation branch: `codex/m4-cross-engineering-forward-evaluation-m4.2-authorization-preparation`
+
+M4.2 authorization-preparation plan: `docs/superpowers/plans/2026-08-10-m4.2-authorization-preparation.md`
+
+M4.2 authorization-preparation artifact: `evals/m4/authorization/m4.2/authorization-preparation.json; preparation_kind=AUTHORIZATION_SCHEMA_AND_PROJECTION_ONLY; status=M4_2_AUTHORIZATION_PREPARATION_PASSED_NOT_AUTHORIZED`
+
+M4.2 authorization schema isolation: `execution-authorization.schema.json and execution-control.schema.json are closed future-instance schemas; candidate_authorization_projection and candidate_control_projection are pure projections; no writer exists; executable instances remain absent`
+
+M4.2 authorization-preparation superseded local closure attempt: `PRESERVED_NOT_PUSHED; closure_head=a3a2b14526358f8b359cc6c4b442884f0b851269; failed_test=tests.test_m4_2_authorization_preparation.M42AuthorizationPreparationMutationTests.test_rejects_final_state_without_valid_candidate_delivery; cause=final_values_reassigned_to_already_final_artifact_without_mutation; restore_head=86b5afc1631fb8c80ab753832abcfbb375c4366b; repaired_candidate_head=44e6cd611ce67f362015c431d3c1d6ba069ad345; no authorization or execution side effect`
+
+M4.2 authorization-preparation local gates: `PASSED; focused=48/48; current_lifecycle=682/682; exact_Gate_IV_B_replay=27/27; local_Windows_PowerShell_5_1=60/60; audit_results=NOT_RUN; preparation_auditor=BYTE_IDENTICAL_TWICE; Gate_IV_B_auditor=BYTE_IDENTICAL_TWICE; forbidden_path_count=0; working_tree=clean`
+
+M4.2 authorization-preparation delivery: `VERIFIED_TRUE_GREEN; accepted_candidate_head=44e6cd611ce67f362015c431d3c1d6ba069ad345; push_run=31379784953; push_jobs=13/13; push_raw_log_bytes=2026196; push_raw_log_sha256=4753351484c5f58defaf681b8568b768f07025f01394a2a6ed817b69212b7d51; pull_request_run=31379789763; pull_request_jobs=13/13; pull_request_raw_log_bytes=2045877; pull_request_raw_log_sha256=f1ad38ee2316c0147a5ee742bf634697457aa25cb9f7ff8f06522ba35bf80449; markers=FAIL:0,FAILED (:0,Traceback:0,##[error]:0`
+
+M4.2 authorization-preparation runtime parity: `PASSED; Windows_PowerShell_5_1=VERIFIED_60_OF_60; Ubuntu_PowerShell_7=VERIFIED_60_OF_60; semantic_results_match=true; mismatches=[]; side_effects=[]`
+
+M4.2 authorization-preparation decision: `APPROVE_M4_2_SEPARATE_AUTHORIZATION_WORK_PACKAGE_ONLY; status=M4_2_AUTHORIZATION_PREPARATION_PASSED_NOT_AUTHORIZED; this is not execution authorization`
+
+M4.2 authorization-preparation negative authority: `authorization artifact=ABSENT; execution control=ABSENT; authorization token=NOT_ISSUED; claim=ABSENT; execution_root=ABSENT; result_root=ABSENT; authorized_tasks=0; created_contexts=0; dispatched_tasks=0; finalizations=0; results_observed=0; judge_scores=0; retries=0; repairs=0; raw_model_finals=0; aggregation_calls=0; acceptance_claims=0; unauthorized_side_effects=0`
+
+M4.2 next permitted work: `SEPARATE_SUCCESSOR_REVISION_PREPARATION_WORK_PACKAGE_ONLY; the authorization/control pair remains preserved but its inline token is CONSUMED by the sole claim; same-revision continuation, second claim, retry, repair, follow-up, context creation, dispatch, execution, judging, aggregation, M4 closure, and M5 work are forbidden`
+
+M4.2 one-shot authorization branch: `codex/m4-cross-engineering-forward-evaluation-m4.2-one-shot-authorization`
+
+M4.2 one-shot authorization plan: `docs/superpowers/plans/2026-08-10-m4.2-one-shot-authorization.md`
+
+M4.2 one-shot authorization baseline: `head=4efa75c542172a95c6c72c8c1450fea77a8e2ff1; tree=f7394004d9d5f0a9be22a62dca1d67bb5f2af52d; accepted_preparation_candidate=44e6cd611ce67f362015c431d3c1d6ba069ad345; Gate_IV_B_closure=ad67a79f39685937466d3a49d30c6a5117e2810c`
+
+M4.2 one-shot authorization accepted candidate: `head=24197d67c7ffb654346bc670617844387909c9ae; tree=4e0b4db540fbb72c338eec88b602e70ebfaf3278; base_head=4efa75c542172a95c6c72c8c1450fea77a8e2ff1; pre_issuance_status=M4_2_ONE_SHOT_AUTHORIZATION_CANDIDATE_READY_NOT_ISSUED`
+
+M4.2 one-shot authorization preserved failed candidate: `head=78c3bae5279f82f17d85b9530e457d50ea3147b5; immutable=true; amended=false; rewritten=false; force_pushed=false`
+
+M4.2 one-shot authorization candidate local gates: `PASSED; authorization=19/19; authorization_preparation=24/24; Gate_IV_B=28/28; successor_focused=52/52; closure_focused=71/71; current_lifecycle=705/705; local_Windows_PowerShell_5_1=60/60; audit_results=NOT_RUN; authorization_auditor=BYTE_IDENTICAL_TWICE; authorization_pair_pre_issuance=ABSENT; forbidden_path_count=0`
+
+M4.2 one-shot authorization candidate push exact-HEAD CI: `TRUE_GREEN; run=31402033008; head=24197d67c7ffb654346bc670617844387909c9ae; jobs=15/15; raw_log_bytes=2267949; raw_log_sha256=fd66bcedc8462214b075ead27aaadade4f2741320286893d67f84f25abd5a06a; markers=FAIL:0,FAILED (:0,Traceback:0,##[error]:0,closure_change_set_mismatch:0,not a working tree:0`
+
+M4.2 one-shot authorization candidate PR exact-HEAD CI: `TRUE_GREEN; run=31402033463; head=24197d67c7ffb654346bc670617844387909c9ae; jobs=15/15; raw_log_bytes=2291046; raw_log_sha256=b5b1ffcf56bfc5336e79ab31c63657b321c56dead17fd5643d556453e09253d5; markers=FAIL:0,FAILED (:0,Traceback:0,##[error]:0,closure_change_set_mismatch:0,not a working tree:0`
+
+M4.2 post-issuance schema-binding repair: `head=c3ca5192b06fdb6fd1835119eb3f7bdb43320504; parent=24197d67c7ffb654346bc670617844387909c9ae; issued authorization/control pair preserved byte-identical`
+
+M4.2 post-issuance repair push CI preserved: `run=31464382711; head=c3ca5192b06fdb6fd1835119eb3f7bdb43320504; attempt_1=FAILED_14_OF_15; attempt_2=FAILED_14_OF_15; failed_job=M4.2 one-shot authorization lifecycle (windows-latest); failed_stage=frozen_preparation_replay; exact_auditor_error=NOT_EXPOSED`
+
+M4.2 post-issuance repair PR CI: `run=31464385707; attempt=1; head=c3ca5192b06fdb6fd1835119eb3f7bdb43320504; jobs=15/15; accepted_as_closure_evidence=false`
+
+M4.2 post-issuance repair diagnostic: `BLOCKED_DIAGNOSTIC_DID_NOT_EXPOSE_ERROR; prior_failure_root_cause=UNRESOLVED; historical repair-head failures preserved`
+
+M4.2 diagnostic hardening accepted head: `head=97a6dd819a54c9aef86a088807f356c24c2b66f1; tree=c4d1470c8ea9b0a976ec02135d61e1e80e801122; parent=c3ca5192b06fdb6fd1835119eb3f7bdb43320504; fail_closed_diagnostic_hardening=RETAINED`
+
+M4.2 diagnostic hardening push exact-HEAD CI: `TRUE_GREEN; run=31470065659; attempt=1; head=97a6dd819a54c9aef86a088807f356c24c2b66f1; jobs=15/15; raw_log_bytes=2423844; raw_log_sha256=c8059f79150082d73d97e1fc12939c3242062612d7c8e7ecd5ef0fb900bba681; required_failure_markers=0`
+
+M4.2 diagnostic hardening PR exact-HEAD CI: `TRUE_GREEN; run=31470068037; attempt=1; head=97a6dd819a54c9aef86a088807f356c24c2b66f1; jobs=15/15; raw_log_bytes=2446447; raw_log_sha256=d71eb9234b78a7d68308bb5487b99d1398e2823d804c9e8eca9c0d02ce858b91; required_failure_markers=0`
+
+M4.2 diagnostic conclusion: `prior_failure_root_cause=UNRESOLVED; direct_frozen_auditor_return_codes=0,0; direct_parsed_errors_first=[]; direct_parsed_errors_second=[]; direct_outputs=858_bytes_each; direct_output_sha256=f66f320d996dd60c7064a3866201324e2984a6bf0ae5f4adb268ece846be9866; historical_pair=48/48; worktree_cleanup=SUCCEEDED; fail_closed_diagnostic_hardening=RETAINED`
+
+M4.2 issued-state closure local gates: `PASSED; authorization=19/19; authorization_preparation=25/25; Gate_IV_B=28/28; successor=53/53; combined_focused=72/72; local_Windows_PowerShell_5_1=60/60; current_lifecycle=706/706; builder_check=PASS; authorization_auditor=BYTE_IDENTICAL_TWICE; preparation_auditor=BYTE_IDENTICAL_TWICE; Gate_IV_B_auditor=BYTE_IDENTICAL_TWICE; audit_results=NOT_RUN; git_diff_check=PASS; staging=EMPTY; unstaged_paths=EXACT_FOUR`
+
+M4.2 one-shot authorization issuance: `M4_2_AUTHORIZED_UNCONSUMED_NOT_CLAIMED_NOT_EXECUTED; authorization/control pair=PRESENT; write_once_calls=1; accepted_candidate_head=24197d67c7ffb654346bc670617844387909c9ae; accepted_candidate_tree=4e0b4db540fbb72c338eec88b602e70ebfaf3278`
+
+M4.2 one-shot authorization artifacts: `authorization_blob=0b83a74642a89440cf7df22c3eeb92ec180c8d5a; authorization_bytes=4955; authorization_raw_sha256=dc73c9376bdd78cf7e0d355701c8c3fe6966c34db5a1203544b9d95ab88e719b; control_blob=04ca77769553f50c0b74f50ab8f239950a2b9a6d; control_bytes=51015; control_raw_sha256=c482386a03895fb3820a8fd5b87f52cbd9ae80c5daeb64483dbfd7ea11c62b56`
+
+M4.2 one-shot authorization token: `inline=true; status=UNCONSUMED; fingerprint=sha256:38722c9e4b69...; claim=ABSENT; claim_count=0`
+
+M4.2 one-shot authorization counters: `authorized_roster_tasks=60; authorized_batches=6; acceptance_claims=0; contexts=0; dispatches=0; executions=0; finalizations=0; results=0; judge_scores=0; aggregation_calls=0; repairs=0; retries=0; unauthorized_side_effects=0`
+
+M4.2 one-shot authorization permissions: `cross_task_visibility=false; judge_authorization=false; aggregation_authorization=false; M4_closure_authorization=false`
+
+M4.2 one-shot authorization result boundary: `claim=ABSENT; execution=NOT_RUN; results=NOT_RUN; results_manifest=ABSENT; M5=ABSENT`
+
+M4.2 one-shot authorization decision: `APPROVE_M4_2_SEPARATE_ONE_SHOT_CLAIM_AND_EXECUTION_WORK_PACKAGE_ONLY; PR_9=OPEN_DRAFT_UNMERGED`
+
+M4.2 Gate A plan and branch: `plan=docs/superpowers/plans/2026-08-12-m4.2-one-shot-claim-and-execution.md; branch=codex/m4-cross-engineering-forward-evaluation-m4.2-one-shot-claim-and-execution; PR_10=OPEN_DRAFT_UNMERGED`
+
+M4.2 Gate A accepted admission repairs: `static_eol_head=8ffc4b53f79a5018588703c562945d9240506990; static_eol_tree=047c30a5c07308f620fda31d3b6c787953d738be; static_eol_push_run=31582089322; static_eol_PR_run=31582092920; preparation_compatibility_head=214acacfb984b3f9e41d35dde8841a4ffb342b34; preparation_compatibility_tree=7671e69844ea59a84411b6bcbfb9abf0feb64ae9; preparation_compatibility_push_run=31584859594; preparation_compatibility_PR_run=31584862968; all_jobs=15/15; attempts=1; Windows_frozen_replay=PASSED`
+
+M4.2 Gate A accepted implementation: `READY_FOR_ATOMIC_CLAIM; head=fd6f680eee71448217fc8fffd7d48f55dd0b0291; tree=a2cadcf7112e372619370a32b5e9cd53aa1285f8; exact_changed_paths=14; schemas=4; read_only_auditors=2; check_only_exclusive_writers=2; focused_synthetic_tests=31; authorization_token=UNCONSUMED; claim=ABSENT; claim_count=0; actual_counters=ALL_ZERO`
+
+M4.2 Gate A exact-HEAD CI: `TRUE_GREEN; push_run=31607667257; PR_run=31607673481; attempts=1; jobs=17/17; PR_10=OPEN_DRAFT_UNMERGED`
+
+M4.2 Gate B production coordinator CLI freeze repair: `base_head=bbee750c54ca98716da393249209224cf36c42d8; base_tree=b9e02060a759d9ec583d5132097eaa35e09e4acf; accepted_head=9869aa4b22b5097619ce18b896a1c2b6e631e58b; accepted_tree=b652942e38e81716e16065c4b32d4bb059326012; production_cli=evals/m4/execution/record_m4_2_execution_evidence.py; modes=check,next-action,record-dispatch,record-final,record-terminal; authorized_research_tasks=60; batches=6; tasks_per_batch=10; test_selectors=111; coordinator_check=PRODUCTION_CLI_FROZEN; push_run=31683141775; PR_run=31683144534; attempts=1; jobs=17/17; exact_head_CI=TRUE_GREEN`
+
+M4.2 Gate B launch claim: `PRESENT; claim_id=a5827070-eb51-597b-ad26-5cf19fc51929; sha256=bfd80ebba9b8e672f19a9837391cce1d0b41826cd3d04b8f0f1953f5b94bb3b8; bytes=29004; claimed_at_utc=2026-08-13T09:07:51Z; claim_count=1; authorization_token=CONSUMED`
+
+M4.2 Gate B execution terminal: `PRESENT; terminal_state=STOPPED_PROTOCOL_OR_INFRASTRUCTURE_FAILURE; sha256=bd9cdc5d7d9ffd68b5e502c36ac743eeb9bd28e7899cf2f50d6c01a607f96cc7; bytes=1828; recorded_at_utc=2026-08-13T09:11:01Z; successor_revision_required=true`
+
+M4.2 Gate B failed stage: `create_thread_response_raw_capture; failed_batch=M4.2-BATCH-NUC; failed_task_id=M4.2-NUC-A-F; failure_class=INFRASTRUCTURE_FAILURE; create_thread invocation attempted but raw response evidence was not captured; retry forbidden`
+
+M4.2 Gate B failure evidence: `raw_evidence_sha256=0aec98854d451f36e8b903707eaf7708bfba68e004c8d0189976bf7bdcda166c; raw_evidence_bytes=258; preserved outside the repository; no repair or retry`
+
+M4.2 Gate B execution and result counters: `tasks=0; threads=0; attempts=1; finalizations=0; results=0; retries=0; repairs=0; followups=0; judge_calls=0; aggregation_calls=0; side_effects=0`
+
+M4.2 Gate B runtime boundary: `launch_claim=PRESENT; execution_terminal=PRESENT; attempted_task_prefix=M4.2-NUC-A-F; dispatch_receipts=0; create_thread_responses=0; raw_finals=0; platform_observations=ABSENT; result_root=ABSENT; results_manifest=ABSENT; judge=NOT_RUN; aggregation=NOT_RUN; M4_closure=NOT_RUN; M5=NOT_STARTED`
+
+M4.2 Gate B continuation policy: `FORBIDDEN; authorization token consumed once; no continuation; no second claim; no retry; no repair; successor_revision_required=true`
+
+M4.2 Gate B decision: `M4_2_TERMINAL_FAILURE_PRESERVED_SUCCESSOR_REVISION_REQUIRED; PR_10=OPEN_DRAFT_UNMERGED`
+
+M4.2 predecessor closure baseline: `e6ae2be7695ce1d2613dcd39e379ff458c1b60fe` (GitHub Actions run `31301984766`; `success`)
+
+M4.2 immutable terminal trust root: `80b54697c3e27a5dad0a24d5318ce26c8fe46141; claim_sha256=c16a2e53aa2e9215e2325464d547356afdb73897bfc7d29605e0105b9987b3c6; terminal_sha256=7305d71ba94cd209f5bb0cb2c977db3bb157d95b907f8f59df9133c192f4d66e`
+
+M4.2 source preparation: `evals/m4/revisions/m4.1/preparation-manifest.json; sha256=d66ad9d513d8e64307f9a1553242d9b7d840ea5432d084b06d86707c1b4c2b61; source_exact_head=fedc5cdeebd7a2943afeb6767d39841305c55444; source_ci_run=31248424046`
+
+M4.2 preparation manifest: `evals/m4/revisions/m4.2/preparation-manifest.json`
+
+M4.2 preparation matrix: `12 cases; 5 arms; 60 planned tasks; 6 domain batches`
+
+M4.2 task identity state: `60 new task IDs; 0 reused; blind IDs=M4-J121..M4-J180; 6 new batch IDs; direct_lineage=M4.1; root_lineage=M4.0`
+
+M4.2 authority state: `fresh_execution=false; authorized_roster_tasks=60; authorized_batches=6; authorization_artifact=PRESENT; execution_control=PRESENT; inline_token=CONSUMED; claim=PRESENT; claim_count=1; continuation=false; cross_task_visibility=false; judge=false; aggregation=false; M4_closure=false`
+
+M4.2 preparation counters: `authorized_tasks=0; created_contexts=0; dispatched_tasks=0; finalizations=0; results_observed=0; judge_scores=0; retries=0; repairs=0; unauthorized_side_effects=0`
+
+M4.2 artifact state: `M4.1 result_root=ABSENT; M4.2 authorization=PRESENT; execution_control=PRESENT; claim=PRESENT; execution_terminal=PRESENT; platform_observations=ABSENT; dispatch_receipts=0; create_thread_responses=0; raw_finals=0; result_root=ABSENT; results_manifest=ABSENT; M5=ABSENT`
+
+M4.2 later gates: `Gate IV-A r1=BLOCKED_PRESERVED; Windows_lifecycle_repair=ACCEPTED; Gate IV-A r2=PASSED_NOT_AUTHORIZED; Gate IV-B protocol proof=PASSED_NOT_AUTHORIZED; authorization preparation=PASSED_NOT_AUTHORIZED; separate one-shot authorization=CONSUMED; authorization=PRESENT; claim=PRESENT; terminal=STOPPED_PROTOCOL_OR_INFRASTRUCTURE_FAILURE; contexts=0; dispatches=0; executions=0; results=0; judge=NOT_RUN; aggregation=NOT_RUN; closure=NOT_RUN; M5=ABSENT`
+
+M4.2 preparation local gates: `PASSED_AFTER_WINDOWS_LIFECYCLE_REPAIR; focused=21/21; Windows_full=655/655; Ubuntu_full=655/655; compile=PASSED; builder_check=PASSED; preparation_audit=M4_2_PREPARED_NOT_AUTHORIZED; raw_SHA_EOL_policy=PASSED; canonical_root_alias=PASSED; CRLF_raw_sha256_mismatches=4/4; sibling_symlink_junction_escape=REJECTED; workflow_python_fail_closed=PASSED; read_only=true; repeatable=true; PowerShell 5.1 self-test=PASSED; request_bindings=60/60; workflow_yaml=VALID`
+
+M4.2 superseded false-green run `31311637459`: `head=be6039e7d2a682b2e001ee12dff5c1db5743b2ed; windows_job=93240229660; GITHUB_CONCLUSION_SUCCESS_BUT_WINDOWS_TEST_FAILED; NOT_ACCEPTED; FALSE_GREEN; failed_test=tests.test_m4_2_preparation.M42PreparationAuditTests.test_rejects_raw_bound_input_eol_drift; observed_errors=case_path_invalid,task_protocol_path_invalid,variant_instruction_path_invalid,rubric_path_invalid; subsequent_python_commands_continued=true`
+
+M4.2 superseded false-green run `31313212880`: `head=dffccf5d2fecc295e3efc7d7368b36b7ff1bf6b7; windows_job=93244187473; GITHUB_CONCLUSION_SUCCESS_BUT_WINDOWS_TEST_FAILED; NOT_ACCEPTED; FALSE_GREEN; failed_test=tests.test_m4_2_preparation.M42PreparationAuditTests.test_rejects_raw_bound_input_eol_drift; observed_errors=case_path_invalid,task_protocol_path_invalid,variant_instruction_path_invalid,rubric_path_invalid; subsequent_python_commands_continued=true`
+
+M4.2 accepted exact-HEAD CI: `TRUE_GREEN_IMPLEMENTATION; CI_INTEGRITY_REPAIR_CLOSED; head=242490a5d0d4e9bc52f21263d8d6780830ab1c8f; run=31316090614; event=push; validate_job=93251454657; ubuntu_m4_2_job=93251454695; windows_m4_2_job=93251454692; all_jobs=7/7; all_raw_logs_verified=true; windows_unittest=OK; errors=[]; forbidden_path_count=0; side_effects=[]; PowerShell_5_1_request_bindings=60/60`
+
+M4.2 companion PR exact-HEAD CI: `TRUE_GREEN_IMPLEMENTATION; head=242490a5d0d4e9bc52f21263d8d6780830ab1c8f; run=31316093185; event=pull_request; validate_job=93251461042; ubuntu_m4_2_job=93251461072; windows_m4_2_job=93251461064; all_jobs=7/7; all_raw_logs_verified=true`
+
+M4.1 predecessor terminal baseline: `f48ab8d7e835e9a57e65b75458faa786d696316d` (GitHub Actions run `31246286753`; `success`)
+
+M4.1 preparation manifest: `evals/m4/revisions/m4.1/preparation-manifest.json`
+
+M4.1 preparation matrix: `12 cases; 5 arms; 60 planned tasks; 6 domain batches`
+
+M4.1 task identity state: `60 new task IDs; 0 reused; blind IDs=M4-J061..M4-J120; 6 new batch IDs`
+
+M4.1 historical one-shot authorization: `CONSUMED by the sole claim; no authority remains for continuation or rerun`
+
+M4.1 historical pre-claim preparation counters: `authorized=0; contexts=0; dispatched=0; finalizations=0; results=0; judge_scores=0; retries=0; repairs=0; unauthorized_side_effects=0`
+
+M4.1 result state: `NOT_RUN; launch_claim=PRESENT_AND_CONSUMED; execution_terminal=PRESENT; result_roots=0; results_manifest=ABSENT`
+
+M4.1 preparation local gates: `PASSED; focused=12/12; combined=62/62; full=638/638; preparation_audit=PREPARED_NOT_AUTHORIZED; PowerShell 5.1 self-test=PASSED; request_bindings=60/60; Skill validator=PASSED; workflow_yaml=VALID`
+
+M4.1 preparation exact-HEAD CI: `PASSED` on HEAD `fedc5cdeebd7a2943afeb6767d39841305c55444` (GitHub Actions run `31248424046`; validate job `93080747550` success; ubuntu job `93080747506` success; windows job `93080747504` success)
+
+M4.1 Gate IV independent review: `PASSED; findings=0; decision=AUTHORIZE_M4_1_GATE_IV_ONE_SHOT_MATRIX`
+
+M4.1 Gate IV review artifact: `evals/m4/authorization/m4.1/gate-iv-review.json`
+
+M4.1 Gate IV authorization artifact: `evals/m4/authorization/m4.1/execution-authorization.json`
+
+M4.1 Gate IV execution control: `evals/m4/authorization/m4.1/execution-control.json`
+
+M4.1 Gate IV model binding: `gpt-5.6-sol; reasoning_effort=max; configured defaults must match`
+
+M4.1 Gate IV authorized roster: `60 new task IDs; 60 fresh contexts maximum; 60 independent finalizations maximum; 6 domain batches; 1 attempt/task`
+
+M4.1 Gate IV authorization token: `sha256:b5fe4ee85f59935a32d6b1a93cf7a5ec64fdbb51348fab624d83c4292f646109`
+
+M4.1 Gate IV authorization token status: `CONSUMED; claim_count=1; SAME_REVISION_CONTINUATION_FORBIDDEN`
+
+M4.1 Gate IV execution counters: `authorized_tasks=0; created_contexts=0; dispatched_tasks=0; attempts=0; finalizations=0; results_observed=0; retries=0; repairs=0; followups=0; judge_scores=0; aggregation_calls=0; unauthorized_side_effects=0`
+
+M4.1 historical pre-claim Gate IV local gates: `PASSED; focused=16/16; full=654/654; authorization_builder=VALID; authorization_audit=READY_UNCONSUMED; configured_default_check=MATCHED; results_audit=NOT_RUN`
+
+M4.1 terminal-closure CI transition: `old consumed-state exact-HEAD run 31262297707 preserved as FAILED; lifecycle-aware replacement run 31300657717 PASSED`
+
+M4.1 Gate IV judge and later gates: `judge_execution=false; blind_mapping_access=false; aggregation=false; closure=false`
+
+M4.1 authorization and fresh execution: `AUTHORIZATION_CONSUMED; STOPPED_BEFORE_DISPATCH; launch_claim=PRESENT; terminal=PRESENT; result_roots=0; results_manifest=ABSENT`
+
+M4.1 historical Gate IV-A execution protocol: `COMPLETE; EXACT_HEAD_CI_PASSED; token was UNCONSUMED at that predecessor baseline`
+
+M4.1 Gate IV-A plan: `docs/superpowers/plans/2026-08-08-m4.1-gate-iv-fresh-execution.md`
+
+M4.1 Gate IV-A protocol artifacts: `launch-claim.schema.json; dispatch-receipt.schema.json; execution-terminal.schema.json; audit_m4_1.py`
+
+M4.1 historical Gate IV-A execution audit: `READY_UNCLAIMED; token=UNCONSUMED; tasks=0; threads=0; finalizations=0; results=0 at predecessor baseline`
+
+M4.1 Gate IV-A request-binding aggregate SHA-256: `bccd78e80c338818929b825ca6624639529ba73d2817f22e63676b8aaeced500`
+
+M4.1 Gate IV-A terminal branches: `COMPLETE_UNJUDGED; STOPPED_PROTOCOL_OR_INFRASTRUCTURE_FAILURE`
+
+M4.1 Gate IV-A local gates: `PASSED; focused=16/16; combined=49/49; full=675/675; authorization_audit=READY_UNCONSUMED; PowerShell 5.1 self-test=PASSED; request_bindings=60/60; workflow_yaml=VALID`
+
+M4.1 Gate IV-A local PowerShell 7 preflight: `NOT_RUN; pwsh runtime absent locally; exact-HEAD Ubuntu CI remains required`
+
+M4.1 Gate IV-A execution-protocol exact-HEAD CI: `PASSED` on HEAD `bb1b8a5e4bab46d625c637d564d8132dc69a21ab` (GitHub Actions run `31255966197`; validate job `93099235968` success; ubuntu job `93099235987` success; windows job `93099235994` success)
+
+M4.1 Gate IV-A first execution-protocol exact-HEAD CI: `FAILED` on HEAD `002baa1b63bd7ecd39aa0e441df254d9228dc711` (GitHub Actions run `31255315866`; validate job `93097717126` failed on stale STATUS assertion; ubuntu job `93097717142` success; windows job `93097717149` success)
+
+M4.1 Gate IV-A corrected execution-protocol exact-HEAD CI: `PASSED` on HEAD `bb1b8a5e4bab46d625c637d564d8132dc69a21ab` (GitHub Actions run `31255966197`)
+
+M4.1 Gate IV-B plan: `docs/superpowers/plans/2026-08-08-m4.1-gate-iv-b-launch-readiness.md`
+
+M4.1 Gate IV-B review: `PASSED; evals/m4/execution/m4.1/gate-iv-b-review.json; authorization branch protection absent; active repository rulesets=0; immutable-start-equivalent-v1 established`
+
+M4.1 Gate IV-B production writers: `build_m4_1_launch_claim.py; record_m4_1_execution_evidence.py; default=--check; real writes require explicit --consume; O_CREAT|O_EXCL; overwrite/delete/rollback=false`
+
+M4.1 Gate IV-B raw evidence policy: `create-thread response exact bytes plus raw/canonical SHA-256 preserved; exposed resolved checkout SHA must equal ae1ad43cca52ae450e146e952e3b108792b2b665; raw final exact bytes preserved`
+
+M4.1 historical Gate IV-B readiness audit: `READY_FOR_ATOMIC_CLAIM; focused=18/18; combined=67/67; full=693/693; protocol_review=PASSED; authorization_audit=READY_UNCONSUMED; execution_audit=READY_UNCLAIMED; writer_check=DETERMINISTIC at c370a3ce21661f0dbf2cdd153b8761d8fce71f9b`
+
+M4.1 historical Gate IV-B zero state: `authorization token=UNCONSUMED; launch claim=ABSENT; terminal=ABSENT; platform observations=ABSENT; result root=ABSENT; results manifest=ABSENT; tasks=0; finalizations=0 at c370a3ce21661f0dbf2cdd153b8761d8fce71f9b`
+
+M4.1 Gate IV-B exact-HEAD CI: `PASSED` on HEAD `c370a3ce21661f0dbf2cdd153b8761d8fce71f9b` (GitHub Actions run `31261657539`; validate job `93113313187` success; Ubuntu job `93113313216` success; Windows job `93113313223` success)
+
+M4.1 Gate IV-C/D/E and Gate V: `Gate IV-C consumed exactly one claim then stopped at post_claim_dual_confirmation before dispatch; Gate IV-D, Gate IV-E, judge, unblinding, aggregation, threshold decision, M4 closure, and M5 NOT_RUN`
+
+M4.1 later authorization state: `judge=false; unblinding=false; aggregation=false; threshold=false; closure=false; M5=NOT_STARTED`
 
 r5.1 CI and acceptance hardening implementation: `COMPLETE`
 
@@ -146,9 +538,13 @@ Gate 4: `COMPLETE; CROSS_REVISION_AGGREGATE_ACCEPTED; EXACT_HEAD_CI_PASSED`
 
 M3 final validation: `PASSED; AGGREGATE_CANDIDATE_EXACT_HEAD_CI_PASSED`
 
-M3 closure: `CLOSED; CLOSURE_AUDIT_PASSED; DELIVERY_EXACT_HEAD_CI_PENDING`
+M3 closure: `CLOSED; CLOSURE_AUDIT_PASSED; DELIVERY_EXACT_HEAD_CI_PASSED`
 
-Gate 4 selects the immutable accepted r5 evidence for F01, F03, F04, and F05 together with the separately accepted r5.2-f02 F02 evidence. The historical r5 F02 `processing_failed` result and the 216-byte r5.1-f02 `terminal_not_accepted` result remain excluded immutable attempts; neither is relabeled, repaired, retried, or deleted. Aggregate candidate HEAD `3be04218b038bac7a55da10a553a5ce05be4652c` passed exact-HEAD run `31233356741`, and the successor closure manifest binds that green candidate and passes the read-only closure audit. M3 is `CLOSED`; the closure delivery HEAD still requires its own exact-HEAD CI, and M4 remains `NOT_STARTED`.
+M3 closure delivery HEAD: `716c11b9154a1ff3b866b7f64d39b1c6a9039e54`
+
+M3 closure delivery exact-HEAD CI: `PASSED` (GitHub Actions run `31233977467`)
+
+Gate 4 selects the immutable accepted r5 evidence for F01, F03, F04, and F05 together with the separately accepted r5.2-f02 F02 evidence. The historical r5 F02 `processing_failed` result and the 216-byte r5.1-f02 `terminal_not_accepted` result remain excluded immutable attempts; neither is relabeled, repaired, retried, or deleted. Aggregate candidate HEAD `3be04218b038bac7a55da10a553a5ce05be4652c` passed exact-HEAD run `31233356741`, and the successor closure manifest binds that green candidate and passes the read-only closure audit. M3 is `CLOSED`; closure delivery HEAD `716c11b9154a1ff3b866b7f64d39b1c6a9039e54` passed exact-HEAD run `31233977467`. M4 is active only for offline preparation, and fresh M4 tasks remain unauthorized.
 
 Before route-specific method-card instantiation, M3.1.1 must validate the complete M2.1.1 bundle, require `user_confirmed`, recompute the selected-direction binding, reject every non-empty `approved_constraint_changes` list with `unsupported_approved_constraint_change_provenance`, and rederive claim metrics, claim-specific preconditions, resource ceilings, actual Go/Stop/Pivot coverage, safety-source eligibility, and method-card internal bindings from upstream structures.
 
@@ -424,14 +820,14 @@ Evidence is recorded under `evals/m1/`, including preserved failed runs and inde
 ## Later milestones
 
 - M2: `M2.1 COMPLETE; M2.1.1 COMPLETE`
-- M3: `IN_PROGRESS`
-- M4: `NOT_STARTED`
-- M5: `NOT_STARTED`
+- M3: `CLOSED`
+- M4: `M4.0 PRE_DISPATCH_FAILED_PRESERVED; M4.1 STOPPED_PROTOCOL_FAILURE_PRESERVED; M4.1 AUTHORIZATION_CONSUMED; M4.1 TASKS_NOT_DISPATCHED; M4.2 PREPARED_NOT_AUTHORIZED; M4.2 WINDOWS_LIFECYCLE_REPAIR_ACCEPTED; M4.2 GATE_IV_A_REVIEW_PASSED_NOT_AUTHORIZED; M4.2 GATE_IV_B_PROTOCOL_PROOF_PASSED_NOT_AUTHORIZED; M4.2 AUTHORIZATION_PREPARATION_PASSED_NOT_AUTHORIZED; M4.2 AUTHORIZED_UNCONSUMED_NOT_CLAIMED_NOT_EXECUTED; M4.2 GATE_A_ACCEPTED; M4.2 GATE_B_STOPPED_PROTOCOL_OR_INFRASTRUCTURE_FAILURE; M4.2 AUTHORIZATION_CONSUMED; M4.2 TASKS_NOT_DISPATCHED; FRESH_RESULTS_NOT_RUN`
+- M5: `ABSENT; NOT_STARTED`
 
 ## External state
 
 - Git remote: `https://github.com/zxy19960316/engineering-research-copilot.git`
-- Active local branch: `codex/m3.1.1-r5-r5.2-cross-revision-aggregate-and-closure`
+- Active local branch: `codex/research-skill-cluster-strengthening`
 - External APIs/services configured: none
 - RRC integration: not started
 - Platform integration: not required for the local Skill competition track

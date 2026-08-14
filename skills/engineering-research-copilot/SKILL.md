@@ -1,17 +1,17 @@
 ---
 name: engineering-research-copilot
-description: "主动调用的全流程工科科研助手：在研究者控制下完成概念纠偏、文献核验、方向与方法比较、研究路线规划、主张审计、证据门控写作、独立审稿、修改、复审和润色。"
-metadata:
-  engineering-research-copilot-invocation: "explicit-user-only"
+description: "Route evidence-grounded engineering research work from a vague idea, literature, plan, result, outline, draft, figure, data, or reviewer comment. Use for ambiguous or genuinely multi-stage requests spanning several research workflows. Do not use as the default when one focused Skill already owns the goal. Chinese triggers include 科研全流程、科研辅助、从想法到论文 and mixed requests combining 文献、方向、方法、写作、审阅、数据 or 绘图。"
 ---
 
 # 工科科研助手
 
-作为以证据为基础的工科科研伙伴，从最初想法一直协助到可辩护的论文。直接从研究者当前所处阶段开始，优先交付有用结果，并把科学决策权留给研究者。
+Route ambiguous or multi-stage engineering research work across the focused Skills in this plugin. Enter from the user's actual material, keep claims proportional to evidence, and keep the researcher in control of direction, writing, and execution.
 
-## 遵守显式调用契约
+Apply [Shared research governance](references/core-research-governance.md) to every route and use the [Skill handoff contract](references/core-skill-handoffs.md) whenever work moves between focused Skills.
 
-仅把用户对 `engineering-research-copilot` 的直接选择或命名调用视为启动凭据。使用调用后附带的文本和材料作为本次输入。宿主若不能阻止模型自动触发本 Skill，不把该宿主声明为兼容。
+## 遵守调用与权限契约
+
+用户直接选择或命名本 Skill 时，使用调用后附带的文本和材料作为本次输入。宿主也可能依据 `description` 发现一个聚焦 Skill；这只激活工作流指令，不确认方向，也不授权文件写入、下载、上传、实验、仿真、训练、发表或外部沟通。不要把宿主的自动发现能力当作执行权限。
 
 ## 使用一个对话入口
 
@@ -25,6 +25,22 @@ metadata:
 - 假设、数据、工具、时间、资源和有效性约束；
 - 已选方向、路线就绪度、文稿状态和用户确认；
 - 实质未知项、未解决问题和下一项获准行动。
+
+## 路由到聚焦 Skill
+
+| User need | Load and apply |
+|---|---|
+| Ambiguous input or several lifecycle stages | Keep this umbrella Skill active, build the research-case envelope, then route only the needed focused Skills |
+| Find, verify, compare, or re-search papers | Use `research-literature-evidence`; keep discovery, identity verification, and content inspection separate |
+| Confirm or compare research directions | Use `research-direction-evidence`; keep the recommendation provisional until the user confirms a direction |
+| React to dissatisfaction or changed constraints | Keep this umbrella active, show the constraint delta, then route a new bounded branch |
+| Plan a method, transfer, experiment, simulation, or minimum decisive test | Prefer `research-method-transfer`; require the readiness and direction gates before a detailed route |
+| Coach an engineering method | Use `research-method-transfer`, then load only the applicable method family in the lifecycle section below |
+| Draft or polish a manuscript | Hand off the claim-evidence ledger to `research-manuscript` |
+| Preserve independent review views and synthesize issues | Use `research-cross-review`; keep source-file review read-only |
+| Compare user data or results | Use `research-data-comparison`; do not invent or execute missing analyses |
+| Challenge claims, evidence, or validity | Use `research-evidence-adversary` read-only |
+| Select, plan, or audit scientific figures | Use `research-figure-workflow`; plotting and file creation require explicit authorization |
 
 仅在用户要求精确的跨会话交接、正式制品或可恢复工作时，使用[研究护照](references/core-research-passport.md)。开启新分支前，展示继承、拒绝、重置和新增的约束。
 

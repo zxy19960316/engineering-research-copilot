@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://engineering-research-copilot.local/m4/preparation-manifest.schema.json",
+  "title": "M4 preparation manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "milestone", "revision", "status", "baseline", "authority", "matrix", "execution_constraints", "randomization", "artifacts", "tasks", "counters"],
+  "properties": {
+    "schema_version": {"const": "m4-preparation-manifest-v1"},
+    "milestone": {"const": "M4"},
+    "revision": {"const": "M4.0"},
+    "status": {"const": "PREPARATION_ONLY"},
+    "baseline": {"type": "object"},
+    "authority": {"type": "object"},
+    "matrix": {"type": "object"},
+    "execution_constraints": {"type": "object"},
+    "randomization": {"type": "object"},
+    "artifacts": {"type": "object"},
+    "tasks": {"type": "array", "minItems": 60, "maxItems": 60},
+    "counters": {"type": "object"}
+  }
+}

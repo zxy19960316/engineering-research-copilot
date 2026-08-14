@@ -27,6 +27,9 @@
 /evals/m3/forward-inputs-r5.1-f02/** text eol=lf
 /evals/m3/results/forward-r5.1-f02/** text eol=lf
 
+# Preserve byte-sensitive r5.1 diagnostics consumed by lifecycle auditors.
+/evals/m3/results/diagnostics-r5.1/** text eol=lf
+
 # Preserve byte-sensitive r5.2-f02 protocol inputs, module, and empty result root.
 /evals/m3/forward-inputs-r5.2-f02/** text eol=lf
 /evals/m3/results/forward-r5.2-f02/** text eol=lf
@@ -36,3 +39,15 @@
 /evals/m3/results/forward-r5.2-aggregate/** text eol=lf
 /evals/m3/results/2026-08-08-m3.1.1-cross-revision-aggregate-validation.md text eol=lf
 /evals/m3/results/2026-08-08-m3.1.1-closure-validation.md text eol=lf
+
+# Preserve byte-sensitive M4 cases, variants, schemas, manifests, and protocols.
+/evals/m4/** text eol=lf
+
+# Keep the S1 Skill source, host adapters, and hash-bound research inputs stable.
+/skills/** text eol=lf
+/docs/research/** text eol=lf
+/agent-hosts.json text eol=lf
+/install-skill.py text eol=lf
+/opencode.json text eol=lf
+/.codex-plugin/** text eol=lf
+/.claude-plugin/** text eol=lf

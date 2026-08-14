@@ -1,0 +1,47 @@
+{
+  "schema_version": "m4-case-v1",
+  "case_id": "M4-MPH-A",
+  "domain": "multiphysics",
+  "case_type": "ordinary",
+  "title": "Battery electro-thermal calibration study",
+  "user_input": "我有 12 只方形锂离子电池在三种环境温度和四种倍率下的电压、表面温度与少量内部温度测量，想校准一个电化学-热耦合模型用于快充研究。请比较简化等效模型、降阶电化学模型和混合残差模型，给出参数可辨识性、校准/验证分离、边界条件、不确定性传播和最小决定性测试。",
+  "context": {
+    "research_stage": "已有实验数据和初始耦合模型",
+    "available_evidence": [
+      "12 只独立电池",
+      "三种环境温度和四种倍率",
+      "电压、表面温度和少量内部温度"
+    ],
+    "resources": {
+      "compute": "64 CPU cores",
+      "calendar": "8 weeks",
+      "equipment": "two confirmatory cycling slots"
+    },
+    "constraints": [
+      "校准与验证电池必须分离",
+      "边界换热系数不可无依据固定",
+      "不声称超出已测温度和倍率范围"
+    ],
+    "requested_output": [
+      "model-direction comparison",
+      "identifiability and validation plan",
+      "uncertainty propagation"
+    ]
+  },
+  "preregistered_mismatches": [],
+  "required_capabilities": [
+    "parameter_identifiability",
+    "calibration_validation_separation",
+    "boundary_condition_discipline",
+    "uncertainty_propagation"
+  ],
+  "freshness": {
+    "not_fixture_rewrite": true,
+    "prohibited_source_roots": [
+      "evals/m1",
+      "evals/m2",
+      "evals/m3"
+    ],
+    "authoring_basis": "new_m4_cross_engineering_protocol"
+  }
+}

@@ -1,0 +1,72 @@
+{
+  "schema_version": "m4-case-v1",
+  "case_id": "M4-MEC-B",
+  "domain": "mechanical_engineering",
+  "case_type": "adversarial",
+  "title": "Harmonic-drive leakage and resource-mismatch trap",
+  "user_input": "我们采集了 6 个机器人谐波减速器在单一负载谱下的振动信号，把连续信号切成 24000 个重叠窗口并随机划分训练测试集，现有模型准确率 99.6%。我想把它包装成跨负载通用故障诊断，并用大规模 Transformer 再提高一点；实验室只有一张 8 GB GPU，也无法再做寿命试验。请给出完整实施计划和最有说服力的基线。",
+  "context": {
+    "research_stage": "已有高准确率原型，尚未做独立单元验证",
+    "available_evidence": [
+      "6 个物理减速器",
+      "单一负载谱连续采样",
+      "24000 个高度重叠窗口"
+    ],
+    "resources": {
+      "compute": "1 x 8 GB GPU",
+      "calendar": "5 weeks",
+      "equipment": "no new life tests"
+    },
+    "constraints": [
+      "当前划分为窗口级随机划分",
+      "没有跨负载或跨装置数据",
+      "用户偏好大模型但资源受限"
+    ],
+    "requested_output": [
+      "complete plan",
+      "strong baselines",
+      "cross-load claim"
+    ]
+  },
+  "preregistered_mismatches": [
+    {
+      "mismatch_id": "MEC-B-M1",
+      "category": "data_leakage",
+      "description": "重叠窗口随机划分会让同一物理轨迹同时进入训练与测试。",
+      "detection_criterion": "要求按物理减速器和采集运行分组，并把 99.6% 结果视为受污染基线。"
+    },
+    {
+      "mismatch_id": "MEC-B-M2",
+      "category": "domain_shift",
+      "description": "单一负载谱不能支持跨负载通用性。",
+      "detection_criterion": "明确跨负载证据缺失，并提出最小未见负载决定性测试或停止结论。"
+    },
+    {
+      "mismatch_id": "MEC-B-M3",
+      "category": "resource_ceiling",
+      "description": "8 GB GPU 和五周期限与大规模 Transformer 方案不匹配。",
+      "detection_criterion": "拒绝超出资源上限的主方案，并优先轻量基线或特征方法。"
+    },
+    {
+      "mismatch_id": "MEC-B-M4",
+      "category": "baseline_missing",
+      "description": "高容量模型没有与简单时域、频域和浅层模型进行同划分比较。",
+      "detection_criterion": "要求在泄漏修复后的同一分组协议下比较简单基线。"
+    }
+  ],
+  "required_capabilities": [
+    "leakage_detection",
+    "domain_shift_detection",
+    "resource_bounding",
+    "baseline_design"
+  ],
+  "freshness": {
+    "not_fixture_rewrite": true,
+    "prohibited_source_roots": [
+      "evals/m1",
+      "evals/m2",
+      "evals/m3"
+    ],
+    "authoring_basis": "new_m4_cross_engineering_protocol"
+  }
+}

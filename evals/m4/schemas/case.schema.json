@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://engineering-research-copilot.local/m4/case.schema.json",
+  "title": "M4 case",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "case_id",
+    "domain",
+    "case_type",
+    "title",
+    "user_input",
+    "context",
+    "preregistered_mismatches",
+    "required_capabilities",
+    "freshness"
+  ],
+  "properties": {
+    "schema_version": {"const": "m4-case-v1"},
+    "case_id": {"type": "string", "pattern": "^M4-(NUC|MEC|ELE|AUT|COM|MPH)-[AB]$"},
+    "domain": {"enum": ["nuclear_engineering", "mechanical_engineering", "electrical_engineering", "automation_control", "computer_data", "multiphysics"]},
+    "case_type": {"enum": ["ordinary", "adversarial"]},
+    "title": {"type": "string", "minLength": 1},
+    "user_input": {"type": "string", "minLength": 1},
+    "context": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["research_stage", "available_evidence", "resources", "constraints", "requested_output"],
+      "properties": {
+        "research_stage": {"type": "string", "minLength": 1},
+        "available_evidence": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+        "resources": {"type": "object", "minProperties": 1},
+        "constraints": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+        "requested_output": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}}
+      }
+    },
+    "preregistered_mismatches": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["mismatch_id", "category", "description", "detection_criterion"],
+        "properties": {
+          "mismatch_id": {"type": "string", "minLength": 1},
+          "category": {"type": "string", "minLength": 1},
+          "description": {"type": "string", "minLength": 1},
+          "detection_criterion": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "required_capabilities": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+    "freshness": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["not_fixture_rewrite", "prohibited_source_roots", "authoring_basis"],
+      "properties": {
+        "not_fixture_rewrite": {"const": true},
+        "prohibited_source_roots": {"const": ["evals/m1", "evals/m2", "evals/m3"]},
+        "authoring_basis": {"const": "new_m4_cross_engineering_protocol"}
+      }
+    }
+  }
+}

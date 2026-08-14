@@ -44,8 +44,8 @@ class M3SkillPackageAuditTests(unittest.TestCase):
         result = audit_package(package)
         self.assertEqual("valid", result["status"])
         self.assertEqual([], result["errors"])
-        self.assertEqual(19, result["reference_count"])
-        self.assertEqual(19, result["direct_link_count"])
+        self.assertEqual(21, result["reference_count"])
+        self.assertEqual(21, result["direct_link_count"])
 
     def test_filename_substring_is_not_a_markdown_direct_link(self):
         with tempfile.TemporaryDirectory() as temp_dir:

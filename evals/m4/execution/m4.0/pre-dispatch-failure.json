@@ -1,0 +1,68 @@
+{
+  "schema_version": "m4-pre-dispatch-failure-v1",
+  "milestone": "M4",
+  "revision": "M4.0",
+  "status": "PRE_DISPATCH_FAILED",
+  "recorded_at_utc": "2026-08-08T06:30:39.192Z",
+  "launch_claim": {
+    "claim_id": "507b5fef-c05f-4ede-ad06-b6694203cfe1",
+    "claim_sha256": "5690177383c44a30e808533ebdfe0b504c6da2abf8e61a1d0303d4c439c3ecec",
+    "authorization_token": "sha256:09c940955104f2ae9278b55d155bc43a47d43a0eb9e80e4f90d7425eb3c0e292",
+    "authorization_consumed": true,
+    "claim_count": 1
+  },
+  "failed_stage": "frozen_request_bundle_hash_verification",
+  "failure_class": "coordinator_infrastructure_or_protocol_failure",
+  "batch_id": "M4-BATCH-NUC",
+  "task_id": null,
+  "raw_failure": {
+    "exception_type": "System.Management.Automation.RuntimeException",
+    "fully_qualified_error_id": "MethodNotFound",
+    "message": "Method invocation failed because [System.Convert] does not contain a method named 'ToHexString'.",
+    "failing_expression": "[Convert]::ToHexString($sha.ComputeHash($Bytes))"
+  },
+  "environment": {
+    "powershell_version": "5.1.26100.8875",
+    "clr_version": "4.0.30319.42000"
+  },
+  "counters": {
+    "create_thread_calls": 0,
+    "created_contexts": 0,
+    "dispatched_tasks": 0,
+    "finalizations": 0,
+    "results_observed": 0,
+    "retries": 0,
+    "repairs": 0,
+    "followup_messages": 0,
+    "judge_contexts": 0,
+    "unauthorized_side_effects": 0
+  },
+  "evidence_state": {
+    "result_root_count": 0,
+    "fresh_task_result_state": "NOT_RUN",
+    "raw_failure_preserved": true,
+    "current_batch_stopped": true,
+    "later_batches_stopped": true,
+    "same_revision_resume_authorized": false,
+    "successor_revision_required": true
+  },
+  "unlaunched_batch_ids": [
+    "M4-BATCH-NUC",
+    "M4-BATCH-MEC",
+    "M4-BATCH-ELE",
+    "M4-BATCH-AUT",
+    "M4-BATCH-COM",
+    "M4-BATCH-MPH"
+  ],
+  "permissions_still_closed": [
+    "retry",
+    "repair",
+    "followup_message",
+    "judge_execution",
+    "blind_mapping_access",
+    "aggregation",
+    "threshold_claim",
+    "m4_closure",
+    "M5"
+  ]
+}

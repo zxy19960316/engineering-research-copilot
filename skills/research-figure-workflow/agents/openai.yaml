@@ -1,0 +1,6 @@
+interface:
+  display_name: "Research Figure Workflow"
+  short_description: "Select and audit scientific figures from claims and data"
+  default_prompt: "Use $research-figure-workflow to select and audit the right scientific figure for this claim and dataset."
+policy:
+  allow_implicit_invocation: true

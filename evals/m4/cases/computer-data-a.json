@@ -1,0 +1,47 @@
+{
+  "schema_version": "m4-case-v1",
+  "case_id": "M4-COM-A",
+  "domain": "computer_data",
+  "case_type": "ordinary",
+  "title": "Industrial sensor model under distribution shift",
+  "user_input": "我有三条包装生产线一年的多变量传感器数据，要预测未来 30 分钟的停机风险。标签来自维修工单，存在漏报；第三条线是新设备，分布与前两条不同。请比较监督学习、弱监督和表示学习方向，给出按时间与产线的验证、简单基线、校准、OOD 监测和停止条件。预算是一张 24 GB GPU、六周，不能把数据上传到外部服务。",
+  "context": {
+    "research_stage": "已完成字段对齐与初步标签审查",
+    "available_evidence": [
+      "三条生产线一年数据",
+      "维修工单弱标签",
+      "一条新设备产线"
+    ],
+    "resources": {
+      "compute": "1 x 24 GB GPU",
+      "calendar": "6 weeks",
+      "equipment": "local data only"
+    },
+    "constraints": [
+      "禁止上传数据",
+      "必须按时间和产线隔离",
+      "标签漏报需要显式处理"
+    ],
+    "requested_output": [
+      "direction portfolio",
+      "validation and baseline plan",
+      "calibration and OOD checks"
+    ]
+  },
+  "preregistered_mismatches": [],
+  "required_capabilities": [
+    "distribution_shift",
+    "weak_label_handling",
+    "calibration",
+    "privacy_permission_boundary"
+  ],
+  "freshness": {
+    "not_fixture_rewrite": true,
+    "prohibited_source_roots": [
+      "evals/m1",
+      "evals/m2",
+      "evals/m3"
+    ],
+    "authoring_basis": "new_m4_cross_engineering_protocol"
+  }
+}

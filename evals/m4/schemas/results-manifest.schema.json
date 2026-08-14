@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://engineering-research-copilot.local/m4/results-manifest.schema.json",
+  "title": "M4 results manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "revision", "preparation_manifest_sha256", "status", "records", "counters"],
+  "properties": {
+    "schema_version": {"const": "m4-results-manifest-v1"},
+    "revision": {"const": "M4.0"},
+    "preparation_manifest_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "status": {"enum": ["COMPLETE", "BATCH_TERMINAL_FAILURE"]},
+    "records": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["task_id", "blind_id", "result_path", "result_sha256", "judge_score_path", "judge_score_sha256"],
+        "properties": {
+          "task_id": {"type": "string"},
+          "blind_id": {"type": "string"},
+          "result_path": {"type": "string"},
+          "result_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+          "judge_score_path": {"type": "string"},
+          "judge_score_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+        }
+      }
+    },
+    "counters": {"type": "object"}
+  }
+}

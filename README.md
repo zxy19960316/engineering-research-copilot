@@ -1,105 +1,95 @@
-# Engineering Research Copilot
+# Engineering Research Workbench
 
-Engineering Research Copilot 是一个面向工科研究者的全流程 Agent Skill。它从用户当前阶段开始，在证据和权限边界内协助完成概念纠偏、文献核验、方向与方法比较、研究路线规划、科研主张审计、证据门控写作、独立多视角审稿，以及作者控制下的修改、复审和润色。
+Engineering Research Workbench 是一组面向工科研究者的证据约束型 Agent Skills。它从一句模糊想法、已有文献、研究计划、结果、提纲、草稿或审稿意见直接进入，在同一套证据、就绪度与权限规则下，调用九个互补 Skill 完成方向调查、文献核验、方法迁移、写作、交叉审阅、数据比较、对抗证据检查和科研绘图工作流。
 
-这个仓库发布的是一个轻量、可移植的 Skill 文件夹，不包含模型、论文语料库、数据库、后台服务或私有检索系统。它遵循开放的 [Agent Skills 规范](https://agentskills.io/specification)，详细规则按需从一层 `references/` 加载；需要核验最新文献或事实时，使用宿主 Agent 已有的学术检索或网络工具。
+这不是九套互不相干的提示词，也不是某个宿主专属的实现。仓库只手工维护一份符合 [Agent Skills 规范](https://agentskills.io/specification)的规范 Skill 源，再为 Codex、Claude Code、OpenCode、Hermes、OpenClaw 和 GitHub Copilot 生成确定性的自包含投影。安装过程不改规范源、科研规则或权限；它只把跨 Skill 的共享引用复制到当前 Skill 内并改写引用位置，Hermes 投影还会使用不超过 60 字符的发现描述。每项变化和源/投影 SHA-256 都写入投影清单。
 
-## 核心能力
+## 能力边界
 
-- 从一句模糊想法、已有文献、研究计划、结果、提纲、草稿或审稿意见直接进入；
-- 分开文献发现与身份、内容核验，明确元数据、摘要、全文和用户材料的证据层级；
-- 比较主方向、相邻备选和迁移探索，并为高风险想法给出最小证伪检验；
+- 分开文献发现、身份核验与内容核验，明确元数据、摘要、全文和用户材料的证据层级；
+- 比较主方向、相邻备选、迁移探索和高风险想法，并给出最小证伪检验；
+- 用层级关系图表达方向、主张、证据、反证、约束和测试，节点大小只表示当前任务相关度；
 - 按真实就绪度返回概念草图、路线准备方案或可执行路线，不把路线生成当作执行授权；
-- 在写作前建立主张—证据关系，不虚构引文、数据、实验、结果、数值或结论；
+- 写作前建立主张—证据关系，不虚构引文、数据、实验、结果、数值或结论；
 - 先保留独立审稿视角和分歧，再综合问题，并由作者决定实质修改；
+- 按科研目的选择绘图配方、统计前提、失败门槛和导出要求，不复制论文图片素材；
 - 审计默认只读；文件写入、上传、下载、实验、仿真、训练、发表和外部沟通分别需要明确授权。
 
-## 仅支持主动调用
+## Skill 集群
 
-本版本不提供被动触发方式。安装后必须由用户显式选择或输入 Skill 名称；普通对话不会授权 Agent 自动启用它。
+| Skill | 作用 |
+|---|---|
+| `engineering-research-copilot` | 模糊入口与跨阶段路由 |
+| `research-direction-evidence` | 主张调查、方向比较与交互式层级图 |
+| `research-literature-evidence` | 文献发现、身份核验与内容检查 |
+| `research-method-transfer` | 方法设计、迁移分析与最小证伪检验 |
+| `research-manuscript` | 主张驱动的写作、重构与润色 |
+| `research-cross-review` | 独立审阅、分歧保留与综合 |
+| `research-data-comparison` | 单位、配对、缺失与不确定性敏感的数据比较 |
+| `research-evidence-adversary` | 只读的反证、泄漏和过度推断检查 |
+| `research-figure-workflow` | 科研图选择、绘制交接与质量审计 |
 
-| 宿主 | 主动调用方式 | 被动触发控制 |
-|---|---|---|
-| Claude Code | `/engineering-research-copilot <任务或材料>` | 安装器向宿主副本写入 `disable-model-invocation: true` |
-| GitHub Copilot CLI | `/engineering-research-copilot <任务或材料>` | 安装器向宿主副本写入 `disable-model-invocation: true` |
-| Codex CLI / IDE | `$engineering-research-copilot <任务或材料>`，或先运行 `/skills` 后选择 | `agents/openai.yaml` 设置 `allow_implicit_invocation: false` |
-| ChatGPT 桌面端 | 输入 `@` 后选择 `engineering-research-copilot` | `agents/openai.yaml` 设置 `allow_implicit_invocation: false` |
+共享的证据、权限、就绪度和交接规则只在 umbrella Skill 中规范维护。安装器把实际用到的共享文件按原始字节复制到每个 focused Skill 的 `references/shared/`，同时记录来源和哈希；这些副本是可审计投影，不是第二份规范源。
 
-Gemini CLI 当前的 Skill 激活工具只能由模型调用，不能保证“仅用户主动调用”，因此不列入这个严格主动调用版本的兼容范围。其他 Agent 即使能读取开放格式，也只有在明确支持上述调用控制时，才应视为完整兼容。
+## 宿主适配
 
-### 调用示例
+| 宿主 | 用户级投影 | 项目级投影 | 主动调用 |
+|---|---|---|---|
+| Codex | `~/.agents/skills/` | `<项目>/.agents/skills/` | `$research-direction-evidence` 或 `/skills` |
+| Claude Code | `~/.claude/skills/` | `<项目>/.claude/skills/` | `/research-direction-evidence` |
+| OpenCode | `~/.config/opencode/skills/` | `<项目>/.opencode/skills/` | 在提示中点名 Skill，由原生 `skill` 工具加载 |
+| Hermes | Windows 默认 `%LOCALAPPDATA%\hermes\skills`；其他平台 `~/.hermes/skills/` | 见下方说明 | `/research-direction-evidence` |
+| OpenClaw | `~/.openclaw/skills/` | `<项目>/.agents/skills/` | `$research-direction-evidence` 或 `/research-direction-evidence` |
+| GitHub Copilot CLI | `~/.copilot/skills/` | `<项目>/.github/skills/` | `/research-direction-evidence` |
 
-Claude Code 或 GitHub Copilot CLI：
+宿主可依据 Skill 的 `description` 自动发现合适入口，但这只表示工作流被加载，不表示获得文件写入、实验或对外沟通权限。完整路径、刷新方式和官方来源记录在 [`agent-hosts.json`](agent-hosts.json)。适配依据包括 [Codex Skills](https://developers.openai.com/codex/skills)、[Claude Code Skills](https://code.claude.com/docs/en/slash-commands)、[OpenCode Skills](https://opencode.ai/docs/skills)、[Hermes Skills](https://github.com/NousResearch/hermes-agent/blob/main/website/docs/user-guide/features/skills.md)、[OpenClaw Skills](https://github.com/openclaw/openclaw/blob/main/docs/tools/skills.md)和 [GitHub Copilot Skills](https://docs.github.com/en/copilot/how-tos/copilot-cli/customize-copilot/add-skills)。
+
+为保留已发布入口的行为，Codex 中的 umbrella router `engineering-research-copilot` 仍关闭隐式调用；八个边界更窄的 focused Skills 可由 Codex 按描述发现，也可由用户显式调用。其他宿主按各自的原生发现机制处理。无论如何被加载，Skill 激活都不会扩大共享权限台账。
+
+OpenCode 的稳定文档保证模型通过原生 `skill` 工具按名称加载；当前稳定版源码虽可形成 `/skill-name` 命令，但这不是稳定文档合同，且可能被同名 command 遮蔽，因此本项目不把 slash 形式写成已确认能力。仓库根部的 `opencode.json` 让从仓库根启动的 OpenCode 直接读取同一 `skills/` 源；安装器仍支持原生用户级和项目级投影，并尊重 `OPENCODE_CONFIG_DIR` 或 `XDG_CONFIG_HOME`。OpenClaw 用户级投影会尊重 `OPENCLAW_STATE_DIR`。
+
+仓库也包含 Claude Code 与 Codex 的原生插件清单，供宿主识别集群身份与版本。Claude Code 开发模式可以从仓库根加载：
 
 ```text
-/engineering-research-copilot 我只有一个模糊想法：用机器学习改进换热系统。请先纠正概念并收紧成可证伪的研究问题。
+claude --plugin-dir .
 ```
 
-Codex CLI 或 IDE：
+插件方式会使用命名空间，例如 `/engineering-research-workbench:research-direction-evidence`；直接投影到 `.claude/skills/` 时使用短名称。当前环境没有 Claude Code 可执行文件，因此原生插件方式只完成了清单与静态结构验证，不声称真实加载通过；需要自包含跨宿主安装时，以安装器生成的投影为准。
 
-```text
-$engineering-research-copilot 请核验这组论文，并区分主要支持、反证、局限和仍未解决的证据缺口。
-```
+Hermes 没有约定自动发现的项目级 Skill 目录。若希望由项目维护源码，请按 Hermes 官方说明在其 home 目录的 `config.yaml` 中配置 `skills.external_dirs`。安装器会尊重 `HERMES_HOME`，Windows 下也识别 `LOCALAPPDATA`；它不会悄悄修改宿主配置，因此 `--agent hermes --scope project` 会在写入前明确失败。
 
-也可以在调用后附上研究计划、数据说明、结果、论文草稿或审稿意见。Skill 会从材料当前所处阶段开始，不要求重走已经满足的流程。
+## 安装
 
-## 一键安装
-
-前置条件：已安装 Python 3。仓库自带的安装器只下载本仓库、拒绝覆盖已有目标，并在 Claude Code 和 GitHub Copilot 副本中加入各自支持的主动调用控制。以下命令把 Skill 安装到 Codex、Claude Code 和 GitHub Copilot CLI 的用户级目录。
-
-PowerShell：
+前置条件为 Python 3.10 或更高版本。先查看不写入的完整计划：
 
 ```powershell
-(Invoke-WebRequest 'https://raw.githubusercontent.com/zxy19960316/engineering-research-copilot/main/install-skill.py').Content | python - --agent codex --agent claude-code --agent github-copilot --scope user
+python .\install-skill.py --source . --agent all --scope user --dry-run --json
 ```
 
-macOS / Linux：
+把全部宿主安装到隔离的用户级目录：
 
-```bash
-curl -fsSL https://raw.githubusercontent.com/zxy19960316/engineering-research-copilot/main/install-skill.py | python3 - --agent codex --agent claude-code --agent github-copilot --scope user
+```powershell
+python .\install-skill.py --source . --agent all --scope user
 ```
 
-只安装到一个 Agent 时，保留对应的一个 `--agent` 参数即可。将 `--scope user` 改为 `--scope project` 可安装到当前项目。远程命令会执行下载到的安装器；建议先在浏览器中检查 [`install-skill.py`](install-skill.py) 以及本仓库的 `SKILL.md`、`references/` 和 `scripts/`。
+只安装用户实际使用的宿主时，重复指定 `--agent`：
 
-## 下载并手动部署
-
-1. [下载仓库 ZIP](https://github.com/zxy19960316/engineering-research-copilot/archive/refs/heads/main.zip)，或克隆仓库：
-
-   ```bash
-   git clone --depth 1 https://github.com/zxy19960316/engineering-research-copilot.git
-   ```
-
-2. 解压后，在仓库根目录运行安装器。以下示例安装到当前项目，并显式指定本地源码，整个过程不访问网络：
-
-   ```powershell
-   python .\install-skill.py --source . --agent codex --agent claude-code --agent github-copilot --scope project
-   ```
-
-   ```bash
-   python3 ./install-skill.py --source . --agent codex --agent claude-code --agent github-copilot --scope project
-   ```
-
-3. 安装器会把完整的 `skills/engineering-research-copilot/` 文件夹复制到目标目录；不要只复制 `SKILL.md`，运行时还需要其 `references/`、`scripts/` 和 `agents/`：
-
-   | 宿主 | 用户级目录 | 项目级目录 |
-   |---|---|---|
-   | Codex | `~/.agents/skills/engineering-research-copilot/` | `<项目>/.agents/skills/engineering-research-copilot/` |
-   | Claude Code | `~/.claude/skills/engineering-research-copilot/` | `<项目>/.claude/skills/engineering-research-copilot/` |
-   | GitHub Copilot | `~/.copilot/skills/engineering-research-copilot/` | `<项目>/.github/skills/engineering-research-copilot/` |
-
-   严格手动复制到 Claude Code 或 GitHub Copilot 时，还必须在目标副本的 `SKILL.md` frontmatter 中加入 `disable-model-invocation: true` 和 `user-invocable: true`；因此更推荐使用安装器。
-
-4. 重新加载 Skill 列表或重启宿主，然后只使用上一节列出的主动调用方式。
-
-## 包结构
-
-```text
-install-skill.py                         # 安装并应用宿主调用策略
-skills/engineering-research-copilot/
-├── SKILL.md              # 通用入口、路由、证据与权限边界
-├── agents/openai.yaml    # Codex / ChatGPT 界面与显式调用策略
-├── references/           # 按当前科研阶段加载的详细协议
-└── scripts/              # 正式机器制品所需的离线确定性工具
+```powershell
+python .\install-skill.py --source . --agent codex --agent claude-code --agent opencode --scope user
 ```
 
-安装 Skill 只提供工作流指令，不等于授权它写入文件、访问未提供的数据、执行科研任务或对外发布。高风险、安全相关、受监管或专业统计结论仍需领域专家复核。
+远程安装器会下载本仓库的 `main` 分支；执行前应先检查脚本：
+
+```powershell
+(Invoke-WebRequest 'https://raw.githubusercontent.com/zxy19960316/engineering-research-copilot/main/install-skill.py').Content | python - --agent all --scope user
+```
+
+项目级示例不包含 Hermes：
+
+```powershell
+python .\install-skill.py --source . --agent codex --agent claude-code --agent opencode --agent openclaw --agent github-copilot --scope project --project-root D:\path\to\project
+```
+
+安装器先验证九个 Skill、共享参考和两份原生插件清单，再在隐藏暂存区生成全部自包含投影。默认拒绝覆盖；确认升级时显式加 `--upgrade`，已有副本会先备份，全部投影成功后才删除备份，失败则回滚。`--source .` 模式不访问网络。除引用位置、生成的共享副本/清单以及 Hermes 的短描述外，文件保持与规范源一致；复制的共享参考逐字节一致，且清单记录全部 SHA-256 和空的权限变更列表。
+
+安装 Skill 只提供工作流指令，不会自动安装模型、论文语料、数据库或后台服务，也不授权执行科研任务。高风险、安全相关、受监管或专业统计结论仍需领域专家复核。
