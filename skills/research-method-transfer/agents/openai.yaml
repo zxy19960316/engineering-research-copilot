@@ -1,0 +1,6 @@
+interface:
+  display_name: "Research Method Transfer"
+  short_description: "Map method transfer, controls, and decisive tests"
+  default_prompt: "Use $research-method-transfer to assess this method transfer and design the smallest falsification test."
+policy:
+  allow_implicit_invocation: true

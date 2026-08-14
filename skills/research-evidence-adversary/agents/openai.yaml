@@ -1,0 +1,6 @@
+interface:
+  display_name: "Research Evidence Adversary"
+  short_description: "Stress-test claims with counterevidence and falsifiers"
+  default_prompt: "Use $research-evidence-adversary to red-team these claims and identify the smallest decisive falsifiers."
+policy:
+  allow_implicit_invocation: true

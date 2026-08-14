@@ -1,0 +1,6 @@
+interface:
+  display_name: "Research Literature Evidence"
+  short_description: "Separate discovery, identity checks, and content evidence"
+  default_prompt: "Use $research-literature-evidence to find papers and verify both their identity and usable content evidence."
+policy:
+  allow_implicit_invocation: true

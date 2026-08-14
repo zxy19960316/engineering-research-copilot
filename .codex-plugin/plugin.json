@@ -1,0 +1,35 @@
+{
+  "name": "engineering-research-workbench",
+  "version": "0.6.0",
+  "description": "Evidence-grounded research direction, literature, method, writing, review, data, and figure workflows.",
+  "author": {
+    "name": "Engineering Research Copilot contributors"
+  },
+  "repository": "https://github.com/zxy19960316/engineering-research-copilot",
+  "keywords": [
+    "research",
+    "engineering",
+    "evidence",
+    "literature",
+    "scientific-figures"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Engineering Research Workbench",
+    "shortDescription": "Evidence-grounded research workflows from idea to review",
+    "longDescription": "A focused Skill cluster for literature verification, direction comparison, method transfer, claim-led writing, independent review, data comparison, adversarial evidence checks, and scientific figures.",
+    "developerName": "Engineering Research Copilot contributors",
+    "category": "Education",
+    "capabilities": [
+      "Research",
+      "Interactive",
+      "Write"
+    ],
+    "brandColor": "#315B7D",
+    "defaultPrompt": [
+      "从一个模糊想法建立证据分层的科研方向比较。",
+      "核验文献身份与内容，再建立主张—证据关系。",
+      "为研究结果选择并审计合适的科研图形。"
+    ]
+  }
+}

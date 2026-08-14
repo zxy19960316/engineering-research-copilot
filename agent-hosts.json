@@ -1,0 +1,135 @@
+{
+  "schema_version": "engineering-research-agent-hosts.v1",
+  "cluster_name": "engineering-research-workbench",
+  "cluster_version": "0.6.0",
+  "checked_at": "2026-08-14",
+  "source_policy": "Keep one hand-edited canonical cluster. Generate deterministic self-contained host projections by rewriting only cross-sibling reference locations, copying the referenced canonical bytes, and recording hashes. Hermes also receives a standard description override of at most 60 characters; no projection adds permissions.",
+  "required_skills": [
+    "engineering-research-copilot",
+    "research-cross-review",
+    "research-data-comparison",
+    "research-direction-evidence",
+    "research-evidence-adversary",
+    "research-figure-workflow",
+    "research-literature-evidence",
+    "research-manuscript",
+    "research-method-transfer"
+  ],
+  "portable_frontmatter_keys": [
+    "name",
+    "description",
+    "license",
+    "compatibility",
+    "metadata",
+    "allowed-tools"
+  ],
+  "host_order": [
+    "codex",
+    "claude-code",
+    "opencode",
+    "hermes",
+    "openclaw",
+    "github-copilot"
+  ],
+  "hosts": {
+    "codex": {
+      "display_name": "OpenAI Codex",
+      "user_root": "{home}/.agents/skills",
+      "project_root": "{project}/.agents/skills",
+      "explicit_invocation": "$<skill-name> or /skills",
+      "model_discovery": "Controlled by each Skill's agents/openai.yaml policy.",
+      "refresh": "Start a new task or inspect /skills after installation.",
+      "native_package": ".codex-plugin/plugin.json",
+      "official_source": "https://developers.openai.com/codex/skills"
+    },
+    "claude-code": {
+      "display_name": "Claude Code",
+      "user_root": "{home}/.claude/skills",
+      "project_root": "{project}/.claude/skills",
+      "explicit_invocation": "/<skill-name>; plugin form /engineering-research-workbench:<skill-name>",
+      "model_discovery": "Description-based unless the user changes Claude-specific invocation controls in a private projection.",
+      "refresh": "Claude watches existing skill roots; restart if the root did not exist when the session started.",
+      "native_package": ".claude-plugin/plugin.json",
+      "official_source": "https://code.claude.com/docs/en/slash-commands"
+    },
+    "opencode": {
+      "display_name": "OpenCode",
+      "user_root": "{home}/.config/opencode/skills",
+      "project_root": "{project}/.opencode/skills",
+      "user_root_overrides": [
+        {
+          "environment": "OPENCODE_CONFIG_DIR",
+          "suffix": "skills"
+        },
+        {
+          "environment": "XDG_CONFIG_HOME",
+          "suffix": "opencode/skills"
+        }
+      ],
+      "explicit_invocation": "Name <skill-name> in the prompt so the agent loads it through the native skill tool. Stable slash-command behavior is not an official compatibility contract.",
+      "model_discovery": "Advertised from name and description unless OpenCode permissions or metadata disable it.",
+      "refresh": "Start or resume a session after the projected files are present.",
+      "native_package": "opencode.json",
+      "official_source": "https://opencode.ai/docs/skills"
+    },
+    "hermes": {
+      "display_name": "Hermes Agent",
+      "user_root": "{home}/.hermes/skills",
+      "project_root": null,
+      "user_root_overrides": [
+        {
+          "environment": "HERMES_HOME",
+          "suffix": "skills"
+        },
+        {
+          "environment": "LOCALAPPDATA",
+          "suffix": "hermes/skills",
+          "platform": "windows"
+        }
+      ],
+      "project_scope_note": "Hermes documents ~/.hermes/skills as its primary root. For a project-owned source, add that source to skills.external_dirs in ~/.hermes/config.yaml; this installer does not mutate host configuration.",
+      "description_overrides": {
+        "engineering-research-copilot": "科研全流程/Research workflow；从想法、文献、计划、结果、草稿或审稿意见进入。",
+        "research-direction-evidence": "研究方向/Research direction；比较主方向、相邻方向、迁移探索与证伪检验。",
+        "research-literature-evidence": "文献检索/Literature evidence；分开发现、身份、摘要、全文和用户材料。",
+        "research-method-transfer": "科研方法/Method transfer；比较假设、适用性、反迁移因素和最小证伪检验。",
+        "research-manuscript": "论文写作/Manuscript；按主张—证据关系起草、改稿和润色。",
+        "research-cross-review": "交叉审阅/Cross review；保留独立审稿意见和分歧后再综合。",
+        "research-data-comparison": "数据对比/Data comparison；检查单位、配对、缺失、基线与不确定性。",
+        "research-evidence-adversary": "证据对抗/Adversarial audit；寻找反证、泄漏、替代解释和过度推断。",
+        "research-figure-workflow": "科研绘图/Scientific figures；按主张和数据选择图形并做质量审计。"
+      },
+      "explicit_invocation": "/<skill-name>",
+      "model_discovery": "Natural-language discovery through skills_list and skill_view.",
+      "refresh": "Start a new session, use /reset, or apply the host's documented immediate refresh option.",
+      "native_package": null,
+      "official_source": "https://github.com/NousResearch/hermes-agent/blob/main/website/docs/user-guide/features/skills.md"
+    },
+    "openclaw": {
+      "display_name": "OpenClaw",
+      "user_root": "{home}/.openclaw/skills",
+      "project_root": "{project}/.agents/skills",
+      "user_root_overrides": [
+        {
+          "environment": "OPENCLAW_STATE_DIR",
+          "suffix": "skills"
+        }
+      ],
+      "explicit_invocation": "$<skill-name> in a prompt or /<skill-name> as a standalone command",
+      "model_discovery": "Eligible skills are indexed from their name and description subject to OpenClaw allowlists and gates.",
+      "refresh": "The watcher refreshes changed skills; a new session provides a clean snapshot.",
+      "native_package": null,
+      "official_source": "https://github.com/openclaw/openclaw/blob/main/docs/tools/skills.md"
+    },
+    "github-copilot": {
+      "display_name": "GitHub Copilot CLI",
+      "user_root": "{home}/.copilot/skills",
+      "project_root": "{project}/.github/skills",
+      "explicit_invocation": "/<skill-name>",
+      "model_discovery": "Description-based unless Copilot permissions or frontmatter disable it.",
+      "refresh": "Run /skills reload or start a new session.",
+      "native_package": null,
+      "official_source": "https://docs.github.com/en/copilot/how-tos/copilot-cli/customize-copilot/add-skills"
+    }
+  }
+}

@@ -1,5 +1,36 @@
 # Engineering Research Copilot Project Plan
 
+## Active successor S1 — Research workbench Skill cluster
+
+Starting from terminal baseline `c21c24e079631d2396a3989045c9f0945e17c24e`, package the repository as one offline-capable plugin with the existing root Skill as a compatibility/ambiguous-intake router and eight focused Skills. Implement shared evidence, claim, readiness, permission, review, and handoff contracts; a deterministic self-contained direction graph; and a scientific-figure recipe/selection foundation.
+
+S1 acceptance:
+
+- Plugin and all nine Skill manifests validate.
+- Focused triggers include positive and negative boundaries.
+- Discovery, bibliographic identity, content inspection, and user material remain distinct.
+- Direction graphs size node area by current-brief relevance and preserve equivalent structured/text views.
+- Figure assets contain recipes, source/license locators, and synthetic fixtures only; no paper image corpus is bundled.
+- Audits remain read-only and every side-effecting operation has a separate scoped authorization.
+- The M4.2 authorization, claim, execution, result, terminal, and frozen evaluation artifacts remain untouched.
+
+### S1.1 — Portable Agent-host projections
+
+Project the same S1 cluster to Codex, Claude Code, OpenCode, Hermes, OpenClaw, and GitHub Copilot. Bind official host roots and invocation semantics in one machine-readable matrix, add native Codex and Claude plugin manifests, and provide a rollback-capable multi-host installer that never rewrites the portable Skill source.
+
+S1.1 acceptance:
+
+- All six host adapters consume the same exact nine Skill directories.
+- User and supported project roots match current official host documentation.
+- Unsupported Hermes project scope fails before writes and explains the official `external_dirs` route.
+- Dry-run is read-only; default install refuses overwrite; explicit upgrade stages, backs up, and rolls back exact targets.
+- Isolated projections are deterministic and self-contained: shared-contract bytes match the canonical source, link rewrites and Hermes short descriptions are hash-bound, and permission changes remain empty.
+- Missing host executables are reported as a runtime-test limitation, not mislabeled as end-to-end compatibility evidence.
+- Both native plugin manifests and the host matrix bind one version.
+- Frozen M4.2 evidence remains untouched and unexecuted.
+
+The v0.4 M0–M5 plan below is retained as historical product/evaluation context. S1 is a separately authorized successor and does not reopen M4.2.
+
 ## Objective
 
 Deliver a small engineering-general research Skill package for master's students through early-stage doctoral researchers. Prioritize accurate paper matching, interdisciplinary direction selection, executable route decisions, and method coaching.
@@ -74,6 +105,7 @@ Acceptance:
 - Submission contains the required Skill files and stays within the competition size rules.
 - The demo does not require a private service, model download, or interactive web application.
 
-## Deferred work
+## Deferred work after S1
 
-- RRC service integration, CNKI connectors, multi-agent runtime, vector database, interactive graph UI, model downloads, and deployment are outside M0–M5 unless separately authorized.
+- RRC service integration, CNKI connectors, MCP/app UI, authenticated providers, vector databases, model downloads, deployment, live experiments/simulations/training, and publication remain outside S1 unless separately authorized.
+- S1 permits only deterministic self-contained local direction-graph HTML. It does not authorize a hosted graph service or plugin app UI.

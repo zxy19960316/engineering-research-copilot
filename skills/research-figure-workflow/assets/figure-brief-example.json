@@ -1,0 +1,32 @@
+{
+  "schema_version": "figure-brief.v1",
+  "brief_id": "fixture:agreement-figure-brief",
+  "claim_type": "agreement",
+  "outcome": "Synthetic paired measurement difference",
+  "unit_of_observation": "Synthetic subject",
+  "columns": [
+    "fixture:subject_id",
+    "fixture:method_a",
+    "fixture:method_b"
+  ],
+  "units": {
+    "fixture:method_a": "synthetic unit",
+    "fixture:method_b": "synthetic unit"
+  },
+  "pairing_or_hierarchy": "One paired synthetic observation per subject",
+  "missingness": "No missing values in this contract fixture",
+  "split": "Not applicable to the synthetic agreement fixture",
+  "uncertainty": "95% intervals for bias and limits of agreement; method must be declared before execution",
+  "time_or_censoring": "Not applicable to this synthetic agreement fixture",
+  "design_or_seed_alignment": "Not applicable to this synthetic agreement fixture",
+  "transform_and_missingness": "Original synthetic scale; no imputation",
+  "edge_semantics_and_layout_seed": "Not applicable to this synthetic agreement fixture",
+  "coordinates_and_scale": "Not applicable to this synthetic agreement fixture",
+  "acceptable_difference": "Externally supplied synthetic tolerance; no real threshold is implied",
+  "class_prevalence": "Not applicable to this synthetic agreement fixture",
+  "residual_definition": "Not applicable to this synthetic agreement fixture",
+  "interaction_needed": false,
+  "target_journal": null,
+  "backend": "unselected",
+  "execution_authorized": false
+}

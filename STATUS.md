@@ -2,7 +2,31 @@
 
 ## Active milestone
 
-`M4 — Cross-engineering forward evaluation`
+`S1.1 — Portable Agent-host projections`
+
+Successor baseline: `c21c24e079631d2396a3989045c9f0945e17c24e`
+
+Successor branch: `codex/research-skill-cluster-strengthening`
+
+Successor status: `S1_FOUNDATION_IMPLEMENTED; S1_1_HOST_ADAPTER_IMPLEMENTED; LOCAL_GATES_PASSED; DELIVERY_AUTHORIZED; REAL_HOST_RUNTIME_UNCLAIMED`
+
+Authorized successor scope: `one umbrella router plus eight focused Skills; shared evidence/readiness/permission/review/handoff contracts; direction-graph.v1; scientific-figure workflow; Codex, Claude Code, OpenCode, Hermes, OpenClaw, and GitHub Copilot host projections; native plugin manifests; local validation; commit; push; pull request; merge to remote main`
+
+Successor research inputs: `docs/research/2026-08-14-scientific-figure-workflow-survey.md sha256=4fcbc1169613ade1d065008a284419cee9caa5c2831a7c400c781cc717885bea; docs/research/2026-08-14-research-skill-ecosystem-survey.md sha256=3b484ed3494ea55cabc61992060048bf748ab051411a46e2fca363854d9aa207; docs/research/2026-08-14-agent-host-compatibility-survey.md sha256=57778b596dcbc4ef22827ff48a8e463a6498f5601c74fe1038d74ed74c9be470`
+
+Successor authority state: `repository_file_write=true; local_validation=true; commit=true; push=true; pull_request=true; merge_main=true; real_host_install=false; host_config_write=false; research_material_download=false; research_material_upload=false; experiment=false; simulation=false; training=false; publication=false; external_communication=git_delivery_only`
+
+Successor boundary: `not a continuation, retry, repair, or relabeling of M4.2; no M4 authorization, claim, execution, result, terminal, or frozen evaluation artifact may be modified or consumed`
+
+Successor local gates: `host_projection_focused=15/15; S1_cluster=47/47; S1_M1_M2_non_M4=210/210; M3_core_non_M4=179/179; standard_skill_validator=9/9; codex_plugin_validator=PASS; git_diff_check=PASS; remote CI must pass on the PR before merge`
+
+Successor scope audit: `evals/m4 changes=0; downloads=0; uploads=0; experiments=0; simulations=0; training_runs=0; publications=0; external_communications=0`
+
+Successor preserved limitations: `the first 47-case cluster run failed only because the compatibility-report SHA-256 was transcribed four characters short; the report bytes were not changed and the corrected binding passed; one broad combined non-M4 wrapper and one historical M3 audit wrapper previously timed out without results and are not counted as passes; Claude Code, OpenCode, Hermes, OpenClaw, and Copilot executables are absent; Codex is present but no external model invocation was authorized; native runtime activation therefore remains unclaimed`
+
+Successor delivery boundary: `integrate origin/main without rebasing frozen history; push the named feature branch; require PR checks; merge through the PR; real-data plotting still requires a Python-or-R choice; repository license decision remains open`
+
+Terminal predecessor milestone: `M4 — Cross-engineering forward evaluation`
 
 Active revision: `M4.2 GATE_B_STOPPED_PROTOCOL_OR_INFRASTRUCTURE_FAILURE; accepted_head=9869aa4b22b5097619ce18b896a1c2b6e631e58b; accepted_tree=b652942e38e81716e16065c4b32d4bb059326012; decision=M4_2_TERMINAL_FAILURE_PRESERVED_SUCCESSOR_REVISION_REQUIRED; authorization_token=CONSUMED; claim=PRESENT; terminal=PRESENT; continuation_forbidden=true`
 
@@ -799,7 +823,7 @@ Evidence is recorded under `evals/m1/`, including preserved failed runs and inde
 ## External state
 
 - Git remote: `https://github.com/zxy19960316/engineering-research-copilot.git`
-- Active local branch: `codex/m4-cross-engineering-forward-evaluation-m4.2-one-shot-claim-and-execution`
+- Active local branch: `codex/research-skill-cluster-strengthening`
 - External APIs/services configured: none
 - RRC integration: not started
 - Platform integration: not required for the local Skill competition track

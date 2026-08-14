@@ -1,11 +1,13 @@
 ---
 name: engineering-research-copilot
-description: "Run evidence-grounded engineering research workflows for mechanical, nuclear, automation, computer, electrical, and interdisciplinary topics. Use when a researcher needs accurate two-round literature matching, verified DOI/author/title metadata, a static paper evidence map, research-direction comparison, transfer-method reasoning, an executable experiment or simulation route, method coaching, data-result-claim auditing, manuscript red-team review, or Chinese requests such as 文献精准匹配、科研选题、交叉学科方向、科研路线、实验方案、仿真方案、方法迁移、证据检查、论文预审和科研辅助。"
+description: "Route evidence-grounded engineering research work from a vague idea, literature, plan, result, outline, draft, figure, data, or reviewer comment. Use for ambiguous or genuinely multi-stage requests spanning several research workflows. Do not use as the default when one focused Skill already owns the goal. Chinese triggers include 科研全流程、科研辅助、从想法到论文 and mixed requests combining 文献、方向、方法、写作、审阅、数据 or 绘图。"
 ---
 
 # Engineering Research Copilot
 
-Help engineering master's students and early doctoral researchers move from a vague or cross-disciplinary problem to verified literature, a defensible direction, and an executable research route. Keep claims proportional to evidence and keep the researcher in control of direction changes.
+Route ambiguous or multi-stage engineering research work across the focused Skills in this plugin. Enter from the user's actual material, keep claims proportional to evidence, and keep the researcher in control of direction, writing, and execution.
+
+Apply [Shared research governance](references/core-research-governance.md) to every route and use the [Skill handoff contract](references/core-skill-handoffs.md) whenever work moves between focused Skills.
 
 ## Apply the operating contract
 
@@ -28,13 +30,17 @@ Treat the two searches as one calibration cycle, not a permanent limit. If the u
 
 | User need | Load and apply |
 |---|---|
+| Ambiguous input or several lifecycle stages | Keep this umbrella Skill active, build the research-case envelope, then route only the needed focused Skills |
 | Find, verify, compare, or re-search papers | [Paper calibration](references/core-paper-calibration.md), [Citation integrity](references/core-citation-integrity.md), [Paper evidence map](references/core-paper-map.md), and [Feedback rollback](references/core-feedback-rollback.md) |
-| Confirm or compare research directions | [Direction decision](references/core-direction-decision.md) and, when papers are used, the citation-integrity rules above |
+| Confirm or compare research directions | Prefer `$research-direction-evidence`; apply [Direction decision](references/core-direction-decision.md) and the citation-integrity rules above |
 | React to dissatisfaction or changed constraints | Use the feedback-rollback rules above |
-| Plan an experiment, simulation, or minimum decisive test | Use the direction-decision rules above; require `user_confirmed` direction status first |
+| Plan a method, transfer, experiment, simulation, or minimum decisive test | Prefer `$research-method-transfer`; require the readiness and direction gates before a detailed route |
 | Coach an engineering method | [Method coaching](references/core-method-coaching.md), then load only the applicable family: [Experiment, measurement, and UQ](references/method-experiment-measurement-uq.md), [Modeling, simulation, and VVUQ](references/method-modeling-simulation-vvuq.md), [Control, optimization, and identification](references/method-control-optimization-identification.md), [Signal processing and diagnostics](references/method-signal-diagnostics.md), [Data, machine learning, and hybrid methods](references/method-data-ml-hybrid.md), or [Reliability, safety, and risk](references/method-reliability-safety-risk.md); for nuclear engineering × ML, also apply the additive [Nuclear engineering × machine learning overlay](references/domain-nuclear-ml.md) |
-| Check data-result-claim consistency | Perform a read-only claim-evidence audit; distinguish observed data, analysis output, interpretation, and speculation |
-| Review writing, figures, or format | Perform a read-only red-team pass, then hand off execution to a dedicated writing, figure, document, or data Skill when available |
+| Draft or polish a manuscript | Hand off the claim-evidence ledger to `$research-manuscript` |
+| Preserve independent review views and synthesize issues | Use `$research-cross-review`; keep source-file review read-only |
+| Compare user data or results | Use `$research-data-comparison`; do not invent or execute missing analyses |
+| Challenge claims, evidence, or validity | Use `$research-evidence-adversary` read-only |
+| Select, plan, or audit scientific figures | Use `$research-figure-workflow`; plotting and file creation require explicit authorization |
 
 Load only the references required for the current route. Do not load every reference by default.
 

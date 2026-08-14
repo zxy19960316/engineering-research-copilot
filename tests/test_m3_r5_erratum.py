@@ -916,7 +916,7 @@ class M3R5ErratumTests(unittest.TestCase):
         self.assertIn("- M5: `ABSENT; NOT_STARTED`", text)
         self.assertIn(
             "- Active local branch: "
-            "`codex/m4-cross-engineering-forward-evaluation-m4.2-one-shot-claim-and-execution`",
+            "`codex/research-skill-cluster-strengthening`",
             text,
         )
         self.assertNotIn("GATE_IV_B_LAUNCH_READINESS_LOCAL_READY", text)

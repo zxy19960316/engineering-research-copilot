@@ -1,0 +1,6 @@
+interface:
+  display_name: "Research Cross Review"
+  short_description: "Preserve reviewer reports and disagreements before synthesis"
+  default_prompt: "Use $research-cross-review to run separated review passes and preserve disagreements before giving me a synthesis."
+policy:
+  allow_implicit_invocation: true

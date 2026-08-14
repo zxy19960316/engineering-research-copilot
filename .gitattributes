@@ -42,3 +42,12 @@
 
 # Preserve byte-sensitive M4 cases, variants, schemas, manifests, and protocols.
 /evals/m4/** text eol=lf
+
+# Keep the S1 Skill source, host adapters, and hash-bound research inputs stable.
+/skills/** text eol=lf
+/docs/research/** text eol=lf
+/agent-hosts.json text eol=lf
+/install-skill.py text eol=lf
+/opencode.json text eol=lf
+/.codex-plugin/** text eol=lf
+/.claude-plugin/** text eol=lf
