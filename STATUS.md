@@ -2,6 +2,42 @@
 
 ## Active milestone
 
+`S2 — Clean Skill distribution`
+
+S2 baseline: `8523f95ef4a823ab29eda5bd025b0a6e045d0d04`
+
+S2 branch: `codex/clean-skill-distribution`
+
+S2 status: `CLEAN_RELEASE_CONTRACT_FROZEN; DETERMINISTIC_BUILDER_IMPLEMENTED; RELEASE_MANIFEST_VERIFICATION_IMPLEMENTED; MILESTONE_RUNTIME_MATERIAL_EXCLUDED; VERSION_0_7_0_BOUND; LOCAL_VALIDATION_PASSED; LOCAL_ARTIFACT_BUILT; GIT_DELIVERY_AUTHORIZED_2026_08_15; DELIVERY_IN_PROGRESS`
+
+S2 authorized scope: `preserve the development and audit repository; generate an ignored local clean release from one canonical nine-Skill source; add a tracked deterministic standard-library builder, tests, version bindings, and development documentation; validate locally`
+
+S2 authority state: `repository_file_write=true; local_validation=true; local_release_build=true; commit=true; push=true; pull_request=true; merge_main=true; release_upload=false; marketplace_update=false; real_host_install=false; host_config_write=false; publication=false; external_communication=false`
+
+S2 release allowlist: `.claude-plugin/plugin.json; .codex-plugin/plugin.json; agent-hosts.json; install-skill.py; opencode.json; exact tracked files under the nine required skills except declared source_only_paths; generated release-manifest.json`
+
+S2 release denylist: `.github/**; docs/**; evals/**; tests/**; .gitattributes; .gitignore; AGENTS.md; PROJECT_PLAN.md; README.md; STATUS.md; build-release.py; Git metadata; caches; every untracked file`
+
+S2 first test run: `PRESERVED_EXPECTED_RED; methods=7; failures=9; causes=build-release.py_absent,cluster_and_plugin_versions_still_0.6.0; import_or_environment_errors=0`
+
+S2 intermediate test run: `PRESERVED_EXPECTED_RED; methods=7; failures=4; cause=version_bindings_still_0.6.0; deterministic_archive,allowlist,manifest_hashes,overwrite_refusal,tamper_rejection=PASSED`
+
+S2 host regression transition: `first=14/15 with sole stale expected-version assertion 0.6.0; corrected=15/15; no projection, rollback, path, or permission behavior was weakened`
+
+S2 semantic-purity red: `PRESERVED_EXPECTED_RED; methods=22; failures=1; errors=55; causes=source_only_paths_absent,projection_omission_audit_absent,five_legacy_scripts_still_shipped`
+
+S2 semantic-purity green: `PASSED; 22/22; five historical scripts remain in the development repository but are absent from the release and every source-based host projection; emitted Markdown/Python milestone-token hits=0`
+
+S2 focused regression: `PASSED; clean_release+cluster+host_projection+figure_recipe+direction_graph=54/54; historical_skill_package_audit=16/16`
+
+S2 standard validation: `PASSED; Skill validator=9/9 under Python 3.12; Codex plugin validator=PASSED; Python 3.10 builder_check=PASSED; the default system Python attempt remained an environment-only failure because PyYAML was absent and no package was installed`
+
+S2 local artifact: `D:\engineering-research-copilot\dist\engineering-research-workbench-0.7.0.zip; bytes=337119; payload_files=54; zip_entries_including_manifest=55; archive_sha256=314b97d53030ce56c3b55da29396143b402aa77f7f036ec5d6046fbd94cbf84c; manifest_sha256=7c40921010922514bfb4f7b598087fafd37f801f105fd0b534af450a43c71e18; ordinal_order=true; duplicate_entries=0; legacy_members=0; milestone_runtime_hits=0`
+
+S2 boundary: `Git delivery authority is limited to committing this S2 change set, pushing its feature branch, opening its pull request, and merging that pull request into main; no tracked release copy; no deletion or reinterpretation of M1-M4 evidence; no M4 continuation, retry, repair, claim, execution, or result; no marketplace update, real host installation, release upload, or publication; local ZIP is not a public release`
+
+## Preserved S1.1 delivery
+
 `S1.1 — Portable Agent-host projections`
 
 Successor baseline: `c21c24e079631d2396a3989045c9f0945e17c24e`

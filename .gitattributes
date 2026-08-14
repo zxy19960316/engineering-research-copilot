@@ -48,6 +48,8 @@
 /docs/research/** text eol=lf
 /agent-hosts.json text eol=lf
 /install-skill.py text eol=lf
+/build-release.py text eol=lf
 /opencode.json text eol=lf
 /.codex-plugin/** text eol=lf
 /.claude-plugin/** text eol=lf
+/tests/test_clean_release.py text eol=lf

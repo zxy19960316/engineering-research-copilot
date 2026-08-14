@@ -17,3 +17,4 @@ local/
 generated/
 artifacts/
 outputs/
+dist/

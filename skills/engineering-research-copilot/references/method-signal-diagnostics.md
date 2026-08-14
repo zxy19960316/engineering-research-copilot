@@ -5,7 +5,7 @@
 ## 适用性
 
 - 对感知、预处理、特征提取、检测、定位、诊断、预测输入或状态监测主张，选择 `signal_diagnostics`。
-- 方法卡只能绑定 M2 推导的主张、决策指标、必要前提和资源上限。
+- 方法卡只能绑定已确认方向推导的主张、决策指标、必要前提和资源上限。
 - 将原始信号来源、采样与时钟元数据、传感器校准、标签定义与来源、独立单元身份、分段边界和预处理规格放入 `applicability.required_inputs`。
 - 将信号或标签来源无效、采样或对齐未解决、分区不独立、不支持的运行用途、必要输入未解决，以及无法取得专家安全复核放入 `applicability.incompatible_conditions`。
 - `stop_conditions` 和 `pivot_conditions` 只存放闭合数值标准对象，不能编码缺失制品、来源失败或安全门槛。
@@ -20,7 +20,7 @@
 ## 最低资源
 
 - `minimum_resources` 只填写已标注事件数、正常暴露时长、独立单元数、存储、时间或分析能力等有限、非布尔数值要求。
-- 每行通过 `source_constraint_id`、`resource` 和 `unit` 绑定到运算符为 `<` 或 `<=` 的继承 M2 资源上限，并严格保持在上限内。
+- 每行通过 `source_constraint_id`、`resource` 和 `unit` 绑定到运算符为 `<` 或 `<=` 的继承资源上限，并严格保持在上限内。
 - 原始信号、时间戳、采样元数据、校准记录、标签、资产身份、划分定义和预处理规格放入 `applicability.required_inputs`，不能放入 `minimum_resources`。
 - 缺少匹配上限时视为输入不兼容，不能据此虚构或扩大资源。
 
@@ -70,7 +70,7 @@
 - `stop_conditions` 和 `pivot_conditions` 只能使用[方法辅导](core-method-coaching.md)定义的闭合数值标准对象。
 - `bounded` 模式从所选方向 `minimum_decisive_test` 的匹配标准复制；`route_specific` 模式从对应已验证路线条件复制。
 - 只使用与误报暴露、漏检、检测延迟、采样有效性或偏移退化相关的标准，并逐字保留上游指标 ID、运算符、值和单位。
-- 没有适用数值标准时封闭失败并要求修复上游标准；M3 内不得虚构、估计或调节阈值。
+- 没有适用数值标准时封闭失败并要求修复上游标准；方法计划内不得虚构、估计或调节阈值。
 - 无效信号/标签来源、采样或对齐未解决、分区不独立、运行用途不受支持及安全复核失败放入 `applicability.incompatible_conditions`。
 
 ## 安全边界

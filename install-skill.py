@@ -9,6 +9,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
+from pathlib import PurePosixPath
 import re
 import shutil
 import stat
@@ -34,6 +35,19 @@ DESCRIPTION_LINE = re.compile(
     rb'(?m)^description:\s*"[^"\r\n]*"(?P<cr>\r?)$'
 )
 PROJECTION_SCHEMA = "engineering-research-skill-projection.v1"
+RELEASE_MANIFEST_FILENAME = "release-manifest.json"
+RELEASE_SCHEMA = "engineering-research-clean-release.v1"
+RELEASE_PAYLOAD_POLICY = "git-tracked-explicit-allowlist"
+RELEASE_MANIFEST_KEYS = {
+    "schema_version",
+    "cluster_name",
+    "cluster_version",
+    "payload_policy",
+    "file_count",
+    "files",
+}
+RELEASE_FILE_KEYS = {"path", "sha256", "size"}
+SHA256 = re.compile(r"^[0-9a-f]{64}$")
 
 
 @dataclass(frozen=True)
@@ -232,13 +246,145 @@ def _frontmatter(path: Path) -> tuple[dict[str, str], set[str]]:
     return values, keys
 
 
+def _release_relative_path(value: Any) -> PurePosixPath:
+    if not isinstance(value, str) or not value or "\\" in value:
+        raise ValueError(f"Release manifest path is invalid: {value!r}")
+    path = PurePosixPath(value)
+    if (
+        path.is_absolute()
+        or any(part in {"", ".", ".."} for part in path.parts)
+        or path.as_posix() != value
+    ):
+        raise ValueError(f"Release manifest path is invalid: {value!r}")
+    return path
+
+
+def _source_only_paths(matrix: dict[str, Any]) -> tuple[str, ...]:
+    values = matrix.get("source_only_paths")
+    if (
+        not isinstance(values, list)
+        or not values
+        or not all(isinstance(value, str) and value for value in values)
+        or values != sorted(values)
+        or len(values) != len(set(values))
+    ):
+        raise ValueError("Host matrix must declare sorted unique source_only_paths")
+
+    required = set(matrix.get("required_skills", []))
+    for value in values:
+        path = _release_relative_path(value)
+        if (
+            len(path.parts) < 4
+            or path.parts[0] != "skills"
+            or path.parts[1] not in required
+            or path.parts[-1] == "SKILL.md"
+        ):
+            raise ValueError(
+                f"Source-only path must be a non-entrypoint Skill file: {value}"
+            )
+    return tuple(values)
+
+
+def validate_release_manifest(package: Package) -> None:
+    manifest_path = package.repository_root / RELEASE_MANIFEST_FILENAME
+    if not manifest_path.exists():
+        return
+    if manifest_path.is_symlink() or not manifest_path.is_file():
+        raise ValueError("Release manifest must be a regular file")
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    if not isinstance(manifest, dict) or set(manifest) != RELEASE_MANIFEST_KEYS:
+        raise ValueError("Release manifest has an invalid top-level shape")
+    if manifest.get("schema_version") != RELEASE_SCHEMA:
+        raise ValueError(
+            f"Unsupported release manifest schema: {manifest.get('schema_version')!r}"
+        )
+    if manifest.get("payload_policy") != RELEASE_PAYLOAD_POLICY:
+        raise ValueError("Release manifest payload policy is invalid")
+    if manifest.get("cluster_name") != package.matrix.get("cluster_name"):
+        raise ValueError("Release manifest cluster name mismatch")
+    if manifest.get("cluster_version") != package.matrix.get("cluster_version"):
+        raise ValueError("Release manifest cluster version mismatch")
+
+    entries = manifest.get("files")
+    if not isinstance(entries, list) or not entries:
+        raise ValueError("Release manifest files must be a non-empty list")
+    if (
+        not isinstance(manifest.get("file_count"), int)
+        or isinstance(manifest.get("file_count"), bool)
+        or manifest["file_count"] != len(entries)
+    ):
+        raise ValueError("Release manifest file count mismatch")
+
+    declared_paths: list[str] = []
+    for entry in entries:
+        if not isinstance(entry, dict) or set(entry) != RELEASE_FILE_KEYS:
+            raise ValueError("Release manifest file entry has an invalid shape")
+        relative = _release_relative_path(entry.get("path"))
+        relative_text = relative.as_posix()
+        declared_paths.append(relative_text)
+        digest = entry.get("sha256")
+        size = entry.get("size")
+        if not isinstance(digest, str) or not SHA256.fullmatch(digest):
+            raise ValueError(
+                f"Release manifest SHA-256 is invalid: {relative_text}"
+            )
+        if (
+            not isinstance(size, int)
+            or isinstance(size, bool)
+            or size < 0
+        ):
+            raise ValueError(f"Release manifest size is invalid: {relative_text}")
+
+        source = package.repository_root.joinpath(*relative.parts)
+        if source.is_symlink() or not source.is_file():
+            raise ValueError(
+                f"Release manifest file is missing or unsafe: {relative_text}"
+            )
+        payload = source.read_bytes()
+        if len(payload) != size:
+            raise ValueError(
+                f"Release manifest size mismatch: {relative_text}"
+            )
+        if hashlib.sha256(payload).hexdigest() != digest:
+            raise ValueError(
+                f"Release manifest hash mismatch: {relative_text}"
+            )
+
+    if declared_paths != sorted(declared_paths) or len(declared_paths) != len(
+        set(declared_paths)
+    ):
+        raise ValueError("Release manifest paths must be sorted and unique")
+
+    actual_paths: list[str] = []
+    for source in package.repository_root.rglob("*"):
+        relative = source.relative_to(package.repository_root).as_posix()
+        if source.is_symlink():
+            raise ValueError(f"Release manifest found a symbolic link: {relative}")
+        if source.is_file() and relative != RELEASE_MANIFEST_FILENAME:
+            actual_paths.append(relative)
+    if sorted(actual_paths) != declared_paths:
+        raise ValueError("Release manifest file set mismatch")
+
+
 def validate_package(package: Package) -> None:
+    validate_release_manifest(package)
     matrix = package.matrix
     required = matrix.get("required_skills")
     if not isinstance(required, list) or not required:
         raise ValueError("Host matrix must declare a non-empty required_skills list")
     if len(required) != len(set(required)):
         raise ValueError("Host matrix contains duplicate required skill names")
+
+    source_only_paths = _source_only_paths(matrix)
+    clean_release = (package.repository_root / RELEASE_MANIFEST_FILENAME).is_file()
+    for relative in source_only_paths:
+        source = package.repository_root.joinpath(
+            *PurePosixPath(relative).parts
+        )
+        if source.exists() and (source.is_symlink() or not source.is_file()):
+            raise ValueError(f"Source-only path is not a regular file: {relative}")
+        if not clean_release and not source.is_file():
+            raise ValueError(f"Declared source-only file is missing: {relative}")
 
     actual = sorted(
         child.name
@@ -447,6 +593,21 @@ def _project_skill(
         ignore=shutil.ignore_patterns(*IGNORED_NAMES),
     )
 
+    source_only_omissions = [
+        relative
+        for relative in _source_only_paths(package.matrix)
+        if relative.startswith(f"skills/{skill_name}/")
+    ]
+    for relative in source_only_omissions:
+        local_parts = PurePosixPath(relative).parts[2:]
+        omitted = destination.joinpath(*local_parts)
+        if omitted.exists():
+            if omitted.is_symlink() or not omitted.is_file():
+                raise ValueError(
+                    f"Source-only projection target is unsafe: {relative}"
+                )
+            omitted.unlink()
+
     source_skill_file = source / "SKILL.md"
     projected_skill_file = destination / "SKILL.md"
     source_skill_bytes = source_skill_file.read_bytes()
@@ -555,6 +716,7 @@ def _project_skill(
         "rewrites": rewrites,
         "frontmatter_changes": frontmatter_changes,
         "permission_changes": [],
+        "source_only_omissions": source_only_omissions,
         "generated_files": [
             *[entry["projected"] for entry in references],
             "references/shared/projection-manifest.json",
