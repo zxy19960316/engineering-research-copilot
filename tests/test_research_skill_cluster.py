@@ -5,9 +5,6 @@ import json
 import unittest
 from pathlib import Path
 
-import yaml
-
-
 REPO_ROOT = Path(__file__).resolve().parents[1]
 SKILLS_ROOT = REPO_ROOT / "skills"
 EXPECTED_SKILLS = {
@@ -41,10 +38,44 @@ REPORT_HASHES = {
 }
 
 
-def _frontmatter(path: Path) -> dict:
+def _scalar(value: str) -> str | bool:
+    value = value.strip()
+    if len(value) >= 2 and value[0] == value[-1] and value[0] in {'"', "'"}:
+        return value[1:-1]
+    if value == "true":
+        return True
+    if value == "false":
+        return False
+    return value
+
+
+def _frontmatter(path: Path) -> dict[str, str | bool]:
     text = path.read_text(encoding="utf-8")
     _, raw, _ = text.split("---", 2)
-    return yaml.safe_load(raw)
+    values: dict[str, str | bool] = {}
+    for line in raw.splitlines():
+        if not line or line.startswith((" ", "\t")) or ":" not in line:
+            continue
+        key, value = line.split(":", 1)
+        values[key] = _scalar(value)
+    return values
+
+
+def _agent_config(path: Path) -> dict[str, dict[str, str | bool]]:
+    values: dict[str, dict[str, str | bool]] = {}
+    section: str | None = None
+    for line in path.read_text(encoding="utf-8").splitlines():
+        if not line or line.lstrip().startswith("#"):
+            continue
+        if not line.startswith((" ", "\t")) and line.endswith(":"):
+            section = line[:-1]
+            values[section] = {}
+            continue
+        if section is None or not line.startswith("  ") or ":" not in line:
+            continue
+        key, value = line.strip().split(":", 1)
+        values[section][key] = _scalar(value)
+    return values
 
 
 class ResearchSkillClusterTests(unittest.TestCase):
@@ -69,11 +100,7 @@ class ResearchSkillClusterTests(unittest.TestCase):
                 skill_root = SKILLS_ROOT / skill_name
                 skill_text = (skill_root / "SKILL.md").read_text(encoding="utf-8")
                 metadata = _frontmatter(skill_root / "SKILL.md")
-                agent = yaml.safe_load(
-                    (skill_root / "agents" / "openai.yaml").read_text(
-                        encoding="utf-8"
-                    )
-                )
+                agent = _agent_config(skill_root / "agents" / "openai.yaml")
                 self.assertEqual(skill_name, metadata["name"])
                 self.assertIn("Use", metadata["description"])
                 self.assertIn("Do not use", metadata["description"])

@@ -182,7 +182,8 @@ jobs:
           excluded = {'test_m4_1_preparation', 'test_m4_1_authorization_builder',
           'test_m4_1_authorization', 'test_m4_1_execution',
           'test_m4_1_launch_readiness', 'test_m4_2_preparation',
-          'test_m4_2_gate_iv_a_r2_review'};
+          'test_m4_2_gate_iv_a_r2_review', 'test_m4_preparation',
+          'test_m4_authorization', 'test_m4_execution'};
           modules = ['tests.' + path.stem for path in
           sorted(pathlib.Path('tests').glob('test_*.py')) if path.stem not in excluded];
           suite = unittest.defaultTestLoader.loadTestsFromNames(modules);
@@ -198,7 +199,8 @@ jobs:
           'test_m4_2_gate_iv_a_r2_review', 'test_m4_2_execution',
           'test_m4_2_launch_readiness', 'test_m4_2_authorization',
           'test_m4_2_authorization_preparation',
-          'test_m4_2_gate_iv_b_protocol_proof'};
+          'test_m4_2_gate_iv_b_protocol_proof', 'test_m4_preparation',
+          'test_m4_authorization', 'test_m4_execution'};
           modules = ['tests.' + path.stem for path in
           sorted(pathlib.Path('tests').glob('test_*.py')) if path.stem not in excluded];
           suite = unittest.defaultTestLoader.loadTestsFromNames(modules);
@@ -232,6 +234,13 @@ jobs:
         run: python -X utf8 evals/m3/audit_forward_r5_2_aggregate.py
       - name: Audit M3 cross-revision closure
         run: python -X utf8 evals/m3/audit_m3_closure.py
+      - name: Preserve S1 boundary and enter terminal M4 predecessor for legacy checks
+        run: |
+          successor_head="$(git rev-parse HEAD)"
+          git cat-file -e 'c21c24e079631d2396a3989045c9f0945e17c24e^{commit}'
+          git diff --raw --exit-code c21c24e079631d2396a3989045c9f0945e17c24e "$successor_head" -- evals/m4 'tests/test_m4*.py'
+          git diff --exit-code c21c24e079631d2396a3989045c9f0945e17c24e "$successor_head" -- evals/m4 'tests/test_m4*.py'
+          git switch --detach c21c24e079631d2396a3989045c9f0945e17c24e
       - name: Require M4 variant regeneration diff to be empty
         run: python -X utf8 evals/m4/variants/build_variants.py --check
       - name: Require M4 preparation regeneration diff to be empty
@@ -1203,7 +1212,16 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.13"
+      - name: Require S1 successor to preserve the terminal M4 tree
+        run: |
+          git cat-file -e 'c21c24e079631d2396a3989045c9f0945e17c24e^{commit}'
+          git merge-base --is-ancestor c21c24e079631d2396a3989045c9f0945e17c24e HEAD
+          git diff --raw --exit-code c21c24e079631d2396a3989045c9f0945e17c24e HEAD -- evals/m4 'tests/test_m4*.py'
+          git diff --exit-code c21c24e079631d2396a3989045c9f0945e17c24e HEAD -- evals/m4 'tests/test_m4*.py'
+      - name: Create isolated terminal M4 predecessor worktree
+        run: git worktree add --detach "${{ runner.temp }}/s1-terminal-m4" c21c24e079631d2396a3989045c9f0945e17c24e
       - name: Audit historical M3 M4.0 and current M4.1 terminal on LF and CRLF worktrees
+        working-directory: ${{ runner.temp }}/s1-terminal-m4
         run: |
           python -X utf8 -m unittest tests.test_audit_m3_forward_inputs -v
           python -X utf8 -m unittest tests.test_audit_m3_forward_r5_2_f02_preparation -v
@@ -1256,3 +1274,6 @@ jobs:
       - name: Assert current M4 results remain not run before an M4.2 claim
         if: hashFiles('evals/m4/execution/m4.2/launch-claim.json') == ''
         run: python -X utf8 evals/m4/audit_results.py --expect-not-run
+      - name: Remove isolated terminal M4 predecessor worktree
+        if: always()
+        run: git worktree remove --force "${{ runner.temp }}/s1-terminal-m4"

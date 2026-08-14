@@ -22,7 +22,11 @@ Successor local gates: `host_projection_focused=15/15; S1_cluster=47/47; S1_M1_M
 
 Successor scope audit: `evals/m4 changes=0; downloads=0; uploads=0; experiments=0; simulations=0; training_runs=0; publications=0; external_communications=0`
 
-Successor preserved limitations: `the first 47-case cluster run failed only because the compatibility-report SHA-256 was transcribed four characters short; the report bytes were not changed and the corrected binding passed; one broad combined non-M4 wrapper and one historical M3 audit wrapper previously timed out without results and are not counted as passes; Claude Code, OpenCode, Hermes, OpenClaw, and Copilot executables are absent; Codex is present but no external model invocation was authorized; native runtime activation therefore remains unclaimed`
+Successor preserved limitations: `the first 47-case cluster run failed only because the compatibility-report SHA-256 was transcribed four characters short; the report bytes were not changed and the corrected binding passed; two broad combined current-lifecycle/non-M4 wrappers and one historical M3 audit wrapper were terminated or timed out without results and are not counted as passes; Claude Code, OpenCode, Hermes, OpenClaw, and Copilot executables are absent; Codex is present but no external model invocation was authorized; native runtime activation therefore remains unclaimed`
+
+Successor first remote CI: `PRESERVED_FAILED; head=a6cab47197890f9fe35e026b0394b2a65b7a57f5; push_run=31810242065; pull_request_run=31810344557; failures=validate,historical-audit-cross-platform-ubuntu; causes=undeclared_PyYAML_test_dependency,legacy_M4_skill_tree_identity_checks_run_at_successor_HEAD; M4 artifacts and tests changed=0`
+
+Successor CI repair: `IMPLEMENTED_PENDING_EXACT_HEAD_REMOTE_CONFIRMATION; cluster tests now use a standard-library parser; current S1/M1/M2/M3 checks remain on successor HEAD; legacy M4 checks replay only in isolated terminal predecessor c21c24e079631d2396a3989045c9f0945e17c24e; current successor must have an empty diff from that predecessor under evals/m4 and tests/test_m4*.py; no failed evidence was relabeled`
 
 Successor delivery boundary: `integrate origin/main without rebasing frozen history; push the named feature branch; require PR checks; merge through the PR; real-data plotting still requires a Python-or-R choice; repository license decision remains open`
 
