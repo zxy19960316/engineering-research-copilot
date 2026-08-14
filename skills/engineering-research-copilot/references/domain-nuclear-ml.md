@@ -1,52 +1,54 @@
-# Nuclear Engineering × Machine Learning Overlay
+# 核工程 × 机器学习领域叠加规则
 
-Apply [Method coaching](core-method-coaching.md) first. Use this additive `nuclear_engineering_ml` overlay only with applicable cards from [Data, machine learning, and hybrid methods](method-data-ml-hybrid.md), [Reliability, safety, and risk](method-reliability-safety-risk.md), [Modeling, simulation, and VVUQ](method-modeling-simulation-vvuq.md), [Signal processing and diagnostics](method-signal-diagnostics.md), [Control, optimization, and identification](method-control-optimization-identification.md), or [Experiment, measurement, and UQ](method-experiment-measurement-uq.md). Populate exactly the closed overlay fields `schema_version`, `overlay_id`, `domain`, `base_card_ids`, `additional_assumptions`, `additional_failure_modes`, `additional_validation_checks`, `additional_stop_conditions`, `specialist_review_boundaries`, `transfer_status`, and `source_ledger`. Treat the last eight as additive payload fields in addition to the first three identity fields; do not copy or replace general procedures.
+先应用[方法辅导](core-method-coaching.md)。只有与[数据、机器学习与混合方法](method-data-ml-hybrid.md)、[可靠性、安全与风险](method-reliability-safety-risk.md)、[建模、仿真与 VVUQ](method-modeling-simulation-vvuq.md)、[信号处理与诊断](method-signal-diagnostics.md)、[控制、优化与系统辨识](method-control-optimization-identification.md)或[实验、测量与不确定度量化](method-experiment-measurement-uq.md)中的适用方法卡共同使用时，才叠加 `nuclear_engineering_ml`。
 
-## Base-card binding
+只填写闭合字段 `schema_version`、`overlay_id`、`domain`、`base_card_ids`、`additional_assumptions`、`additional_failure_modes`、`additional_validation_checks`、`additional_stop_conditions`、`specialist_review_boundaries`、`transfer_status` 和 `source_ledger`。除前三个身份字段外，其余八个均为附加载荷，不能复制或替换一般程序。
 
-- Populate `base_card_ids` only with unique card IDs from the same validated M3 bundle, and retain every base card's assumptions, resources, checks, failures, conditions, safety boundaries, and ledger.
-- Select only the families needed by the confirmed claims and declared intended use; the overlay adds nuclear-specific constraints and never turns bounded coaching into a complete route.
-- Keep plant, unit, design, simulator, scenario, operating mode, transient, accident class, fuel cycle, sensor configuration, and time period distinct wherever any of them can create dependence or distribution shift.
+## 基础卡绑定
 
-## Additional assumptions
+- `base_card_ids` 只能填写同一已验证 M3 包中的唯一方法卡 ID，并保留每张基础卡的假设、资源、检查、失效模式、条件、安全边界和台账。
+- 只选择已确认主张和声明用途需要的方法族；领域叠加只增加核工程特定约束，不能把有界辅导变成完整路线。
+- 只要可能产生依赖或分布偏移，就保持电站、机组、设计、仿真器、场景、运行模式、瞬态、事故类别、燃料循环、传感器配置和时间段相互区分。
 
-- Record which observations are plant data, experimental data, simulator output, synthetic data, or expert judgment, and state the fidelity, operating envelope, configuration identity, and provenance of each.
-- State the simulator-to-plant gap, scale and facility differences, physics coverage, sensor equivalence, scenario coverage, and intended nuclear function; do not infer plant validity from simulator performance.
-- State the credited and non-credited safety functions, defense-in-depth layers, operator role, automation boundary, and whether the output is informational, advisory, control-related, or protection-related.
-- State exactly: nuclear × ML transfer remains a `hypothesis` until a target-domain decisive test supports it.
+## 附加假设
 
-## Additional failure modes
+- 说明每项观察属于电站数据、实验数据、仿真器输出、合成数据还是专家判断，并记录其保真度、运行边界、配置身份和来源。
+- 说明仿真器—电站差距、尺度与设施差异、物理覆盖、传感器等价性、场景覆盖和预期核功能；不得根据仿真表现推断电站有效性。
+- 说明计入与不计入信用的安全功能、纵深防御层、操作员角色、自动化边界，以及输出属于信息、建议、控制还是保护用途。
+- 明确写出：核工程 × 机器学习迁移在目标领域判别检验支持前保持 `hypothesis`。
 
-- Add plant or scenario leakage, simulator artifacts, unmodeled physics, non-conservative surrogate error, conservation-law violation, rare-transient scarcity, sensor drift or failure, OOD overconfidence, configuration drift, common-cause software failure, automation surprise, and misleading operator reliance when relevant.
-- Add failures caused by conflating code verification, solution verification, model validation, uncertainty quantification, ML evaluation, and target-domain transfer evidence.
-- Add loss or weakening of diversity, redundancy, independence, defense in depth, deterministic protection, conservative limits, human oversight, or shutdown authority as explicit failures.
+## 附加失效模式
 
-## Additional validation checks
+- 适用时增加电站/场景泄漏、仿真器伪影、未建模物理、非保守代理误差、守恒律违反、稀有瞬态不足、传感器漂移或失效、分布外过度自信、配置漂移、软件共因失效、自动化意外和误导性操作员依赖。
+- 增加由混淆代码验证、解验证、模型确认、不确定度量化、机器学习评估和目标领域迁移证据导致的失效。
+- 把多样性、冗余性、独立性、纵深防御、确定性保护、保守限值、人工监督或停机权限丢失或削弱列为显式失效。
 
-- Enforce plant-, unit-, design-, scenario-, operating-mode-, configuration-, and time-aware separation before fitting or evaluation; keep correlated simulator descendants and plant records out of opposing partitions.
-- Check governing physics, dimensional consistency, conservation of mass, energy, momentum, charge, or neutron balance as applicable, monotonic or limiting behavior, and conservative response in safety-relevant regimes.
-- Test declared sensor loss, drift, saturation, bias, timing failure, missing channels, correlated failures, distribution shift, unseen transients, and OOD inputs; verify the fallback and human-visible uncertainty behavior.
-- Keep code verification, solution verification, model validation, UQ, ML generalization, simulator-to-plant transfer, and operational qualification as separate evidence claims.
-- Require independent nuclear-domain review of scenario coverage, physics checks, uncertainty treatment, safety-function interaction, defense-in-depth preservation, human factors, and claimed intended use.
-- State exactly: offline contract validation is not nuclear-safety validation.
+## 附加验证检查
 
-## Additional stop conditions
+- 拟合或评估前按电站、机组、设计、场景、运行模式、配置和时间进行隔离；相关仿真派生样本和电站记录不得跨分区。
+- 适用时检查控制物理、量纲一致性、质量/能量/动量/电荷/中子守恒、单调性或极限行为，以及安全相关工况中的保守响应。
+- 检验声明的传感器丢失、漂移、饱和、偏置、时序故障、通道缺失、相关失效、分布偏移、未见瞬态和分布外输入，并验证后备措施及面向人的不确定性显示。
+- 把代码验证、解验证、模型确认、UQ、机器学习泛化、仿真器—电站迁移和运行资格保持为不同证据主张。
+- 对场景覆盖、物理检查、不确定性处理、安全功能交互、纵深防御保留、人因和声明用途，要求独立核工程专家复核。
+- 明确写出：离线契约验证不是核安全验证。
 
-- Populate `additional_stop_conditions` only with the closed numeric `stop` criterion objects defined by [Method coaching](core-method-coaching.md), using selected-direction metric IDs and exact units.
-- Copy each applicable operator and finite threshold from the selected-direction minimum decisive test in `bounded` mode or the validated route in `route_specific` mode; never invent or tune a nuclear-safety threshold in M3.
-- Use only existing criteria relevant to physics or conservation residuals, target-domain error, OOD or sensor-failure degradation, uncertainty, false alarms, missed events, constraint violations, or defense-in-depth performance.
-- Put missing plant/scenario separation, absent target-domain evidence, invalid VVUQ lineage, failed physics checks, unreviewed protection interaction, or licensing uncertainty in base-card `applicability.incompatible_conditions` or `specialist_review_boundaries`, not in fabricated numeric conditions.
+## 附加停止条件
 
-## Specialist review boundaries
+- `additional_stop_conditions` 只能使用[方法辅导](core-method-coaching.md)定义的闭合数值 `stop` 标准对象，并使用所选方向的指标 ID 和准确单位。
+- `bounded` 模式从所选方向最小判别检验复制适用运算符和有限阈值；`route_specific` 模式从已验证路线复制。M3 内绝不能虚构或调节核安全阈值。
+- 只使用与物理或守恒残差、目标领域误差、分布外/传感器失效退化、不确定性、误报、漏检、约束违规或纵深防御表现有关的既有标准。
+- 缺少电站/场景隔离、目标领域证据、有效 VVUQ 血缘、物理检查、保护系统交互复核或许可确定性时，写入基础卡 `applicability.incompatible_conditions` 或 `specialist_review_boundaries`，不得编造数值条件。
 
-- Require independent qualified nuclear engineering, VVUQ, instrumentation and controls, human-factors, cybersecurity, radiation-protection, and safety specialists according to the proposed function and hazard scope.
-- Preserve licensed technical specifications, regulatory commitments, approved safety analyses, deterministic protection, defense in depth, operator authority, and facility procedures over any method-card recommendation.
-- Treat licensing basis, safety classification, software quality assurance, protection-system credit, technical-specification changes, operational limits, emergency procedures, and risk acceptance as regulator, licensee, and specialist decisions outside method coaching.
-- Do not authorize plant data access, simulator or plant execution, model training, online adaptation, control action, protection action, maintenance deferral, deployment, licensing conclusions, or nuclear-safety conclusions.
+## 专家复核边界
 
-## Source-ledger limits
+- 根据拟议功能和危险范围，要求独立合格的核工程、VVUQ、仪控、人因、网络安全、辐射防护和安全专家复核。
+- 任何方法卡建议都不能覆盖已批准技术规范、监管承诺、安全分析、确定性保护、纵深防御、操作员权限和设施程序。
+- 许可基础、安全分级、软件质量保证、保护系统信用、技术规范变更、运行限值、应急程序和风险接受，均属于监管机构、持证方和专家决定，不属于方法辅导。
+- 不得授权访问电站数据、执行仿真器或电站、训练模型、在线自适应、控制或保护动作、延迟维护、部署、许可结论或核安全结论。
 
-- Populate the overlay `source_ledger` under the closed rules in [Method coaching](core-method-coaching.md); require at least one eligible non-preprint row whose `support_types` includes `safety`.
-- Bind each source to the reported reactor or facility class, scenario, simulator or plant basis, sensor configuration, VVUQ level, safety function, operating envelope, and regulatory context.
-- State what each source does not support, including plant transfer, unseen transients, operational qualification, protection credit, licensing acceptance, or nuclear safety.
-- Keep preprints limited to method or exploration support and never use them as the sole basis for a main direction or safety-related conclusion.
+## 来源台账限制
+
+- 按[方法辅导](core-method-coaching.md)的闭合规则填写叠加 `source_ledger`，并至少包含一条 `support_types` 含 `safety` 的合格非预印本记录。
+- 将每个来源绑定到其报告的反应堆或设施类别、场景、仿真器或电站依据、传感器配置、VVUQ 层级、安全功能、运行边界和监管背景。
+- 说明每个来源不支持什么，包括电站迁移、未见瞬态、运行资格、保护信用、许可接受或核安全。
+- 预印本只限方法或探索支持，不能成为主方向或安全相关结论的唯一依据。

@@ -168,7 +168,7 @@ class ResearchSkillClusterTests(unittest.TestCase):
             / "references"
             / "direction-graph-contract.md"
         ).read_text(encoding="utf-8")
-        self.assertIn("Do not create an interactive HTML application", old_contract)
+        self.assertIn("不创建交互式 HTML", old_contract)
         self.assertIn("direction-graph.v1", new_contract)
         self.assertIn("not a new evidence source", new_contract)
 

@@ -1,88 +1,88 @@
-# Reliability, Safety, and Risk
+# 可靠性、安全与风险
 
-Apply [Method coaching](core-method-coaching.md) first. Use this family protocol to populate only the closed card fields permitted by that protocol; do not create a safety case, execute a hazard analysis, or authorize an operational or regulatory decision.
+先应用[方法辅导](core-method-coaching.md)。本方法族协议只用于填写该协议允许的闭合方法卡字段；不得创建安全论证、执行危险分析，也不得授权运行或监管决定。
 
-## Applicability
+## 适用性
 
-- Select `reliability_safety_risk` for claims about reliability, availability, maintainability, hazards, failure probability, risk, resilience, or safety-related decision support.
-- Bind the card only to M2-derived claims, decision metrics, required preconditions, and resource ceilings.
-- Put the system and hazard scope, event and consequence definitions, exposure basis, population and observation windows, censoring rules, data-completeness record, dependency assumptions, and decision context in `applicability.required_inputs`.
-- Put ambiguous events, missing exposure denominators, unknown data completeness, unresolved dependencies, unsupported rare-event extrapolation, absent defense-in-depth constraints, unresolved required inputs, and unavailable specialist review in `applicability.incompatible_conditions`.
-- Reserve `stop_conditions` and `pivot_conditions` exclusively for closed numeric criterion objects; do not encode missing artifacts, provenance failures, or safety gates there.
-- Separate reliability estimates, hazard identification, consequence analysis, risk aggregation, operational decisions, and regulatory conclusions so evidence for one does not automatically support another.
+- 对可靠性、可用性、可维护性、危险、失效概率、风险、韧性或安全相关决策支持主张，选择 `reliability_safety_risk`。
+- 方法卡只能绑定 M2 推导的主张、决策指标、必要前提和资源上限。
+- 将系统与危险范围、事件与后果定义、暴露基准、总体与观察窗口、删失规则、数据完整性记录、依赖假设和决策场景放入 `applicability.required_inputs`。
+- 将事件含糊、缺少暴露分母、数据完整性未知、依赖未解决、稀有事件外推无支持、纵深防御约束缺失、必要输入未解决，以及无法取得专家复核放入 `applicability.incompatible_conditions`。
+- `stop_conditions` 和 `pivot_conditions` 只存放闭合数值标准对象，不能编码缺失制品、来源失败或安全门槛。
+- 区分可靠性估计、危险识别、后果分析、风险聚合、运行决策和监管结论；一种证据不能自动支持另一种。
 
-## Assumptions
+## 假设
 
-- State system boundaries, mission time, operating states, event taxonomy, exposure unit, censoring, repair, recurrence, stationarity, independence, common-cause, and reporting assumptions.
-- State the consequence categories, risk measure, uncertainty semantics, and any aggregation or risk-acceptance rule without presenting it as regulatory approval.
-- Label sparse-event rates, dependence structures, surrogate consequences, external-hazard transfer, and extrapolation beyond observed exposure as hypotheses.
+- 说明系统边界、任务时间、运行状态、事件分类、暴露单元、删失、维修、复发、平稳性、独立性、共因和报告假设。
+- 说明后果类别、风险度量、不确定性语义及任何聚合或风险接受规则，但不能把它表示为监管批准。
+- 稀疏事件率、依赖结构、代理后果、外部危险迁移及超出已观察暴露的外推均标为假设。
 
-## Minimum resources
+## 最低资源
 
-- Put only finite, non-boolean numeric requirements such as observed exposure, event counts, independent-unit counts, scenario counts, expert-review time, or analysis capacity in `minimum_resources`.
-- Bind every row by `source_constraint_id`, `resource`, and `unit` to an inherited M2 resource ceiling whose operator is `<` or `<=`; remain strictly within that ceiling.
-- Keep hazard logs, event records, exposure histories, maintenance histories, taxonomies, consequence models, dependency records, and review approvals in `applicability.required_inputs`, not in `minimum_resources`.
-- Treat an absent matching ceiling as an incompatible input state, not as permission to invent or widen a resource allowance.
+- `minimum_resources` 只填写已观察暴露、事件数、独立单元数、场景数、专家复核时间或分析能力等有限、非布尔数值要求。
+- 每行通过 `source_constraint_id`、`resource` 和 `unit` 绑定到运算符为 `<` 或 `<=` 的继承 M2 资源上限，并严格保持在上限内。
+- 危险日志、事件记录、暴露历史、维护历史、分类法、后果模型、依赖记录和复核批准放入 `applicability.required_inputs`，不能放入 `minimum_resources`。
+- 缺少匹配上限时视为输入不兼容，不能据此虚构或扩大资源。
 
-## Baselines and controls
+## 基线与对照
 
-- Include observed exposure-normalized rates, a simple classical reliability model, or a documented conservative reference as the primary baseline.
-- Compare methods using identical event definitions, exposure windows, censoring rules, consequence categories, dependencies, and data-completeness assumptions.
-- Preserve a defense-in-depth reference case and test whether the proposed method changes, bypasses, or weakens any independent protective layer.
+- 以按暴露归一化的观察率、简单经典可靠性模型或有记录的保守参考作为主要基线。
+- 使用相同事件定义、暴露窗口、删失规则、后果类别、依赖和数据完整性假设比较方法。
+- 保留纵深防御参考情形，检查拟议方法是否改变、绕过或削弱任何独立保护层。
 
-## Procedure
+## 程序
 
-- Freeze the system and hazard scope, event taxonomy, consequence categories, exposure denominator, observation period, censoring rules, and completeness criteria before estimation.
-- Reconcile event and exposure records, quantify missing or excluded data, and distinguish zero observed events from zero risk.
-- Map initiating events, dependencies, common causes, barriers, recovery paths, and consequences at the resolution needed by the bound claim.
-- Fit or compare reliability and risk estimates only within supported populations and exposure; state rare-event limits and avoid unsupported tail extrapolation.
-- Test sensitivity to event definitions, reporting completeness, dependence, common-cause assumptions, priors, distributions, consequence models, and exposure boundaries.
-- Keep the outline advisory until the user separately authorizes analysis execution or any operational use.
+- 估计前冻结系统与危险范围、事件分类、后果类别、暴露分母、观察期、删失规则和完整性标准。
+- 核对事件与暴露记录，量化缺失或排除数据，并区分零观察事件与零风险。
+- 按绑定主张所需分辨率映射始发事件、依赖、共因、屏障、恢复路径和后果。
+- 只在有支持的总体和暴露内拟合或比较可靠性/风险估计；说明稀有事件局限，避免无支持尾部外推。
+- 检查对事件定义、报告完整性、依赖、共因假设、先验、分布、后果模型和暴露边界的敏感性。
+- 用户另行授权分析执行或运行使用前，程序提纲只作为建议。
 
-## Metrics
+## 指标
 
-- Use only selected-direction metric IDs and units in `primary_metrics`, stop conditions, and pivot conditions.
-- Express events, failures, and false alarms with an explicit exposure basis such as hours, demands, cycles, missions, components, or opportunities.
-- Pair mean or point estimates with uncertainty and tail, worst-case, barrier, and consequence measures appropriate to the decision.
-- Do not substitute accuracy, availability, or a composite risk score for a safety claim whose event and consequence definitions differ.
+- `primary_metrics`、停止条件和转向条件只能使用所选方向的指标 ID 与单位。
+- 事件、失效和误报必须带小时、需求、循环、任务、部件或机会等明确暴露基准。
+- 根据决策，把均值或点估计与不确定性、尾部、最坏情况、屏障和后果度量配对。
+- 事件和后果定义不一致时，不能用准确率、可用性或复合风险分数替代安全主张。
 
-## Uncertainty
+## 不确定性
 
-- Separate aleatory variability, epistemic uncertainty, model-form uncertainty, parameter uncertainty, data incompleteness, reporting uncertainty, and expert-judgment uncertainty.
-- Show sensitivity to distributions, priors, dependence, common causes, censoring, event classification, exposure boundaries, and consequence assumptions.
-- Report rare-event interval width and identifiability limits; absence of observed failures is not evidence of negligible risk without adequate exposure and detection coverage.
+- 区分偶然变异、认知不确定性、模型形式不确定性、参数不确定性、数据不完整、报告不确定性和专家判断不确定性。
+- 展示对分布、先验、依赖、共因、删失、事件分类、暴露边界和后果假设的敏感性。
+- 报告稀有事件区间宽度和可辨识性限制；没有观察到失效，并不在缺少充分暴露与检测覆盖时证明风险可忽略。
 
-## Validation
+## 验证
 
-- Audit hazard scope, event definitions, exposure accounting, observation windows, censoring, completeness, traceability, and independence before interpreting risk estimates.
-- Check model behavior against observed cases, limiting cases, known barriers, historical exposure, and conservative bounds where suitable.
-- Stress assumptions governing rare events, common causes, dependencies, reporting loss, and consequence severity; show which assumptions control the conclusion.
-- Verify that the proposed method preserves defense in depth, independent protection, conservative limits, human authority, and existing safety functions.
-- Treat structural bundle validation as offline contract evidence, not as reliability demonstration, safety validation, operational qualification, or regulatory acceptance.
+- 解释风险估计前，审计危险范围、事件定义、暴露计算、观察窗口、删失、完整性、可追踪性和独立性。
+- 适用时根据已观察案例、极限情形、已知屏障、历史暴露和保守边界检查模型行为。
+- 压力测试稀有事件、共因、依赖、报告丢失和后果严重程度假设，并指出哪些假设主导结论。
+- 验证拟议方法保留纵深防御、独立保护、保守限值、人工权限和现有安全功能。
+- 结构化包验证只是离线契约证据，不能证明可靠性、安全性、运行资格或监管接受。
 
-## Failure modes
+## 失效模式
 
-- List ambiguous event taxonomy, denominator error, under-reporting, survivorship bias, informative censoring, dependence hidden as independence, common-cause omission, sparse-event overconfidence, tail-model misspecification, barrier-credit inflation, and consequence truncation when relevant.
-- Explain how each listed failure could change the bound claim or metric.
-- Preserve missing events, uncertain classifications, failed assumptions, and adverse sensitivity results; do not erase them through aggregation or expert averaging.
+- 适用时列出事件分类含糊、分母错误、漏报、幸存者偏差、信息性删失、把依赖误作独立、遗漏共因、稀疏事件过度自信、尾部模型设定错误、屏障信用夸大和后果截断。
+- 说明每种失效如何改变绑定的主张或指标。
+- 保留缺失事件、不确定分类、失败假设和不利敏感性结果，不能通过聚合或专家平均消除。
 
-## Stop/Pivot conditions
+## 停止与转向条件
 
-- Populate `stop_conditions` and `pivot_conditions` only with the closed numeric criterion objects defined by [Method coaching](core-method-coaching.md).
-- In `bounded` mode, copy each applicable `metric_id`, `operator`, finite `value`, and `unit` from a matching selected-direction `minimum_decisive_test` stop or pivot criterion; in `route_specific` mode, copy them from the corresponding validated route condition.
-- Use only criteria relevant to exposure-normalized event rates, uncertainty width, adverse sensitivity, barrier performance, consequence bounds, or risk limits; preserve the upstream operator, value, and unit verbatim.
-- Fail closed and request upstream criterion repair when no applicable numeric stop or pivot criterion exists; never invent, estimate, tune, or reinterpret a safety threshold inside M3.
-- Put ambiguous events, missing exposure or completeness evidence, unresolved rare-event limitations, weakened defense in depth, and specialist-review failures in `applicability.incompatible_conditions`, not in numeric condition lists.
+- `stop_conditions` 和 `pivot_conditions` 只能使用[方法辅导](core-method-coaching.md)定义的闭合数值标准对象。
+- `bounded` 模式从所选方向 `minimum_decisive_test` 的匹配标准复制；`route_specific` 模式从对应已验证路线条件复制。
+- 只使用与暴露归一化事件率、不确定区间宽度、不利敏感性、屏障表现、后果边界或风险限值相关的标准，并逐字保留上游值。
+- 没有适用数值标准时封闭失败并要求修复上游标准；M3 内不得虚构、估计、调节或重新解释安全阈值。
+- 事件含糊、暴露或完整性证据缺失、稀有事件局限未解决、纵深防御被削弱及专家复核失败放入 `applicability.incompatible_conditions`。
 
-## Safety boundaries
+## 安全边界
 
-- Preserve defense in depth, independent protection layers, conservative operating limits, fail-safe behavior, human oversight, and shutdown authority regardless of an estimated improvement.
-- Require independent qualified specialist review before using a card for operational, licensing, certification, regulatory, or safety-significant conclusions.
-- Do not issue a safety case, risk acceptance, operating permission, maintenance deferral, barrier credit, or regulatory conclusion through method coaching.
+- 无论估计改善如何，都保留纵深防御、独立保护层、保守运行限值、故障安全、人工监督和停机权限。
+- 方法卡用于运行、许可、认证、监管或安全重要结论前，要求独立且合格的专家复核。
+- 方法辅导不得发布安全论证、风险接受、运行许可、延迟维护、屏障信用或监管结论。
 
-## Source-ledger limits
+## 来源台账限制
 
-- Populate `source_ledger` under the closed ledger and eligibility rules in [Method coaching](core-method-coaching.md); label every row as metadata-, abstract-, or full-text-level.
-- Use sources only for the hazards, systems, populations, exposure bases, event definitions, dependencies, consequence models, and uncertainty limits they actually report.
-- State explicitly what each source does not support, including unobserved rare events, changed operating regimes, barrier credit, operational acceptance, transfer, licensing, or safety.
-- Require non-preprint support for safety-related conclusions as defined by the core protocol; block conflicted, unresolved, or recommendation-ineligible citations.
+- 按[方法辅导](core-method-coaching.md)中的闭合台账与资格规则填写 `source_ledger`，并标明证据层级。
+- 来源只能用于其实际报告的危险、系统、总体、暴露基准、事件定义、依赖、后果模型和不确定性边界。
+- 明确说明每个来源不支持什么，包括未观察稀有事件、工况变化、屏障信用、运行接受、迁移、许可或安全。
+- 安全相关结论按核心协议要求非预印本支持，并阻断冲突、未解决或不可推荐引文。

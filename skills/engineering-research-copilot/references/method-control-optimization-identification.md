@@ -1,86 +1,86 @@
-# Control, Optimization, and System Identification
+# 控制、优化与系统辨识
 
-Apply [Method coaching](core-method-coaching.md) first. Use this family protocol to populate only the closed card fields permitted by that protocol; do not create a control route or authorize closed-loop operation.
+先应用[方法辅导](core-method-coaching.md)。本方法族协议只用于填写该协议允许的闭合方法卡字段；不得创建控制路线，也不得授权闭环运行。
 
-## Applicability
+## 适用性
 
-- Select `control_optimization_identification` for claims about system identification, state or parameter estimation, controller design, constrained optimization, or closed-loop performance.
-- Bind the card only to M2-derived claims, decision metrics, required preconditions, and resource ceilings.
-- Put the plant or model identity, excitation and observation records, objective and constraint definitions, operating envelope, baseline implementation, and safety-limit specification in `applicability.required_inputs`.
-- Put invalid provenance, unavailable safe excitation, failed identifiability or observability, undefined constraints or shutdown authority, unresolved required inputs, and unavailable specialist safety review in `applicability.incompatible_conditions`.
-- Reserve `stop_conditions` and `pivot_conditions` exclusively for closed numeric criterion objects; do not encode missing artifacts, provenance failures, or safety gates there.
-- Separate identification, estimation, optimization, and closed-loop claims so evidence for one does not automatically support another.
+- 对系统辨识、状态或参数估计、控制器设计、约束优化或闭环性能主张，选择 `control_optimization_identification`。
+- 方法卡只能绑定 M2 推导的主张、决策指标、必要前提和资源上限。
+- 将对象或模型身份、激励与观测记录、目标与约束定义、运行边界、基线实现和安全限值规格放入 `applicability.required_inputs`。
+- 将来源无效、无法安全激励、辨识性或可观性失败、约束或停机权限未定义、必要输入未解决，以及无法取得专家安全复核放入 `applicability.incompatible_conditions`。
+- `stop_conditions` 和 `pivot_conditions` 只存放闭合数值标准对象，不能编码缺失制品、来源失败或安全门槛。
+- 分开辨识、估计、优化和闭环主张；一种任务的证据不能自动支持另一种。
 
-## Assumptions
+## 假设
 
-- State model structure, operating region, observability, controllability, stationarity, noise, delay, actuator, sensor, and disturbance assumptions.
-- State the objective, constraints, horizon, feasibility assumptions, and intended closed-loop operating envelope.
-- Label linearization, plant-model equivalence, persistent excitation, and transfer to new regimes as hypotheses until checked.
+- 说明模型结构、运行区域、可观性、可控性、平稳性、噪声、延迟、执行器、传感器和扰动假设。
+- 说明目标、约束、时域、可行性假设和预期闭环运行边界。
+- 线性化、对象—模型等价、持续激励和新工况迁移在检查前均标为假设。
 
-## Minimum resources
+## 最低资源
 
-- Put only finite, non-boolean numeric requirements such as excitation-sample counts, validation-scenario counts, sampling capacity, time, memory, or compute capacity in `minimum_resources`.
-- Bind every row by `source_constraint_id`, `resource`, and `unit` to an inherited M2 resource ceiling whose operator is `<` or `<=`; remain strictly within that ceiling.
-- Keep excitation records, sensors, plant or model definitions, objective and constraint records, baseline implementations, and shutdown specifications in `applicability.required_inputs`, not in `minimum_resources`.
-- Treat an absent matching ceiling as an incompatible input state, not as permission to invent or widen a resource allowance.
+- `minimum_resources` 只填写激励样本数、验证场景数、采样能力、时间、内存或算力等有限、非布尔数值要求。
+- 每行通过 `source_constraint_id`、`resource` 和 `unit` 绑定到运算符为 `<` 或 `<=` 的继承 M2 资源上限，并严格保持在上限内。
+- 激励记录、传感器、对象或模型定义、目标和约束记录、基线实现及停机规格放入 `applicability.required_inputs`，不能放入 `minimum_resources`。
+- 缺少匹配上限时视为输入不兼容，不能据此虚构或扩大资源。
 
-## Baselines and controls
+## 基线与对照
 
-- Include a simple controller, estimator, identification model, or optimization heuristic as the primary baseline.
-- Compare alternatives on identical disturbances, initial conditions, constraints, horizons, objectives, and data partitions.
-- Include open-loop, nominal-model, or no-adaptation controls only when safe and relevant to the claim.
+- 以简单控制器、估计器、辨识模型或优化启发式作为主要基线。
+- 在相同扰动、初始条件、约束、时域、目标和数据分区上比较方案。
+- 只有在安全且与主张相关时，才加入开环、标称模型或无自适应对照。
 
-## Procedure
+## 程序
 
-- Check that proposed excitation is informative over the target dynamics and remains within inherited and safety constraints.
-- Check structural and practical identifiability, observability, parameter correlation, and uncertainty before interpreting fitted parameters.
-- Define objectives and constraints independently of the candidate solution; check feasibility before comparing optimality.
-- Evaluate stability margins, delay, saturation, disturbances, model mismatch, uncertainty, and constraint satisfaction before recommending closed-loop use.
-- Separate offline identification or simulation checks from hardware-in-the-loop and real-system evidence.
-- Keep the outline advisory until the user separately authorizes any excitation, optimization run, or closed-loop execution.
+- 检查拟议激励是否覆盖目标动态所需信息，并保持在继承约束和安全约束内。
+- 解释拟合参数前，检查结构与实际辨识性、可观性、参数相关性和不确定性。
+- 独立于候选解定义目标和约束，比较最优性前先检查可行性。
+- 推荐闭环使用前，评估稳定裕度、延迟、饱和、扰动、模型失配、不确定性和约束满足。
+- 区分离线辨识或仿真检查、硬件在环证据和真实系统证据。
+- 用户另行授权激励、优化运行或闭环执行前，程序提纲只作为建议。
 
-## Metrics
+## 指标
 
-- Use only selected-direction metric IDs and units in `primary_metrics`, stop conditions, and pivot conditions.
-- Report fit and residual diagnostics for identification; report tracking, regulation, effort, constraint violations, robustness margins, and worst-case behavior for control.
-- Report feasibility, objective value, optimality gap or bound, run variability, and constraint violations for optimization when available.
+- `primary_metrics`、停止条件和转向条件只能使用所选方向的指标 ID 与单位。
+- 辨识报告拟合与残差诊断；控制报告跟踪、调节、控制代价、约束违规、鲁棒裕度和最坏情况表现。
+- 可获得时，优化报告可行性、目标值、最优性差距或边界、运行变异和约束违规。
 
-## Uncertainty
+## 不确定性
 
-- Quantify parameter, state, disturbance, noise, delay, model-form, and operating-condition uncertainty relevant to the decision.
-- Propagate identification uncertainty into estimator, controller, or optimizer assessment rather than treating fitted values as exact.
-- Test sensitivity to initialization, excitation spectrum, model order, regularization, horizons, weights, and solver settings where applicable.
+- 量化与决策相关的参数、状态、扰动、噪声、延迟、模型形式和运行条件不确定性。
+- 把辨识不确定性传播到估计器、控制器或优化器评估中，不得把拟合值视为精确值。
+- 适用时检验对初始化、激励谱、模型阶次、正则化、时域、权重和求解器设置的敏感性。
 
-## Validation
+## 验证
 
-- Validate residual independence, held-out prediction, identifiability, and parameter plausibility before using an identified model.
-- Validate robust stability, performance, and constraint satisfaction across declared uncertainties and credible disturbances before closed-loop claims.
-- Verify optimization results with feasibility checks, repeat starts or bounds when appropriate, and comparison to the simple baseline.
-- Treat structural bundle validation as offline contract evidence, not as plant, controller, or optimizer performance.
+- 使用辨识模型前，验证残差独立性、留出预测、可辨识性和参数合理性。
+- 作闭环主张前，跨声明不确定性和可信扰动验证鲁棒稳定性、性能与约束满足。
+- 通过可行性检查、适用时的重复起点或边界，以及简单基线比较，验证优化结果。
+- 结构化包验证只是离线契约证据，不能证明对象、控制器或优化器性能。
 
-## Failure modes
+## 失效模式
 
-- List insufficient excitation, non-identifiability, hidden feedback, biased noise, drift, actuator saturation, estimator divergence, unstable poles, infeasibility, local minima, and model mismatch when relevant.
-- Explain how each listed failure could change the bound claim or metric.
-- Preserve unstable, infeasible, and unidentifiable outcomes; do not discard them as tuning artifacts.
+- 适用时列出激励不足、不可辨识、隐藏反馈、噪声偏置、漂移、执行器饱和、估计器发散、不稳定极点、不可行、局部极值和模型失配。
+- 说明每种失效如何改变绑定的主张或指标。
+- 保留不稳定、不可行和不可辨识结果，不得把它们丢弃为调参伪影。
 
-## Stop/Pivot conditions
+## 停止与转向条件
 
-- Populate `stop_conditions` and `pivot_conditions` only with the closed numeric criterion objects defined by [Method coaching](core-method-coaching.md).
-- In `bounded` mode, copy each applicable `metric_id`, `operator`, finite `value`, and `unit` from a matching selected-direction `minimum_decisive_test` stop or pivot criterion; in `route_specific` mode, copy them from the corresponding validated route condition.
-- Use only criteria relevant to instability, constraint violation, estimator divergence, infeasibility, or identifiability; preserve the upstream operator, value, and unit verbatim.
-- Fail closed and request upstream criterion repair when no applicable numeric stop or pivot criterion exists; never invent, estimate, or tune a threshold inside M3.
-- Put unsafe excitation, failed identifiability or observability, invalid provenance, undefined constraints or shutdown authority, and safety-review failures in `applicability.incompatible_conditions`, not in numeric condition lists.
+- `stop_conditions` 和 `pivot_conditions` 只能使用[方法辅导](core-method-coaching.md)定义的闭合数值标准对象。
+- `bounded` 模式从所选方向 `minimum_decisive_test` 的匹配标准复制；`route_specific` 模式从对应已验证路线条件复制。
+- 只使用与不稳定、约束违规、估计器发散、不可行或不可辨识相关的标准，逐字保留上游指标 ID、运算符、值和单位。
+- 没有适用数值标准时封闭失败并要求修复上游标准；M3 内不得虚构、估计或调节阈值。
+- 不安全激励、辨识性或可观性失败、来源无效、约束或停机权限未定义，以及安全复核失败放入 `applicability.incompatible_conditions`，不放入数值条件。
 
-## Safety boundaries
+## 安全边界
 
-- Require qualified controls and domain review before hardware excitation, actuator commands, online adaptation, protection interaction, or operation near physical limits.
-- Require independently defined interlocks, fallback control, shutdown criteria, and manual authority before any separately authorized closed-loop test.
-- Do not execute identification, optimization, controller deployment, or plant operation through method coaching.
+- 硬件激励、执行器命令、在线自适应、保护系统交互或接近物理限值运行前，要求合格控制与领域专家复核。
+- 任何另行获准的闭环试验前，必须独立定义联锁、后备控制、停机标准和人工权限。
+- 方法辅导不得执行辨识、优化、控制器部署或对象运行。
 
-## Source-ledger limits
+## 来源台账限制
 
-- Apply the closed ledger and eligibility rules in [Method coaching](core-method-coaching.md); label every row as metadata-, abstract-, or full-text-level.
-- Use method sources only within their demonstrated plant class, excitation, constraints, uncertainty, and operating region.
-- State explicitly what each source does not support, including stability beyond analyzed regimes, global optimality, online safety, deployment, or transfer.
-- Block conflicted or unresolved citations, and do not use a verified preprint as the sole support for a safety-related conclusion.
+- 应用[方法辅导](core-method-coaching.md)中的闭合台账与资格规则，并标明证据层级。
+- 方法来源只能在其验证过的对象类别、激励、约束、不确定性和运行区域内使用。
+- 明确说明每个来源不支持什么，包括分析工况外的稳定性、全局最优性、在线安全、部署或迁移。
+- 阻断冲突或未解决引文；已核验预印本不能成为安全相关结论的唯一支持。

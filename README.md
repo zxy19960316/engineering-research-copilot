@@ -44,6 +44,8 @@ Engineering Research Workbench 是一组面向工科研究者的证据约束型 
 
 宿主可依据 Skill 的 `description` 自动发现合适入口，但这只表示工作流被加载，不表示获得文件写入、实验或对外沟通权限。完整路径、刷新方式和官方来源记录在 [`agent-hosts.json`](agent-hosts.json)。适配依据包括 [Codex Skills](https://developers.openai.com/codex/skills)、[Claude Code Skills](https://code.claude.com/docs/en/slash-commands)、[OpenCode Skills](https://opencode.ai/docs/skills)、[Hermes Skills](https://github.com/NousResearch/hermes-agent/blob/main/website/docs/user-guide/features/skills.md)、[OpenClaw Skills](https://github.com/openclaw/openclaw/blob/main/docs/tools/skills.md)和 [GitHub Copilot Skills](https://docs.github.com/en/copilot/how-tos/copilot-cli/customize-copilot/add-skills)。
 
+为保留已发布入口的行为，Codex 中的 umbrella router `engineering-research-copilot` 仍关闭隐式调用；八个边界更窄的 focused Skills 可由 Codex 按描述发现，也可由用户显式调用。其他宿主按各自的原生发现机制处理。无论如何被加载，Skill 激活都不会扩大共享权限台账。
+
 OpenCode 的稳定文档保证模型通过原生 `skill` 工具按名称加载；当前稳定版源码虽可形成 `/skill-name` 命令，但这不是稳定文档合同，且可能被同名 command 遮蔽，因此本项目不把 slash 形式写成已确认能力。仓库根部的 `opencode.json` 让从仓库根启动的 OpenCode 直接读取同一 `skills/` 源；安装器仍支持原生用户级和项目级投影，并尊重 `OPENCODE_CONFIG_DIR` 或 `XDG_CONFIG_HOME`。OpenClaw 用户级投影会尊重 `OPENCLAW_STATE_DIR`。
 
 仓库也包含 Claude Code 与 Codex 的原生插件清单，供宿主识别集群身份与版本。Claude Code 开发模式可以从仓库根加载：
