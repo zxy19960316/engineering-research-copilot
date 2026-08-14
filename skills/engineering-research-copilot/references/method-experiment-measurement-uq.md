@@ -1,84 +1,84 @@
-# Experiment, Measurement, and Uncertainty Quantification
+# 实验、测量与不确定度量化
 
-Apply [Method coaching](core-method-coaching.md) first. Use this family protocol to populate only the closed card fields permitted by that protocol; do not create a route or authorize data collection.
+先应用[方法辅导](core-method-coaching.md)。本方法族协议只用于填写该协议允许的闭合方法卡字段；不得创建研究路线，也不得授权采集数据。
 
-## Applicability
+## 适用性
 
-- Select `experiment_measurement_uq` for claims that require controlled intervention, physical measurement, calibration, repeatability, reproducibility, or propagated measurement uncertainty.
-- Bind the card only to M2-derived claims, decision metrics, required preconditions, and resource ceilings.
-- Put the measurement model, calibration trace, data provenance, control definition, randomization or blocking decision, repeatability and reproducibility plan, and uncertainty-budget specification in `applicability.required_inputs`.
-- Put missing or invalid provenance, calibration outside its valid range, unresolved required inputs, unavailable safety approval, and any other qualitative condition that makes the method unsuitable in `applicability.incompatible_conditions`.
-- Reserve `stop_conditions` and `pivot_conditions` exclusively for closed numeric criterion objects; do not encode missing artifacts, provenance failures, or safety gates there.
-- Hand off modeling-, control-, or signal-dominant checks to their directly linked family protocol instead of duplicating them here.
+- 对需要受控干预、物理测量、校准、重复性、再现性或测量不确定度传播的主张，选择 `experiment_measurement_uq`。
+- 方法卡只能绑定 M2 推导的主张、决策指标、必要前提和资源上限。
+- 将测量模型、校准链、数据来源、对照定义、随机化或区组决定、重复性与再现性方案、不确定度预算规格放入 `applicability.required_inputs`。
+- 将无效或缺失来源、超出有效范围的校准、未解决必要输入、无法取得的安全批准，以及其他定性不适用条件放入 `applicability.incompatible_conditions`。
+- `stop_conditions` 和 `pivot_conditions` 只存放闭合数值标准对象；不得把缺失制品、来源失败或安全门槛编码在其中。
+- 以建模、控制或信号为主的检查交给相应直接链接的方法族协议，不在此重复。
 
-## Assumptions
+## 假设
 
-- State the measurand, operating range, experimental unit, response, intervention, nuisance factors, and independence assumptions.
-- State whether the measurement chain is stable, traceable, and sensitive enough for the minimum meaningful effect.
-- Mark unverified apparatus behavior, transfer, scale-up, and causal assumptions as hypotheses.
+- 说明被测量、工作范围、实验单元、响应、干预、干扰因素和独立性假设。
+- 说明测量链是否稳定、可追溯，并对最小有意义效应足够敏感。
+- 未核验的设备行为、迁移、尺度放大和因果假设均标为假设。
 
-## Minimum resources
+## 最低资源
 
-- Put only finite, non-boolean numeric requirements such as independent-unit counts, repetition counts, acquisition capacity, time, or analysis capacity in `minimum_resources`.
-- Bind every row by `source_constraint_id`, `resource`, and `unit` to an inherited M2 resource ceiling whose operator is `<` or `<=`; remain strictly within that ceiling.
-- Keep reference standards, sensors, calibration records, controls, protocols, and datasets in `applicability.required_inputs`, not in `minimum_resources`.
-- Treat an absent matching ceiling as an incompatible input state, not as permission to invent or widen a resource allowance.
+- `minimum_resources` 只填写独立单元数、重复次数、采集能力、时间或分析能力等有限且非布尔的数值要求。
+- 每行通过 `source_constraint_id`、`resource` 和 `unit` 绑定到运算符为 `<` 或 `<=` 的继承 M2 资源上限，并严格保持在上限内。
+- 参考标准、传感器、校准记录、对照、协议和数据集放入 `applicability.required_inputs`，不放入 `minimum_resources`。
+- 找不到匹配上限时，视为输入不兼容，不能据此虚构或扩大资源额度。
 
-## Baselines and controls
+## 基线与对照
 
-- Include a status-quo or simplest credible baseline and a control that isolates the intervention where the claim is causal.
-- Decide explicitly whether to randomize, block, counterbalance, or preserve natural order; name the factor controlled and justify any omission.
-- Separate negative, positive, reference, blank, and sham controls when the measurement mechanism requires them.
+- 包含现行方案或最简单可信基线；主张涉及因果时，再加入能够隔离干预的对照。
+- 明确决定随机化、区组、平衡顺序或保留自然顺序，并说明控制的因素及任何省略理由。
+- 测量机制需要时，区分阴性、阳性、参考、空白和假操作对照。
 
-## Procedure
+## 程序
 
-- Define a measurement model from measurand through sensor or transducer, calibration, acquisition, processing, and reported quantity; preserve units at every step.
-- Record a calibration trace with the reference identity, valid range, version or date, corrections, calibration uncertainty, and applicability limits.
-- Specify repeatability checks under unchanged conditions and reproducibility checks across the relevant operator, instrument, batch, site, or time factors.
-- Fix the randomization or blocking decision, control observations, uncertainty budget, and a numeric stop condition before recommending a data-collection design.
-- Keep the outline advisory until the user separately authorizes execution.
+- 定义从被测量到传感器或换能器、校准、采集、处理和报告量的测量模型，全程保留单位。
+- 记录校准链：参考物身份、有效范围、版本或日期、修正项、校准不确定度和适用限制。
+- 规定不变条件下的重复性检查，以及跨操作员、仪器、批次、地点或时间因素的再现性检查。
+- 推荐数据采集设计前，固定随机化或区组决定、对照观察、不确定度预算和数值停止条件。
+- 在用户另行授权执行前，程序提纲只作为建议。
 
-## Metrics
+## 指标
 
-- Use only selected-direction metric IDs and units in `primary_metrics`, stop conditions, and pivot conditions.
-- Report effect size with uncertainty, calibration residuals, repeatability variation, reproducibility variation, missingness, and control drift when applicable.
-- Match the estimand and aggregation level to the experimental unit; do not substitute sample count for independent replication.
+- `primary_metrics`、停止条件和转向条件只能使用所选方向的指标 ID 与单位。
+- 适用时报告带不确定度的效应量、校准残差、重复性变异、再现性变异、缺失情况和对照漂移。
+- 估计目标和聚合层级必须对应实验单元；不能把样本数量当成独立重复。
 
-## Uncertainty
+## 不确定性
 
-- Build an uncertainty budget that identifies random and systematic components, distributions or bounds, correlations, calibration contributions, resolution, drift, sampling, and model-form contributions.
-- Propagate uncertainty with a method appropriate to the measurement model and state coverage or confidence semantics.
-- Separate aleatory variability from epistemic uncertainty and show which components dominate the decision metric.
+- 建立不确定度预算，列出随机与系统成分、分布或边界、相关性、校准贡献、分辨率、漂移、采样和模型形式贡献。
+- 采用与测量模型匹配的方法传播不确定度，并说明覆盖或置信语义。
+- 区分偶然变异与认知不确定性，并指出哪些成分主导决策指标。
 
-## Validation
+## 验证
 
-- Check measurement range, sensitivity, calibration residuals, control behavior, missingness, repeatability, reproducibility, and unit consistency.
-- Verify that randomization or blocking addresses the stated nuisance factors and that analysis preserves the experimental unit.
-- Treat structural bundle validation as offline contract evidence, not as confirmation that the apparatus, calibration, or experiment performs as claimed.
+- 检查测量范围、灵敏度、校准残差、对照表现、缺失、重复性、再现性和单位一致性。
+- 验证随机化或区组是否处理了声明的干扰因素，以及分析是否保留实验单元。
+- 结构化包验证只是离线契约证据，不能确认设备、校准或实验达到所声称表现。
 
-## Failure modes
+## 失效模式
 
-- List saturation, drift, hysteresis, contamination, batch effects, confounding, pseudo-replication, failed blinding, missing-not-at-random data, and calibration extrapolation when relevant.
-- Explain how each listed failure could change the bound claim or metric.
-- Preserve observed failures and unresolved checks; do not relabel them as acceptable variation.
+- 适用时列出饱和、漂移、滞后、污染、批次效应、混杂、伪重复、盲法失败、非随机缺失和校准外推。
+- 说明每种失效如何改变绑定的主张或指标。
+- 保留已观察失败和未解决检查，不得重新标为可接受变异。
 
-## Stop/Pivot conditions
+## 停止与转向条件
 
-- Populate `stop_conditions` and `pivot_conditions` only with the closed numeric criterion objects defined by [Method coaching](core-method-coaching.md).
-- In `bounded` mode, copy each applicable `metric_id`, `operator`, finite `value`, and `unit` from a matching selected-direction `minimum_decisive_test` stop or pivot criterion; in `route_specific` mode, copy them from the corresponding validated route condition.
-- Use only criteria relevant to invalid calibration, excessive drift, inadequate precision, failed controls, or excessive decision uncertainty; preserve the upstream operator, value, and unit verbatim.
-- Fail closed and request upstream criterion repair when no applicable numeric stop or pivot criterion exists; never invent, estimate, or tune a threshold inside M3.
-- Put missing measurement models, calibration traces, controls, uncertainty budgets, provenance, and safety approvals in `applicability.incompatible_conditions`, not in numeric condition lists.
+- `stop_conditions` 和 `pivot_conditions` 只能使用[方法辅导](core-method-coaching.md)定义的闭合数值标准对象。
+- `bounded` 模式从所选方向 `minimum_decisive_test` 的匹配停止或转向标准复制 `metric_id`、`operator`、有限 `value` 和 `unit`；`route_specific` 模式从对应的已验证路线条件复制。
+- 只使用与校准失效、漂移过大、精度不足、对照失败或决策不确定性过高相关的标准，并逐字保留上游运算符、值和单位。
+- 没有适用数值标准时，封闭失败并要求修复上游标准；M3 内不得虚构、估计或调节阈值。
+- 缺失测量模型、校准链、对照、不确定度预算、来源或安全批准应放入 `applicability.incompatible_conditions`，不能放入数值条件列表。
 
-## Safety boundaries
+## 安全边界
 
-- Require qualified laboratory or domain review for hazardous materials, radiation, pressure, high voltage, biological exposure, human participants, destructive testing, or regulated measurements.
-- Do not convert method coaching into equipment operation, specimen handling, data collection, or a safety determination.
-- Apply the stricter facility, legal, ethical, and specialist boundary whenever it conflicts with a proposed design.
+- 涉及危险材料、辐射、压力、高电压、生物暴露、人类参与者、破坏性试验或受监管测量时，要求合格实验室或领域专家复核。
+- 不得把方法辅导转成设备操作、样品处理、数据采集或安全判定。
+- 拟议设计与设施、法律、伦理或专家边界冲突时，执行更严格的边界。
 
-## Source-ledger limits
+## 来源台账限制
 
-- Apply the closed ledger and eligibility rules in [Method coaching](core-method-coaching.md); label every row as metadata-, abstract-, or full-text-level.
-- Use method sources to support design or uncertainty choices only within the reported apparatus, population, scale, and conditions.
-- State explicitly what each source does not support, including untested calibration ranges, causal effects, reproducibility, transfer, or safety.
-- Block conflicted or unresolved citations, and do not use a verified preprint as the sole support for a safety-related conclusion.
+- 应用[方法辅导](core-method-coaching.md)中的闭合台账与资格规则，并将每行标为元数据级、摘要级或全文级。
+- 方法来源只能在其报告的设备、总体、尺度和条件内支持设计或不确定性选择。
+- 明确说明每个来源不支持什么，包括未经检验的校准范围、因果效应、再现性、迁移或安全。
+- 阻断冲突或未解决引文；已核验预印本不能成为安全相关结论的唯一支持。

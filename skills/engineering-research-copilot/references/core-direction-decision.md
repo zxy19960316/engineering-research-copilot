@@ -1,24 +1,33 @@
-# Direction Decision and Route Gate
+# 方向决策与路线门槛
 
-Use this file only after one paper-calibration branch reaches `M1_COMPLETE`. Convert that branch into an auditable direction portfolio, stop when direction evidence is incomplete, and open detailed route planning only after explicit user confirmation.
+比较、修改、拒绝或确认研究方向时，应用本文件。对话模式只依据用户实际拥有的已核验证据和约束推理。只有某一论文校准分支达到 `M1_COMPLETE` 后，才使用正式决策包流程。
 
-## Contents
+## 选择呈现模式
 
-- Follow the M2 state flow
-- Preserve the M1 evidence source
-- Return a bounded portfolio
-- Pass hard gates before scoring
-- Assign transfer-evidence tiers
-- Enforce preprint support policy
-- Separate directions by meaningful axes
-- Compare eligible directions
-- Define a minimum decisive test
-- Require user confirmation
-- Validate post-confirmation route output
+默认使用**对话模式**：给出紧凑的方向组合，并说明证据强度、可行性、风险、反迁移因素和最小判别检验；里程碑名和闭合状态对象保留在内部。
 
-## Follow the M2 state flow
+仅当用户要求机器可读决策包、确定性复现或验证器兼容文件时，使用**制品模式**。该模式必须接收已验收校准包，并执行下述每一项准确结构和状态转换。
 
-Use this state flow:
+编码状态流只用于制品模式。对话模式仍在内部执行相同证据与确认门槛，并用科研语言说明后果。
+
+## 目录
+
+- 选择呈现模式
+- 遵循 M2 状态流
+- 保留 M1 证据来源
+- 返回有界方向组合
+- 评分前通过硬门槛
+- 分配迁移证据层级
+- 执行预印本支持规则
+- 沿实质轴区分方向
+- 比较合格方向
+- 定义最小判别检验
+- 要求用户确认
+- 确认后交接
+
+## 遵循 M2 状态流
+
+使用以下状态流：
 
 ```text
 M1_COMPLETE
@@ -33,9 +42,9 @@ M1_COMPLETE
   -> ROUTE_GATE_OPEN
 ```
 
-Treat `DIRECTION_EVIDENCE_INCOMPLETE`, `DIRECTION_REJECTED`, and `DIRECTION_MODIFICATION_REQUESTED` as closed route-gate states. Enter `WAITING_FOR_DIRECTION_CONFIRMATION` only after every formal direction passes its hard gates. Enter `ROUTE_GATE_OPEN` only from `USER_CONFIRMED`; no score, confidence, or system recommendation may bypass this transition.
+`DIRECTION_EVIDENCE_INCOMPLETE`、`DIRECTION_REJECTED` 和 `DIRECTION_MODIFICATION_REQUESTED` 均关闭路线门槛。所有正式方向通过硬门槛后，才能进入 `WAITING_FOR_DIRECTION_CONFIRMATION`；只有从 `USER_CONFIRMED` 才能进入 `ROUTE_GATE_OPEN`，任何得分、置信度或系统建议都不能绕过该转换。
 
-Save one M2 decision bundle with this exact top-level shape:
+保存一个具有以下准确顶层结构的 M2 决策包：
 
 ```yaml
 source_m1_bundle: {}
@@ -44,25 +53,25 @@ direction_decision: {}
 route_output: null
 ```
 
-Permit `fixture_mode`, `evidence_class`, `proves`, and `does_not_prove` only for clearly labeled offline contract fixtures. Reject other top-level fields.
+只有明确标注的离线契约 fixture 才可额外使用 `fixture_mode`、`evidence_class`、`proves` 和 `does_not_prove`。拒绝其他顶层字段。
 
-## Preserve the M1 evidence source
+## 保留 M1 证据来源
 
-Embed the complete accepted M1 bundle under `source_m1_bundle` without changing, deleting, or reclassifying any candidate ID, verification status, recommendation-eligibility flag, basis level, verified record, or evidence gap. Require the embedded bundle to satisfy all of these conditions:
+把完整的已验收 M1 包原样嵌入 `source_m1_bundle`；不得改变、删除或重新分类任何候选 ID、核验状态、推荐资格、证据层级、已核验记录或证据缺口。嵌入包必须同时满足：
 
-- `schema_version` is `m1.2`;
-- `terminal_state` is `M1_COMPLETE`;
-- `stopped_after_round` is `2`;
-- `outcome` is `complete`;
-- the M1 validator returns `valid`.
+- `schema_version` 为 `m1.2`；
+- `terminal_state` 为 `M1_COMPLETE`；
+- `stopped_after_round` 为 `2`；
+- `outcome` 为 `complete`；
+- M1 验证器返回 `valid`。
 
-Compute `source_m1_bundle_hash` as lowercase SHA-256 over the embedded bundle encoded as canonical UTF-8 JSON with sorted keys, compact separators, and non-ASCII characters preserved. Never accept a caller-supplied hash without recomputing it.
+将嵌入包按键排序、紧凑分隔符、保留非 ASCII 字符的规范 UTF-8 JSON 编码后，计算小写 SHA-256 作为 `source_m1_bundle_hash`。调用方提供的哈希必须重新计算，不能直接信任。
 
-Resolve every M2 evidence reference against `source_m1_bundle.round2.candidate_pool`. Require the referenced candidate to retain its M1 ID, verification state, recommendation eligibility, and basis level. Reject unknown IDs, ambiguous IDs, blocked candidates, and references that exist only in discovery limitations. Preserve M1 evidence gaps even though a valid M2 source has no unresolved round-two selection gap; never reinterpret an incomplete M1 bundle as complete direction evidence.
+所有 M2 证据引用必须解析到 `source_m1_bundle.round2.candidate_pool`。候选必须保留 M1 的 ID、核验状态、推荐资格和证据层级。拒绝未知、歧义、阻断候选，以及只存在于发现局限中的引用。即使有效 M2 来源没有未解决的第二轮选择缺口，也要保留 M1 证据缺口；不得把不完整 M1 包重新解释为完整方向证据。
 
-## Return a bounded portfolio
+## 返回有界方向组合
 
-Use this exact portfolio shape:
+组合使用以下准确结构：
 
 ```yaml
 direction_portfolio:
@@ -76,13 +85,13 @@ direction_portfolio:
   portfolio_status: "provisional"
 ```
 
-Match `brief_version` and `branch_id` to the accepted M1 round-two research brief and search plan. Return exactly three formal directions when the portfolio is ready:
+`brief_version` 和 `branch_id` 必须与已验收 M1 第二轮研究简报及检索计划一致。组合就绪时，正式方向恰好三项：
 
-1. one `provisional_main`;
-2. one `adjacent_alternative`;
-3. one `transfer_exploration`.
+1. 一个 `provisional_main`；
+2. 一个 `adjacent_alternative`；
+3. 一个 `transfer_exploration`。
 
-Use this exact formal-direction shape:
+正式方向使用以下准确结构：
 
 ```yaml
 direction_id: "D1"
@@ -108,25 +117,25 @@ confidence: "medium"
 recommendation_status: "provisional"
 ```
 
-Assign a unique non-empty direction ID and title. Require at least one recommendation-eligible supporting M1 candidate and one recommendation-eligible counter or limitation candidate for every formal direction. Keep the system recommendation `provisional` even when all hard gates pass.
+每个方向使用唯一非空 ID 和题名。每个正式方向至少需要一个可推荐的 M1 支持候选和一个可推荐的反证或局限候选。即使硬门槛全部通过，系统建议仍保持 `provisional`。
 
-Optionally add at most two high-risk ideas under `high_risk_ideas`. Use exactly `direction_id`, `title`, `evidence_tier`, `claim_language`, `supporting_candidate_ids`, `unknowns`, and `recommendation_status`. Require `evidence_tier: speculative`, `claim_language: High-uncertainty idea`, and `recommendation_status: unranked_high_risk`; never include a high-risk idea in formal scores or positions.
+`high_risk_ideas` 最多可放两项，且每项只能含 `direction_id`、`title`、`evidence_tier`、`claim_language`、`supporting_candidate_ids`、`unknowns` 和 `recommendation_status`。必须设置 `evidence_tier: speculative`、`claim_language: High-uncertainty idea` 和 `recommendation_status: unranked_high_risk`，不能纳入正式得分或位置。
 
-Set `portfolio_status` to `provisional` only when all three formal directions pass their hard gates and are eligible for comparison. Set it to `evidence_incomplete` when any formal direction fails a hard gate; do not disguise the stop by omitting the failed direction or promoting a high-risk idea.
+三个正式方向均通过硬门槛并可比较时，`portfolio_status` 才能为 `provisional`。任一正式方向失败时，设为 `evidence_incomplete`；不得通过省略失败方向或提升高风险想法来掩盖停止。
 
-## Pass hard gates before scoring
+## 评分前通过硬门槛
 
-Require exactly these hard gates for every formal direction:
+每个正式方向必须恰好包含以下硬门槛：
 
-- `target_problem_evidence`;
-- `data_availability`;
-- `falsifiability`;
-- `resource_feasibility`;
-- `time_feasibility`;
-- `safety_ethics_compliance`;
-- `m1_citation_integrity`.
+- `target_problem_evidence`；
+- `data_availability`；
+- `falsifiability`；
+- `resource_feasibility`；
+- `time_feasibility`；
+- `safety_ethics_compliance`；
+- `m1_citation_integrity`。
 
-Use this exact gate shape:
+门槛使用以下准确结构：
 
 ```yaml
 gate_id: "target_problem_evidence"
@@ -137,36 +146,36 @@ rationale: ""
 blockers: []
 ```
 
-Use only `pass` or `fail`. Require a non-empty rationale. Require target-problem and citation-integrity gates to cite at least one M1 candidate. Record every unresolved resource, time, safety, ethics, compliance, data, or validation blocker under `blockers` and set the affected gate to `fail`.
+`status` 只能取 `pass` 或 `fail`，`rationale` 必须非空。目标问题与引文完整性门槛至少引用一个 M1 候选。所有未解决的资源、时间、安全、伦理、合规、数据或验证阻断项都写入 `blockers`，并让相应门槛失败。
 
-When any gate fails, require `scorecard: null` and `recommendation_status: excluded`. Do not compute, retain, or display a weighted total for that direction. Return portfolio status `evidence_incomplete` and decision status `direction_evidence_incomplete`; do not enter user confirmation.
+任一门槛失败时，要求 `scorecard: null` 和 `recommendation_status: excluded`。不得计算、保留或展示该方向加权总分。组合状态设为 `evidence_incomplete`，决策状态设为 `direction_evidence_incomplete`，不得进入用户确认。
 
-Bind each gate to relevant structured preconditions through `required_precondition_ids`. If a precondition is `unresolved` and `blocking_if_unresolved: true`, require its named gate to fail, its direction scorecard to be `null`, its recommendation status to be `excluded`, and the portfolio and decision to stop at `evidence_incomplete`.
+通过 `required_precondition_ids` 把每个门槛绑定到相关结构化前提。某项前提为 `unresolved` 且 `blocking_if_unresolved: true` 时，其命名门槛必须失败、方向得分卡必须为 `null`、推荐状态必须为 `excluded`，组合和决策均停在证据不完整状态。
 
-## Assign transfer-evidence tiers
+## 分配迁移证据层级
 
-Use only this closed evidence-tier set. Copy the exact allowed phrase into `claim_language`; do not paraphrase it into stronger wording:
+只能使用以下闭合层级，并把允许措辞准确复制到 `claim_language`，不能改写成更强表述：
 
-| Tier | Required basis | Allowed language and position |
+| 层级 | 必要依据 | 允许措辞与位置 |
 |---|---|---|
-| `established-in-target` | Direct target or highly equivalent validation exists | Say “Direct evidence supports applicability”; permit main, adjacent, or transfer exploration |
-| `transfer-supported` | Target need, source success, compatibility map, anti-transfer analysis, and a decisive test exist | Say “Recommended for priority validation”; permit main with at most medium confidence, adjacent, or transfer exploration |
-| `mechanism-plausible` | Principle or data compatibility is plausible but bridge evidence is incomplete | Say “Divergent exploration suggestion”; permit only transfer exploration and never a primary conclusion |
-| `speculative` | Support is mainly analogy or creative association | Say “High-uncertainty idea”; permit only an unranked high-risk idea |
+| `established-in-target` | 存在目标领域直接验证或高度等价验证 | `Direct evidence supports applicability`；可作为主方向、相邻方向或迁移探索 |
+| `transfer-supported` | 目标需求、来源成功、兼容性图、反迁移分析和判别检验均存在 | `Recommended for priority validation`；作为主方向时置信度最高为中等，也可作为相邻方向或迁移探索 |
+| `mechanism-plausible` | 原理或数据兼容性合理，但桥接证据不完整 | `Divergent exploration suggestion`；只能作为迁移探索，不能作为主要结论 |
+| `speculative` | 支持主要来自类比或创造性联想 | `High-uncertainty idea`；只能作为未排序的高风险想法 |
 
-Do not require exact target-domain method success for `transfer-supported`. Do not upgrade compatibility of names, principles, mechanisms, or data shapes into established target applicability.
+`transfer-supported` 不要求目标领域已有完全相同方法的成功先例。不得把名称、原理、机制或数据形态的兼容性升级为已确立的目标适用性。
 
-## Enforce preprint support policy
+## 执行预印本支持规则
 
-Resolve support classes only from `source_m1_bundle.round2.candidate_pool`. Use the actual `verification_status` and `recommendation_eligible` fields; do not accept a direction-level source classification.
+支持类别只能从 `source_m1_bundle.round2.candidate_pool` 解析，使用真实 `verification_status` 和 `recommendation_eligible`；不得接受方向层自报来源类别。
 
-- Permit `verified_preprint` as method or exploration support.
-- Require at least one recommendation-eligible `verified_primary` or `verified_registry` candidate in the supporting IDs of `provisional_main`.
-- Require at least one recommendation-eligible non-preprint candidate for a passing `safety_ethics_compliance` gate when it cites evidence.
-- Ignore `recommendation_eligible: false` and blocked candidates when checking for non-preprint support.
-- Return `provisional_main_requires_non_preprint_support` or `safety_gate_requires_non_preprint_support` for the corresponding violation.
+- `verified_preprint` 可用于方法或探索支持。
+- `provisional_main` 的支持 ID 中至少有一个可推荐的 `verified_primary` 或 `verified_registry` 候选。
+- 带证据且通过的 `safety_ethics_compliance` 门槛至少有一个可推荐非预印本候选。
+- 检查非预印本支持时忽略 `recommendation_eligible: false` 和阻断候选。
+- 相应违规返回 `provisional_main_requires_non_preprint_support` 或 `safety_gate_requires_non_preprint_support`。
 
-Use this exact transfer-case shape for every formal direction:
+每个正式方向使用以下准确迁移案例结构：
 
 ```yaml
 target_problem_evidence: []
@@ -180,13 +189,13 @@ transfer_compatibility:
 anti_transfer_factors: []
 ```
 
-Require candidate IDs in both evidence lists. Require every compatibility dimension and `anti_transfer_factors` to contain at least one non-empty entry for `transfer-supported`, `mechanism-plausible`, and the `transfer_exploration` position. Use explicit “not applicable because …” entries only for a genuinely direct, non-transfer `established-in-target` direction; never use an empty list to imply compatibility.
+两个证据列表都必须包含候选 ID。`transfer-supported`、`mechanism-plausible` 及 `transfer_exploration` 位置的每个兼容性维度和 `anti_transfer_factors` 至少有一条非空内容。真正直接且不涉及迁移的 `established-in-target` 方向，才能使用“因为……不适用”条目；不能用空列表暗示兼容。
 
-## Separate directions by meaningful axes
+## 沿实质轴区分方向
 
-Give every formal direction one closed `axis_profile` with exactly `problem`, `method`, and `data`. Treat the provisional main profile as the common baseline. Derive `axis_changes` by comparing the other profile to that baseline; do not trust caller-declared changes.
+每个正式方向给出一个闭合 `axis_profile`，且恰含 `problem`、`method` 和 `data`。把暂定主方向视为共同基线，通过比较其他方向与基线推导 `axis_changes`，不能信任调用方声明。
 
-Represent a meaningful change with this exact object:
+实质变化使用以下对象：
 
 ```yaml
 axis: "method"
@@ -194,9 +203,9 @@ from: ""
 to: ""
 ```
 
-Use only `problem`, `method`, or `data` as the axis. Require different non-empty `from` and `to` values. Give the provisional main direction no axis changes, the adjacent alternative exactly one axis change, and the transfer exploration at least two distinct axis changes. Reject title-only changes, synonyms with identical axis values, duplicate axes, and three cards that express the same problem-method-data combination.
+`axis` 只能取 `problem`、`method` 或 `data`；`from` 与 `to` 必须非空且不同。暂定主方向没有轴变化，相邻方向恰有一个轴变化，迁移探索至少有两个不同轴变化。拒绝只改题名、同义表达但轴值相同、重复轴，以及问题—方法—数据组合相同的三张卡。
 
-Use this closed core-claim structure:
+核心主张使用以下闭合结构：
 
 ```yaml
 core_claims:
@@ -211,15 +220,15 @@ core_claims:
         unit: ""
 ```
 
-Require every cited candidate ID to resolve to an eligible M1 record. Require the metric role corresponding to the claim type. In particular, do not let an uncertainty-quality claim rely only on a predictive-error metric, and do not let an open-set claim rely only on closed-set accuracy.
+每个候选 ID 都要解析到合格 M1 记录。指标角色必须与主张类型对应；不确定性质量主张不能只靠预测误差指标，开放集主张不能只靠闭集准确率。
 
-Record numeric resource ceilings with `constraint_id`, `resource`, `operator`, finite `value`, and `unit`. Use only `>=`, `<=`, `>`, or `<` as operators.
+数值资源上限使用 `constraint_id`、`resource`、`operator`、有限 `value` 和 `unit`，运算符只能取 `>=`、`<=`、`>` 或 `<`。
 
-## Compare eligible directions
+## 比较合格方向
 
-Score only directions whose hard gates all pass. Use the same weights for all ranked directions and require integer weights totaling 100:
+只对全部硬门槛通过的方向评分。所有已排序方向使用相同权重，且整数权重合计 100：
 
-| Dimension | Default weight |
+| 维度 | 默认权重 |
 |---|---:|
 | `engineering_value` | 15 |
 | `gap_and_evidence_quality` | 15 |
@@ -230,7 +239,7 @@ Score only directions whose hard gates all pass. Use the same weights for all ra
 | `interdisciplinary_interface_quality` | 10 |
 | `safety_ethics_compliance` | 5 |
 
-Use this exact scorecard shape:
+得分卡使用以下准确结构：
 
 ```yaml
 dimensions:
@@ -245,24 +254,24 @@ dimensions:
 weighted_total: 0.0
 ```
 
-Use integer scores from 0 through 5. Recompute `weighted_total` as the sum of `score * weight / 5` and reject mismatches. Require non-empty evidence, confidence, unknowns, and change triggers for every dimension. Present totals only as decision aids; a larger total cannot override a hard gate or the user confirmation gate.
+`score` 是 0 至 5 的整数。将 `weighted_total` 重新计算为 `sum(score * weight / 5)`，不一致时拒绝。每个维度都需要非空证据、置信度、未知项和变化触发条件。总分只作决策辅助，不能覆盖硬门槛或用户确认门槛。
 
-Apply these anchors within each named dimension:
+每个命名维度使用以下锚点：
 
-| Score | Meaning |
+| 得分 | 含义 |
 |---:|---|
-| 0 | The dimension fails or has no admissible support. |
-| 1 | Support is very weak and a material blocker dominates. |
-| 2 | Support is weak-to-mixed: stronger than 1 but below a defensible midpoint. |
-| 3 | Support is adequate but material uncertainty remains. |
-| 4 | Support is strong: better than 3 but not comprehensive enough for 5. |
-| 5 | Support is unusually strong, specific, and limitation-aware for this decision stage. |
+| 0 | 该维度失败或没有合格支持。 |
+| 1 | 支持极弱，且存在主导性的实质阻断项。 |
+| 2 | 支持偏弱或混合：强于 1，但不足以达到可辩护中点。 |
+| 3 | 支持基本充分，但仍有实质不确定性。 |
+| 4 | 支持较强：优于 3，但尚未全面到足以给 5。 |
+| 5 | 在当前决策阶段，支持异常强、具体且充分说明局限。 |
 
-Explain the score using evidence, unknowns, and change triggers specific to that dimension. Permit candidate IDs to overlap across dimensions, but reject an exact normalized duplicate of the full rationale triple. Do not infer score quality with open-ended NLP.
+解释必须使用该维度特有的证据、未知项和变化触发条件。候选 ID 可跨维度重复，但完整理由三元组的规范化重复必须拒绝。不得用开放式自然语言处理推断分数质量。
 
-## Define a minimum decisive test
+## 定义最小判别检验
 
-Use this exact object for every formal direction:
+每个正式方向使用以下准确对象：
 
 ```yaml
 scope: "minimum_decisive_test"
@@ -301,13 +310,13 @@ expected_time: ""
 required_resources: []
 ```
 
-Require a falsifiable non-empty hypothesis, inputs, baseline, primary metric ID, expected time, resources, and exactly two to four closed step objects. Limit each step field and the total serialized object to the validator bounds; reject nested route objects, long route payloads, training matrices, deployment stages, download plans, service topologies, or full resource schedules through closed structure and size limits.
+要求非空且可证伪的假设、输入、基线、主指标 ID、预期时间、资源，以及恰好二到四个闭合步骤对象。每个步骤字段和整个序列化对象必须在验证器限制内；通过闭合结构与大小限制拒绝嵌套路线对象、长路线载荷、训练矩阵、部署阶段、下载计划、服务拓扑或完整资源日程。
 
-Cover every core claim exactly once. Require every claim metric to have a finite numeric success, stop, pivot, or falsification criterion with an explicit unit. Bind data-availability claims to structured preconditions. Trace all material inputs, labels, splits, sample counts, sampling rates, and horizons as `verified`, `bounded_testable`, or `unresolved`; require a bounded preflight check and numeric stop condition. If a defensible numeric criterion is not known, stop at `DIRECTION_EVIDENCE_INCOMPLETE` instead of substituting “meaningful improvement.”
+每项核心主张恰好覆盖一次。每个主张指标都需要带明确单位的有限数值成功、停止、转向或证伪标准。数据可用性主张必须绑定结构化前提。所有重要输入、标签、划分、样本量、采样率和时间范围标为 `verified`、`bounded_testable` 或 `unresolved`，并要求有界预检与数值停止条件。无法给出可辩护数值标准时，在 `DIRECTION_EVIDENCE_INCOMPLETE` 停止，不能用“有意义的改善”替代。
 
-## Require user confirmation
+## 要求用户确认
 
-Use this exact decision shape:
+使用以下准确决策结构：
 
 ```yaml
 direction_decision:
@@ -320,19 +329,19 @@ direction_decision:
   confirmation_event: null
 ```
 
-Use only these consistent combinations:
+只允许以下一致组合：
 
-| Status | Selected ID | Permitted next actions | Route output |
+| 状态 | 所选 ID | 允许的下一行动 | 路线输出 |
 |---|---|---|---|
-| `direction_evidence_incomplete` | `null` | `modify`, `reject` | `null` |
-| `waiting_for_user_confirmation` | `null` | `confirm`, `modify`, `reject` | `null` |
-| `modification_requested` | `null` | `modify`, `reject` | `null` |
+| `direction_evidence_incomplete` | `null` | `modify`、`reject` | `null` |
+| `waiting_for_user_confirmation` | `null` | `confirm`、`modify`、`reject` | `null` |
+| `modification_requested` | `null` | `modify`、`reject` | `null` |
 | `rejected` | `null` | `modify` | `null` |
-| `user_confirmed` | one formal direction ID | `modify`, `reject`, `generate_route` | `null` or one valid route object |
+| `user_confirmed` | 一个正式方向 ID | `modify`、`reject`、`generate_route` | `null` 或一个有效路线对象 |
 
-Do not treat natural-language enthusiasm, a score, an accepted paper map, or a system recommendation as confirmation. Require an explicit user choice of one formal direction ID. On modification or rejection, apply the feedback and rollback protocol and preserve the previous bundle; do not silently mutate it.
+自然语言中的热情、得分、已接受论文图或系统建议都不构成确认。必须由用户明确选择一个正式方向 ID。修改或拒绝时，应用反馈与回滚协议并保留旧包，不得静默变异。
 
-Require `confirmation_event: null` for every non-confirmed state. For `user_confirmed`, require this closed event:
+所有未确认状态必须设置 `confirmation_event: null`。`user_confirmed` 需要以下闭合事件：
 
 ```yaml
 confirmation_event:
@@ -344,54 +353,14 @@ confirmation_event:
   previous_bundle_hash: ""
 ```
 
-Require the excerpt to explicitly contain the selected formal direction ID and hash its exact UTF-8 text. Reconstruct the waiting pre-confirmation bundle, recompute its canonical SHA-256, and match `previous_bundle_hash`. Match the event ID to `direction_decision.selected_direction_id`. Reject missing events, non-user actors, high-risk or unknown IDs, stale bundle hashes, and confirmation events attached to non-confirmed states. This contract proves internal provenance consistency; it does not authenticate the host-system identity of the user.
+摘录必须明确包含所选正式方向 ID，并对其准确 UTF-8 文本计算哈希。重建等待确认的前一版包，重新计算规范 SHA-256，并匹配 `previous_bundle_hash`。事件 ID 与 `direction_decision.selected_direction_id` 必须一致。缺失事件、非用户角色、高风险或未知 ID、过期包哈希，以及把确认事件附在未确认状态上，均拒绝。该契约只能证明内部来源一致性，不能验证宿主系统中的用户身份。
 
-Before `user_confirmed`, reject complete experiment steps, complete simulation routes, training plans, model downloads, service deployment, and large-scale resource execution wherever those payloads appear in the M2 bundle. Treat unknown nested route fields as invalid. A minimum decisive test is a bounded direction gate artifact, not a full route.
+进入 `user_confirmed` 前，拒绝 M2 包任意位置出现完整实验步骤、完整仿真路线、训练计划、模型下载、服务部署或大规模资源执行。未知嵌套路由字段无效。最小判别检验只是有界方向门槛制品，不是完整路线。
 
-## Validate post-confirmation route output
+## 确认后交接
 
-Allow `route_output` to remain `null` after confirmation until the user requests route generation. When present, require it to use exactly these fields:
+确认后允许 `route_output` 保持 `null`。用户要求生成路线时，返回根路由并应用研究路线规划。交接时继续以已确认方向、确认来源、证据缺口、指标、前提和资源限制为权威。确认只开启路线规划，不自动生成或执行路线。
 
-```yaml
-selected_direction_id: "D1"
-source_direction_hash: ""
-confirmation_event_hash: ""
-source_bundle_hash: ""
-hypothesis: ""
-baselines: []
-controls: []
-sequence: []
-inputs: []
-outputs: []
-controlled_variables: []
-confounders: []
-primary_metrics: []
-secondary_metrics: []
-minimum_meaningful_improvement: ""
-uncertainty_checks: []
-sensitivity_checks: []
-validity_checks: []
-go_conditions: []
-stop_conditions: []
-pivot_conditions: []
-route_traceability: []
-source_test_mapping: []
-inherited_constraints: []
-approved_constraint_changes: []
-evidence_chain:
-  design: []
-  data: []
-  analysis: []
-  result: []
-  claim: []
-```
+## 记录 m2.1.1 兼容性边界
 
-Match `selected_direction_id` to the confirmed decision. Recompute `source_direction_hash` from the exact selected direction, `confirmation_event_hash` from the exact confirmation event, and `source_bundle_hash` from the confirmed bundle with `route_output: null`.
-
-Use structured numeric conditions for Go, Stop, and Pivot. Require `route_traceability` and `source_test_mapping` to cover every selected-direction core claim and every minimum-test metric. Require route metrics, preconditions, resource limits, and conditions to trace to the selected direction. Copy `resource_limits` exactly into `inherited_constraints`; permit a change only through a closed `approved_constraint_changes` record containing the old and approved finite values, unit, approval message ID, and approval-message SHA-256. Reject copied routes, stale bundle bindings, missing claim mappings, and silent resource expansion.
-
-Require all remaining envelope fields to be non-empty, except that `approved_constraint_changes` may be an empty list when no change was approved. Validate the envelope only; do not execute the route, start services, download models, upload materials, or allocate large resources without a separate explicit request.
-
-## Record the m2.1.1 compatibility boundary
-
-Treat m2.1.1 as a breaking validation revision. New required fields include confirmation provenance, axis profiles, core claims, resource limits, structured preconditions and claim coverage, plus route hashes and traceability. Do not accept an m2.1 bundle as m2.1.1 by treating these fields as optional. Read legacy fixtures only with the frozen m2.1 validator or an explicit migration helper. The canonical JSON and CLI status/exit-code rules remain non-breaking.
+把 m2.1.1 视为破坏性验证修订。新增必填字段包括确认来源、轴描述、核心主张、资源限制、结构化前提与主张覆盖，以及路线哈希和可追踪性。不得把这些字段视为可选项，从而将 m2.1 包当作 m2.1.1 接受。旧 fixture 只能由冻结的 m2.1 验证器或明确迁移工具读取。规范 JSON 和 CLI 状态/退出码规则保持兼容。

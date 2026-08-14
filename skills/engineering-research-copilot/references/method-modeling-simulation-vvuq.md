@@ -1,86 +1,86 @@
-# Modeling, Simulation, and VVUQ
+# 建模、仿真与 VVUQ
 
-Apply [Method coaching](core-method-coaching.md) first. Use this family protocol to populate only the closed card fields permitted by that protocol; do not create or execute a simulation route.
+先应用[方法辅导](core-method-coaching.md)。本方法族协议只用于填写该协议允许的闭合方法卡字段；不得创建或执行仿真路线。
 
-## Applicability
+## 适用性
 
-- Select `modeling_simulation_vvuq` for claims about mathematical or computational models, numerical predictions, scenario studies, digital twins, or multiphysics simulation.
-- Bind the card only to M2-derived claims, decision metrics, required preconditions, and resource ceilings.
-- Put the governing-model specification, code and configuration identity, benchmark or reference solution, convergence-study inputs, validation-data provenance, and uncertainty specification in `applicability.required_inputs`.
-- Put missing or invalid code, benchmark, configuration, or validation provenance; use outside the declared validation domain; unresolved required inputs; and unavailable specialist safety review in `applicability.incompatible_conditions`.
-- Reserve `stop_conditions` and `pivot_conditions` exclusively for closed numeric criterion objects; do not encode missing artifacts, provenance failures, or safety gates there.
-- Keep code verification, solution verification, validation, and uncertainty quantification distinct throughout the card.
+- 对数学或计算模型、数值预测、场景研究、数字孪生或多物理场仿真的主张，选择 `modeling_simulation_vvuq`。
+- 方法卡只能绑定 M2 推导的主张、决策指标、必要前提和资源上限。
+- 将控制方程模型、代码与配置身份、基准或参考解、收敛研究输入、验证数据来源和不确定性规格放入 `applicability.required_inputs`。
+- 将代码、基准、配置或验证来源无效/缺失，超出声明验证域，未解决必要输入，以及无法取得专家安全复核放入 `applicability.incompatible_conditions`。
+- `stop_conditions` 和 `pivot_conditions` 只存放闭合数值标准对象，不能编码缺失制品、来源失败或安全门槛。
+- 在整张卡中始终区分代码验证、解验证、确认和不确定度量化。
 
-## Assumptions
+## 假设
 
-- State governing equations, constitutive relations, geometry, dimensionality, boundary and initial conditions, closure relations, coupling assumptions, and intended use.
-- State the spatial, temporal, parameter, regime, and population domain over which conclusions may apply.
-- Label surrogate validity, scale transfer, omitted physics, and extrapolation as unresolved hypotheses until decisive evidence supports them.
+- 说明控制方程、本构关系、几何、维数、边界和初始条件、闭合关系、耦合假设与预期用途。
+- 说明结论可能适用的空间、时间、参数、工况和总体域。
+- 代理模型有效性、尺度迁移、遗漏物理和外推在判别证据支持前均标为未解决假设。
 
-## Minimum resources
+## 最低资源
 
-- Put only finite, non-boolean numeric requirements such as solver-run counts, discretization counts, validation-observation counts, time, memory, or compute capacity in `minimum_resources`.
-- Bind every row by `source_constraint_id`, `resource`, and `unit` to an inherited M2 resource ceiling whose operator is `<` or `<=`; remain strictly within that ceiling.
-- Keep code access, model files, benchmark definitions, reference solutions, solver configurations, and validation datasets in `applicability.required_inputs`, not in `minimum_resources`.
-- Treat an absent matching ceiling as an incompatible input state, not as permission to invent or widen a resource allowance.
+- `minimum_resources` 只填写求解器运行数、离散化数量、验证观察数、时间、内存或算力等有限、非布尔数值要求。
+- 每行通过 `source_constraint_id`、`resource` 和 `unit` 绑定到运算符为 `<` 或 `<=` 的继承 M2 资源上限，并严格保持在上限内。
+- 代码访问、模型文件、基准定义、参考解、求解器配置和验证数据集放入 `applicability.required_inputs`，不能放入 `minimum_resources`。
+- 缺少匹配上限时视为输入不兼容，不能据此虚构或扩大资源。
 
-## Baselines and controls
+## 基线与对照
 
-- Include a simpler analytical, reduced-order, empirical, or lower-fidelity model baseline appropriate to the claim.
-- Hold inputs and comparison conditions constant when attributing improvement to a model, coupling, closure, or solver change.
-- Include limiting cases, conservation checks, or benchmark solutions as controls when available.
+- 根据主张选择更简单的解析、降阶、经验或低保真模型作为基线。
+- 归因于模型、耦合、闭合关系或求解器变更时，保持输入与比较条件一致。
+- 可获得时，使用极限情形、守恒检查或基准解作为对照。
 
-## Procedure
+## 程序
 
-- Perform code verification against analytical solutions, manufactured solutions, trusted benchmarks, or independently checked invariants to test equation implementation.
-- Perform solution verification with mesh, time-step, iteration, tolerance, or solver convergence studies where applicable; justify non-applicability explicitly.
-- Perform validation against independent observations within a declared validation domain and quantify model discrepancy separately from numerical error.
-- Perform sensitivity analysis before interpreting influential parameters or prioritizing uncertainty reduction.
-- Perform UQ across input, parameter, numerical, and model-form uncertainty without collapsing them into one unexplained error term.
-- Keep the outline advisory until the user separately authorizes simulation execution.
+- 使用解析解、制造解、可信基准或独立核验的不变量进行代码验证，检查方程实现。
+- 适用时进行网格、时间步、迭代、容差或求解器收敛研究；不适用时明确说明理由。
+- 在声明的验证域内与独立观察进行确认，并把模型差异与数值误差分开量化。
+- 解释重要参数或确定不确定性削减优先级前，先做敏感性分析。
+- 跨输入、参数、数值和模型形式进行 UQ，不能把它们合成一个无解释误差项。
+- 用户另行授权仿真执行前，程序提纲只作为建议。
 
-## Metrics
+## 指标
 
-- Use only selected-direction metric IDs and units in `primary_metrics`, stop conditions, and pivot conditions.
-- Report quantities appropriate to the claim, including conservation residuals, observed order, discretization uncertainty, benchmark error, validation discrepancy, calibration error, or predictive coverage.
-- Pair aggregate fit metrics with local, regime-specific, transient, or worst-case errors when those affect the intended use.
+- `primary_metrics`、停止条件和转向条件只能使用所选方向的指标 ID 与单位。
+- 根据主张报告守恒残差、观测阶、离散化不确定度、基准误差、确认差异、校准误差或预测覆盖率。
+- 预期用途受局部、特定工况、瞬态或最坏情况误差影响时，将其与总体拟合指标配对。
 
-## Uncertainty
+## 不确定性
 
-- Separate parameter, input, numerical, structural, and observational uncertainty and state how each is represented and propagated.
-- Report sensitivity to uncertain assumptions, priors, ranges, correlations, boundary conditions, and solver settings.
-- Distinguish parameter calibration from validation and prevent calibration data from serving as independent validation evidence.
+- 区分参数、输入、数值、结构和观察不确定性，并说明各自表示和传播方式。
+- 报告对不确定假设、先验、范围、相关性、边界条件和求解器设置的敏感性。
+- 区分参数校准与确认，防止校准数据同时充当独立确认证据。
 
-## Validation
+## 验证
 
-- Verify code correctness, numerical convergence, and comparison-data independence before making predictive claims.
-- Define the validation domain and intended use; identify every extrapolation beyond tested regimes.
-- Treat simulation-to-observation agreement as conditional validation evidence, never as real-world proof, causal proof, operational qualification, or safety validation.
-- Treat structural bundle validation as offline contract evidence, not as evidence that a model is correct or predictive.
+- 做预测性主张前，核验代码正确性、数值收敛和比较数据独立性。
+- 定义验证域与预期用途，并指出每项超出已检验工况的外推。
+- 仿真与观察一致只能构成有条件的确认依据，绝不能视为现实证明、因果证明、运行资格或安全验证。
+- 结构化包验证只是离线契约证据，不能证明模型正确或有预测能力。
 
-## Failure modes
+## 失效模式
 
-- List coding defects, unconverged solutions, unstable coupling, non-identifiable calibration, compensating errors, omitted physics, regime extrapolation, data reuse, and numerical artifacts when relevant.
-- Explain how each listed failure could change the bound claim or metric.
-- Preserve divergent, non-convergent, and invalid runs as failures rather than selecting only favorable solutions.
+- 适用时列出编码缺陷、未收敛解、不稳定耦合、不可辨识校准、补偿误差、遗漏物理、工况外推、数据复用和数值伪影。
+- 说明每种失效如何改变绑定的主张或指标。
+- 发散、不收敛和无效运行保持为失败，不能只选择有利解。
 
-## Stop/Pivot conditions
+## 停止与转向条件
 
-- Populate `stop_conditions` and `pivot_conditions` only with the closed numeric criterion objects defined by [Method coaching](core-method-coaching.md).
-- In `bounded` mode, copy each applicable `metric_id`, `operator`, finite `value`, and `unit` from a matching selected-direction `minimum_decisive_test` stop or pivot criterion; in `route_specific` mode, copy them from the corresponding validated route condition.
-- Use only criteria relevant to convergence, conservation residual, validation discrepancy, or decision uncertainty; preserve the upstream operator, value, and unit verbatim.
-- Fail closed and request upstream criterion repair when no applicable numeric stop or pivot criterion exists; never invent, estimate, or tune a threshold inside M3.
-- Put failed code verification, missing solution verification, non-independent validation, invalid provenance, extrapolation beyond the validation domain, and safety-review failures in `applicability.incompatible_conditions`, not in numeric condition lists.
+- `stop_conditions` 和 `pivot_conditions` 只能使用[方法辅导](core-method-coaching.md)定义的闭合数值标准对象。
+- `bounded` 模式从所选方向 `minimum_decisive_test` 的匹配标准复制；`route_specific` 模式从对应已验证路线条件复制。
+- 只使用与收敛、守恒残差、确认差异或决策不确定性相关的标准，逐字保留上游指标 ID、运算符、值和单位。
+- 没有适用数值标准时封闭失败并要求修复上游标准；M3 内不得虚构、估计或调节阈值。
+- 代码验证失败、缺少解验证、确认数据不独立、来源无效、超出验证域外推和安全复核失败放入 `applicability.incompatible_conditions`，不放入数值条件。
 
-## Safety boundaries
+## 安全边界
 
-- Require qualified domain and VVUQ review before using model output for hazardous design, operational limits, licensing, certification, or safety decisions.
-- Do not execute simulation software, allocate compute, calibrate an operational model, or issue a safety determination through method coaching.
-- Preserve conservative physical, facility, regulatory, and specialist constraints over apparent numerical agreement.
+- 模型输出用于危险设计、运行限值、许可、认证或安全决策前，要求合格领域与 VVUQ 专家复核。
+- 方法辅导不得执行仿真软件、分配算力、校准运行模型或作出安全判定。
+- 即使数值表现良好，也优先保留保守的物理、设施、监管和专家约束。
 
-## Source-ledger limits
+## 来源台账限制
 
-- Apply the closed ledger and eligibility rules in [Method coaching](core-method-coaching.md); label every row as metadata-, abstract-, or full-text-level.
-- Use method sources only for the equations, numerical method, validation regime, uncertainty treatment, and limitations they actually report.
-- State explicitly what each source does not support, including untested regimes, predictive accuracy, real-world transfer, operational qualification, or safety.
-- Block conflicted or unresolved citations, and do not use a verified preprint as the sole support for a safety-related conclusion.
+- 应用[方法辅导](core-method-coaching.md)中的闭合台账与资格规则，并标明证据层级。
+- 方法来源只能支持其实际报告的方程、数值方法、验证工况、不确定性处理和局限。
+- 明确说明每个来源不支持什么，包括未检验工况、预测精度、现实迁移、运行资格或安全。
+- 阻断冲突或未解决引文；已核验预印本不能成为安全相关结论的唯一支持。

@@ -1,4 +1,7 @@
 interface:
-  display_name: "Engineering Research Copilot"
-  short_description: "Evidence-grounded engineering research workflows"
-  default_prompt: "Use $engineering-research-copilot to find and verify papers, compare research directions, and plan an executable engineering study."
+  display_name: "工科科研助手"
+  short_description: "从模糊想法走向严谨的工科论文"
+  default_prompt: "请使用 $engineering-research-copilot 帮我收紧研究想法、核验证据、发展研究方案，并审查和完善论文。"
+
+policy:
+  allow_implicit_invocation: false
