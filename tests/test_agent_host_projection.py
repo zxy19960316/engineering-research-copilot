@@ -41,6 +41,13 @@ EXPECTED_HOSTS = {
     "openclaw",
     "github-copilot",
 }
+LEGACY_SOURCE_ONLY_PATHS = (
+    "skills/engineering-research-copilot/scripts/compose_m3_bundle.py",
+    "skills/engineering-research-copilot/scripts/render_m1_map.py",
+    "skills/engineering-research-copilot/scripts/validate_m1_bundle.py",
+    "skills/engineering-research-copilot/scripts/validate_m2_direction_bundle.py",
+    "skills/engineering-research-copilot/scripts/validate_m3_method_bundle.py",
+)
 
 
 def _tree_digest(root: Path) -> str:
@@ -71,7 +78,7 @@ class AgentHostProjectionTests(unittest.TestCase):
         self.assertEqual(
             "engineering-research-agent-hosts.v1", matrix["schema_version"]
         )
-        self.assertEqual("0.6.0", matrix["cluster_version"])
+        self.assertEqual("0.7.0", matrix["cluster_version"])
         self.assertEqual(EXPECTED_SKILLS, set(matrix["required_skills"]))
         self.assertEqual(EXPECTED_HOSTS, set(matrix["hosts"]))
 
@@ -268,6 +275,18 @@ class AgentHostProjectionTests(unittest.TestCase):
                         self.assertEqual(skill_name, manifest["skill_name"])
                         self.assertEqual(projection["hosts"], manifest["hosts"])
                         self.assertEqual([], manifest["permission_changes"])
+                        expected_omissions = [
+                            relative
+                            for relative in LEGACY_SOURCE_ONLY_PATHS
+                            if relative.startswith(f"skills/{skill_name}/")
+                        ]
+                        self.assertEqual(
+                            expected_omissions,
+                            manifest["source_only_omissions"],
+                        )
+                        for relative in expected_omissions:
+                            local = relative.removeprefix(f"skills/{skill_name}/")
+                            self.assertFalse((skill_root / local).exists())
                         self.assertEqual(
                             _file_digest(source_root / "SKILL.md"),
                             manifest["source_skill_md_sha256"],

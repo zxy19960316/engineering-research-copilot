@@ -132,7 +132,7 @@ paper_map:
       n0 -- "relation=transfer_bridge; basis=abstract_level; strength=medium; confidence=medium; note=机制相似，但边界条件仍需检验" --> n1
 ```
 
-`paper_map` 的七个字段 `round`、`node_size_basis`、`legend`、`nodes`、`edges`、`text_fallback` 和 `mermaid` 均为闭合字段。M1 中 `legend.evidence_roles` 和 `legend.basis_levels` 也是闭合列表，必须使用上述准确角色和层级标记。每个所选论文 ID 恰好出现为一个论文节点；未选、阻断、部分核验或未解决引文不得进入论文节点。
+`paper_map` 的七个字段 `round`、`node_size_basis`、`legend`、`nodes`、`edges`、`text_fallback` 和 `mermaid` 均为闭合字段。`legend.evidence_roles` 和 `legend.basis_levels` 也是闭合列表，必须使用上述准确角色和层级标记。每个所选论文 ID 恰好出现为一个论文节点；未选、阻断、部分核验或未解决引文不得进入论文节点。
 
 每个论文节点必须且只能含 `id`、`node_type`、`fit_score`、`evidence_role`、`verification_status`、`basis_level` 和 `short_note`。`fit_score` 必须是 0 到 1 之间的非布尔数值。每个簇节点必须且只能含 `id`、`node_type`、`basis_level` 和 `short_note`，不能含 `fit_score`、`evidence_role` 或 `verification_status`。每条边必须且只能含 `source`、`target`、`relation`、`strength`、`confidence`、`basis_level` 和 `note`。
 
@@ -140,7 +140,7 @@ paper_map:
 
 从同一组结构化 `nodes` 和 `edges` 生成 Mermaid 与 `text_fallback`，不得手工维护两套语义版本。
 
-结构化节点和边完成后，调用 `scripts/render_m1_map.py` 中的确定性渲染器。保持原有顺序，不得排序。把 `nodes` 和 `edges` 作为唯一图事实；任一渲染结果与渲染器输出不完全一致时拒绝。节点回退文本严格渲染为 `{id}: {short_note}`，边回退文本严格渲染为 `{source} --{relation}--> {target}: {note}`。对 Mermaid 标签中的反斜线、引号、换行、方括号和竖线进行转义，防止用户文本改变图语法。
+结构化节点和边完成后，从同一对象直接生成两种视图。保持原有顺序，不得排序。把 `nodes` 和 `edges` 作为唯一图事实；两种视图不完全一致时拒绝。节点回退文本严格渲染为 `{id}: {short_note}`，边回退文本严格渲染为 `{source} --{relation}--> {target}: {note}`。对 Mermaid 标签中的反斜线、引号、换行、方括号和竖线进行转义，防止用户文本改变图语法。
 
 Mermaid 与文本回退必须原样保留：
 

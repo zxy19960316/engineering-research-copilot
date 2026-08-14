@@ -1,234 +1,87 @@
-# 方法辅导
+# 方法辅导与迁移
 
-一般方法介绍或项目特定方法辅导均应用本协议。没有正式项目制品时仍可解释一般方法；正式方法卡只用于输入已经验证且用户明确确认的方向。
+在解释、比较、组合或迁移科研方法时应用本文件。把方法建议绑定到主张、数据设计、约束和失败判据，不把方法名称清单当作路线。
 
-## 分开收敛与发散
+## 选择工作模式
 
-使用**收敛通道**，根据纠正后的研究问题、约束、已有数据、资源边界和预期主张，比较有证据支持的方法选项。每个选项都说明适用性、假设、基线与对照、指标、不确定性处理、失效模式和最小判别检查。
+使用两种模式之一：
 
-只有替代机制或路径可能改善项目时，才使用**发散通道**。有意识地改变抽象层级、测量方式、表征、尺度、系统边界、控制策略或相邻领域类比。每个想法说明：
+- **探索模式**：方向尚未确认时，比较可行方法族、关键假设、反迁移因素和最小证伪检验。只返回方法候选，不生成完整路线。
+- **方向绑定模式**：用户已确认方向且上下文仍有效时，把方法卡绑定到该方向的主张、约束、证据和资源上限。路线前提不完整时只返回准备方案。
 
-- 灵感来源和改变的设计维度；
-- 相对目标领域直接验证的**证据距离**；
-- 可能允许迁移的机制或结构相似性；
-- **反迁移因素**和可能失效模式；
-- 所需数据、方法和资源假设；
-- 能够低成本否决该想法的**最小证伪检验**。
+不要把用户对方法的兴趣解释为方向确认，也不要把路线生成解释为执行许可。
 
-合格证据支持升级前，发散想法不得进入排序后的推荐，并始终标为假设而非发现。只有研究者看见替代项、反证和判别检验后再收敛；用户明确选择前，不把任何方向视为已确认。
+## 从问题而不是工具出发
 
-用户要求来源，或项目特定建议依赖当前实证文献时，附上已核验论文。通过根 Skill 的论文校准与引文完整性流程返回；对每项重要来源展示核验状态、证据层级、支持内容、不支持内容、局限和反证。不得凭模型记忆引用方法论文。实质证据角色仍未解决时，建议保持暂定，并指出缺失证据，不得用看似合理的相邻论文填补。
+先明确：
 
-## 选择呈现模式
+- 需要估计、解释、预测、控制、优化、检测或验证什么；
+- 观测单位、输入、输出、分组、时间、空间和依赖结构；
+- 目标主张对应的主要指标、辅助指标和不确定性要求；
+- 可用数据、设备、算力、时间和专业知识；
+- 已知机制、边界条件、安全限制和外推范围；
+- 最便宜的可信基线及现有失败证据。
 
-默认使用**对话模式**：用普通科研语言说明方法匹配、假设、基线、检查、不确定性、失效模式和下一项判别检验。
+输入不完整时先给出有边界的候选和缺口，不要虚构数据形状、样本量、参数、阈值或资源。
 
-仅当用户要求机器可读方法包、确定性复现或验证器兼容文件时，使用**制品模式**。该模式必须满足正式前提并应用下述全部精确结构。
+## 建立方法卡
 
-编码状态流只用于制品模式。对话模式仍执行相同证据、兼容性和权限门槛，但不暴露状态码。
+每张方法卡至少记录：
 
-## 提供一般方法介绍
+- 方法族、用途和它支持的具体主张；
+- 核心假设与适用条件；
+- 最低数据、标注、仪器、计算和人员需求；
+- 可信基线、消融或对照；
+- 训练、拟合或求解前的输入检查；
+- 验证设计、主要指标和不确定性处理；
+- 泄漏、偏差、不可识别、数值不稳和外推失效模式；
+- 最小证伪检验、停止条件和替代方法；
+- 支持来源、证据层级、用户材料和未验证假设；
+- 是否仅为探索、已可准备路线或已满足路线前提。
 
-用户希望理解、比较或初步应用某种方法时，使用**一般方法介绍**。该模式不需要正式方向包。只加载适用的方法族参考，并区分一般工程知识、有来源支持的主张、项目假设和未知项。
+参数、样本量和通过阈值只有在用户材料、领域标准或合格证据明确给出时才能写成确定值；否则说明其选择方法和所需依据。
 
-覆盖适用性、最低输入与资源、可信基线、验证检查、不确定性处理、常见失效模式，以及最快暴露不匹配的最小检验。除非用户或合格证据给出来源，否则参数值和决策阈值保持暂定。该模式不得创建 M3 包。
+## 评估迁移方法
 
-## 目录
+跨领域迁移时同时写出：
 
-- 选择呈现模式
-- 提供一般方法介绍
-- 遵循 M3 状态流
-- 推导可信 M2 上下文
-- 选择辅导模式
-- 返回闭合 M3 包
-- 构建闭合方法卡
-- 绑定资源与条件
-- 维护类型化来源台账
-- 添加领域叠加规则
-- 遵守证据与权限边界
+- 相似维度：机制、数学结构、信号形态、数据生成过程、尺度或约束；
+- 反迁移因素：边界条件、噪声、采样、分布、因果结构、可观测性、成本或安全差异；
+- 可复用部分与必须重新验证部分；
+- 目标领域判别性检验；
+- 迁移失败后回退到相邻方法或基线的条件。
 
-## 遵循 M3 状态流
+在目标领域检验通过前使用“迁移假设”“候选机制”或“待验证适用性”等措辞，不说“已证明可迁移”。
 
-使用以下准确状态流：
+## 设计最小证伪检验
 
-```text
-M2_BUNDLE_VALID
-  -> DIRECTION_USER_CONFIRMED
-  -> SELECTED_DIRECTION_HASH_VALID
-  -> ROUTE_ABSENT: BOUNDED_METHOD_COACHING
-  -> ROUTE_PRESENT_AND_M3_COMPATIBLE: ROUTE_SPECIFIC_METHOD_CARD
-  -> UNSUPPORTED_CONSTRAINT_APPROVAL: STOP_FOR_PROVENANCE_REPAIR
-```
+对高风险、资源密集或证据薄弱的方法，优先提出一个最小检验：
 
-嵌入 M2 包无效、方向不是 `user_confirmed`、所选方向或包哈希过期，或者所选方向不能唯一解析到一个正式方向时，在方法卡处理前停止。
+1. 指定会被检验推翻的单一关键假设；
+2. 使用最小必要数据切片、算例、测量或合成对照；
+3. 与一个朴素但可信的基线比较；
+4. 预先写明失败信号、停止条件和可解释的后续分支；
+5. 限制步骤和资源，不顺带扩展成训练、实验或完整仿真。
 
-`route_output.approved_constraint_changes` 非空时，只返回 `unsupported_approved_constraint_change_provenance`。展示原所选方向的 `resource_limits`，不应用拟议变更，并要求修复来源。
+没有合格来源时不得发明数值门槛。可把判据写成待用户或专家确认的变量，但必须说明缺口会影响什么结论。
 
-## 推导可信 M2 上下文
+## 选择适用方法族
 
-读取任何 M2 字段前，使用 `validate_m2_direction_bundle.validate_bundle` 验证完整嵌入包。原样保留该包，不迁移、不规范化、不修复，也不写回。
+只加载与当前问题有关的详细模块：
 
-推导下列值，不信任复制到 M3 的声明：
+- 实验、测量和不确定度量化；
+- 建模、仿真和验证确认；
+- 控制、优化和系统辨识；
+- 信号处理和诊断；
+- 数据、机器学习和混合方法；
+- 可靠性、安全和风险。
 
-- 从 `direction_decision.selected_direction_id` 定位正式方向；
-- 用规范 UTF-8 JSON 重新计算来源包和所选方向哈希；
-- 从 `selected_direction.core_claims` 推导主张及类型；
-- 从 `required_decision_metrics` 推导每项主张的指标 ID；
-- 从 `minimum_decisive_test.claim_coverage` 推导每项主张的必要前提 ID；
-- 从 `minimum_decisive_test.required_preconditions` 推导前提记录；
-- 从 `selected_direction.resource_limits` 推导资源上限；
-- 从 `source_m1_bundle.round2.candidate_pool` 推导合格来源记录；
-- 保留所有上游证据缺口和核验限制。
+多个方法族相互依赖时，先处理会改变下游设计的最早前提，例如测量可识别性、数据泄漏、边界条件或安全约束。
 
-路线特定辅导中，每个 `route_traceability.source_precondition_ids` 集合必须等于对应主张覆盖的前提集合。把每项主张的指标 ID 与 `route_output.go_conditions`、`stop_conditions`、`pivot_conditions` 中的指标 ID 相交，以推导实际推进、停止和转向覆盖。任何调用方声明的 `route_condition_types` 与推导集合不同都应拒绝。
+## 按真实就绪度返回
 
-## 选择辅导模式
+- 问题或证据不完整：返回**方法概念草图**和关键假设。
+- 方向明确但输入、资源或判据未闭合：返回**方法与路线准备方案**。
+- 方向已确认且数据、约束、基线、指标、判据与权限边界完整：按用户要求返回**可执行路线**。
 
-只有研究者明确确认方向后，才使用**项目特定辅导**。用户要求制品模式时，还必须有经过验证的正式包并通过下述兼容性检查。
-
-`route_output` 缺失时使用 `bounded`。说明适用方法、假设、基线、检查、不确定性处理、失效模式，以及绑定确认方向的数值停止或转向标准。不得制造完整路线、填补缺失可追踪性、扩大资源、执行路线或声称实证成功。
-
-只有 `route_output` 存在、M2 验证器接受、M3 兼容性推导一致且已批准约束变更为空时，才使用 `route_specific`。依据所选主张、指标、前提、条件和原始资源限制实例化方法卡；路线叙述本身不是独立权威。
-
-## 返回闭合 M3 包
-
-只返回以下顶层字段：
-
-```yaml
-schema_version: "m3.1"
-source_m2_bundle: {}
-source_m2_bundle_hash: ""
-selected_direction_id: "D1"
-selected_direction_hash: ""
-coaching_mode: "bounded|route_specific"
-method_cards: []
-domain_overlays: []
-```
-
-两个哈希都用重新计算的规范 SHA-256。拒绝未知顶层字段。至少需要一张有效方法卡；`domain_overlays` 可以为空列表。
-
-## 构建闭合方法卡
-
-方法族只能选择以下一种：
-
-- `experiment_measurement_uq`；
-- `modeling_simulation_vvuq`；
-- `control_optimization_identification`；
-- `signal_diagnostics`；
-- `data_ml_hybrid`；
-- `reliability_safety_risk`。
-
-每张卡必须且只能含以下字段：
-
-```yaml
-schema_version: "m3.1"
-card_id: "card:data-ml-hybrid:1"
-method_family: "data_ml_hybrid"
-applicability:
-  supported_claim_types: []
-  required_inputs: []
-  incompatible_conditions: []
-assumptions: []
-minimum_resources: []
-inherited_constraints: []
-baselines: []
-controls: []
-procedure_outline: []
-primary_metrics: []
-uncertainty_handling: []
-validation_checks: []
-failure_modes: []
-stop_conditions: []
-pivot_conditions: []
-safety_boundaries: []
-source_ledger: []
-```
-
-拒绝未知字段和重复 `card_id`。所有列出字段均须非空。叙述列表使用非空文本行。`supported_claim_types` 只能使用所选方向的主张类型，`primary_metrics` 只能使用所选方向的指标 ID，且不得重复。必要输入和不兼容条件必须显式填写，不能从方法族叙述中推断。
-
-## 绑定资源与条件
-
-将 `selected_direction.resource_limits` 按原顺序和原值类型复制到每张卡的 `inherited_constraints`。最低资源行必须且只能含：
-
-```yaml
-resource: "CPU time"
-required_value: 1
-unit: "hours"
-source_constraint_id: "R-CPU-HOURS"
-```
-
-`required_value` 必须是有限、非布尔数值。`source_constraint_id` 解析到一个继承资源限制，并与其 `resource` 和 `unit` 完全一致。最低资源只能绑定到 `<` 或 `<=` 上限；值等于 `<` 上限或大于 `<=` 上限时拒绝。不得把下限重新解释为上限。
-
-每个停止或转向条件必须且只能含：
-
-```yaml
-criterion_type: "stop|pivot"
-metric_id: "M1"
-operator: "<|<=|>|>="
-value: 0.0
-unit: "ratio"
-```
-
-`stop_conditions` 中只能使用 `stop`，`pivot_conditions` 中只能使用 `pivot`。`value` 必须是有限、非布尔数值；指标 ID 必须解析到所选方向，单位必须完全一致。
-
-## 维护类型化来源台账
-
-每个来源台账行必须且只能含：
-
-```yaml
-source_id: "source:P7"
-candidate_id: "P7"
-basis_level: "metadata|abstract|full_text"
-support_types:
-  - "bibliographic_identity|method|result|transfer|safety"
-supports: []
-does_not_support: []
-limitations: []
-```
-
-每行使用唯一非空 `source_id`。`candidate_id` 必须解析到 `source_m2_bundle.source_m1_bundle.round2.candidate_pool` 中可推荐且状态允许的已核验候选。拒绝 `partial`、`conflicted`、`not_found`、`manual_needed`、未知、歧义或不可推荐候选。
-
-证据层级只能按下表准确映射：
-
-| M1 层级 | M3 层级 |
-|---|---|
-| `metadata_level` | `metadata` |
-| `abstract_level` | `abstract` |
-| `fulltext_level` | `full_text` |
-
-`support_types` 是 `bibliographic_identity`、`method`、`result`、`transfer` 和 `safety` 的非空、无重复子集。仅元数据证据只能使用 `bibliographic_identity`，不能从自由文本推断支持类型。`supports`、`does_not_support` 和 `limitations` 均为非空显式文本列表。已核验预印本可支持方法或探索，但不能成为主方向或安全相关结论的唯一依据。
-
-`fixture_only` 来源只用于明确标注的离线 fixture。不得把 fixture 验证表述成文献核验、方法表现、路线执行或实证证据。
-
-## 添加领域叠加规则
-
-领域叠加使用以下准确字段：
-
-```yaml
-schema_version: "m3.1"
-overlay_id: "domain:nuclear-ml:1"
-domain: "nuclear_engineering_ml"
-base_card_ids: []
-additional_assumptions: []
-additional_failure_modes: []
-additional_validation_checks: []
-additional_stop_conditions: []
-specialist_review_boundaries: []
-transfer_status: "hypothesis"
-source_ledger: []
-```
-
-拒绝未知字段和重复叠加 ID。每个唯一 `base_card_id` 必须解析到同一包中的方法卡。叠加只增加领域约束，不能替换基础卡假设、检查、失效模式、停止条件或安全边界。每个附加列表和叠加来源台账均须非空。`additional_stop_conditions` 使用与方法卡相同的闭合数值条件，并绑定所选方向指标。
-
-`domain` 固定为 `nuclear_engineering_ml`，`transfer_status` 固定为 `hypothesis`。至少需要一条合格非预印本台账记录，且 `support_types` 包含 `safety`。运行、监管和安全结论均划为专家复核边界。
-
-## 遵守证据与权限边界
-
-- 分开发现与核验，不得虚构或推断题名、作者、发表状态、DOI 或其他标识符。
-- 每项断言通过台账层级标为元数据级、摘要级或全文级。
-- 冲突、未解决和不可推荐引文不得进入方法卡或领域叠加。
-- 跨领域迁移在目标领域判别检验支持前保持为假设。
-- 闭合包验证只是结构化、确定性、离线契约证据。
-- 有效方法卡不能证明方法有效、仿真有效、迁移成功或安全。
-- 方法辅导期间不得执行实验、仿真、训练、下载、上传、启动服务、部署、分配资源或写文件。
-- 任何副作用都需要用户另行明确请求，并在执行前重新检查安全与资源边界。
+即使路线已可执行，也不要自动运行代码、实验、仿真、训练、下载模型、启动服务或写入用户文件。逐项取得明确授权，并保留输入、配置、随机性、环境、失败和原始结果的可追溯记录。

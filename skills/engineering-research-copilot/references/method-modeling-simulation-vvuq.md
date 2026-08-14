@@ -5,7 +5,7 @@
 ## 适用性
 
 - 对数学或计算模型、数值预测、场景研究、数字孪生或多物理场仿真的主张，选择 `modeling_simulation_vvuq`。
-- 方法卡只能绑定 M2 推导的主张、决策指标、必要前提和资源上限。
+- 方法卡只能绑定已确认方向推导的主张、决策指标、必要前提和资源上限。
 - 将控制方程模型、代码与配置身份、基准或参考解、收敛研究输入、验证数据来源和不确定性规格放入 `applicability.required_inputs`。
 - 将代码、基准、配置或验证来源无效/缺失，超出声明验证域，未解决必要输入，以及无法取得专家安全复核放入 `applicability.incompatible_conditions`。
 - `stop_conditions` 和 `pivot_conditions` 只存放闭合数值标准对象，不能编码缺失制品、来源失败或安全门槛。
@@ -20,7 +20,7 @@
 ## 最低资源
 
 - `minimum_resources` 只填写求解器运行数、离散化数量、验证观察数、时间、内存或算力等有限、非布尔数值要求。
-- 每行通过 `source_constraint_id`、`resource` 和 `unit` 绑定到运算符为 `<` 或 `<=` 的继承 M2 资源上限，并严格保持在上限内。
+- 每行通过 `source_constraint_id`、`resource` 和 `unit` 绑定到运算符为 `<` 或 `<=` 的继承资源上限，并严格保持在上限内。
 - 代码访问、模型文件、基准定义、参考解、求解器配置和验证数据集放入 `applicability.required_inputs`，不能放入 `minimum_resources`。
 - 缺少匹配上限时视为输入不兼容，不能据此虚构或扩大资源。
 
@@ -69,7 +69,7 @@
 - `stop_conditions` 和 `pivot_conditions` 只能使用[方法辅导](core-method-coaching.md)定义的闭合数值标准对象。
 - `bounded` 模式从所选方向 `minimum_decisive_test` 的匹配标准复制；`route_specific` 模式从对应已验证路线条件复制。
 - 只使用与收敛、守恒残差、确认差异或决策不确定性相关的标准，逐字保留上游指标 ID、运算符、值和单位。
-- 没有适用数值标准时封闭失败并要求修复上游标准；M3 内不得虚构、估计或调节阈值。
+- 没有适用数值标准时封闭失败并要求修复上游标准；方法计划内不得虚构、估计或调节阈值。
 - 代码验证失败、缺少解验证、确认数据不独立、来源无效、超出验证域外推和安全复核失败放入 `applicability.incompatible_conditions`，不放入数值条件。
 
 ## 安全边界

@@ -1,6 +1,22 @@
 # Engineering Research Copilot Project Plan
 
-## Active successor S1 — Research workbench Skill cluster
+## Active successor S2 — Clean Skill distribution
+
+Starting from merged `origin/main` baseline `8523f95ef4a823ab29eda5bd025b0a6e045d0d04`, keep the development and audit repository intact while generating a deterministic v0.7.0 clean release from the canonical nine-Skill source. The release is an ignored build artifact, not a tracked second copy and not a publication.
+
+S2 acceptance:
+
+- The archive contains only the exact nine Skill trees, five required root adapter files, and one generated `release-manifest.json`.
+- `evals/**`, `tests/**`, `docs/**`, `.github/**`, repository governance/status files, the builder, Git metadata, caches, and untracked files are absent.
+- Every payload file is Git-tracked, allowlisted, hash-bound, size-bound, and represented exactly once.
+- Five milestone-specific scripts remain byte-preserved for development evidence replay but are declared in `source_only_paths` and omitted from releases and host projections; installable Markdown and Python runtime material contains no milestone workflow tokens.
+- Repeated builds from identical bytes produce byte-identical ZIP files on supported Python versions and operating systems.
+- An extracted release passes installer dry-run; modified, missing, extra, unsafe, or symlinked files fail before projection writes.
+- Cluster, Codex plugin, and Claude plugin versions all equal `0.7.0`.
+- Development tests and frozen M1–M4 evidence remain in the source repository; the M4.2 tree and tests remain unchanged.
+- Local artifact construction grants no host installation, Git delivery, marketplace change, publication, upload, experiment, simulation, training, or external-communication authority.
+
+## Preserved successor S1 — Research workbench Skill cluster
 
 Starting from terminal baseline `c21c24e079631d2396a3989045c9f0945e17c24e`, package the repository as one offline-capable plugin with the existing root Skill as a compatibility/ambiguous-intake router and eight focused Skills. Implement shared evidence, claim, readiness, permission, review, and handoff contracts; a deterministic self-contained direction graph; and a scientific-figure recipe/selection foundation.
 

@@ -5,7 +5,7 @@
 ## 适用性
 
 - 对需要受控干预、物理测量、校准、重复性、再现性或测量不确定度传播的主张，选择 `experiment_measurement_uq`。
-- 方法卡只能绑定 M2 推导的主张、决策指标、必要前提和资源上限。
+- 方法卡只能绑定已确认方向推导的主张、决策指标、必要前提和资源上限。
 - 将测量模型、校准链、数据来源、对照定义、随机化或区组决定、重复性与再现性方案、不确定度预算规格放入 `applicability.required_inputs`。
 - 将无效或缺失来源、超出有效范围的校准、未解决必要输入、无法取得的安全批准，以及其他定性不适用条件放入 `applicability.incompatible_conditions`。
 - `stop_conditions` 和 `pivot_conditions` 只存放闭合数值标准对象；不得把缺失制品、来源失败或安全门槛编码在其中。
@@ -20,7 +20,7 @@
 ## 最低资源
 
 - `minimum_resources` 只填写独立单元数、重复次数、采集能力、时间或分析能力等有限且非布尔的数值要求。
-- 每行通过 `source_constraint_id`、`resource` 和 `unit` 绑定到运算符为 `<` 或 `<=` 的继承 M2 资源上限，并严格保持在上限内。
+- 每行通过 `source_constraint_id`、`resource` 和 `unit` 绑定到运算符为 `<` 或 `<=` 的继承资源上限，并严格保持在上限内。
 - 参考标准、传感器、校准记录、对照、协议和数据集放入 `applicability.required_inputs`，不放入 `minimum_resources`。
 - 找不到匹配上限时，视为输入不兼容，不能据此虚构或扩大资源额度。
 
@@ -67,7 +67,7 @@
 - `stop_conditions` 和 `pivot_conditions` 只能使用[方法辅导](core-method-coaching.md)定义的闭合数值标准对象。
 - `bounded` 模式从所选方向 `minimum_decisive_test` 的匹配停止或转向标准复制 `metric_id`、`operator`、有限 `value` 和 `unit`；`route_specific` 模式从对应的已验证路线条件复制。
 - 只使用与校准失效、漂移过大、精度不足、对照失败或决策不确定性过高相关的标准，并逐字保留上游运算符、值和单位。
-- 没有适用数值标准时，封闭失败并要求修复上游标准；M3 内不得虚构、估计或调节阈值。
+- 没有适用数值标准时，封闭失败并要求修复上游标准；方法计划内不得虚构、估计或调节阈值。
 - 缺失测量模型、校准链、对照、不确定度预算、来源或安全批准应放入 `applicability.incompatible_conditions`，不能放入数值条件列表。
 
 ## 安全边界

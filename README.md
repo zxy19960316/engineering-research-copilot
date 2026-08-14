@@ -31,6 +31,25 @@ Engineering Research Workbench 是一组面向工科研究者的证据约束型 
 
 共享的证据、权限、就绪度和交接规则只在 umbrella Skill 中规范维护。安装器把实际用到的共享文件按原始字节复制到每个 focused Skill 的 `references/shared/`，同时记录来源和哈希；这些副本是可审计投影，不是第二份规范源。
 
+## 纯净发行包
+
+开发仓库保留测试、研究记录和 M1–M4 历史证据，但这些内容不进入可安装发行包。使用标准库构建器从 Git 已跟踪文件和显式白名单生成 `0.7.0` 纯净 ZIP：
+
+```powershell
+python .\build-release.py --check --json
+python .\build-release.py --output .\dist\engineering-research-workbench-0.7.0.zip --json
+```
+
+ZIP 只包含九个 Skill、`.codex-plugin/plugin.json`、`.claude-plugin/plugin.json`、`agent-hosts.json`、`install-skill.py`、`opencode.json` 和自动生成的 `release-manifest.json`。清单逐文件记录大小与 SHA-256；安装器在清单存在时会先核对完整文件集合和每个字节，再生成宿主投影。相同源码会生成字节一致的 ZIP，`evals/**`、`tests/**`、`docs/**`、状态、计划、CI 和未跟踪文件均不能进入。五个旧里程碑的组合、渲染和验证脚本只保留在开发仓库中用于历史证据回放，并通过 `source_only_paths` 从 ZIP 和所有宿主投影中排除；可安装的 Markdown/Python 运行时不再携带里程碑状态机。
+
+解压后从发行根目录执行：
+
+```powershell
+python .\install-skill.py --source . --agent all --scope user --dry-run --json
+```
+
+本地构建发行包不等于安装到真实宿主，也不等于发布 GitHub Release；仓库许可证确定和任何公开发布仍需单独决定与授权。
+
 ## AGENT适配
 
 | 宿主 | 用户级投影 | 项目级投影 | 主动调用 |
@@ -54,7 +73,7 @@ OpenCode 的稳定文档保证模型通过原生 `skill` 工具按名称加载�
 claude --plugin-dir .
 ```
 
-插件方式会使用命名空间，例如 `/engineering-research-workbench:research-direction-evidence`；直接投影到 `.claude/skills/` 时使用短名称。当前环境没有 Claude Code 可执行文件，因此原生插件方式只完成了清单与静态结构验证，不声称真实加载通过；需要自包含跨宿主安装时，以安装器生成的投影为准。
+插件方式会使用命名空间，例如 `/engineering-research-workbench:research-direction-evidence`；直接投影到 `.claude/skills/` 时使用短名称。仓库根加载属于开发模式，会看见历史源码；纯净使用应解压发行 ZIP 或使用安装器生成的投影。当前环境没有 Claude Code 可执行文件，因此原生插件方式只完成了清单与静态结构验证，不声称真实加载通过；需要自包含跨宿主安装时，以安装器生成的投影为准。
 
 Hermes 没有约定自动发现的项目级 Skill 目录。若希望由项目维护源码，请按 Hermes 官方说明在其 home 目录的 `config.yaml` 中配置 `skills.external_dirs`。安装器会尊重 `HERMES_HOME`，Windows 下也识别 `LOCALAPPDATA`；它不会悄悄修改宿主配置，因此 `--agent hermes --scope project` 会在写入前明确失败。
 

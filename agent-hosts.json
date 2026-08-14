@@ -1,9 +1,9 @@
 {
   "schema_version": "engineering-research-agent-hosts.v1",
   "cluster_name": "engineering-research-workbench",
-  "cluster_version": "0.6.0",
+  "cluster_version": "0.7.0",
   "checked_at": "2026-08-14",
-  "source_policy": "Keep one hand-edited canonical cluster. Generate deterministic self-contained host projections by rewriting only cross-sibling reference locations, copying the referenced canonical bytes, and recording hashes. Hermes also receives a standard description override of at most 60 characters; no projection adds permissions.",
+  "source_policy": "Keep one hand-edited canonical cluster. Generate deterministic self-contained host projections by omitting declared source-only milestone artifacts, rewriting only cross-sibling reference locations, copying the referenced canonical bytes, and recording hashes. Hermes also receives a standard description override of at most 60 characters; no projection adds permissions.",
   "required_skills": [
     "engineering-research-copilot",
     "research-cross-review",
@@ -14,6 +14,13 @@
     "research-literature-evidence",
     "research-manuscript",
     "research-method-transfer"
+  ],
+  "source_only_paths": [
+    "skills/engineering-research-copilot/scripts/compose_m3_bundle.py",
+    "skills/engineering-research-copilot/scripts/render_m1_map.py",
+    "skills/engineering-research-copilot/scripts/validate_m1_bundle.py",
+    "skills/engineering-research-copilot/scripts/validate_m2_direction_bundle.py",
+    "skills/engineering-research-copilot/scripts/validate_m3_method_bundle.py"
   ],
   "portable_frontmatter_keys": [
     "name",

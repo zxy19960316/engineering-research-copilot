@@ -5,7 +5,7 @@
 ## 适用性
 
 - 对系统辨识、状态或参数估计、控制器设计、约束优化或闭环性能主张，选择 `control_optimization_identification`。
-- 方法卡只能绑定 M2 推导的主张、决策指标、必要前提和资源上限。
+- 方法卡只能绑定已确认方向推导的主张、决策指标、必要前提和资源上限。
 - 将对象或模型身份、激励与观测记录、目标与约束定义、运行边界、基线实现和安全限值规格放入 `applicability.required_inputs`。
 - 将来源无效、无法安全激励、辨识性或可观性失败、约束或停机权限未定义、必要输入未解决，以及无法取得专家安全复核放入 `applicability.incompatible_conditions`。
 - `stop_conditions` 和 `pivot_conditions` 只存放闭合数值标准对象，不能编码缺失制品、来源失败或安全门槛。
@@ -20,7 +20,7 @@
 ## 最低资源
 
 - `minimum_resources` 只填写激励样本数、验证场景数、采样能力、时间、内存或算力等有限、非布尔数值要求。
-- 每行通过 `source_constraint_id`、`resource` 和 `unit` 绑定到运算符为 `<` 或 `<=` 的继承 M2 资源上限，并严格保持在上限内。
+- 每行通过 `source_constraint_id`、`resource` 和 `unit` 绑定到运算符为 `<` 或 `<=` 的继承资源上限，并严格保持在上限内。
 - 激励记录、传感器、对象或模型定义、目标和约束记录、基线实现及停机规格放入 `applicability.required_inputs`，不能放入 `minimum_resources`。
 - 缺少匹配上限时视为输入不兼容，不能据此虚构或扩大资源。
 
@@ -69,7 +69,7 @@
 - `stop_conditions` 和 `pivot_conditions` 只能使用[方法辅导](core-method-coaching.md)定义的闭合数值标准对象。
 - `bounded` 模式从所选方向 `minimum_decisive_test` 的匹配标准复制；`route_specific` 模式从对应已验证路线条件复制。
 - 只使用与不稳定、约束违规、估计器发散、不可行或不可辨识相关的标准，逐字保留上游指标 ID、运算符、值和单位。
-- 没有适用数值标准时封闭失败并要求修复上游标准；M3 内不得虚构、估计或调节阈值。
+- 没有适用数值标准时封闭失败并要求修复上游标准；方法计划内不得虚构、估计或调节阈值。
 - 不安全激励、辨识性或可观性失败、来源无效、约束或停机权限未定义，以及安全复核失败放入 `applicability.incompatible_conditions`，不放入数值条件。
 
 ## 安全边界
