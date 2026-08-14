@@ -1,88 +1,88 @@
-# Data, Machine Learning, and Hybrid Methods
+# 数据、机器学习与混合方法
 
-Apply [Method coaching](core-method-coaching.md) first. Use this family protocol to populate only the closed card fields permitted by that protocol; do not create a data or training route, run a model, or authorize deployment.
+先应用[方法辅导](core-method-coaching.md)。本方法族协议只用于填写该协议允许的闭合方法卡字段；不得创建数据或训练路线、运行模型或授权部署。
 
-## Applicability
+## 适用性
 
-- Select `data_ml_hybrid` for claims about statistical learning, machine learning, physics-informed learning, surrogate models, data fusion, or hybrid data-and-model methods.
-- Bind the card only to M2-derived claims, decision metrics, required preconditions, and resource ceilings.
-- Put dataset and label provenance, entity/scenario/time identities, split definitions, preprocessing specifications, feature and target definitions, intended-use conditions, calibration requirements, and the declared in-distribution and out-of-distribution boundaries in `applicability.required_inputs`.
-- Put invalid provenance, non-independent partitions, unresolved leakage, unavailable labels or target definitions, unsupported deployment conditions, unresolved required inputs, and unavailable specialist safety review in `applicability.incompatible_conditions`.
-- Reserve `stop_conditions` and `pivot_conditions` exclusively for closed numeric criterion objects; do not encode missing artifacts, provenance failures, or safety gates there.
-- Separate predictive, causal, surrogate, anomaly-detection, and decision-support claims so performance evidence for one task does not support another automatically.
+- 对统计学习、机器学习、物理信息学习、代理模型、数据融合或数据—模型混合方法主张，选择 `data_ml_hybrid`。
+- 方法卡只能绑定 M2 推导的主张、决策指标、必要前提和资源上限。
+- 将数据集与标签来源、实体/场景/时间身份、划分定义、预处理规格、特征与目标定义、预期用途条件、校准要求，以及声明的分布内/分布外边界放入 `applicability.required_inputs`。
+- 将来源无效、分区不独立、泄漏未解决、标签或目标定义缺失、不支持的部署条件、必要输入未解决，以及无法取得专家安全复核放入 `applicability.incompatible_conditions`。
+- `stop_conditions` 和 `pivot_conditions` 只存放闭合数值标准对象，不能编码缺失制品、来源失败或安全门槛。
+- 区分预测、因果、代理、异常检测和决策支持主张；一种任务的性能证据不能自动支持另一种。
 
-## Assumptions
+## 假设
 
-- State the observational unit, target population, sampling mechanism, label process, missingness, dependence, stationarity, exchangeability, and class-prevalence assumptions.
-- State the relationship between physics-based and learned components, including which constraints are exact, approximate, learned, or unchecked.
-- Label generalization across entities, scenarios, sites, time periods, sensors, fidelities, or domains as a hypothesis until tested on the claimed target distribution.
+- 说明观察单元、目标总体、采样机制、标签过程、缺失、依赖、平稳性、可交换性和类别流行率假设。
+- 说明物理组件与学习组件的关系，包括哪些约束是准确、近似、学习得到或未经检查的。
+- 跨实体、场景、地点、时期、传感器、保真度或领域的泛化，在目标分布检验前均标为假设。
 
-## Minimum resources
+## 最低资源
 
-- Put only finite, non-boolean numeric requirements such as independent-unit counts, labeled-event counts, repeat or seed counts, time, memory, storage, or compute capacity in `minimum_resources`.
-- Bind every row by `source_constraint_id`, `resource`, and `unit` to an inherited M2 resource ceiling whose operator is `<` or `<=`; remain strictly within that ceiling.
-- Keep datasets, labels, split manifests, preprocessing specifications, code identities, trained artifacts, and environment records in `applicability.required_inputs`, not in `minimum_resources`.
-- Treat an absent matching ceiling as an incompatible input state, not as permission to invent or widen a resource allowance.
+- `minimum_resources` 只填写独立单元数、已标注事件数、重复或随机种子数、时间、内存、存储或算力等有限、非布尔数值要求。
+- 每行通过 `source_constraint_id`、`resource` 和 `unit` 绑定到运算符为 `<` 或 `<=` 的继承 M2 资源上限，并严格保持在上限内。
+- 数据集、标签、划分清单、预处理规格、代码身份、训练制品和环境记录放入 `applicability.required_inputs`，不能放入 `minimum_resources`。
+- 缺少匹配上限时视为输入不兼容，不能据此虚构或扩大资源。
 
-## Baselines and controls
+## 基线与对照
 
-- Include a simple non-ML, domain-rule, persistence, analytical, or classical statistical baseline appropriate to the claim.
-- Compare every candidate on identical entity-, scenario-, and time-aware partitions, preprocessing provenance, evaluation units, and resource accounting.
-- Include component-removal, shuffled-label, or no-physics controls when they isolate the claimed contribution without creating unsafe or misleading comparisons.
+- 使用与主张匹配的简单非机器学习、领域规则、持久性、解析或经典统计基线。
+- 所有候选在相同实体/场景/时间感知分区、预处理来源、评估单元和资源核算下比较。
+- 能够隔离所声称贡献且不造成不安全或误导比较时，加入组件移除、标签打乱或无物理约束对照。
 
-## Procedure
+## 程序
 
-- Define entity, scenario, site, asset, subject, batch, and time boundaries before splitting; keep correlated descendants and future information out of training partitions.
-- Fit imputation, normalization, augmentation, feature selection, dimensionality reduction, resampling, calibration, and learned preprocessing only on the training partition, then preserve the fitted-state provenance.
-- Freeze the baseline, partitions, primary metrics, ablation plan, seeds or repeat policy, and numeric stop and pivot criteria before comparing methods.
-- Run ablations that isolate every claimed learned, physical, fusion, or regularization component, and compare against the simple baseline under the same budget.
-- Define calibration and OOD checks whenever the bound claim concerns probability quality, confidence, shift, transfer, novelty, alarms, or decision support.
-- Keep the outline advisory until the user separately authorizes training, inference, data processing, or deployment.
+- 划分前定义实体、场景、地点、资产、受试者、批次和时间边界；相关派生样本与未来信息不得进入训练分区。
+- 插补、归一化、数据增强、特征选择、降维、重采样、校准和学习型预处理只能在训练分区拟合，并保存拟合状态来源。
+- 比较方法前，冻结基线、分区、主指标、消融计划、随机种子或重复策略，以及数值停止和转向标准。
+- 对每项声称的学习、物理、融合或正则化组件进行隔离消融，并在相同预算下与简单基线比较。
+- 主张涉及概率质量、置信度、偏移、迁移、新颖性、告警或决策支持时，定义校准与分布外检查。
+- 用户另行授权训练、推理、数据处理或部署前，程序提纲只作为建议。
 
-## Metrics
+## 指标
 
-- Use only selected-direction metric IDs and units in `primary_metrics`, stop conditions, and pivot conditions.
-- Match metrics to the decision, prevalence, cost, and evaluation unit; pair aggregate scores with per-class, per-regime, and worst-slice results where relevant.
-- Report calibration error or coverage when claims depend on confidence, and report OOD detection or shifted-domain degradation when claims depend on generalization or transfer.
-- Compare accuracy or utility jointly with inherited compute, time, memory, data, and latency limits rather than hiding resource expansion.
+- `primary_metrics`、停止条件和转向条件只能使用所选方向的指标 ID 与单位。
+- 让指标匹配决策、流行率、代价和评估单元；适用时将汇总得分与逐类、逐工况和最差切片结果配对。
+- 主张依赖置信度时报告校准误差或覆盖率，依赖泛化或迁移时报告分布外检测或偏移域退化。
+- 准确率或效用必须与继承的算力、时间、内存、数据和时延限制一起比较，不能隐藏资源扩张。
 
-## Uncertainty
+## 不确定性
 
-- Quantify variation across independent entities, scenarios, sites, time periods, folds, random seeds, and repeated fits at the level relevant to the claim.
-- Separate sampling, label, measurement, model, parameter, optimization, and distribution-shift uncertainty instead of collapsing them into one score.
-- Report intervals or repeat distributions and state the aggregation rule; do not treat correlated rows, windows, or augmented samples as independent replicates.
+- 在与主张相关的层级量化不同独立实体、场景、地点、时期、折、随机种子和重复拟合之间的变异。
+- 区分采样、标签、测量、模型、参数、优化和分布偏移不确定性，不能压成一个分数。
+- 报告区间或重复分布并说明聚合规则；相关行、窗口或增强样本不能视为独立重复。
 
-## Validation
+## 验证
 
-- Audit split independence and preprocessing isolation before interpreting any metric; verify that no label, future, test, or entity-linked information crosses the training boundary.
-- Compare the simple baseline and all predeclared ablations under identical partitions and budgets, and preserve unfavorable or unstable repeats.
-- Check calibration, OOD behavior, and distribution-shift sensitivity when the bound claim requires them.
-- Slice errors by entity, scenario, time, class, operating regime, sensor state, missingness, and relevant protected or safety-critical subgroup; identify unsupported slices explicitly.
-- Treat structural bundle validation as offline contract evidence, not as model performance, generalization, causal validity, or deployment qualification.
+- 解释指标前，审计划分独立性和预处理隔离，确认标签、未来、测试或实体关联信息没有跨越训练边界。
+- 在相同分区和预算下比较简单基线及全部预声明消融，并保留不利或不稳定重复。
+- 主张需要时检查校准、分布外行为和分布偏移敏感性。
+- 按实体、场景、时间、类别、运行工况、传感器状态、缺失和相关受保护/安全关键亚组切片错误，并明确指出不支持切片。
+- 结构化包验证只是离线契约证据，不能证明模型表现、泛化、因果有效性或部署资格。
 
-## Failure modes
+## 失效模式
 
-- List entity or temporal leakage, preprocessing leakage, label contamination, shortcut learning, confounding, dataset shift, prevalence shift, class imbalance, missing-not-at-random data, overfitting, unstable optimization, miscalibration, OOD overconfidence, and failed hybrid constraints when relevant.
-- Explain how each listed failure could change the bound claim or metric.
-- Preserve failed seeds, negative ablations, unsupported slices, and shift failures; do not discard them as tuning noise.
+- 适用时列出实体/时间泄漏、预处理泄漏、标签污染、捷径学习、混杂、数据集偏移、流行率偏移、类别不平衡、非随机缺失、过拟合、优化不稳定、失校准、分布外过度自信和混合约束失败。
+- 说明每种失效如何改变绑定的主张或指标。
+- 保留失败随机种子、负面消融、不支持切片和偏移失败，不能当作调参噪声丢弃。
 
-## Stop/Pivot conditions
+## 停止与转向条件
 
-- Populate `stop_conditions` and `pivot_conditions` only with the closed numeric criterion objects defined by [Method coaching](core-method-coaching.md).
-- In `bounded` mode, copy each applicable `metric_id`, `operator`, finite `value`, and `unit` from a matching selected-direction `minimum_decisive_test` stop or pivot criterion; in `route_specific` mode, copy them from the corresponding validated route condition.
-- Use only criteria relevant to baseline underperformance, calibration failure, OOD or shift degradation, unacceptable slice error, repeat instability, or resource-limit performance; preserve the upstream operator, value, and unit verbatim.
-- Fail closed and request upstream criterion repair when no applicable numeric stop or pivot criterion exists; never invent, estimate, tune, or optimize a threshold inside M3.
-- Put invalid provenance, leakage, non-independent partitions, missing calibration or OOD definitions, unsupported deployment, and safety-review failures in `applicability.incompatible_conditions`, not in numeric condition lists.
+- `stop_conditions` 和 `pivot_conditions` 只能使用[方法辅导](core-method-coaching.md)定义的闭合数值标准对象。
+- `bounded` 模式从所选方向 `minimum_decisive_test` 的匹配标准复制；`route_specific` 模式从对应已验证路线条件复制。
+- 只使用与低于基线、校准失败、分布外或偏移退化、不可接受切片误差、重复不稳定或资源限制表现相关的标准，并逐字保留上游值。
+- 没有适用数值标准时封闭失败并要求修复上游标准；M3 内不得虚构、估计、调节或优化阈值。
+- 来源无效、泄漏、分区不独立、缺少校准或分布外定义、不支持部署及安全复核失败放入 `applicability.incompatible_conditions`。
 
-## Safety boundaries
+## 安全边界
 
-- Require qualified data, ML, domain, security, privacy, and safety review before using outputs for operational control, protection, maintenance deferral, personnel decisions, or other consequential actions.
-- Preserve existing deterministic protections, interlocks, conservative rules, and human authority; a learned component must not silently replace them.
-- Do not acquire or upload data, train or run models, download weights, allocate compute, deploy services, or issue operational decisions through method coaching.
+- 输出用于运行控制、保护、延迟维护、人员决策或其他重要行动前，要求合格数据、机器学习、领域、安全、隐私和安全防护专家复核。
+- 保留现有确定性保护、联锁、保守规则和人工权限；学习组件不能静默替代它们。
+- 方法辅导不得采集或上传数据、训练或运行模型、下载权重、分配算力、部署服务或作出运行决定。
 
-## Source-ledger limits
+## 来源台账限制
 
-- Populate `source_ledger` under the closed ledger and eligibility rules in [Method coaching](core-method-coaching.md); label every row as metadata-, abstract-, or full-text-level.
-- Use sources only within their reported data provenance, populations, splits, baselines, metrics, shift conditions, uncertainty treatment, and intended use.
-- State explicitly what each source does not support, including causal effects, unseen-domain transfer, calibration, robustness, deployment, or safety.
-- Block conflicted or unresolved citations, and do not use a verified preprint as the sole support for a safety-related conclusion.
+- 按[方法辅导](core-method-coaching.md)中的闭合台账与资格规则填写 `source_ledger`，并标明证据层级。
+- 来源只能在其报告的数据来源、总体、划分、基线、指标、偏移条件、不确定性处理和预期用途内使用。
+- 明确说明每个来源不支持什么，包括因果效应、未见领域迁移、校准、稳健性、部署或安全。
+- 阻断冲突或未解决引文；已核验预印本不能成为安全相关结论的唯一支持。

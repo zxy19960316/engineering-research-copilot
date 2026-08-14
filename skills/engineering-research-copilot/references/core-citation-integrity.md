@@ -1,27 +1,27 @@
-# Citation Integrity
+# 引文完整性
 
-Apply this file whenever external literature is discovered, recommended, cited, mapped, or used to justify a direction.
+发现、推荐、引用、映射外部文献，或用文献论证研究方向时，均应用本文件。
 
-## Contents
+## 目录
 
-- Separate discovery candidates from verified records
-- Verify against current authoritative sources
-- Normalize without inventing
-- Compare metadata
-- Assign one verification state
-- Determine recommendation eligibility
-- Apply the preprint contract
-- Deduplicate deterministically
-- Resolve version relationships
-- Produce a verified paper record
-- State the real-evidence limitation
-- Enforce hard gates
+- 分开发现候选与已核验记录
+- 使用当前权威来源核验
+- 规范化但不臆造
+- 比较元数据
+- 分配唯一核验状态
+- 判断推荐资格
+- 应用预印本契约
+- 确定性去重
+- 处理版本关系
+- 生成已核验论文记录
+- 说明真实证据局限
+- 执行硬门槛
 
-## Separate discovery candidates from verified records
+## 分开发现候选与已核验记录
 
-Create a discovery record first. Keep its state exactly `unverified_candidate` until an authoritative source has been checked.
+先创建发现记录。在权威来源完成检查前，其状态必须保持为 `unverified_candidate`。
 
-Use this shape for discovery output:
+发现输出使用以下结构：
 
 ```yaml
 discovery_candidate:
@@ -34,128 +34,126 @@ discovery_candidate:
   discovery_source: ""
 ```
 
-Preserve supplied strings as unverified observations. Do not repair an identifier, complete an author list, or convert a probable title into a bibliographic fact.
+把用户提供的字符串保留为未核验观察。不得修补标识符、补全作者列表，也不得把可能的题名转成书目事实。
 
-Do not let a search snippet, aggregator match, ordinary web page, user assertion, or model memory set a verified state. Do not place a discovery record directly in a recommendation list or paper map. Promote it to a `VerifiedPaperRecord` only after completing the verification object below.
+搜索摘要、聚合器匹配、普通网页、用户陈述或模型记忆都不能设置已核验状态。发现记录不能直接进入推荐列表或论文图；只有完成下述核验对象后，才能提升为 `VerifiedPaperRecord`。
 
-## Verify against current authoritative sources
+## 使用当前权威来源核验
 
-Check sources in this order when they apply:
+按适用情况依次检查：
 
-1. Query the DOI registration agency record for a supplied DOI.
-2. Query the official repository record and exact version for a supplied repository identifier.
-3. Query the official PubMed record for a supplied PMID in biomedical intersections.
-4. Cross-check the publisher landing page for title, authors, venue, work type, dates, corrections, and version relationships.
-5. Use a structured aggregator only to discover a candidate or resolve ambiguity; never use it as the sole truth source when an authoritative registry or official repository exists.
+1. 用户提供 DOI 时，查询 DOI 注册机构记录。
+2. 用户提供仓库标识符时，查询官方仓库记录和准确版本。
+3. 生物医学交叉领域提供 PMID 时，查询 PubMed 官方记录。
+4. 用出版商落地页交叉核对题名、作者、出版物、作品类型、日期、勘误和版本关系。
+5. 结构化聚合器只用于发现候选或消歧；存在权威注册机构或官方仓库时，不能把聚合器作为唯一真相来源。
 
-Perform the authoritative lookup during the current calibration run for every real recommendation. Record every attempted authoritative source, including conflicts, unavailable responses, and not-found results. If a source cannot be checked, record that limitation instead of substituting model memory or an old search snippet.
+每项真实推荐都必须在当前校准轮次执行权威查询。记录所有尝试过的权威来源，包括冲突、不可访问和未找到结果。来源无法检查时记录局限，不得改用模型记忆或旧搜索摘要填补。
 
-## Normalize without inventing
+## 规范化但不臆造
 
-- Strip `https://doi.org/`, `http://dx.doi.org/`, and `doi:` from supplied DOI input.
-- Trim whitespace and trailing citation punctuation; lowercase the DOI.
-- Preserve the supplied DOI body exactly after those normalization steps.
-- Never change the DOI body, infer missing characters, or create an identifier from title similarity.
-- Never treat an arXiv ID, PMID, ISBN, report number, or publisher URL as a DOI.
-- Normalize an official alternate identifier only according to its owning authority; preserve its identifier type and version.
-- Set `alternate_id` to `null` when no official alternate identifier is present. Otherwise require an object with exactly two fields: `authority`, containing the nonempty official authority type, and `value`, containing the nonempty authority-normalized identifier value. Reject a bare string, an empty value, a missing field, or any additional field.
-- Preserve online-first and issue publication dates separately when both exist.
+- 从输入 DOI 中移除 `https://doi.org/`、`http://dx.doi.org/` 和 `doi:`。
+- 去掉首尾空白和尾部引文标点，并将 DOI 转为小写。
+- 完成上述规范化后，逐字保留用户提供的 DOI 主体。
+- 不得改变 DOI 主体、推断缺失字符或根据题名相似度创建标识符。
+- 不得把 arXiv ID、PMID、ISBN、报告编号或出版商 URL 当作 DOI。
+- 官方替代标识符只按其所属机构规则规范化，并保留标识符类型和版本。
+- 没有官方替代标识符时，将 `alternate_id` 设为 `null`；否则只能使用含 `authority` 与 `value` 两个非空字段的对象。拒绝裸字符串、空值、缺失字段和额外字段。
+- 在线优先日期和卷期出版日期同时存在时分别保留。
 
-## Compare metadata
+## 比较元数据
 
-Compare at minimum:
+至少比较：
 
-- complete title;
-- ordered author list;
-- online and issue dates;
-- journal, conference, repository, or other venue;
-- publication type or work type;
-- supplied and authoritative normalized DOI values, official alternate identifiers, and canonical identifiers;
-- correction, retraction, and version relationships when available.
+- 完整题名；
+- 有序作者列表；
+- 在线日期和卷期日期；
+- 期刊、会议、仓库或其他出版物；
+- 出版类型或作品类型；
+- 用户提供与权威来源中的规范化 DOI、官方替代标识符和规范标识符；
+- 可获得时的勘误、撤稿和版本关系。
 
-Classify a resolving identifier with materially inconsistent DOI, title, or author identity as `conflicted`. Treat two supplied or authoritative records with different normalized DOI values as a decisive identifier conflict when they are presented as the same candidate. Do not choose whichever DOI or version appears plausible, and do not use a weaker key to override that conflict.
+如果标识符能够解析，但 DOI、题名或作者身份存在实质不一致，将其标为 `conflicted`。两个被视为同一候选的记录含不同规范化 DOI 时，这是决定性的标识冲突；不得选择看似可信的一个，也不得用弱键覆盖冲突。
 
-Use normalized title plus first author only to find or review candidates when no stronger matching key is available. Require authoritative confirmation before treating that pair as the same work. Never assign a DOI or alternate identifier solely from fuzzy matching.
+没有更强匹配键时，只能用规范化题名加第一作者寻找或复核候选。必须得到权威确认后，才能把这对值视为同一作品。不得仅靠模糊匹配分配 DOI 或替代标识符。
 
-## Assign one verification state
+## 分配唯一核验状态
 
-Assign exactly one state from this closed set:
+只能从以下闭合集合中选择一个状态：
 
-| State | Meaning | Recommendation eligibility |
+| 状态 | 含义 | 推荐资格 |
 |---|---|---|
-| `verified_primary` | Registry or official repository and landing metadata agree | Eligible when no blocking reason remains |
-| `verified_registry` | Registry metadata agrees; publisher landing page cannot currently be checked | Eligible with the unavailable cross-check disclosed |
-| `verified_preprint` | Official preprint ID, exact version, title, and authors agree | Conditionally eligible under the preprint contract |
-| `partial` | A record exists but important author, date, venue, or version data is incomplete | Supplemental context only |
-| `conflicted` | An identifier resolves to materially different metadata or authoritative sources disagree | Blocked |
-| `not_found` | No authoritative record is found within the stated search boundary | Blocked |
-| `manual_needed` | Multiple plausible candidates or unresolved identity or version questions remain | Blocked pending human confirmation |
+| `verified_primary` | 注册机构或官方仓库与落地页元数据一致 | 没有阻断理由时可推荐 |
+| `verified_registry` | 注册机构元数据一致，但当前无法检查出版商落地页 | 披露无法交叉核对后可推荐 |
+| `verified_preprint` | 官方预印本 ID、准确版本、题名和作者一致 | 按预印本契约有条件推荐 |
+| `partial` | 记录存在，但重要作者、日期、出版物或版本信息不完整 | 只能作为补充背景 |
+| `conflicted` | 标识符解析到实质不同的元数据，或权威来源相互冲突 | 阻断 |
+| `not_found` | 在声明的检索边界内没有找到权威记录 | 阻断 |
+| `manual_needed` | 仍有多个可能候选，或身份/版本问题未解决 | 等待人工确认并阻断 |
 
-Do not introduce another verification-state label in a real record. Preserve unavailable checks inside `checked_sources` and limitations; do not relabel incomplete verification as success.
+真实记录中不得引入其他核验状态。把不可用检查记录到 `checked_sources` 和局限中；不得把不完整核验重新标成成功。
 
-Keep verification status separate from recommendation eligibility. A record in `verified_primary`, `verified_registry`, or `verified_preprint` has closed current provenance and identity; it may still be `recommendation_eligible: false` because an explicit scope, role, transfer, safety, or preprint-use restriction blocks this recommendation. Preserve that verified status, record at least one specific `blocking_reasons` entry, and keep the record outside `selected_ids` and paper-map paper nodes. Count such an unselected record toward the deduplicated 15--20 verified-candidate target.
+核验状态与推荐资格必须分开。`verified_primary`、`verified_registry` 或 `verified_preprint` 只说明当前来源和身份闭合；仍可能因范围、角色、迁移、安全或预印本用途限制而设置 `recommendation_eligible: false`。此时保留核验状态，至少填写一个具体 `blocking_reasons`，并把记录排除在 `selected_ids` 和论文图论文节点之外。该记录仍可计入去重后的 15–20 篇已核验候选目标。
 
-Do not change a verified record to `partial` merely to express recommendation ineligibility. Use `partial` only when current verification or identity is incomplete. Never count `partial`, `conflicted`, `not_found`, or `manual_needed` toward the verified-candidate target, even when their checked-source structure is populated.
+不得为了表达“不适合推荐”而把已核验记录降为 `partial`。`partial` 只表示当前核验或身份不完整。`partial`、`conflicted`、`not_found` 和 `manual_needed` 一律不能计入已核验候选目标。
 
-## Determine recommendation eligibility
+## 判断推荐资格
 
-Set `recommendation_eligible: true` only when all of these conditions hold:
+只有同时满足以下条件，才设置 `recommendation_eligible: true`：
 
-- Set `verification.status` to `verified_primary` or `verified_registry`, or to `verified_preprint` under the preprint contract.
-- Resolve title and author checks without `conflict`.
-- Resolve work type and version identity sufficiently for the intended recommendation.
-- Leave `blocking_reasons` empty.
-- Complete a current authoritative lookup rather than relying on offline structure, discovery metadata, or model memory.
+- `verification.status` 为 `verified_primary` 或 `verified_registry`，或者按预印本契约为 `verified_preprint`；
+- 题名和作者核对均没有 `conflict`；
+- 作品类型和版本身份足以支持预期用途；
+- `blocking_reasons` 为空；
+- 当前轮次真实执行了权威查询，而不是只依赖离线结构、发现元数据或模型记忆。
 
-Set `recommendation_eligible: false` for `partial`. Use a partial record only as clearly labeled supplemental context outside the selected recommendation set, and state the missing verification.
+`partial` 必须不可推荐，只能作为明确标注的补充背景，并说明缺失核验。`conflicted`、`not_found` 和 `manual_needed` 必须不可推荐，并从推荐列表、所选 ID、论文图节点、方向支持和安全结论中排除。
 
-Set `recommendation_eligible: false` for `conflicted`, `not_found`, and `manual_needed`. Exclude all three states from recommendation lists, selected IDs, paper-map nodes, direction support, and safety conclusions.
+已核验但不可推荐的记录必须有非空阻断理由，至少一项当前有效来源给出匹配且没有冲突或未找到结果，题名与作者身份已经解决，并且 `version_relation` 已闭合且不是 `unknown`。空理由、缺少当前来源或身份仍开放均属无效。不可推荐记录绝不能被选中。
 
-For a verified status with `recommendation_eligible: false`, require nonempty `blocking_reasons`, at least one valid current checked source with a match and no conflict or not-found result, resolved title and author identity, and a closed `version_relation` other than `unknown`. Treat an empty reason, missing current source, or open identity as invalid. Never select an ineligible record regardless of its verification status.
+## 应用预印本契约
 
-## Apply the preprint contract
+- `verified_preprint` 只能用于方法或探索证据。
+- 说明准确的已核验版本，并披露其可能尚未经过同行评审。
+- 只有当它不是主方向或安全相关结论的唯一支持时，才可设置为可推荐。
+- 只有权威证据确认关系后，才用 `preprint_of` 连接期刊版本。
+- 内容或关系不清时，预印本与期刊记录保持分开。
+- 同一主张有适用的已核验期刊记录时，优先使用期刊记录。
 
-- Permit a `verified_preprint` only as method or exploration evidence.
-- State the exact checked version and disclose that peer review may not have occurred.
-- Set it eligible only when it is not the sole support for a main direction or safety-related conclusion.
-- Link a journal version with `preprint_of` only after authoritative evidence establishes that relationship.
-- Keep preprint and journal records separate when their content or relationship is unclear.
-- Prefer a verified journal record for the same claim when it is available and applicable.
+对 M2.1.1 包，从嵌入的 M1 候选台账执行本契约。`provisional_main` 至少需要一项可推荐的 `verified_primary` 或 `verified_registry` 支持，否则返回 `provisional_main_requires_non_preprint_support`。带证据且通过的安全相关硬门槛也至少需要一项非预印本支持，否则返回 `safety_gate_requires_non_preprint_support`。不可推荐或已阻断记录均不能计入，也不能用调用方声明的来源类别替代 M1 字段。
 
-For an M2.1.1 bundle, enforce this contract from the embedded M1 candidate ledger. Require at least one recommendation-eligible `verified_primary` or `verified_registry` supporting candidate for `provisional_main`; otherwise return `provisional_main_requires_non_preprint_support`. Apply the same non-preprint requirement to a passing safety-related hard gate that cites evidence; otherwise return `safety_gate_requires_non_preprint_support`. Do not count blocked or `recommendation_eligible: false` records toward either requirement, and do not accept a caller-supplied source class in place of the M1 fields.
+## 确定性去重
 
-## Deduplicate deterministically
+严格按以下顺序使用键；更强键已经产生匹配或不匹配后，不得回退：
 
-Apply these keys in order and do not fall back after a stronger key produces a match or mismatch:
+1. 两条记录都有 DOI 时，比较规范化 DOI。相同值是可能重复，仍需核对元数据和版本；不同值是决定性不匹配，立即停止，不得再用替代标识符或题名加第一作者合并。
+2. 至少一条记录没有 DOI 时，才比较官方替代标识符 `(authority, value)`。先验证每个非空 `alternate_id` 都是闭合的两字段对象。两条记录都有替代标识符时，相同键是可能重复；不同键（包括不同 `authority`）是决定性不匹配，不得回退到题名加第一作者。
+3. 至少一条记录没有 DOI，并且至少一条也没有官方替代标识符时，才比较规范化题名加规范化第一作者，以触发候选复核。
 
-1. When both records contain a DOI, compare their normalized DOI values. Treat equal values as a possible duplicate subject to metadata and version checks. Treat different values as a decisive mismatch: stop, retain separate observations, and do not compare official alternate identifiers or title plus first author to merge them.
-2. Only when at least one record lacks a DOI, compare exact official alternate identifiers as `(authority, value)` pairs. Validate each non-null `alternate_id` as the closed two-field object before comparison; reject bare strings and incomplete objects instead of coercing them. When both records contain an official alternate identifier, treat equal pairs as a possible duplicate subject to metadata and version checks; treat different pairs, including different `authority` values, as a decisive mismatch and stop without using title plus first author to merge them.
-3. Only when at least one record lacks a DOI and at least one record also lacks an official alternate identifier, compare normalized title plus normalized first author for candidate review.
+第三个键只是复核触发器，不是身份事实。没有当前权威来源确认 `same_work` 时不得自动合并。后来找到更强标识符后，从 DOI 步骤重新开始。
 
-Treat the third key as a review trigger, not as proof of identity. Do not auto-merge title-and-author matches without current authoritative confirmation of `same_work`. When a stronger identifier is later found, restart comparison at the DOI step.
+相同 DOI 或官方替代标识符对应的题名、作者、作品类型或版本元数据冲突时，不得合并；按情况设为 `conflicted` 或 `manual_needed`，保留所有来源观察，并阻断推荐资格。
 
-When duplicate DOI or official alternate identifiers carry conflicting title, author, work-type, or version metadata, do not merge them. Set the record to `conflicted` or `manual_needed` as appropriate, retain both source observations, and block recommendation eligibility until the conflict is resolved.
+只有决定性身份字段全部一致后，才保留更完整的权威元数据。合并真正重复项时保留全部已查来源和标识符别名，不得静默合并冲突字段。
 
-Retain the more complete authoritative metadata only after all decisive identity fields agree. Preserve all checked-source provenance and identifier aliases when consolidating true duplicates; never merge conflicting fields silently.
+比较候选池内每一对记录，包括未选记录。兼容记录使用不同 `candidate_id` 时，拒绝为 `duplicate_candidate_identity`；相同 DOI 或替代标识身份却有不兼容题名、作者、出版类型或版本关系时，拒绝为 `candidate_identity_conflict`；题名加第一作者匹配但缺少决定性标识符时，标为 `candidate_identity_manual_review`，不得自动合并，相关记录若被选中则阻断。
 
-Compare every pair in each candidate pool, including records that are not selected. Reject compatible records with different `candidate_id` values as `duplicate_candidate_identity`. Reject equal DOI or alternate-ID identities with incompatible normalized title, ordered authors, publication type, or version relation as `candidate_identity_conflict`. Treat a title-plus-first-author match without a decisive identifier as `candidate_identity_manual_review`; never auto-merge it, and block selection when either related record is selected.
+跨轮次保持同一 `candidate_id` 指向同一作品。DOI、替代标识符或身份元数据发生不兼容变化时，拒绝为 `stable_candidate_identity_changed`。只有两轮具有相同规范化替代标识符时，才允许新增 DOI；否则报告 `stable_candidate_identity_unresolved`，不能根据题名和第一作者推断连续性。
 
-Across rounds, require one `candidate_id` to continue identifying the same work. Reject a changed DOI, a changed alternate identifier, or incompatible identity metadata as `stable_candidate_identity_changed`. Permit a DOI to be added only when the same normalized alternate identifier is present in both rounds. Without that stable alternate identifier, report `stable_candidate_identity_unresolved` instead of inferring continuity from title and first author.
+## 处理版本关系
 
-## Resolve version relationships
+`version_relation` 只能取 `same_work`、`preprint_of`、`distinct` 或 `unknown`。
 
-Assign exactly one `version_relation` from `same_work`, `preprint_of`, `distinct`, or `unknown`.
+- 普通单篇论文中，发现候选与当前权威记录一致，且没有单独预印本、版本、勘误或其他版本关系时，使用 `same_work`；不能仅因只识别到一个版本而用 `unknown`。
+- `same_work` 只有在权威元数据和作品类型一致后才能合并重复观察。
+- `preprint_of` 保留独立的预印本与正式出版记录并建立关系，不能把两个标识符互换。
+- `distinct` 即使题名相似也保留独立记录。
+- `unknown` 必须对应真实未解决的身份或版本歧义；不要合并，并只在歧义影响身份或推荐资格时使用 `manual_needed`。
+- 作品类型冲突或预印本—正式发表关系未解决时，记录保持分开且阻断，直至权威来源或人工确认解决。
 
-- For an ordinary single paper, set `same_work` when the discovery candidate and current authoritative record agree and no separate preprint, edition, correction, or other version relationship is asserted. Do not use `unknown` merely because the paper has only one identified version.
-- For `same_work`, consolidate duplicate observations only after authoritative metadata and work type agree.
-- For `preprint_of`, retain separate preprint and published records and link them without treating the identifiers as interchangeable.
-- For `distinct`, retain separate records even when titles are similar.
-- For `unknown`, require a genuine unresolved identity or version ambiguity. Do not merge the ambiguous record, and use `manual_needed` only when that ambiguity affects identity or recommendation eligibility.
-- When work type conflicts or the preprint-to-publication relation is unresolved, keep the records separate and blocked until an authoritative source or human confirmation resolves the relation.
+## 生成已核验论文记录
 
-## Produce a verified paper record
-
-Require this verification object and all of its fields:
+核验对象及其全部字段必须使用以下结构：
 
 ```yaml
 verification:
@@ -172,9 +170,9 @@ verification:
   blocking_reasons: []
 ```
 
-Use only `doi_registry`, `official_repository`, `pubmed`, and `publisher_landing` for `source_type`. Use only `match`, `conflict`, `not_found`, and `unavailable` for `result`. Record a timezone-aware ISO-8601 `checked_at` value and a source-resolvable `canonical_record` for every check. Do not fabricate either value when a check did not occur.
+`source_type` 只能取 `doi_registry`、`official_repository`、`pubmed` 和 `publisher_landing`；`result` 只能取 `match`、`conflict`、`not_found` 和 `unavailable`。每次检查都记录带时区的 ISO-8601 `checked_at` 和可解析的 `canonical_record`；未实际检查时不得虚构二者。
 
-Use this enclosing `VerifiedPaperRecord` shape. Leave absent identifiers null; populate every bibliographic value only from checked metadata:
+外层 `VerifiedPaperRecord` 使用以下结构。缺失标识符保持为 null；所有书目值只能来自已检查元数据：
 
 ```yaml
 verified_paper_record:
@@ -195,23 +193,23 @@ verified_paper_record:
   basis_level: "metadata_level|abstract_level|fulltext_level"
 ```
 
-Keep `alternate_id` exactly `null` when absent. When present, replace `null` with an object containing only the required nonempty `authority` and `value` fields defined above. Do not serialize it as a bare identifier string or accept a partially populated object.
+没有替代标识符时，`alternate_id` 必须恰为 `null`；存在时，只能换成前述含 `authority` 与 `value` 的对象，不能使用裸字符串或残缺对象。
 
-Mirror `verification.status` and `verification.recommendation_eligible` into a calibration candidate's summary fields without changing their values. Reject a candidate when the summary and nested verification object disagree.
+校准候选的摘要字段必须原样镜像 `verification.status` 和 `verification.recommendation_eligible`；摘要与嵌套对象不一致时拒绝候选。
 
-Show the exact checked title, authors, year, venue, clickable canonical record, verification status, verification time, evidence role, support, limitation, and reasoning basis to the user.
+向用户展示已核验的准确题名、作者、年份、出版物、可点击规范记录、核验状态、核验时间、证据角色、支持内容、局限和推理层级。
 
-## State the real-evidence limitation
+## 说明真实证据局限
 
-Treat offline schema, fixture, and structural validation as contract checks only. They can verify required fields, closed states, deduplication behavior, and eligibility gates, but they cannot prove that a DOI or other citation identifier exists, that metadata is accurate, or that live scholarly verification succeeded.
+离线 schema、fixture 和结构验证只能检查契约：必填字段、闭合状态、去重行为和资格门槛。它们不能证明 DOI 或其他引文标识符真实存在，不能证明元数据正确，也不能证明实时学术核验成功。
 
-Require a current authoritative lookup and recorded provenance for every real recommendation. If the lookup cannot be completed, keep the record partial or blocked and report `evidence_incomplete`; never promote an offline-valid object to a real verified citation.
+每项真实推荐都需要当前权威查询及记录来源。无法完成查询时，记录保持部分或阻断，并报告 `evidence_incomplete`；不得把离线有效对象提升为真实已核验引文。
 
-## Enforce hard gates
+## 执行硬门槛
 
-- Require zero invented DOI, author, title, publication state, URL, or identifier fields.
-- Block recommendations whose verification provenance is absent, stale for the current run, internally inconsistent, or based only on discovery sources.
-- Do not claim novelty, priority, or absence of research without an explicit search boundary.
-- Do not use citation count as a truth, quality, or applicability verdict.
-- Label metadata-, abstract-, and full-text-level reasoning explicitly.
-- Downgrade a conclusion when the evidence is partial, preprint-only, abstract-only, or transfer-only.
+- DOI、作者、题名、发表状态、URL 和标识符的虚构数量必须为零。
+- 核验来源缺失、不是当前轮次、内部不一致或只基于发现来源的记录必须阻断推荐。
+- 没有明确检索边界时，不得宣称创新性、优先权或不存在相关研究。
+- 不得用被引次数判断真伪、质量或适用性。
+- 明确标注元数据级、摘要级和全文级推理。
+- 证据为部分、仅预印本、仅摘要或仅迁移时，降低结论强度。

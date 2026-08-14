@@ -1,87 +1,87 @@
-# Signal Processing and Diagnostics
+# 信号处理与诊断
 
-Apply [Method coaching](core-method-coaching.md) first. Use this family protocol to populate only the closed card fields permitted by that protocol; do not create a diagnostic route or authorize acquisition or operational decisions.
+先应用[方法辅导](core-method-coaching.md)。本方法族协议只用于填写该协议允许的闭合方法卡字段；不得创建诊断路线，也不得授权采集或运行决策。
 
-## Applicability
+## 适用性
 
-- Select `signal_diagnostics` for claims about sensing, preprocessing, feature extraction, detection, localization, diagnosis, prognosis inputs, or condition monitoring.
-- Bind the card only to M2-derived claims, decision metrics, required preconditions, and resource ceilings.
-- Put raw-signal provenance, sampling and clock metadata, sensor calibration, label definitions and provenance, independent-unit identities, segmentation boundaries, and preprocessing specifications in `applicability.required_inputs`.
-- Put invalid signal or label provenance, unresolved sampling or alignment, non-independent partitions, unsupported operational use, unresolved required inputs, and unavailable specialist safety review in `applicability.incompatible_conditions`.
-- Reserve `stop_conditions` and `pivot_conditions` exclusively for closed numeric criterion objects; do not encode missing artifacts, provenance failures, or safety gates there.
-- Distinguish event detection, fault diagnosis, localization, and severity estimation so a metric for one task does not stand in for another.
+- 对感知、预处理、特征提取、检测、定位、诊断、预测输入或状态监测主张，选择 `signal_diagnostics`。
+- 方法卡只能绑定 M2 推导的主张、决策指标、必要前提和资源上限。
+- 将原始信号来源、采样与时钟元数据、传感器校准、标签定义与来源、独立单元身份、分段边界和预处理规格放入 `applicability.required_inputs`。
+- 将信号或标签来源无效、采样或对齐未解决、分区不独立、不支持的运行用途、必要输入未解决，以及无法取得专家安全复核放入 `applicability.incompatible_conditions`。
+- `stop_conditions` 和 `pivot_conditions` 只存放闭合数值标准对象，不能编码缺失制品、来源失败或安全门槛。
+- 区分事件检测、故障诊断、定位和严重程度估计，不能用一个任务的指标代替另一个任务。
 
-## Assumptions
+## 假设
 
-- State signal source, sensor response, sampling clock, bandwidth, synchronization, operating states, label origin, noise, missingness, and stationarity assumptions.
-- State the independent unit and the boundaries between events, windows, assets, runs, operators, sites, and time periods.
-- Label sensor equivalence, source-domain transfer, and unobserved-fault behavior as hypotheses until checked.
+- 说明信号源、传感器响应、采样时钟、带宽、同步、运行状态、标签来源、噪声、缺失和平稳性假设。
+- 说明独立单元，以及事件、窗口、资产、运行、操作员、地点和时间段之间的边界。
+- 传感器等价性、源领域迁移和未见故障行为在检查前均标为假设。
 
-## Minimum resources
+## 最低资源
 
-- Put only finite, non-boolean numeric requirements such as labeled-event counts, normal-exposure duration, independent-unit counts, storage, time, or analysis capacity in `minimum_resources`.
-- Bind every row by `source_constraint_id`, `resource`, and `unit` to an inherited M2 resource ceiling whose operator is `<` or `<=`; remain strictly within that ceiling.
-- Keep raw signals, timestamps, sampling metadata, calibration records, labels, asset identities, split definitions, and preprocessing specifications in `applicability.required_inputs`, not in `minimum_resources`.
-- Treat an absent matching ceiling as an incompatible input state, not as permission to invent or widen a resource allowance.
+- `minimum_resources` 只填写已标注事件数、正常暴露时长、独立单元数、存储、时间或分析能力等有限、非布尔数值要求。
+- 每行通过 `source_constraint_id`、`resource` 和 `unit` 绑定到运算符为 `<` 或 `<=` 的继承 M2 资源上限，并严格保持在上限内。
+- 原始信号、时间戳、采样元数据、校准记录、标签、资产身份、划分定义和预处理规格放入 `applicability.required_inputs`，不能放入 `minimum_resources`。
+- 缺少匹配上限时视为输入不兼容，不能据此虚构或扩大资源。
 
-## Baselines and controls
+## 基线与对照
 
-- Include a simple threshold, spectral, statistical, or domain-rule baseline appropriate to the diagnostic task.
-- Compare methods on identical independent units, operating regimes, label definitions, and evaluation windows.
-- Include healthy or background exposure controls and known nuisance or sensor-artifact controls when available.
+- 使用适合诊断任务的简单阈值、频谱、统计或领域规则基线。
+- 在相同独立单元、运行工况、标签定义和评估窗口上比较方法。
+- 可获得时，加入健康或背景暴露对照，以及已知干扰或传感器伪影对照。
 
-## Procedure
+## 程序
 
-- Check sensor bandwidth, sampling rate, clock quality, anti-alias filtering, synchronization, saturation, clipping, and missing intervals before feature construction.
-- Segment by asset, run, event, scenario, subject, site, or time boundary before splitting; prevent overlapping windows or correlated descendants from crossing partitions.
-- Fit normalization, filtering parameters, imputation, feature selection, decomposition, thresholds, and learned preprocessing only on training data.
-- Preserve a raw-to-segment provenance chain with label source and every preprocessing transform.
-- Test performance across operating regimes, noise levels, sensor states, distribution shifts, and unseen units relevant to the claim.
-- Keep the outline advisory until the user separately authorizes acquisition, processing, or operational use.
+- 构建特征前，检查传感器带宽、采样率、时钟质量、抗混叠滤波、同步、饱和、削顶和缺失区间。
+- 划分前先按资产、运行、事件、场景、受试者、地点或时间边界分段；阻止重叠窗口或相关派生样本跨分区。
+- 归一化、滤波参数、插补、特征选择、分解、阈值和学习型预处理只能在训练数据上拟合。
+- 保留从原始信号到分段的来源链，记录标签来源和每项预处理变换。
+- 在与主张相关的运行工况、噪声、传感器状态、分布偏移和未见单元上检验表现。
+- 用户另行授权采集、处理或运行使用前，程序提纲只作为建议。
 
-## Metrics
+## 指标
 
-- Use only selected-direction metric IDs and units in `primary_metrics`, stop conditions, and pivot conditions.
-- Use event- or time-aware detection metrics, class-sensitive diagnosis metrics, localization error, and severity error according to the bound task.
-- Report false alarms with an exposure denominator such as time, cycle, asset, or opportunity; do not report a bare false-alarm count.
-- Include missed-event rate, detection delay, per-class results, calibration, and uncertainty when they affect the claim.
+- `primary_metrics`、停止条件和转向条件只能使用所选方向的指标 ID 与单位。
+- 根据绑定任务使用事件或时间感知检测指标、类别敏感诊断指标、定位误差和严重度误差。
+- 误报必须带时间、循环、资产或机会等暴露分母，不能只报告误报数量。
+- 影响主张时，报告漏检率、检测延迟、逐类结果、校准和不确定性。
 
-## Uncertainty
+## 不确定性
 
-- Quantify variation across independent units, acquisition periods, operating regimes, sensor states, labels, thresholds, and random seeds where applicable.
-- Separate measurement noise, label uncertainty, sampling variability, threshold uncertainty, and distribution shift.
-- Report confidence intervals or repeated-evaluation variability at the independent-unit level rather than treating overlapping windows as independent.
+- 适用时量化不同独立单元、采集周期、运行工况、传感器状态、标签、阈值和随机种子之间的变异。
+- 区分测量噪声、标签不确定性、采样变异、阈值不确定性和分布偏移。
+- 在独立单元层级报告置信区间或重复评估变异，不能把重叠窗口视为独立样本。
 
-## Validation
+## 验证
 
-- Verify signal provenance, units, sampling and aliasing assumptions, segmentation boundaries, train-only preprocessing, label alignment, and exposure accounting.
-- Test shift across relevant assets, sites, regimes, time periods, fault types, or sensor failures and identify unsupported regions.
-- Audit errors by class, regime, sensor state, and nuisance condition instead of relying on one aggregate score.
-- Treat structural bundle validation as offline contract evidence, not as diagnostic accuracy, field performance, or operational qualification.
+- 核验信号来源、单位、采样与混叠假设、分段边界、仅训练预处理、标签对齐和暴露计算。
+- 检验相关资产、地点、工况、时间段、故障类型或传感器失效之间的偏移，并指出不支持区域。
+- 按类别、工况、传感器状态和干扰条件审计错误，不能只依赖一个汇总分数。
+- 结构化包验证只是离线契约证据，不能证明诊断准确率、现场表现或运行资格。
 
-## Failure modes
+## 失效模式
 
-- List aliasing, clipping, clock drift, leakage, duplicated windows, label delay, class imbalance, prevalence shift, sensor failure, domain shift, confounding operating states, and alert flooding when relevant.
-- Explain how each listed failure could change the bound claim or metric.
-- Preserve false alarms, missed events, invalid provenance, and unsupported shifts; do not hide them through favorable aggregation.
+- 适用时列出混叠、削顶、时钟漂移、泄漏、重复窗口、标签延迟、类别不平衡、流行率偏移、传感器失效、领域偏移、运行状态混杂和告警泛滥。
+- 说明每种失效如何改变绑定的主张或指标。
+- 保留误报、漏检、无效来源和不支持偏移，不能通过有利聚合隐藏。
 
-## Stop/Pivot conditions
+## 停止与转向条件
 
-- Populate `stop_conditions` and `pivot_conditions` only with the closed numeric criterion objects defined by [Method coaching](core-method-coaching.md).
-- In `bounded` mode, copy each applicable `metric_id`, `operator`, finite `value`, and `unit` from a matching selected-direction `minimum_decisive_test` stop or pivot criterion; in `route_specific` mode, copy them from the corresponding validated route condition.
-- Use only criteria relevant to false-alarm exposure, missed events, detection delay, sampling validity, or shift degradation; preserve the upstream operator, value, and unit verbatim.
-- Fail closed and request upstream criterion repair when no applicable numeric stop or pivot criterion exists; never invent, estimate, or tune a threshold inside M3.
-- Put invalid signal or label provenance, unresolved sampling or alignment, non-independent partitions, unsupported operational use, and safety-review failures in `applicability.incompatible_conditions`, not in numeric condition lists.
+- `stop_conditions` 和 `pivot_conditions` 只能使用[方法辅导](core-method-coaching.md)定义的闭合数值标准对象。
+- `bounded` 模式从所选方向 `minimum_decisive_test` 的匹配标准复制；`route_specific` 模式从对应已验证路线条件复制。
+- 只使用与误报暴露、漏检、检测延迟、采样有效性或偏移退化相关的标准，并逐字保留上游指标 ID、运算符、值和单位。
+- 没有适用数值标准时封闭失败并要求修复上游标准；M3 内不得虚构、估计或调节阈值。
+- 无效信号/标签来源、采样或对齐未解决、分区不独立、运行用途不受支持及安全复核失败放入 `applicability.incompatible_conditions`。
 
-## Safety boundaries
+## 安全边界
 
-- Require qualified signal, instrumentation, and domain review before using diagnostics for alarms, shutdowns, maintenance deferral, clinical action, or other safety-relevant decisions.
-- Keep the diagnostic output advisory unless separately validated and authorized for its intended operational role; preserve existing protection and human oversight.
-- Do not acquire signals, modify monitoring systems, deploy detectors, or issue operational decisions through method coaching.
+- 将诊断用于告警、停机、延迟维护、临床行动或其他安全相关决定前，要求合格信号、仪表和领域专家复核。
+- 除非另行验证并授权预期运行角色，诊断输出保持建议性质，并保留现有保护与人工监督。
+- 方法辅导不得采集信号、修改监测系统、部署检测器或作出运行决定。
 
-## Source-ledger limits
+## 来源台账限制
 
-- Apply the closed ledger and eligibility rules in [Method coaching](core-method-coaching.md); label every row as metadata-, abstract-, or full-text-level.
-- Use method sources only within their reported sensors, sampling, segmentation, label quality, prevalence, operating regimes, and evaluation units.
-- State explicitly what each source does not support, including unseen assets, field false-alarm burden, causal diagnosis, deployment, or safety.
-- Block conflicted or unresolved citations, and do not use a verified preprint as the sole support for a safety-related conclusion.
+- 应用[方法辅导](core-method-coaching.md)中的闭合台账与资格规则，并标明证据层级。
+- 方法来源只能在其报告的传感器、采样、分段、标签质量、流行率、运行工况和评估单元内使用。
+- 明确说明每个来源不支持什么，包括未见资产、现场误报负担、因果诊断、部署或安全。
+- 阻断冲突或未解决引文；已核验预印本不能成为安全相关结论的唯一支持。
