@@ -31,7 +31,7 @@ Engineering Research Workbench 是一组面向工科研究者的证据约束型 
 
 共享的证据、权限、就绪度和交接规则只在 umbrella Skill 中规范维护。安装器把实际用到的共享文件按原始字节复制到每个 focused Skill 的 `references/shared/`，同时记录来源和哈希；这些副本是可审计投影，不是第二份规范源。
 
-## 宿主适配
+## AGENT适配
 
 | 宿主 | 用户级投影 | 项目级投影 | 主动调用 |
 |---|---|---|---|
