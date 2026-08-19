@@ -2,6 +2,30 @@
 
 ## Active milestone
 
+`S2.1 — Project-level Skill entry and clean GitHub archive`
+
+S2.1 baseline: `ce1da596d6cc711cf49b7aae2519d82f2c44ee5c`
+
+S2.1 branch: `codex/clean-download-project-skill`
+
+S2.1 status: `PROJECT_ENTRYPOINT_IMPLEMENTED; GITHUB_ARCHIVE_EXPORT_POLICY_IMPLEMENTED; SOURCE_ARCHIVE_INSTALL_COMPATIBILITY_IMPLEMENTED; INDEX_BOUND_DETERMINISTIC_BUILDER_IMPLEMENTED; VERSION_0_7_1_BOUND; LOCAL_VALIDATION_PASSED; INDEPENDENT_REVIEW_NO_FINDINGS; GIT_DELIVERY_AUTHORIZED_2026_08_19; IMPLEMENTATION_REMOTE_CI_PASSED; DELIVERY_CLOSURE_REMOTE_CI_PENDING`
+
+S2.1 authorized scope: `add one repository-level SKILL.md for the complete project; keep the canonical nine-Skill source and projections unchanged; make GitHub Code Download ZIP omit tests, evals, docs, CI, process files, and five development-only replay scripts; keep the exported package installable; commit, push, open a PR, pass protected checks, and merge to main`
+
+S2.1 authority state: `repository_file_write=true; local_validation=true; local_archive_build=true; commit=true; push=true; pull_request=true; merge_main=true; release_upload=false; marketplace_update=false; real_host_install=false; host_config_write=false; research_execution=false; publication=false; external_communication=git_delivery_only`
+
+S2.1 public archive allowlist: `README.md; SKILL.md; .claude-plugin/plugin.json; .codex-plugin/plugin.json; agent-hosts.json; install-skill.py; opencode.json; exact tracked files under the nine required skills except declared source_only_paths`
+
+S2.1 public archive denylist: `.gitattributes; .gitignore; .github/**; AGENTS.md; build-release.py; docs/**; evals/**; PROJECT_PLAN.md; STATUS.md; tests/**; five declared source_only_paths; Git metadata; caches; every untracked file`
+
+S2.1 local validation: `standard_skill_validator=10/10; codex_plugin_validator=PASS; focused_entrypoint+clean_release+cluster+host_projection+figure+graph=59/59; historical_skill_package=16/16; current_lifecycle_non_M4=652/652; Python_3_10_builder_check=PASS; payload_files=56; git_archive_forbidden_entries=0; root_SKILL_present=true; deterministic_archive_sha256=11cda9f7b7d9e1851c18131c43406d75953148fdf2a35909ffed668a92e06630; manifest_sha256=1592c2e40751aa414da1e9db09a5e848b2f3f163da56b51c4394fc9d4e4e900e`
+
+S2.1 implementation remote CI: `PASSED; head=1c806305897b91bf4df1149c399c048d6a76d20a; pull_request=15; pull_request_run=32261284108; validate=PASS; historical-audit-cross-platform-ubuntu=PASS; historical-audit-cross-platform-windows=PASS; all_additional_M4_preservation_jobs=PASS`
+
+S2.1 boundary: `export-ignore changes only generated archive contents and does not delete or rewrite development history; the root entrypoint is not a tenth installed Skill; no M1-M4 evidence, frozen test, or terminal outcome may be modified; no GitHub Release asset, marketplace update, host installation, research execution, or publication is authorized`
+
+## Preserved S2 delivery
+
 `S2 — Clean Skill distribution`
 
 S2 baseline: `8523f95ef4a823ab29eda5bd025b0a6e045d0d04`

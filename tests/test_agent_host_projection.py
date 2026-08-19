@@ -78,7 +78,7 @@ class AgentHostProjectionTests(unittest.TestCase):
         self.assertEqual(
             "engineering-research-agent-hosts.v1", matrix["schema_version"]
         )
-        self.assertEqual("0.7.0", matrix["cluster_version"])
+        self.assertEqual("0.7.1", matrix["cluster_version"])
         self.assertEqual(EXPECTED_SKILLS, set(matrix["required_skills"]))
         self.assertEqual(EXPECTED_HOSTS, set(matrix["hosts"]))
 
@@ -100,6 +100,10 @@ class AgentHostProjectionTests(unittest.TestCase):
     def test_source_cluster_is_portable_without_host_frontmatter_rewrites(self):
         INSTALLER.validate_package(self.package)
         allowed = set(self.package.matrix["portable_frontmatter_keys"])
+        project_values, project_keys = INSTALLER._frontmatter(REPO_ROOT / "SKILL.md")
+        self.assertEqual(self.package.matrix["cluster_name"], project_values["name"])
+        self.assertTrue(project_values["description"])
+        self.assertLessEqual(project_keys, allowed)
         for skill_name in sorted(EXPECTED_SKILLS):
             with self.subTest(skill=skill_name):
                 values, keys = INSTALLER._frontmatter(

@@ -84,7 +84,7 @@ class ResearchSkillClusterTests(unittest.TestCase):
             (REPO_ROOT / ".codex-plugin" / "plugin.json").read_text(encoding="utf-8")
         )
         self.assertEqual("engineering-research-workbench", manifest["name"])
-        self.assertEqual("0.7.0", manifest["version"])
+        self.assertEqual("0.7.1", manifest["version"])
         self.assertEqual("./skills/", manifest["skills"])
         self.assertNotIn("apps", manifest)
         self.assertNotIn("mcpServers", manifest)

@@ -44,6 +44,8 @@
 /evals/m4/** text eol=lf
 
 # Keep the S1 Skill source, host adapters, and hash-bound research inputs stable.
+/README.md text eol=lf
+/SKILL.md text eol=lf
 /skills/** text eol=lf
 /docs/research/** text eol=lf
 /agent-hosts.json text eol=lf
@@ -53,3 +55,26 @@
 /.codex-plugin/** text eol=lf
 /.claude-plugin/** text eol=lf
 /tests/test_clean_release.py text eol=lf
+
+# Keep GitHub Download ZIP and git archive focused on the installable project.
+/.gitattributes export-ignore
+/.gitignore export-ignore
+/.github export-ignore
+/.github/** export-ignore
+/AGENTS.md export-ignore
+/build-release.py export-ignore
+/docs export-ignore
+/docs/** export-ignore
+/evals export-ignore
+/evals/** export-ignore
+/PROJECT_PLAN.md export-ignore
+/STATUS.md export-ignore
+/tests export-ignore
+/tests/** export-ignore
+
+# Keep development-only historical replay scripts out of exported packages.
+/skills/engineering-research-copilot/scripts/compose_m3_bundle.py export-ignore
+/skills/engineering-research-copilot/scripts/render_m1_map.py export-ignore
+/skills/engineering-research-copilot/scripts/validate_m1_bundle.py export-ignore
+/skills/engineering-research-copilot/scripts/validate_m2_direction_bundle.py export-ignore
+/skills/engineering-research-copilot/scripts/validate_m3_method_bundle.py export-ignore

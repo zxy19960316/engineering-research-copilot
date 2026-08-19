@@ -1,8 +1,8 @@
 {
   "schema_version": "engineering-research-agent-hosts.v1",
   "cluster_name": "engineering-research-workbench",
-  "cluster_version": "0.7.0",
-  "checked_at": "2026-08-14",
+  "cluster_version": "0.7.1",
+  "checked_at": "2026-08-19",
   "source_policy": "Keep one hand-edited canonical cluster. Generate deterministic self-contained host projections by omitting declared source-only milestone artifacts, rewriting only cross-sibling reference locations, copying the referenced canonical bytes, and recording hashes. Hermes also receives a standard description override of at most 60 characters; no projection adds permissions.",
   "required_skills": [
     "engineering-research-copilot",

@@ -2,7 +2,7 @@
   "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "engineering-research-workbench",
   "displayName": "Engineering Research Workbench",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "description": "Evidence-grounded research direction, literature, method, writing, review, data, and figure workflows.",
   "author": {
     "name": "Engineering Research Copilot contributors"
