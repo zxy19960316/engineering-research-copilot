@@ -31,16 +31,20 @@ Engineering Research Workbench 是一组面向工科研究者的证据约束型 
 
 共享的证据、权限、就绪度和交接规则只在 umbrella Skill 中规范维护。安装器把实际用到的共享文件按原始字节复制到每个 focused Skill 的 `references/shared/`，同时记录来源和哈希；这些副本是可审计投影，不是第二份规范源。
 
-## 纯净发行包
+## 项目入口与纯净下载
 
-开发仓库保留测试、研究记录和 M1–M4 历史证据，但这些内容不进入可安装发行包。使用标准库构建器从 Git 已跟踪文件和显式白名单生成 `0.7.0` 纯净 ZIP：
+仓库根目录的 [`SKILL.md`](SKILL.md) 是整个 Workbench 的项目级入口。它只负责进入 umbrella、选择需要的聚焦 Skill 和保持权限边界；`skills/` 中的九个 Skill 仍是唯一规范源，安装投影也始终保持九个，不会生成第十个 Skill。
+
+开发仓库继续保留测试、研究记录和 M1–M4 历史证据，但 GitHub 的 **Code → Download ZIP** 和 Git 归档会按 `.gitattributes` 的 `export-ignore` 策略排除这些开发材料。可直接下载 [`main` 纯净 ZIP](https://github.com/zxy19960316/engineering-research-copilot/archive/refs/heads/main.zip)；解压后顶层包含本说明、项目级 `SKILL.md`、两份插件清单、宿主矩阵、安装器、OpenCode 配置和九个规范 Skill，不包含 `evals/`、`tests/`、`docs/`、CI、状态/计划文件或五个历史回放脚本。
+
+需要逐文件 SHA-256 清单和字节确定性的发行档案时，从开发克隆运行标准库构建器生成 `0.7.1` ZIP：
 
 ```powershell
 python .\build-release.py --check --json
-python .\build-release.py --output .\dist\engineering-research-workbench-0.7.0.zip --json
+python .\build-release.py --output .\dist\engineering-research-workbench-0.7.1.zip --json
 ```
 
-ZIP 只包含九个 Skill、`.codex-plugin/plugin.json`、`.claude-plugin/plugin.json`、`agent-hosts.json`、`install-skill.py`、`opencode.json` 和自动生成的 `release-manifest.json`。清单逐文件记录大小与 SHA-256；安装器在清单存在时会先核对完整文件集合和每个字节，再生成宿主投影。相同源码会生成字节一致的 ZIP，`evals/**`、`tests/**`、`docs/**`、状态、计划、CI 和未跟踪文件均不能进入。五个旧里程碑的组合、渲染和验证脚本只保留在开发仓库中用于历史证据回放，并通过 `source_only_paths` 从 ZIP 和所有宿主投影中排除；可安装的 Markdown/Python 运行时不再携带里程碑状态机。
+构建 ZIP 与 GitHub 纯净 ZIP 使用同一公开负载；构建 ZIP 额外包含自动生成的 `release-manifest.json`。清单逐文件记录大小与 SHA-256，安装器会先核对完整文件集合和每个字节，再生成宿主投影。相同源码会生成字节一致的构建 ZIP。五个旧里程碑的组合、渲染和验证脚本只保留在开发仓库中用于历史证据回放，并通过 `source_only_paths` 从公开归档和所有宿主投影中排除。
 
 解压后从发行根目录执行：
 
@@ -48,7 +52,7 @@ ZIP 只包含九个 Skill、`.codex-plugin/plugin.json`、`.claude-plugin/plugin
 python .\install-skill.py --source . --agent all --scope user --dry-run --json
 ```
 
-本地构建发行包不等于安装到真实宿主，也不等于发布 GitHub Release；仓库许可证确定和任何公开发布仍需单独决定与授权。
+下载或构建发行包不等于安装到真实宿主，也不授权执行科研任务；仓库目前仍未创建独立的 GitHub Release asset。
 
 ## AGENT适配
 

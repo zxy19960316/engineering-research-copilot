@@ -26,6 +26,8 @@ ROOT_FILES = (
     ".claude-plugin/plugin.json",
     ".codex-plugin/plugin.json",
     MATRIX_FILENAME,
+    "README.md",
+    "SKILL.md",
     "install-skill.py",
     "opencode.json",
 )
@@ -82,18 +84,25 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     return args
 
 
-def _load_json(path: Path) -> dict[str, Any]:
-    value = json.loads(path.read_text(encoding="utf-8"))
+def _load_index_json(repository_root: Path, relative: str) -> dict[str, Any]:
+    entries = _tracked_entries(repository_root, (relative,))
+    if len(entries) != 1 or entries[0][0] != relative:
+        raise ValueError(f"Missing tracked JSON file: {relative}")
+    _path, mode, object_id = entries[0]
+    if mode != "100644":
+        raise ValueError(f"Tracked JSON file has an unsupported mode: {relative}")
+    try:
+        payload = _read_index_blob(repository_root, object_id).decode("utf-8")
+    except UnicodeDecodeError as error:
+        raise ValueError(f"Tracked JSON file is not UTF-8: {relative}") from error
+    value = json.loads(payload)
     if not isinstance(value, dict):
-        raise ValueError(f"JSON root must be an object: {path}")
+        raise ValueError(f"JSON root must be an object: {relative}")
     return value
 
 
 def load_matrix(repository_root: Path) -> dict[str, Any]:
-    path = repository_root / MATRIX_FILENAME
-    if not path.is_file():
-        raise ValueError(f"Missing {MATRIX_FILENAME}: {repository_root}")
-    matrix = _load_json(path)
+    matrix = _load_index_json(repository_root, MATRIX_FILENAME)
     required = matrix.get("required_skills")
     if (
         not isinstance(required, list)
@@ -134,7 +143,7 @@ def load_matrix(repository_root: Path) -> dict[str, Any]:
 
 def _tracked_entries(
     repository_root: Path, pathspecs: tuple[str, ...]
-) -> list[tuple[str, str]]:
+) -> list[tuple[str, str, str]]:
     result = subprocess.run(
         [
             "git",
@@ -150,18 +159,33 @@ def _tracked_entries(
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
     )
-    entries: list[tuple[str, str]] = []
+    entries: list[tuple[str, str, str]] = []
     for raw_entry in result.stdout.split(b"\0"):
         if not raw_entry:
             continue
         try:
             metadata, raw_path = raw_entry.split(b"\t", 1)
-            mode = metadata.split(b" ", 1)[0].decode("ascii")
+            mode_raw, object_id_raw, stage_raw = metadata.split(b" ")
+            mode = mode_raw.decode("ascii")
+            object_id = object_id_raw.decode("ascii")
+            stage = stage_raw.decode("ascii")
             path = raw_path.decode("utf-8")
         except (UnicodeDecodeError, ValueError) as error:
             raise ValueError("Git returned an invalid tracked path entry") from error
-        entries.append((path, mode))
+        if stage != "0":
+            raise ValueError(f"Release payload contains an unmerged path: {path}")
+        entries.append((path, mode, object_id))
     return sorted(entries)
+
+
+def _read_index_blob(repository_root: Path, object_id: str) -> bytes:
+    result = subprocess.run(
+        ["git", "-C", str(repository_root), "cat-file", "blob", object_id],
+        check=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+    )
+    return result.stdout
 
 
 def _validate_relative_path(path: str) -> None:
@@ -185,7 +209,7 @@ def _validate_manifest_versions(
         ".codex-plugin/plugin.json",
         ".claude-plugin/plugin.json",
     ):
-        manifest = _load_json(repository_root / relative)
+        manifest = _load_index_json(repository_root, relative)
         if manifest.get("name") != expected_name:
             raise ValueError(f"Plugin name mismatch: {relative}")
         if manifest.get("version") != expected_version:
@@ -198,7 +222,7 @@ def collect_payload(
     repository_root = repository_root.resolve()
     _validate_manifest_versions(repository_root, matrix)
     entries = _tracked_entries(repository_root, (*ROOT_FILES, "skills"))
-    paths = [path for path, _mode in entries]
+    paths = [path for path, _mode, _object_id in entries]
     if len(paths) != len(set(paths)):
         raise ValueError("Git payload enumeration contains duplicate paths")
 
@@ -216,7 +240,7 @@ def collect_payload(
     required_skills = set(matrix["required_skills"])
     observed_skills: set[str] = set()
     payload: list[PayloadFile] = []
-    for relative, mode in entries:
+    for relative, mode, object_id in entries:
         _validate_relative_path(relative)
         allowed = relative in ROOT_FILES
         if relative.startswith("skills/"):
@@ -233,13 +257,12 @@ def collect_payload(
         if mode not in {"100644", "100755"}:
             raise ValueError(f"Unsupported Git file mode {mode}: {relative}")
 
-        source = repository_root.joinpath(*PurePosixPath(relative).parts)
-        if source.is_symlink() or not source.is_file():
-            raise ValueError(f"Tracked release payload is not a regular file: {relative}")
         if relative in source_only_paths:
             continue
-        content = source.read_bytes()
-        if relative.endswith("/SKILL.md") and content.startswith(b"\xef\xbb\xbf"):
+        content = _read_index_blob(repository_root, object_id)
+        if (
+            relative == "SKILL.md" or relative.endswith("/SKILL.md")
+        ) and content.startswith(b"\xef\xbb\xbf"):
             raise ValueError(f"Canonical SKILL.md contains a UTF-8 BOM: {relative}")
         payload.append(PayloadFile(relative, content))
 

@@ -376,15 +376,12 @@ def validate_package(package: Package) -> None:
         raise ValueError("Host matrix contains duplicate required skill names")
 
     source_only_paths = _source_only_paths(matrix)
-    clean_release = (package.repository_root / RELEASE_MANIFEST_FILENAME).is_file()
     for relative in source_only_paths:
         source = package.repository_root.joinpath(
             *PurePosixPath(relative).parts
         )
         if source.exists() and (source.is_symlink() or not source.is_file()):
             raise ValueError(f"Source-only path is not a regular file: {relative}")
-        if not clean_release and not source.is_file():
-            raise ValueError(f"Declared source-only file is missing: {relative}")
 
     actual = sorted(
         child.name
@@ -399,6 +396,24 @@ def validate_package(package: Package) -> None:
     allowed_keys = set(matrix.get("portable_frontmatter_keys", []))
     if not {"name", "description"}.issubset(allowed_keys):
         raise ValueError("portable_frontmatter_keys must include name and description")
+
+    project_skill_file = package.repository_root / "SKILL.md"
+    project_values, project_keys = _frontmatter(project_skill_file)
+    if project_values.get("name") != matrix.get("cluster_name"):
+        raise ValueError(
+            f"Project Skill name must match cluster_name: {project_skill_file}"
+        )
+    if not project_values.get("description"):
+        raise ValueError(f"Project Skill description is empty: {project_skill_file}")
+    project_unsupported = project_keys - allowed_keys
+    if project_unsupported:
+        raise ValueError(
+            f"Non-portable top-level frontmatter in {project_skill_file}: "
+            f"{sorted(project_unsupported)}"
+        )
+    project_skill_text = project_skill_file.read_text(encoding="utf-8")
+    if "skills/engineering-research-copilot/SKILL.md" not in project_skill_text:
+        raise ValueError("Project Skill does not route to the canonical umbrella")
 
     for skill_name in required:
         skill_file = package.skills_root / skill_name / "SKILL.md"
